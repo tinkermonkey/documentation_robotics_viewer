@@ -51,7 +51,7 @@ src/
 │   │   ├── modelGraph.ts      # /api/model → GraphCanvas nodes/edges; dottedId() + dual-index link resolver
 │   │   ├── specGraph.ts       # /api/spec → node-type graph
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
-│   │   ├── reach.ts           # whole-model Heimdall layered index + inspector "followed across layers" reach
+│   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
 │   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
@@ -239,10 +239,18 @@ For local dev use `dr visualize --no-auth`.
   selection's reach past its direct links: `data/reach.ts` builds a whole-model `buildLayeredIndex`
   (`layerBy: 'domainColor'` = layer slug, `LAYER_ORDER` layers) and runs `computeReach`, which continues
   from elements reached over cross-layer links, along cross-layer links, into any layer but the
-  selection's own. Rows reuse `RelationshipsWithTooltips`'s row with Heimdall's `+n` hop badge and
-  "via X · predicate" line, and navigate like any relationship row. The `.graph-inspector__empty-mini`
-  suppression in `domain-and-nav.css` is scoped to `GraphInspector`'s own root so this section's empty
-  state still shows.
+  selection's own. A reach strip (`.drv-reach-strip`, one segment per layer, width ∝ elements reached,
+  domain colours) sits above the rows. A followed row (`FollowedRow`) leads with the target and a `+n` hop
+  badge; its arrow + predicate go on the "via X → predicate" line, because they describe the link from the
+  via element, not the selection (a leading `→ predicate` read as the selection's own relationship — as in
+  Heimdall's `ReachInspector`, not its `GraphInspector`). Its accessible name spells out layer, depth and
+  "via X, which <predicate> it" (the visual badge is `aria-hidden`). Direct Outgoing/Incoming rows to
+  another layer show that layer's name (`.drv-rel-layer`, `originLayer` prop). `FollowDepth` /
+  `FOLLOW_DEPTHS` live in the dependency-free `data/followDepth.ts` so `uiStore` doesn't import
+  heimdall-ui. The `.graph-inspector__empty-mini` suppression in `domain-and-nav.css` is scoped to
+  `GraphInspector`'s own root so this section's empty state still shows. Not built from the prototype
+  (Claude Design canvas, design #6): hop-2 ghost nodes on the graph (would re-run the layout on every
+  selection) and the "Open trace in Lanes" link (no Architecture view yet).
 - **Annotations** — REST CRUD + replies in the inspector for Model elements.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
   applies only on a first-ever visit; a persisted choice always wins after that.
@@ -291,7 +299,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~590 tests)
+npm test            # Vitest: unit + integration + component (~610 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -330,7 +338,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~590 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~610 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the

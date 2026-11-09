@@ -166,22 +166,66 @@ describe('Inspector — relationship navigation', () => {
 });
 
 describe('Inspector — followed across layers (heimdall-ui 0.10 reach)', () => {
-  // security "Bearer Token Policy": constrains application "Graph Viewer",
+  // security "Bearer Token Policy": constrained-by application "Graph Viewer",
   // which realizes business "Architecture Model Visualization" — a hop-2 row.
   const BEARER_UUID = 'f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d';
+  const AMV_UUID = '35295e18-08a8-4ca0-ada3-40a017cb4318';
+  // motivation "Development Team": has direct links but nothing past them at +1.
+  const DEV_TEAM_UUID = 'e7b0e422-b8fa-416b-89b0-cd724465ff98';
 
-  it('lists hop-2 elements with a via line and the reach summary at the default +1 layer', async () => {
+  it('lists a hop-2 element with its +1 badge, a via line and the reach summary at the default +1 layer', async () => {
     renderModelSelection('security', BEARER_UUID);
 
     const section = await screen.findByTestId('inspector-followed');
-    const target = within(section).getByRole('button', {
-      name: /Navigate to Architecture Model Visualization/i,
-    });
-    const row = target.closest('li')!;
-    expect(within(row).getByText(/^via .+ · .+/)).toBeInTheDocument();
+    const row = within(section).getByTestId(`inspector-followed-row-${AMV_UUID}`);
+    // The via line carries the element it was reached through and the
+    // predicate of THAT link — not a leading arrow + predicate, which would
+    // read as the selection's own relationship.
+    expect(within(row).getByText(/^via .+/)).toBeInTheDocument();
+    expect(row.querySelector(':scope > .graph-inspector__rel-dir')).toBeNull();
+    expect(within(row).getByText('+1')).toHaveAttribute('aria-hidden', 'true');
     expect(within(section).getByTestId('inspector-reach-summary')).toHaveTextContent(
       /reach \d+ elements across \d+ layers/,
     );
+  });
+
+  it('gives followed rows an accessible name with layer, depth and how it was reached', async () => {
+    renderModelSelection('security', BEARER_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    const button = within(within(section).getByTestId(`inspector-followed-row-${AMV_UUID}`)).getByRole('button');
+    expect(button).toHaveAccessibleName(/^Navigate to Architecture Model Visualization, Business layer, 1 layer past direct, via .+, which .+$/);
+  });
+
+  it('draws a reach strip with one segment per reached layer', async () => {
+    renderModelSelection('security', BEARER_UUID);
+
+    const strip = await screen.findByTestId('inspector-reach-strip');
+    expect(strip).toHaveAttribute('aria-label', expect.stringMatching(/^Reached by layer: .*Business \d+/));
+    const layers = Array.from(strip.children).map((c) => c.getAttribute('data-layer'));
+    expect(layers).toContain('business');
+    expect(new Set(layers).size).toBe(layers.length);
+  });
+
+  it('names the other layer on direct cross-layer rows, but not on same-layer rows', async () => {
+    renderModelSelection('security', BEARER_UUID);
+
+    const target = await screen.findByRole('button', { name: 'Navigate to Graph Viewer, Application layer' });
+    expect(within(target.closest('li')!).getByText('Application')).toBeInTheDocument();
+    const sameLayer = screen.getAllByRole('button', { name: /^Navigate to [^,]+$/ });
+    expect(sameLayer.length).toBeGreaterThan(0);
+    for (const b of sameLayer) expect(b.closest('li')!.querySelector('.drv-rel-layer')).toBeNull();
+  });
+
+  it('shows "Nothing further across layers." outside GraphInspector, so its empty-state CSS does not hide it', async () => {
+    renderModelSelection('motivation', DEV_TEAM_UUID);
+
+    const section = await screen.findByTestId('inspector-followed');
+    const empty = await within(section).findByText('Nothing further across layers.');
+    // domain-and-nav.css hides `.graph-inspector--custom-relationships .graph-inspector .graph-inspector__empty-mini`.
+    expect(empty.closest('.graph-inspector--custom-relationships')).not.toBeNull();
+    expect(empty.closest('.graph-inspector')).toBeNull();
+    expect(within(section).getByTestId('inspector-reach-summary')).toHaveTextContent(/reach [1-9]\d* element/);
   });
 
   it('switching Follow to Direct empties the followed list and persists the choice', async () => {
@@ -212,14 +256,24 @@ describe('Inspector — followed across layers (heimdall-ui 0.10 reach)', () => 
 
     const section = await screen.findByTestId('inspector-followed');
     await user.click(
-      within(section).getByRole('button', { name: /Navigate to Architecture Model Visualization/i }),
+      within(within(section).getByTestId(`inspector-followed-row-${AMV_UUID}`)).getByRole('button'),
     );
     await waitFor(() => {
       const s = useUiStore.getState();
       expect(s.view).toBe('model');
       expect(s.layerId).toBe('business');
-      expect(s.selectedId).not.toBe(BEARER_UUID);
+      expect(s.selectedId).toBe(AMV_UUID);
     });
+  });
+
+  it('is not shown for a Schema node', async () => {
+    renderWithProviders(<Inspector />);
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('data-model');
+    useUiStore.getState().selectNode('data-model.objectschema');
+
+    await waitFor(() => expect(useUiStore.getState().view).toBe('spec'));
+    expect(screen.queryByTestId('inspector-followed')).not.toBeInTheDocument();
   });
 });
 

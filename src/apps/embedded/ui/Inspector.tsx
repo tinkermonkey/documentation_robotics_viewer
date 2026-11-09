@@ -241,6 +241,7 @@ export function Inspector() {
               <RelationshipsWithTooltips
                 relationships={relationships}
                 onNodeSelect={handleSelect}
+                originLayer={modelNode?.layer_id}
               />
               {modelReach && (
                 <FollowedRelationships

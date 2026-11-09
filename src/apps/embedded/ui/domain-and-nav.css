@@ -514,3 +514,34 @@ body.dark-canvas {
   min-width: 0;
   margin-left: auto;
 }
+
+/* ---- Model inspector: cross-layer + followed relationships -------------
+ * `.drv-rel-layer` names the other layer on a direct row whose target lives
+ * in a different layer. `.drv-reach-strip` is the "Followed across layers"
+ * reach strip: one segment per layer, width ∝ elements reached there,
+ * coloured with the layer's domain colour inline (RelationshipsWithTooltips).
+ * Followed rows start with the target, not a direction arrow, so their via
+ * line drops GraphInspector's 22px arrow-column indent. */
+.drv-rel-layer {
+  margin-left: auto;
+  flex: none;
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.drv-reach-strip {
+  display: flex;
+  gap: 2px;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.drv-reach-strip__seg {
+  min-width: 4px;
+}
+
+[data-testid='inspector-followed'] .graph-inspector__rel-via {
+  padding-left: 4px;
+}

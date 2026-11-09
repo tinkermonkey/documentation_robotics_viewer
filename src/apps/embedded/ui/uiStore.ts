@@ -19,7 +19,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ScopedViewport } from './graphViewport';
-import { FOLLOW_DEPTHS, type FollowDepth } from '../data/reach';
+import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';

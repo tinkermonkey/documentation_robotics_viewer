@@ -57,7 +57,46 @@ describe('buildModelLayeredIndex', () => {
 
 describe('elementReach', () => {
   it('returns nothing for an unknown element id', () => {
-    expect(elementReach(layered, 'no-such-id', 1)).toEqual({ followed: [], nodeCount: 0, layerCount: 0 });
+    expect(elementReach(layered, 'no-such-id', 1)).toEqual({
+      followed: [],
+      nodeCount: 0,
+      layerCount: 0,
+      byLayer: [],
+    });
+  });
+
+  it('byLayer counts every reached element once, per layer, in layer order', () => {
+    const r = elementReach(layered, BEARER.id, 2);
+    expect(r.byLayer.reduce((n, l) => n + l.count, 0)).toBe(r.nodeCount);
+    const order = r.byLayer.map((l) => LAYER_ORDER.indexOf(l.layerId as never));
+    expect(order).toEqual([...order].sort((a, b) => a - b));
+    const neighbours = new Set(directLinks(BEARER.id).map((d) => d.other));
+    const reached = [...neighbours, ...r.followed.map((f) => f.target)];
+    for (const { layerId, count } of r.byLayer) {
+      expect(reached.filter((id) => layerOf(id) === layerId)).toHaveLength(count);
+    }
+  });
+
+  it('every single-predicate followed row names a real link in its direction, with the type labels of that link', () => {
+    // Across every element and both follow depths, so 'in' rows (most of them) are covered.
+    let checked = 0;
+    for (const origin of raw.nodes) {
+      for (const rel of elementReach(layered, origin.id, 2).followed) {
+        if (!rel.sourceTypeLabel) continue;
+        const [src, tgt] = rel.direction === 'out' ? [rel.via.id, rel.target] : [rel.target, rel.via.id];
+        const match = raw.links.some(
+          (l) =>
+            l.type === rel.predicate &&
+            resolveEndpoint(index, l.source)?.id === src &&
+            resolveEndpoint(index, l.target)?.id === tgt,
+        );
+        expect(match, `${rel.via.title} ${rel.direction} ${rel.predicate} ${rel.targetTitle}`).toBe(true);
+        expect(rel.sourceTypeLabel).toBe(index.byUuid.get(src)!.type);
+        expect(rel.destinationTypeLabel).toBe(index.byUuid.get(tgt)!.type);
+        checked++;
+      }
+    }
+    expect(checked).toBeGreaterThan(100);
   });
 
   it('follow 0 lists no followed rows; the reach is exactly the direct neighbours', () => {
@@ -109,5 +148,41 @@ describe('elementReach', () => {
     const keys = followed.map((f) => [f.hop, LAYER_ORDER.indexOf(f.targetDomain as never)]);
     const sorted = [...keys].sort((a, b) => a[0] - b[0] || a[1] - b[1]);
     expect(keys).toEqual(sorted);
+  });
+});
+
+describe('elementReach — link direction and bundling (synthetic models)', () => {
+  const node = (id: string, layer_id: string, type: string): ModelNode =>
+    ({ id, layer_id, type, name: id.toUpperCase() }) as ModelNode;
+  const link = (id: string, source: string, target: string, type: string): ModelLink =>
+    ({ id, source, target, type }) as ModelLink;
+  const NODES = [
+    node('o', 'security', 'securitypolicy'),
+    node('a', 'application', 'applicationcomponent'),
+    node('t', 'business', 'businessservice'),
+  ];
+  function reachOf(links: ModelLink[]) {
+    const m: ModelDerived = { nodes: NODES, links, countsByLayer: {}, nodesByLayer: {}, relCount: links.length };
+    return elementReach(buildModelLayeredIndex(m, buildModelIndex(m)), 'o', 1).followed;
+  }
+
+  it('joins a bundled link\u2019s predicates and drops the per-predicate type labels', () => {
+    // A → T twice (realizes, serves): one bundled link.
+    const [row] = reachOf([
+      link('l1', 'o', 'a', 'constrains'),
+      link('l2', 'a', 't', 'realizes'),
+      link('l3', 'a', 't', 'serves'),
+    ]);
+    expect(row).toMatchObject({ target: 't', direction: 'out', predicate: 'realizes · serves', hop: 2 });
+    expect(row.via).toEqual({ id: 'a', title: 'A', predicate: 'realizes · serves' });
+    expect(row.sourceTypeLabel).toBeUndefined();
+    expect(row.destinationTypeLabel).toBeUndefined();
+  });
+
+  it('reads an incoming link from the via element: T uses A gives an \u2018in\u2019 row with T as the source type', () => {
+    const [row] = reachOf([link('l1', 'o', 'a', 'constrains'), link('l4', 't', 'a', 'uses')]);
+    expect(row).toMatchObject({ target: 't', direction: 'in', predicate: 'uses' });
+    expect(row.sourceTypeLabel).toBe('businessservice');
+    expect(row.destinationTypeLabel).toBe('applicationcomponent');
   });
 });

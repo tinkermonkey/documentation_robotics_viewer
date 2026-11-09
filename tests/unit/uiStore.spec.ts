@@ -29,6 +29,7 @@ function reset() {
       nodeMarginPreset: 'default',
       nodeDisplay: 'card',
       showInterLayerNodes: true,
+      inspectorFollow: 1,
     },
     false,
   );
@@ -61,9 +62,11 @@ describe('uiStore — localStorage persistence', () => {
     get().setNodeMarginPreset('wide');
     get().setNodeDisplay('pill');
     get().toggleShowInterLayerNodes();
+    get().setInspectorFollow(2);
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).toMatchObject({
+      inspectorFollow: 2,
       canvasDark: true, // reset() started at false; one toggle -> true
       chatOpen: true, // reset() started at false; one toggle -> true
       graphLayout: 'orthogonal',
@@ -559,6 +562,28 @@ describe('graph layout/display preferences', () => {
     expect(get().showInterLayerNodes).toBe(false);
     get().toggleShowInterLayerNodes();
     expect(get().showInterLayerNodes).toBe(true);
+  });
+});
+
+describe('persist hydration validates inspectorFollow', () => {
+  afterEach(() => {
+    localStorage.removeItem(PERSIST_KEY);
+  });
+
+  async function hydrateWith(inspectorFollow: unknown) {
+    localStorage.setItem(PERSIST_KEY, JSON.stringify({ state: { inspectorFollow }, version: 1 }));
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    return fresh.useUiStore.getState().inspectorFollow;
+  }
+
+  it.each([3, -1, '1', null, 'two', 1.5])('falls back to +1 layer for an invalid stored value (%s)', async (v) => {
+    expect(await hydrateWith(v)).toBe(1);
+  });
+
+  // 0 matters most: a falsy check would silently turn a saved "Direct" back into +1.
+  it.each([0, 1, 2])('keeps a valid stored depth (%s)', async (v) => {
+    expect(await hydrateWith(v)).toBe(v);
   });
 });
 

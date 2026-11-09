@@ -22,11 +22,9 @@ import type { ModelDerived } from './useModel';
 import { resolveEndpoint, type ModelIndex } from './modelGraph';
 import type { RelationshipLinkWithTooltip } from './relationships';
 import { LAYER_ORDER, layerLabel } from '../ui/domain';
+import type { FollowDepth } from './followDepth';
 
-/** How many layers past the direct links the inspector follows. */
-export type FollowDepth = 0 | 1 | 2;
-
-export const FOLLOW_DEPTHS: readonly FollowDepth[] = [0, 1, 2];
+export { FOLLOW_DEPTHS, type FollowDepth } from './followDepth';
 
 /** A followed (hop 2+) relationship: the target, how far out it is, and the
  *  element + predicate it was reached through. */
@@ -42,9 +40,11 @@ export interface ElementReach {
   nodeCount: number;
   /** Distinct layers reached, the selected element's own included. */
   layerCount: number;
+  /** Elements reached per layer (the selected one excluded), in layer order. */
+  byLayer: { layerId: string; count: number }[];
 }
 
-const NO_REACH: ElementReach = { followed: [], nodeCount: 0, layerCount: 0 };
+const NO_REACH: ElementReach = { followed: [], nodeCount: 0, layerCount: 0, byLayer: [] };
 
 /**
  * The whole model as a Heimdall layered index, one layer per DR layer slug in
@@ -89,11 +89,13 @@ export function elementReach(
   const reach = computeReach(layered, elementId, { follow });
 
   const layers = new Set<string>();
+  const perLayer = new Map<string, number>();
   const deep: { rel: FollowedRelationship; rank: number }[] = [];
   for (const [nodeId, hop] of reach.hopOf) {
     const node = layered.nodeById.get(nodeId);
     if (!node) continue;
     layers.add(node.layerId);
+    if (hop >= 1) perLayer.set(node.layerId, (perLayer.get(node.layerId) ?? 0) + 1);
     if (hop < 2) continue;
 
     const v = reach.via.get(nodeId);
@@ -133,5 +135,8 @@ export function elementReach(
     followed: deep.map((d) => d.rel),
     nodeCount: reach.hopOf.size - 1,
     layerCount: layers.size,
+    byLayer: layered.layers
+      .filter((l) => perLayer.has(l.id))
+      .map((l) => ({ layerId: l.id, count: perLayer.get(l.id)! })),
   };
 }
