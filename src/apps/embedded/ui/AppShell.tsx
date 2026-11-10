@@ -29,7 +29,7 @@ import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
 import { useModel, useLiveModelUpdates } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
-import { useChangesets, useRefreshAfterChatReply } from '../data/useChangesets';
+import { useChangesets, useLiveChangesetUpdates } from '../data/useChangesets';
 import { firstNodeTypeId } from '../data/specGraph';
 import { useChatStore } from '../stores/chatStore';
 import type { ChatMessage, TextContent } from '../types/chat';
@@ -135,7 +135,7 @@ export function AppShell() {
 
   useDefaultSelection();
   useSeedGreeting();
-  useRefreshAfterChatReply(useChatStore((s) => s.isStreaming));
+  useLiveChangesetUpdates();
   useLiveModelUpdates();
 
   return (

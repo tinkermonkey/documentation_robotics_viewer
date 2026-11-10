@@ -220,16 +220,19 @@ For local dev use `dr visualize --no-auth`.
   `ApiError.serverMessage`); success toasts from the inspector (the actions block unmounts once the changeset
   leaves `staged`). Two hooks in `AppShell` keep the cache fresh past its 5-minute `staleTime`:
   `useLiveModelUpdates` (`data/useModel.ts`) refetches model + changesets on the server's `model.updated`
-  WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useRefreshAfterChatReply` refetches
-  changesets when a DrBot reply finishes, since the server doesn't announce changeset-only changes.
+  WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useLiveChangesetUpdates`
+  (`data/useChangesets.ts`) refetches changesets on the server's `changesets.updated` broadcast (any write
+  under `documentation-robotics/changesets/`, including the active marker, and every Apply / Discard).
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
-  `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`), once per call, with no `tool_use_id` and no
-  status; `chatService.handleToolInvoke` gives each a local id and marks it completed when the reply moves
-  on (next tool, text) or ends. `chat.tool.result` is the final session result, not a per-tool one, and is
-  ignored. `chat.send` only takes `message`, and the server starts a fresh Claude Code conversation per
-  send, so `ChatPanel` builds a `<viewer-context>` block (`data/chatContext.ts`: view, layer, selected
+  `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`) with a `tool_use_id`: once with
+  `status: executing`, then again with `completed` or `failed` (a permission denial is `failed`).
+  `chatService.handleToolInvoke` matches them by id; a notification without an id or status (an older
+  server) gets a local id and is marked completed when the reply moves on (next tool, text) or ends.
+  `chat.response.complete` is the end-of-turn result and is ignored. `chat.send` carries the conversation
+  id, so the server resumes DrBot's Claude Code session and it remembers the conversation; `reset()` starts
+  a new id. The context still goes with each message: `ChatPanel` builds a `<viewer-context>` block (`data/chatContext.ts`: view, layer, selected
   element by name + dotted id + type + uuid, or Schema node type / relationship / changeset) from the live
   store at send time, and `chatService.sendMessage(text, context)` prepends it to the text sent. The thread
   shows only what the user typed.

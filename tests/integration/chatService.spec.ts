@@ -391,7 +391,11 @@ describe('chatService — chat.send timeout', () => {
       .spyOn(jsonRpcHandler, 'sendRequest')
       .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
     await chatService.sendMessage('hello');
-    expect(spy).toHaveBeenCalledWith('chat.send', { message: 'hello' }, expect.any(Number));
+    expect(spy).toHaveBeenCalledWith(
+      'chat.send',
+      { message: 'hello', conversation_id: expect.any(String) },
+      expect.any(Number),
+    );
     const timeout = spy.mock.calls[0][2] as number;
     expect(timeout).toBeGreaterThanOrEqual(10 * 60 * 1000);
     spy.mockRestore();
@@ -407,9 +411,57 @@ describe('chatService — viewer context', () => {
 
     expect(spy.mock.calls[0][1]).toEqual({
       message: '<viewer-context>\nLayer: APM (apm)\n</viewer-context>\n\nWhat does this do?',
+      conversation_id: expect.any(String),
     });
     const user = useChatStore.getState().messages.find((m) => m.role === 'user')!;
     expect(user.parts).toEqual([expect.objectContaining({ type: 'text', content: 'What does this do?' })]);
+    spy.mockRestore();
+  });
+});
+
+describe('chatService — conversation_id', () => {
+  it('sends the same conversation_id with every message, so DrBot resumes its session', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+
+    await chatService.sendMessage('What does this do?');
+    await chatService.sendMessage('And its references?');
+
+    const first = (spy.mock.calls[0][1] as { conversation_id: string }).conversation_id;
+    const second = (spy.mock.calls[1][1] as { conversation_id: string }).conversation_id;
+    expect(first).toMatch(/^conv-/);
+    expect(second).toBe(first);
+    expect(first).toBe(useChatStore.getState().activeConversationId);
+    spy.mockRestore();
+  });
+
+  it('starts a new conversation with a new id after reset()', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+
+    await chatService.sendMessage('First topic');
+    chatService.reset();
+    await chatService.sendMessage('Second topic');
+
+    const first = (spy.mock.calls[0][1] as { conversation_id: string }).conversation_id;
+    const second = (spy.mock.calls[1][1] as { conversation_id: string }).conversation_id;
+    expect(second).not.toBe(first);
+    spy.mockRestore();
+  });
+
+  it('cancels the current conversation by id', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-x', status: 'complete' } as never);
+
+    await chatService.sendMessage('Hello');
+    const conversationId = (spy.mock.calls[0][1] as { conversation_id: string }).conversation_id;
+    spy.mockResolvedValueOnce({ cancelled: true, conversation_id: conversationId } as never);
+    await chatService.cancelMessage();
+
+    expect(spy).toHaveBeenLastCalledWith('chat.cancel', { conversation_id: conversationId }, expect.any(Number));
     spy.mockRestore();
   });
 });

@@ -7,7 +7,7 @@
  * list of changeset summaries for the nav tree.
  */
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import {
   ApiError,
@@ -15,6 +15,7 @@ import {
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
 import { toChangeRows, type ChangeRecord, type ChangeRow } from './changesets';
+import { websocketClient } from '../services/websocketClient';
 
 export interface ChangesetSummary {
   id: string;
@@ -168,22 +169,26 @@ export function changesetActionErrorMessage(error: unknown): string {
 }
 
 /**
- * Refetch the changesets when a DrBot reply finishes (`isStreaming` goes
- * true → false). DrBot stages its changes in a changeset (`dr visualize
- * --with-changesets`), and the server announces only model-file changes
- * (see useLiveModelUpdates), not changeset ones: the cached list would
- * otherwise stay stale for its 5-minute `staleTime`, so a changeset DrBot just
- * made wouldn't show up for review. The model itself isn't refetched here;
- * a change to it arrives through useLiveModelUpdates.
+ * Refetch the changesets when the `dr visualize` server announces a changeset
+ * change. It broadcasts `{ type: 'changesets.updated', ids, active }` after
+ * any write under `documentation-robotics/changesets/` — a changeset created,
+ * activated or staged into from the CLI or by DrBot — and after a commit or
+ * discard from the viewer. Without it the cached list would stay stale for its
+ * 5-minute `staleTime`, so a changeset DrBot just made wouldn't show up for
+ * review. A model change arrives through useLiveModelUpdates. Mount once
+ * (AppShell).
  */
-export function useRefreshAfterChatReply(isStreaming: boolean) {
+export function useLiveChangesetUpdates() {
   const queryClient = useQueryClient();
-  const wasStreaming = useRef(isStreaming);
   useEffect(() => {
-    if (wasStreaming.current && !isStreaming) {
+    const refetch = () => {
       queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
       queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
-    }
-    wasStreaming.current = isStreaming;
-  }, [isStreaming, queryClient]);
+    };
+    websocketClient.on(CHANGESETS_UPDATED_EVENT, refetch);
+    return () => websocketClient.off(CHANGESETS_UPDATED_EVENT, refetch);
+  }, [queryClient]);
 }
+
+/** The server's changeset-change broadcast (see the CLI's `broadcastChangesetsUpdated`). */
+export const CHANGESETS_UPDATED_EVENT = 'changesets.updated';

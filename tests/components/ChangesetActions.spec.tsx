@@ -8,20 +8,16 @@
  * through the hook's cache invalidation + refetch.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
 import { ChangesetInspector } from '@/apps/embedded/ui/ChangesetInspector';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
-import {
-  changesetActionErrorMessage,
-  useRefreshAfterChatReply,
-} from '@/apps/embedded/data/useChangesets';
+import { changesetActionErrorMessage } from '@/apps/embedded/data/useChangesets';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { ApiError } from '@/core/services/generatedApiClient';
-import { createTestQueryClient, renderHookWithClient } from '../helpers/renderHookWithClient';
 import { mswServer } from '../helpers/mswServer';
 import changesetDetail from '../fixtures/changeset-detail.json';
 
@@ -149,27 +145,5 @@ describe('changesetActionErrorMessage', () => {
       'Internal Server Error',
     );
     expect(changesetActionErrorMessage(new Error('Network down'))).toBe('Network down');
-  });
-});
-
-describe('useRefreshAfterChatReply', () => {
-  it('refetches changesets only when a DrBot reply finishes', () => {
-    const client = createTestQueryClient();
-    const invalidate = vi.spyOn(client, 'invalidateQueries');
-    const { rerender } = renderHookWithClient(
-      ({ streaming }: { streaming: boolean }) => useRefreshAfterChatReply(streaming),
-      { client, initialProps: { streaming: false } },
-    );
-
-    rerender({ streaming: true });
-    expect(invalidate).not.toHaveBeenCalled();
-
-    rerender({ streaming: false });
-    const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
-    expect(keys).toEqual([['getapichangesets'], ['getapichangesetschangesetId']]);
-
-    invalidate.mockClear();
-    rerender({ streaming: false });
-    expect(invalidate).not.toHaveBeenCalled();
   });
 });

@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+Needs the matching `dr` CLI (`conversation_id` on `chat.send`, the `changesets.updated` broadcast).
+
+### Added
+- **DrBot remembers the conversation**: `chat.send` (and `chat.cancel`) now carry the conversation id, so the
+  server resumes DrBot's session and a follow-up can refer to earlier messages. `chatService.reset()` starts a
+  new conversation with a new id.
+
+### Changed
+- **Live changeset refresh**: the server's `changesets.updated` broadcast refetches the changesets, so a
+  changeset created or staged from the terminal or by DrBot shows up as it happens. This replaces the refetch
+  after every DrBot reply.
+
 ## [0.8.0] - 2026-11-04
 
 `@tinkermonkey/heimdall-ui` bumped `0.8.0` → `0.9.4` (exact npm-registry version), with graph, DrBot and
