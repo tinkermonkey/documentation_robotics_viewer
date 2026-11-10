@@ -147,7 +147,7 @@ describe('RichTooltip — show/hide + accessibility', () => {
     expect(screen.queryByRole('tooltip')).not.toBeInTheDocument();
   });
 
-  it('wires aria-describedby on the trigger to the open tooltip card id', () => {
+  it('wires aria-describedby on the focusable trigger (not the wrapper) to the open card id', () => {
     render(
       <RichTooltip content={<span>Card content</span>} data-testid="tip">
         <button>Trigger</button>
@@ -155,11 +155,45 @@ describe('RichTooltip — show/hide + accessibility', () => {
     );
 
     const wrapper = screen.getByTestId('tip');
+    const button = screen.getByRole('button', { name: 'Trigger' });
+    expect(button).not.toHaveAttribute('aria-describedby');
+
+    fireEvent.focus(button);
+    const tooltip = screen.getByRole('tooltip');
+    // A screen reader reads the description of the focused element.
+    expect(button).toHaveAttribute('aria-describedby', tooltip.id);
+    expect(button).toHaveAccessibleDescription('Card content');
     expect(wrapper).not.toHaveAttribute('aria-describedby');
 
+    fireEvent.blur(button);
+    expect(button).not.toHaveAttribute('aria-describedby');
+  });
+
+  it('puts aria-describedby on the wrapper when the trigger has nothing focusable', () => {
+    render(
+      <RichTooltip content={<span>Card content</span>} data-testid="tip">
+        <span>Plain text</span>
+      </RichTooltip>,
+    );
+
+    const wrapper = screen.getByTestId('tip');
     fireEvent.focus(wrapper);
-    const tooltip = screen.getByRole('tooltip');
-    expect(wrapper).toHaveAttribute('aria-describedby', tooltip.id);
+    expect(wrapper).toHaveAttribute('aria-describedby', screen.getByRole('tooltip').id);
+  });
+
+  it("keeps the trigger's own aria-describedby and restores it on close", () => {
+    render(
+      <RichTooltip content={<span>Card content</span>} data-testid="tip">
+        <button aria-describedby="own-hint">Trigger</button>
+      </RichTooltip>,
+    );
+
+    const button = screen.getByRole('button', { name: 'Trigger' });
+    fireEvent.focus(button);
+    expect(button).toHaveAttribute('aria-describedby', `own-hint ${screen.getByRole('tooltip').id}`);
+
+    fireEvent.blur(button);
+    expect(button).toHaveAttribute('aria-describedby', 'own-hint');
   });
 
   it('closes on Escape without stealing focus from the trigger', () => {
