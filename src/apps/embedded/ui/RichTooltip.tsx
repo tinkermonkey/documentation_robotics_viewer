@@ -22,8 +22,9 @@
  * (so the card's own content is hoverable), immediately on blur, and
  * immediately on Escape (which leaves focus exactly where it was — the card
  * has no focusable content of its own to strand it on). The card carries
- * `role="tooltip"`; the trigger carries `aria-describedby` pointing at it
- * only while open.
+ * `role="tooltip"`; while open, the trigger's focusable element (or the
+ * wrapper, when there is none) carries `aria-describedby` pointing at it, so a
+ * screen reader reads the card when that element gets focus.
  *
  * The card itself is `TooltipCard`, exported for surfaces that own their own
  * hover state and only have an element to anchor to — the graph's edge
@@ -41,6 +42,10 @@ import {
 } from 'react';
 
 export type TooltipPlacement = 'top' | 'bottom' | 'left' | 'right';
+
+/** What a keyboard user can land on inside a RichTooltip trigger. */
+const FOCUSABLE_SELECTOR =
+  'a[href], button, input, select, textarea, [tabindex]:not([tabindex="-1"])';
 
 export interface TooltipRect {
   width: number;
@@ -325,6 +330,23 @@ export function RichTooltip({
     clearCloseTimer();
   }, []);
 
+  // A screen reader reads the description of the element that has focus, so
+  // `aria-describedby` goes on the focusable element inside the wrapper (the
+  // button or link a keyboard user lands on), not on the wrapper itself. A
+  // trigger with nothing focusable inside (hover-only) gets it on the wrapper.
+  // Any describedby the child already has is kept.
+  useLayoutEffect(() => {
+    const wrapper = anchorRef.current;
+    if (!open || !wrapper) return;
+    const target = wrapper.querySelector<HTMLElement>(FOCUSABLE_SELECTOR) ?? wrapper;
+    const previous = target.getAttribute('aria-describedby');
+    target.setAttribute('aria-describedby', previous ? `${previous} ${tooltipId}` : tooltipId);
+    return () => {
+      if (previous) target.setAttribute('aria-describedby', previous);
+      else target.removeAttribute('aria-describedby');
+    };
+  }, [open, tooltipId]);
+
   // Escape just dismisses — it deliberately does NOT move focus. The card
   // itself carries no focusable content (both content variants are static
   // text), so whatever was focused before Escape (typically the trigger
@@ -349,7 +371,6 @@ export function RichTooltip({
       onMouseLeave={closeAfterDelay}
       onFocus={openNow}
       onBlur={closeNow}
-      aria-describedby={open ? tooltipId : undefined}
       data-testid={testId}
     >
       {children}
