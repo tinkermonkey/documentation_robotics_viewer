@@ -194,6 +194,9 @@ export interface ChatStatusResult {
  */
 export interface ChatSendParams {
   message: string;
+  /** Ties sends into one conversation: the server resumes DrBot's session for
+   *  a known id and starts a new one for a new id. */
+  conversation_id?: string;
   [key: string]: unknown;
 }
 
@@ -278,6 +281,8 @@ export interface ChatErrorParams {
  * Service layer handles the conversion between formats
  */
 export interface ChatCancelParams {
+  /** The conversation whose reply to stop. */
+  conversation_id?: string;
   [key: string]: unknown;
 }
 

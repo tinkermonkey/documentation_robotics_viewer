@@ -252,8 +252,13 @@ export class ChatService {
       const result = await jsonRpcHandler.sendRequest<ChatSendResult>(
         'chat.send',
         // The thread shows `message`; DrBot also gets what the user has open
-        // (see data/chatContext.ts — the server only accepts `message`).
-        { message: withChatContext(message, context ?? null) } as ChatSendParams,
+        // (see data/chatContext.ts). `conversation_id` lets the server resume
+        // DrBot's session, so it remembers the earlier messages; `reset()`
+        // starts a new conversation with a new id.
+        {
+          message: withChatContext(message, context ?? null),
+          conversation_id: userMessage.conversationId,
+        } satisfies ChatSendParams,
         CHAT_SEND_TIMEOUT_MS
       );
 
@@ -316,7 +321,9 @@ export class ChatService {
     try {
       const result = await jsonRpcHandler.sendRequest<ChatCancelResult>(
         'chat.cancel',
-        {} as ChatCancelParams,
+        (this.currentConversationId
+          ? { conversation_id: this.currentConversationId }
+          : {}) satisfies ChatCancelParams,
         5000 // 5 second timeout for cancel
       );
 
