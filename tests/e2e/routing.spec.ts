@@ -194,6 +194,25 @@ test.describe('URL routing — browser history for navigation', () => {
     await expect(page.getByTestId('page-view')).toBeVisible();
   });
 
+  test('Back to a layer entry with no selection clears the selection we left', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    const leaves = await openLayer(page, 'APM');
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    expect(hashSearchParams(page.url()).get('node')).toBeNull();
+
+    await leaves.first().click();
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeTruthy();
+    await expect(page.getByTestId('inspector')).toBeVisible();
+    const length = await page.evaluate(() => history.length);
+
+    await page.goBack();
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    // The inspector closes once nothing is selected, and the entry keeps no node.
+    await expect(page.getByTestId('inspector')).toBeHidden();
+    expect(hashSearchParams(page.url()).get('node')).toBeNull();
+    expect(await page.evaluate(() => history.length)).toBe(length);
+  });
+
   test('a plain graph-node click replaces the entry instead of pushing', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');
@@ -363,10 +382,14 @@ test.describe('URL routing — graph viewport history', () => {
     const length = await page.evaluate(() => history.length);
 
     await page.goBack();
-    // That viewport belongs to the Organic layout, so it isn't applied, and
-    // the URL drops it in place rather than pushing a new entry.
-    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeNull();
+    // Back lands on `?layer=apm&vp=<organic>` (no node). That viewport belongs
+    // to the Organic layout, so it isn't applied, and the URL drops it in place
+    // rather than pushing a new entry. Wait for that replace before checking
+    // the node: the same replace used to write the node we left back onto this
+    // entry, and checking first could pass on the URL from before it.
     await expect.poll(() => vpOf(page.url())).toBeNull();
+    expect(hashSearchParams(page.url()).get('layer')).toBe('apm');
+    expect(hashSearchParams(page.url()).get('node')).toBeNull();
     expect(await page.evaluate(() => history.length)).toBe(length);
   });
 });

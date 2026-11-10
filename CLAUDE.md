@@ -270,7 +270,9 @@ For local dev use `dr visualize --no-auth`.
   `navigateToElement`/`navigateToElementWithEdge`/`navigateToSpecNode` — nav-tree leaves, relationship
   links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
   on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
-  skips navigating when the store already matches the URL, so back/forward never push duplicates.
+  skips navigating when the store already matches the URL, so back/forward never push duplicates. An entry with
+  `?layer=` but no `?node=`/`?edge=` means nothing is selected: back/forward onto one clears the selection
+  being left (otherwise the store → URL effect writes that node back onto the older entry).
 - **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
   onto the Model/Schema `GraphCanvas`: it records `uiStore.graphViewport` on `onViewportDwell` (pan/zoom
   settled) and on `onViewportNavigate` (centerOnSelect, toolbar/fullscreen fit — not the mount fit), and
@@ -343,7 +345,7 @@ The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRA
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **61 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **62 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr visualize` on a dedicated port — shell, model/schema/changesets views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.

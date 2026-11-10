@@ -266,7 +266,15 @@ function AppShellRoute() {
       selectChangeset(search.changeset);
       return;
     }
-    if (search.layer && search.layer !== layerId) selectLayer(search.layer);
+    const layerChanged = !!search.layer && search.layer !== layerId;
+    if (layerChanged) selectLayer(search.layer!);
+    // An entry with a layer but no node or edge means nothing is selected in
+    // it. Back/forward onto one must clear the selection we're leaving, or the
+    // store → URL effect would write that node onto this older entry.
+    // (`selectLayer` above already cleared it when the layer changed.)
+    if (search.layer && !search.node && !search.edge && !layerChanged && (selectedId || selectedEdgeId)) {
+      selectLayer(search.layer);
+    }
     // edge/node are mutually exclusive in the URL — prefer edge when
     // both are somehow present rather than restoring one then the other.
     if (search.edge && search.edge !== selectedEdgeId) {
