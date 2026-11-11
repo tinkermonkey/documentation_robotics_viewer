@@ -254,7 +254,13 @@ For local dev use `dr visualize --no-auth`.
   `GraphInspector`'s own root so this section's empty state still shows. Not built from the prototype
   (Claude Design canvas, design #6): hop-2 ghost nodes on the graph (would re-run the layout on every
   selection) and the "Open trace in Lanes" link (no Architecture view yet).
-- **Annotations** — REST CRUD + replies in the inspector for Model elements.
+- **Annotations** — REST CRUD + replies in the inspector for Model elements. `useLiveAnnotationUpdates`
+  (`data/useAnnotations.ts`, mounted in `AppShell`) refetches on the server's `annotation.added` (that
+  element's list), `annotation.updated` / `annotation.deleted` (the whole `['annotations']` prefix — they carry
+  no `elementId`) and `annotation.reply.added` (that annotation's replies), so comments an agent writes
+  through the MCP tools appear without a reload. It only invalidates, so the echo of the viewer's own writes
+  never inserts twice. On a delete it drops the replies query only after the lists refetch and only if
+  inactive — removing one a still-mounted thread observes refetches it, and that's a 404.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
   applies only on a first-ever visit; a persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`

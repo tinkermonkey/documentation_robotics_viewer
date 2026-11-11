@@ -30,6 +30,7 @@ import { LAYER_ORDER } from './domain';
 import { useModel, useLiveModelUpdates } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets, useLiveChangesetUpdates } from '../data/useChangesets';
+import { useLiveAnnotationUpdates } from '../data/useAnnotations';
 import { firstNodeTypeId } from '../data/specGraph';
 import { useChatStore } from '../stores/chatStore';
 import type { ChatMessage, TextContent } from '../types/chat';
@@ -137,6 +138,7 @@ export function AppShell() {
   useSeedGreeting();
   useLiveChangesetUpdates();
   useLiveModelUpdates();
+  useLiveAnnotationUpdates();
 
   return (
     <div

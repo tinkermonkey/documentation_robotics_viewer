@@ -14,12 +14,14 @@
  * defaults to a constant since this build has no user identity (auth is off).
  */
 
+import { useEffect } from 'react';
 import {
   useQuery,
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
 import { getApiClient } from '../../../core/services/generatedApiClient';
+import { websocketClient } from '../services/websocketClient';
 
 /** Author used for created annotations/replies (no user identity in this build). */
 export const ANNOTATION_AUTHOR = 'You';
@@ -192,4 +194,77 @@ export function useAddReply() {
       queryClient.invalidateQueries({ queryKey: repliesKey(input.annotationId) });
     },
   });
+}
+
+// ─── Live updates ─────────────────────────────────────────────────────────────
+
+/** The server's annotation broadcasts (see the CLI's `diffAnnotation` / `syncAnnotations`). */
+export const ANNOTATION_ADDED_EVENT = 'annotation.added';
+export const ANNOTATION_UPDATED_EVENT = 'annotation.updated';
+export const ANNOTATION_REPLY_ADDED_EVENT = 'annotation.reply.added';
+export const ANNOTATION_DELETED_EVENT = 'annotation.deleted';
+
+interface AnnotationBroadcast {
+  annotationId?: string;
+  elementId?: string;
+  replyId?: string;
+  timestamp?: string;
+}
+
+/**
+ * Refetch annotations when the `dr visualize` server announces a change to
+ * them. The REST routes and its file watcher broadcast `annotation.added`,
+ * `annotation.updated`, `annotation.reply.added` and `annotation.deleted`, so
+ * comments an agent writes through the MCP tools (or another tab, or the CLI)
+ * show up without a reload. Every handler only invalidates, so the echo of the
+ * viewer's own writes just refetches — nothing is inserted twice.
+ * `annotation.updated` and `annotation.deleted` carry no `elementId`, so they
+ * refetch every element's list. Mount once (AppShell).
+ */
+export function useLiveAnnotationUpdates() {
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const refetchAllLists = () =>
+      queryClient.invalidateQueries({ queryKey: ['annotations'] });
+
+    const onAdded = (data: unknown) => {
+      const { elementId } = (data ?? {}) as AnnotationBroadcast;
+      if (elementId) {
+        queryClient.invalidateQueries({ queryKey: annotationsKey(elementId) });
+      } else {
+        refetchAllLists();
+      }
+    };
+    const onUpdated = () => {
+      refetchAllLists();
+    };
+    const onReplyAdded = (data: unknown) => {
+      const { annotationId } = (data ?? {}) as AnnotationBroadcast;
+      if (annotationId) {
+        queryClient.invalidateQueries({ queryKey: repliesKey(annotationId) });
+      }
+    };
+    const onDeleted = (data: unknown) => {
+      const { annotationId } = (data ?? {}) as AnnotationBroadcast;
+      // Refetch the lists first, then drop the replies only if nothing shows
+      // them any more: removing a query that a mounted thread still observes
+      // makes it refetch, and the deleted annotation's replies are a 404.
+      void refetchAllLists().then(() => {
+        if (annotationId) {
+          queryClient.removeQueries({ queryKey: repliesKey(annotationId), type: 'inactive' });
+        }
+      });
+    };
+
+    websocketClient.on(ANNOTATION_ADDED_EVENT, onAdded);
+    websocketClient.on(ANNOTATION_UPDATED_EVENT, onUpdated);
+    websocketClient.on(ANNOTATION_REPLY_ADDED_EVENT, onReplyAdded);
+    websocketClient.on(ANNOTATION_DELETED_EVENT, onDeleted);
+    return () => {
+      websocketClient.off(ANNOTATION_ADDED_EVENT, onAdded);
+      websocketClient.off(ANNOTATION_UPDATED_EVENT, onUpdated);
+      websocketClient.off(ANNOTATION_REPLY_ADDED_EVENT, onReplyAdded);
+      websocketClient.off(ANNOTATION_DELETED_EVENT, onDeleted);
+    };
+  }, [queryClient]);
 }
