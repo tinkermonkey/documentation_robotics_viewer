@@ -37,7 +37,7 @@ test.describe('model view', () => {
     expect(swatchBg).toBe('rgb(45, 212, 191)');
   });
 
-  test('clicking a node populates the inspector and highlights it', async ({ page }) => {
+  test('clicking a node populates the inspector and highlights it', async ({ page, request }) => {
     await gotoView(page, ROUTES.model);
 
     // Click a node OTHER than the default selection (the first node) so the
@@ -84,12 +84,17 @@ test.describe('model view', () => {
 
     await targetNode.locator('.graph-node').click();
 
-    // Inspector populated: title, id (the UUID), the curated PROPERTIES grid, and
-    // a relationships section.
+    // Inspector populated: title, the element's dotted path (#559 — the UUID is
+    // the graph node's id, not what the inspector shows), the curated PROPERTIES
+    // grid, and a relationships section.
     const inspector = page.getByTestId('inspector');
     await expect(inspector.getByTestId('inspector-title')).toBeVisible();
     await expect(inspector.getByTestId('inspector-title')).not.toBeEmpty();
-    await expect(inspector.getByTestId('inspector-id')).toHaveText(nodeUuid);
+    const node = (await fetchModel(request)).nodes.find((n) => n.id === nodeUuid);
+    expect(node).toBeTruthy();
+    await expect(inspector.getByTestId('inspector-id')).toHaveText(
+      new RegExp(`^${node!.layer_id}\\.${node!.type}\\.[a-z0-9-]+$`),
+    );
 
     // PROPERTIES include the curated `layer` / `type` / `provenance` rows.
     const metadata = inspector.getByTestId('inspector-metadata');
