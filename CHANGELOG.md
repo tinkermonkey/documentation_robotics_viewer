@@ -7,17 +7,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Needs the matching `dr` CLI (`conversation_id` on `chat.send`, the `changesets.updated` broadcast).
+## [0.10.0] - 2026-11-12
+
+`@tinkermonkey/heimdall-ui` bumped `0.10.0` → `0.11.0` (exact npm-registry version). No `dr` CLI change is
+needed.
 
 ### Added
+- **Changesets › Impact tab**: a Changes / Impact switch in the changeset header shows what a changeset reaches
+  outside itself before you Apply it. The changeset is laid over the model, so a staged changeset's new
+  elements and relationships are included. Every changed element is a reach origin, drawn as heimdall-ui layer
+  lanes. Long-range links run down a side gutter, and same-layer links share a bundled trunk. Each op has its
+  own outline style as well as colour (added, modified, deleted, relationships changed). Click an element to
+  isolate its reach. Follow (shared with the Model inspector) and Labels controls sit above the lanes. Changes
+  naming an element that's no longer in the model are counted, not dropped.
+- **Blast radius** in the Changesets inspector, above Apply / Discard: a per-layer reach strip and list of what
+  the changeset touches outside itself.
+
+### Changed
+- **Element ids are the model's dotted path** (`layer.type.name`) in the inspector and on element pages, not
+  the internal UUID (#559).
+- **One nav section open at a time**: opening Model, Schema or Changesets collapses the others. The current
+  selection is scrolled into view after any navigation, including a deep link once its data loads. Section
+  and layer rows expose `aria-expanded` (#560).
+- **Layer pages count all of a layer's relationship schemas**, broken down as within the layer and to other
+  layers (#561).
+- **Inter-layer nodes** in the Model graph are marked with a dashed border and a faded swatch instead of 60%
+  opacity, which dropped their type tag below WCAG AA contrast.
+- **Fonts ship inside the bundle**: heimdall-ui 0.11's font CSS uses relative URLs, so the `public/fonts` copy
+  and the packaging step that copied it are gone.
+
+### Fixed
+- **Review links stuck on "loading changeset…"**: a tab that already held an older server's token kept
+  sending it, because the API client cached the token when it loaded. The server refused it until a reload.
+  The client now reads the token for each request (#566).
+- **A changeset that fails to load says why** in the canvas and the inspector instead of loading forever.
+- **Links to elements whose names contain punctuation** (e.g. `Section/View`) resolve again: dotted ids are
+  derived with the `dr` CLI's own slug rule (#563).
+
+## [0.9.0] - 2026-11-11
+
+`@tinkermonkey/heimdall-ui` bumped `0.9.4` → `0.10.0`. DrBot conversation memory and live changeset refresh
+need the matching `dr` CLI (`conversation_id` on `chat.send`, the `changesets.updated` broadcast).
+
+### Added
+- **Followed across layers** in the Model inspector: a Follow control (Direct / +1 layer / +2 layers) lists
+  what the selection reaches past its direct links, with a per-layer reach strip.
 - **DrBot remembers the conversation**: `chat.send` (and `chat.cancel`) now carry the conversation id, so the
   server resumes DrBot's session and a follow-up can refer to earlier messages. `chatService.reset()` starts a
   new conversation with a new id.
+- **Live comments**: annotations and replies another client or an agent writes appear without a reload, from
+  the server's `annotation.*` broadcasts.
 
 ### Changed
 - **Live changeset refresh**: the server's `changesets.updated` broadcast refetches the changesets, so a
   changeset created or staged from the terminal or by DrBot shows up as it happens. This replaces the refetch
   after every DrBot reply.
+
+### Fixed
+- **Back to a layer with no selection** clears the selection instead of keeping the element being left.
+- **Tooltip text is announced** by screen readers on the focused trigger.
 
 ## [0.8.0] - 2026-11-04
 
