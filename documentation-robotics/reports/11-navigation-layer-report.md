@@ -17,14 +17,14 @@ Application routing, navigation flows, and page structures.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 10    |
-| Intra-Layer Relationships | 6     |
-| Inter-Layer Relationships | 3     |
+| Intra-Layer Relationships | 9     |
+| Inter-Layer Relationships | 7     |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 3     |
+| Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
 
-- **Downstream layers**: [Application](./05-application-layer-report.md), [Security](./04-security-layer-report.md)
+- **Downstream layers**: [Application](./05-application-layer-report.md), [Security](./04-security-layer-report.md), [UX](./10-ux-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -41,12 +41,15 @@ flowchart LR
     navigation_navigationtransition_tab_navigation_transition["Tab Navigation Transition"]
     navigation_route_app_shell_sectionview_route["App Shell Section/View Route"]
     navigation_route_index_route["Index Route"]
-    navigation_navigationflow_authentication_to_model_flow -->|aggregates| navigation_flowstep_token_extraction_step
-    navigation_navigationflow_authentication_to_model_flow -->|flows-to| navigation_navigationtransition_auth_redirect_transition
-    navigation_navigationflow_authentication_to_model_flow -->|requires| navigation_navigationguard_authentication_guard
-    navigation_navigationtransition_auth_redirect_transition -->|requires| navigation_navigationguard_authentication_guard
+    navigation_flowstep_post_auth_model_entry_step -->|navigates-to| navigation_route_app_shell_sectionview_route
+    navigation_navigationflow_authentication_to_model_flow -->|composes| navigation_flowstep_token_extraction_step
+    navigation_navigationgraph_embedded_app_navigation_graph -->|composes| navigation_route_app_shell_sectionview_route
+    navigation_navigationgraph_embedded_app_navigation_graph -->|composes| navigation_route_index_route
+    navigation_navigationguard_authentication_guard -->|protects| navigation_navigationflow_authentication_to_model_flow
+    navigation_navigationguard_authentication_guard -->|protects| navigation_navigationtransition_auth_redirect_transition
     navigation_navigationtransition_layer_deep_link_transition -->|navigates-to| navigation_route_app_shell_sectionview_route
     navigation_navigationtransition_tab_navigation_transition -->|navigates-to| navigation_route_app_shell_sectionview_route
+    navigation_route_index_route -->|navigates-to| navigation_route_app_shell_sectionview_route
   end
 ```
 
@@ -70,6 +73,7 @@ flowchart TB
   testing["Testing"]
   navigation --> application
   navigation --> security
+  navigation --> ux
   class navigation current
 ```
 
@@ -78,8 +82,12 @@ flowchart TB
 | Relationship ID                                                     | Source Node                                              | Dest Node                                     | Dest Layer    | Predicate    | Cardinality  | Strength |
 | ------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------- | ------------- | ------------ | ------------ | -------- |
 | `navigation.navigationflow.realizes.application.applicationprocess` | `navigation.navigationflow.authentication-to-model-flow` | `application.applicationprocess.auth-route`   | `application` | `realizes`   | many-to-many | medium   |
-| `navigation.navigationguard.implements.security.securitypolicy`     | `navigation.navigationguard.authentication-guard`        | `security.securitypolicy.bearer-token-policy` | `security`    | `implements` | many-to-many | medium   |
+| `navigation.navigationguard.realizes.security.securitypolicy`       | `navigation.navigationguard.authentication-guard`        | `security.securitypolicy.bearer-token-policy` | `security`    | `realizes`   | many-to-many | medium   |
 | `navigation.navigationguard.requires.security.role`                 | `navigation.navigationguard.authentication-guard`        | `security.role.authenticated-viewer`          | `security`    | `requires`   | many-to-many | medium   |
+| `navigation.route.depends-on.application.applicationcomponent`      | `navigation.route.app-shell-sectionview-route`           | `application.applicationcomponent.app-shell`  | `application` | `depends-on` | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.changesets-view`                     | `ux`          | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.model-view`                          | `ux`          | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.schema-view`                         | `ux`          | `maps-to`    | many-to-many | medium   |
 
 ## Element Reference
 
@@ -98,6 +106,12 @@ Second step in the auth flow; the destination after successful token extraction;
 | route    | model-view-route |
 | sequence | 2                |
 
+#### Relationships
+
+| Type        | Related Element                                | Predicate      | Direction |
+| ----------- | ---------------------------------------------- | -------------- | --------- |
+| intra-layer | `navigation.route.app-shell-sectionview-route` | `navigates-to` | outbound  |
+
 ### Token Extraction Step {#token-extraction-step}
 
 **ID**: `navigation.flowstep.token-extraction-step`
@@ -115,9 +129,9 @@ First step in the auth flow; renders on the index route, reads ?token= from URL,
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate    | Direction |
-| ----------- | -------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `navigation.navigationflow.authentication-to-model-flow` | `aggregates` | inbound   |
+| Type        | Related Element                                          | Predicate  | Direction |
+| ----------- | -------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `navigation.navigationflow.authentication-to-model-flow` | `composes` | inbound   |
 
 ### Authentication to Model Flow {#authentication-to-model-flow}
 
@@ -129,12 +143,11 @@ Two-step navigation flow for first-time access: step 1 lands on the index route 
 
 #### Relationships
 
-| Type        | Related Element                                            | Predicate    | Direction |
-| ----------- | ---------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationprocess.auth-route`                | `realizes`   | outbound  |
-| intra-layer | `navigation.flowstep.token-extraction-step`                | `aggregates` | outbound  |
-| intra-layer | `navigation.navigationtransition.auth-redirect-transition` | `flows-to`   | outbound  |
-| intra-layer | `navigation.navigationguard.authentication-guard`          | `requires`   | outbound  |
+| Type        | Related Element                                   | Predicate  | Direction |
+| ----------- | ------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationprocess.auth-route`       | `realizes` | outbound  |
+| intra-layer | `navigation.flowstep.token-extraction-step`       | `composes` | outbound  |
+| intra-layer | `navigation.navigationguard.authentication-guard` | `protects` | inbound   |
 
 ### Embedded App Navigation Graph {#embedded-app-navigation-graph}
 
@@ -150,6 +163,13 @@ Root routing container for the hash-based SPA; uses TanStack Router with createH
 | ----------- | ----------------------------- |
 | application | documentation-robotics-viewer |
 | version     | 1.0                           |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------- | ---------- | --------- |
+| intra-layer | `navigation.route.app-shell-sectionview-route` | `composes` | outbound  |
+| intra-layer | `navigation.route.index-route`                 | `composes` | outbound  |
 
 ### Authentication Guard {#authentication-guard}
 
@@ -168,12 +188,12 @@ Auth guard that intercepts navigation to protected routes (model, spec, changese
 
 #### Relationships
 
-| Type        | Related Element                                            | Predicate    | Direction |
-| ----------- | ---------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `security.securitypolicy.bearer-token-policy`              | `implements` | outbound  |
-| inter-layer | `security.role.authenticated-viewer`                       | `requires`   | outbound  |
-| intra-layer | `navigation.navigationflow.authentication-to-model-flow`   | `requires`   | inbound   |
-| intra-layer | `navigation.navigationtransition.auth-redirect-transition` | `requires`   | inbound   |
+| Type        | Related Element                                            | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `security.securitypolicy.bearer-token-policy`              | `realizes` | outbound  |
+| inter-layer | `security.role.authenticated-viewer`                       | `requires` | outbound  |
+| intra-layer | `navigation.navigationflow.authentication-to-model-flow`   | `protects` | outbound  |
+| intra-layer | `navigation.navigationtransition.auth-redirect-transition` | `protects` | outbound  |
 
 ### Auth Redirect Transition {#auth-redirect-transition}
 
@@ -193,10 +213,9 @@ Programmatic redirect from the index route to the model graph view after success
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate  | Direction |
-| ----------- | -------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `navigation.navigationflow.authentication-to-model-flow` | `flows-to` | inbound   |
-| intra-layer | `navigation.navigationguard.authentication-guard`        | `requires` | outbound  |
+| Type        | Related Element                                   | Predicate  | Direction |
+| ----------- | ------------------------------------------------- | ---------- | --------- |
+| intra-layer | `navigation.navigationguard.authentication-guard` | `protects` | inbound   |
 
 ### Layer Deep-Link Transition {#layer-deep-link-transition}
 
@@ -204,7 +223,7 @@ Programmatic redirect from the index route to the model graph view after success
 
 **Type**: `navigationtransition`
 
-Programmatic cross-layer navigation to a specific element or spec node, triggered by click-to-navigate relationship links in GraphInspector/Inspector; implemented via uiStore.navigateToElement/navigateToSpecNode (Zustand state), no longer a ?layer= URL search parameter
+Deep links into a layer, element or changeset: the router two-way syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph viewport) with the UI store, so a shared link, reload or back/forward restores the selection.
 
 #### Attributes
 
@@ -226,7 +245,7 @@ Programmatic cross-layer navigation to a specific element or spec node, triggere
 
 **Type**: `navigationtransition`
 
-User-triggered switch between main sections (Model, Spec, Changesets); fires when the user clicks a section header in the 3-level NavTree, updating uiStore.view which router.tsx syncs to the /:section/:view URL hash
+Switching between the Model, Schema and Changesets sections in the sidebar nav tree (an accordion: opening a section collapses the others). The section is the route's :section segment.
 
 #### Attributes
 
@@ -260,8 +279,15 @@ Parameterized route at /#/:section/:view (section = model \| spec \| changesets;
 
 | Type        | Related Element                                              | Predicate      | Direction |
 | ----------- | ------------------------------------------------------------ | -------------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`                 | `depends-on`   | outbound  |
+| inter-layer | `ux.view.changesets-view`                                    | `maps-to`      | outbound  |
+| inter-layer | `ux.view.model-view`                                         | `maps-to`      | outbound  |
+| inter-layer | `ux.view.schema-view`                                        | `maps-to`      | outbound  |
+| intra-layer | `navigation.flowstep.post-auth-model-entry-step`             | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`   | `composes`     | inbound   |
 | intra-layer | `navigation.navigationtransition.layer-deep-link-transition` | `navigates-to` | inbound   |
 | intra-layer | `navigation.navigationtransition.tab-navigation-transition`  | `navigates-to` | inbound   |
+| intra-layer | `navigation.route.index-route`                               | `navigates-to` | inbound   |
 
 ### Index Route {#index-route}
 
@@ -277,6 +303,13 @@ Landing route at path /#/; accepts optional ?token= search parameter; renders Au
 | ---- | ------ |
 | type | public |
 
+#### Relationships
+
+| Type        | Related Element                                            | Predicate      | Direction |
+| ----------- | ---------------------------------------------------------- | -------------- | --------- |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph` | `composes`     | inbound   |
+| intra-layer | `navigation.route.app-shell-sectionview-route`             | `navigates-to` | outbound  |
+
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0

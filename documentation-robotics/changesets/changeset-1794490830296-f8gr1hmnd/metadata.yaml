@@ -1,0 +1,503 @@
+id: changeset-1794490830296-f8gr1hmnd
+name: model-sync-heimdall-0.11
+description: "Bring the model in line with the code after the Heimdall rebuild
+  and heimdall-ui 0.11 (PR #558). Repoints the 17 elements whose code was
+  renamed or removed (stores now useXStore hooks, the chat folder,
+  EmbeddedLayout/CrossLayerPanel, ACCESSIBILITY.md) at the code that implements
+  them now. Adds the UI components (App Shell, Nav Tree, Inspector Drawer, Page
+  View, Changesets canvas/impact/inspector, Chat Panel, Annotations), the data
+  services behind them (spec graph, page data, layered reach, changeset impact
+  analysis, chat context, neighborhood graph), the UI store, the UX views and
+  spec, and the 7 API operations docs/api-spec.yaml gained (annotation
+  get/replace/replies, get layer, changeset commit/discard). Stamps existing
+  operations with their METHOD /path so extraction matches them. Rewires the
+  elements the spec 0.12 migration orphaned and removes an APM alert with no
+  implementation. Done when every element points at live code and validation
+  reports no orphans."
+created: 2026-11-12T13:40:30.300Z
+modified: 2026-11-12T13:57:21.142Z
+status: committed
+baseSnapshot: sha256:7c6cb7f2e97ed862d495cfb6fd01fe07229a79d0a249e47b0be76986d0fdee6f
+stats:
+  additions: 168
+  modifications: 30
+  deletions: 1
+lastSequence: 217
+unstaged:
+  - sequence: 0
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.delete-api-annotations-annotation-id
+      layerName: api
+      after:
+        id: d855b212-70bf-40a8-9466-45609ef78d63
+        path: api.operation.delete-api-annotations-annotation-id
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: DELETE /api/annotations/{annotationId}
+        attributes:
+          operationId: delete-api-annotations-annotation-id
+          summary: DELETE /api/annotations/{annotationId}
+          tags: api
+          http_method: DELETE
+          http_path: /api/annotations/{annotationId}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: DELETE /api/annotations/{annotationId}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 1
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-annotations
+      layerName: api
+      after:
+        id: 2b59e981-495a-49fd-88e3-6f720b0073a8
+        path: api.operation.get-api-annotations
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/annotations
+        attributes:
+          operationId: get-api-annotations
+          summary: GET /api/annotations
+          tags: api
+          http_method: GET
+          http_path: /api/annotations
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/annotations
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 2
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-annotations-annotation-id
+      layerName: api
+      after:
+        id: d9bf32af-7c0f-400f-baed-43b27046ff68
+        path: api.operation.get-api-annotations-annotation-id
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/annotations/{annotationId}
+        attributes:
+          operationId: get-api-annotations-annotation-id
+          summary: GET /api/annotations/{annotationId}
+          tags: api
+          http_method: GET
+          http_path: /api/annotations/{annotationId}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/annotations/{annotationId}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 3
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-annotations-annotation-id-replies
+      layerName: api
+      after:
+        id: 58849318-f690-4fbd-afdb-febdc575d8d5
+        path: api.operation.get-api-annotations-annotation-id-replies
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/annotations/{annotationId}/replies
+        attributes:
+          operationId: get-api-annotations-annotation-id-replies
+          summary: GET /api/annotations/{annotationId}/replies
+          tags: api
+          http_method: GET
+          http_path: /api/annotations/{annotationId}/replies
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/annotations/{annotationId}/replies
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 4
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-changesets
+      layerName: api
+      after:
+        id: c8d7b6d6-f7ec-4351-b15c-98dfbe0f4e66
+        path: api.operation.get-api-changesets
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/changesets
+        attributes:
+          operationId: get-api-changesets
+          summary: GET /api/changesets
+          tags: api
+          http_method: GET
+          http_path: /api/changesets
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/changesets
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 5
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-changesets-changeset-id
+      layerName: api
+      after:
+        id: 02385c99-ed1a-46e3-9dd5-dc5d7aca8220
+        path: api.operation.get-api-changesets-changeset-id
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/changesets/{changesetId}
+        attributes:
+          operationId: get-api-changesets-changeset-id
+          summary: GET /api/changesets/{changesetId}
+          tags: api
+          http_method: GET
+          http_path: /api/changesets/{changesetId}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/changesets/{changesetId}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 6
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-layers-layer-name
+      layerName: api
+      after:
+        id: 740eaa64-51b6-4172-bd22-7a88129e3cce
+        path: api.operation.get-api-layers-layer-name
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/layers/{layerName}
+        attributes:
+          operationId: get-api-layers-layer-name
+          summary: GET /api/layers/{layerName}
+          tags: api
+          http_method: GET
+          http_path: /api/layers/{layerName}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/layers/{layerName}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 7
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-model
+      layerName: api
+      after:
+        id: e7f5f0eb-713f-4a69-b87c-037f661b90d7
+        path: api.operation.get-api-model
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/model
+        attributes:
+          operationId: get-api-model
+          summary: GET /api/model
+          tags: api
+          http_method: GET
+          http_path: /api/model
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/model
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 8
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-api-spec
+      layerName: api
+      after:
+        id: 9dfc80d4-d313-496a-9580-17b7dd64b6dc
+        path: api.operation.get-api-spec
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/spec
+        attributes:
+          operationId: get-api-spec
+          summary: GET /api/spec
+          tags: api
+          http_method: GET
+          http_path: /api/spec
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/spec
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 9
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.get-health
+      layerName: api
+      after:
+        id: c701c550-0298-4624-a5bd-8b8815c519e2
+        path: api.operation.get-health
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /health
+        attributes:
+          operationId: get-health
+          summary: GET /health
+          tags: health
+          http_method: GET
+          http_path: /health
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /health
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 10
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.patch-api-annotations-annotation-id
+      layerName: api
+      after:
+        id: d5f78c4d-2691-4c4c-8fc0-5b8dc5a02133
+        path: api.operation.patch-api-annotations-annotation-id
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: PATCH /api/annotations/{annotationId}
+        attributes:
+          operationId: patch-api-annotations-annotation-id
+          summary: PATCH /api/annotations/{annotationId}
+          tags: api
+          http_method: PATCH
+          http_path: /api/annotations/{annotationId}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: PATCH /api/annotations/{annotationId}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 11
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.post-api-annotations
+      layerName: api
+      after:
+        id: db6df371-50aa-45ba-85c1-8ac13b138f2e
+        path: api.operation.post-api-annotations
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: POST /api/annotations
+        attributes:
+          operationId: post-api-annotations
+          summary: POST /api/annotations
+          tags: api
+          http_method: POST
+          http_path: /api/annotations
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: POST /api/annotations
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 12
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.post-api-annotations-annotation-id-replies
+      layerName: api
+      after:
+        id: 49d75d92-fb41-44e0-bfb7-df1870560815
+        path: api.operation.post-api-annotations-annotation-id-replies
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: POST /api/annotations/{annotationId}/replies
+        attributes:
+          operationId: post-api-annotations-annotation-id-replies
+          summary: POST /api/annotations/{annotationId}/replies
+          tags: api
+          http_method: POST
+          http_path: /api/annotations/{annotationId}/replies
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: POST /api/annotations/{annotationId}/replies
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 13
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.post-api-changesets-changeset-id-commit
+      layerName: api
+      after:
+        id: d2c7e696-a02a-4630-b36e-80f83a82e657
+        path: api.operation.post-api-changesets-changeset-id-commit
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: POST /api/changesets/{changesetId}/commit
+        attributes:
+          operationId: post-api-changesets-changeset-id-commit
+          summary: POST /api/changesets/{changesetId}/commit
+          tags: api
+          http_method: POST
+          http_path: /api/changesets/{changesetId}/commit
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: POST /api/changesets/{changesetId}/commit
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 14
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.post-api-changesets-changeset-id-discard
+      layerName: api
+      after:
+        id: 92c78532-042c-4edb-88cc-3235ea028f68
+        path: api.operation.post-api-changesets-changeset-id-discard
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: POST /api/changesets/{changesetId}/discard
+        attributes:
+          operationId: post-api-changesets-changeset-id-discard
+          summary: POST /api/changesets/{changesetId}/discard
+          tags: api
+          http_method: POST
+          http_path: /api/changesets/{changesetId}/discard
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: POST /api/changesets/{changesetId}/discard
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 15
+    removedAt: 35
+    change:
+      type: add
+      elementId: api.operation.put-api-annotations-annotation-id
+      layerName: api
+      after:
+        id: 4c99e2b5-f6a3-4ac9-a055-f337f27af5d4
+        path: api.operation.put-api-annotations-annotation-id
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: PUT /api/annotations/{annotationId}
+        attributes:
+          operationId: put-api-annotations-annotation-id
+          summary: PUT /api/annotations/{annotationId}
+          tags: api
+          http_method: PUT
+          http_path: /api/annotations/{annotationId}
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: PUT /api/annotations/{annotationId}
+        metadata:
+          created_at: 2026-11-12T13:40:30.226Z
+          updated_at: 2026-11-12T13:40:30.226Z
+          version: 1
+      timestamp: 2026-11-12T13:40:30.319Z
+  - sequence: 184
+    removedAt: 185
+    change:
+      type: relationship-add
+      elementId: apm.alert.playwright-test-failure-alert::monitors::apm.metricinstrument.web-socket-reconnection-attempt-counter
+      layerName: apm
+      after:
+        source: apm.alert.playwright-test-failure-alert
+        target: apm.metricinstrument.web-socket-reconnection-attempt-counter
+        predicate: monitors
+        layer: apm
+        category: structural
+      timestamp: 2026-11-12T13:45:21.771Z

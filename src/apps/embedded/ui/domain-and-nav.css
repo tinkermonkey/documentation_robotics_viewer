@@ -226,6 +226,19 @@ body.dark-canvas {
   }
 }
 
+/* ---- Inter-layer (foreign) nodes in the Model graph ----------------------
+ * Visibly secondary to the layer's own elements, but never by fading text:
+ * they're clickable (they navigate to their home layer), so their labels must
+ * stay at AA contrast. Opacity on the whole node dropped the type tag to
+ * ~2.3:1. A dashed frame and a faded swatch carry the difference. */
+.drv-foreign-node .graph-node {
+  border-style: dashed;
+}
+
+.drv-foreign-node .graph-node__swatch {
+  opacity: 0.5;
+}
+
 /* ---- Model graph card node (ui/ModelCardNode.tsx) ------------------------
  * Reuses the default GraphNode's own .graph-node/.graph-node__swatch/
  * .graph-node__label/.graph-node__kind/.graph-node__collapse-toggle rules

@@ -5,9 +5,9 @@ apm.alert.web-socket-disconnect-alert:
   type: alert
   layer_id: apm
   name: WebSocket Disconnect Alert
-  description: Warning alert triggered when the DR CLI WebSocket connection drops
-    and falls back to REST-only polling mode; indicates the real-time model
-    update channel is unavailable.
+  description: "Aspirational: an alert when the DR CLI WebSocket drops and live
+    updates stop. Today the drop only shows in the UI (the topbar's connection
+    indicator, from useConnectionStore); no alerting pipeline exists."
   attributes:
     severity: warning
     condition: connectionStore.status === 'rest-mode'
@@ -18,27 +18,4 @@ apm.alert.web-socket-disconnect-alert:
   metadata:
     created_at: 2026-03-20T13:31:58.975Z
     updated_at: 2026-03-20T13:31:58.975Z
-    version: 1
-apm.alert.playwright-test-failure-alert:
-  id: bc1b7107-c90f-466c-b28e-63f8eb7c232b
-  path: apm.alert.playwright-test-failure-alert
-  spec_node_id: apm.alert
-  type: alert
-  layer_id: apm
-  name: Playwright Test Failure Alert
-  description: Critical alert triggered when the Playwright E2E test suite exits
-    with failures (tests/e2e only — unit/integration/component tests now run
-    under Vitest, not Playwright); indicates a regression in the built
-    production bundle's shell, views, chat, annotations, or accessibility
-    behavior.
-  attributes:
-    severity: critical
-    condition: playwright test exit code not equals 0
-  source_reference:
-    provenance: inferred
-    locations:
-      - file: playwright.config.ts
-  metadata:
-    created_at: 2026-03-20T13:32:13.589Z
-    updated_at: 2026-03-20T13:32:13.589Z
     version: 1

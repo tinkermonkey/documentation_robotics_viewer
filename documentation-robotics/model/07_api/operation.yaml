@@ -10,10 +10,13 @@ api.operation.health-check:
     operationId: getHealth
     summary: Check server health and version
     tags: Health
+    http_method: GET
+    http_path: /health
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /health
   metadata:
     created_at: 2026-03-20T12:57:38.001Z
     updated_at: 2026-03-20T12:57:38.001Z
@@ -31,10 +34,13 @@ api.operation.get-schema-specifications:
     operationId: getSpec
     summary: Get all JSON Schema specification files
     tags: Schema
+    http_method: GET
+    http_path: /api/spec
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /api/spec
   metadata:
     created_at: 2026-03-20T12:57:39.761Z
     updated_at: 2026-03-20T12:57:39.761Z
@@ -52,10 +58,13 @@ api.operation.get-architecture-model:
     operationId: getModel
     summary: Get full architecture model
     tags: Model
+    http_method: GET
+    http_path: /api/model
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /api/model
   metadata:
     created_at: 2026-03-20T12:57:42.953Z
     updated_at: 2026-03-20T12:57:42.954Z
@@ -72,10 +81,13 @@ api.operation.list-changesets:
     operationId: listChangesets
     summary: List all changesets
     tags: Changesets
+    http_method: GET
+    http_path: /api/changesets
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /api/changesets
   metadata:
     created_at: 2026-03-20T12:57:43.877Z
     updated_at: 2026-03-20T12:57:43.878Z
@@ -93,10 +105,13 @@ api.operation.get-changeset-details:
     operationId: getChangeset
     summary: Get changeset by ID
     tags: Changesets
+    http_method: GET
+    http_path: /api/changesets/{changesetId}
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /api/changesets/{changesetId}
   metadata:
     created_at: 2026-03-20T12:57:46.588Z
     updated_at: 2026-03-20T12:57:46.588Z
@@ -113,10 +128,13 @@ api.operation.get-annotations:
     operationId: getAnnotations
     summary: Get annotations with optional elementId filter
     tags: Annotations
+    http_method: GET
+    http_path: /api/annotations
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: GET /api/annotations
   metadata:
     created_at: 2026-03-20T12:57:49.814Z
     updated_at: 2026-03-20T12:57:49.814Z
@@ -133,10 +151,13 @@ api.operation.create-annotation:
     operationId: createAnnotation
     summary: Create a new annotation
     tags: Annotations
+    http_method: POST
+    http_path: /api/annotations
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: POST /api/annotations
   metadata:
     created_at: 2026-03-20T12:57:50.656Z
     updated_at: 2026-03-20T12:57:50.656Z
@@ -153,10 +174,13 @@ api.operation.update-annotation:
     operationId: updateAnnotation
     summary: Update an existing annotation
     tags: Annotations
+    http_method: PATCH
+    http_path: /api/annotations/{annotationId}
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: PATCH /api/annotations/{annotationId}
   metadata:
     created_at: 2026-03-20T12:57:54.837Z
     updated_at: 2026-03-20T12:57:54.837Z
@@ -173,10 +197,13 @@ api.operation.delete-annotation:
     operationId: deleteAnnotation
     summary: Delete an annotation
     tags: Annotations
+    http_method: DELETE
+    http_path: /api/annotations/{annotationId}
   source_reference:
     provenance: extracted
     locations:
       - file: docs/api-spec.yaml
+        symbol: DELETE /api/annotations/{annotationId}
   metadata:
     created_at: 2026-03-20T12:57:55.598Z
     updated_at: 2026-03-20T12:57:55.598Z
@@ -201,4 +228,169 @@ api.operation.web-socket-real-time-updates:
   metadata:
     created_at: 2026-03-20T12:57:58.551Z
     updated_at: 2026-03-20T12:57:58.551Z
+    version: 1
+api.operation.get-annotation:
+  id: f842e585-1144-49eb-aa9e-89eeb1f63f99
+  path: api.operation.get-annotation
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Annotation
+  description: Returns one annotation by id.
+  attributes:
+    operationId: getAnnotation
+    summary: Get an annotation by ID
+    tags: Annotations
+    http_method: GET
+    http_path: /api/annotations/{annotationId}
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: GET /api/annotations/{annotationId}
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.replace-annotation:
+  id: b17db3d2-4a06-41c9-af37-844c12d5cd82
+  path: api.operation.replace-annotation
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Replace Annotation
+  description: Replaces an annotation's content and tags (PUT form of Update Annotation).
+  attributes:
+    operationId: replaceAnnotation
+    summary: Replace an annotation
+    tags: Annotations
+    http_method: PUT
+    http_path: /api/annotations/{annotationId}
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: PUT /api/annotations/{annotationId}
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.list-annotation-replies:
+  id: 4f171c52-31b5-4fee-b3ed-babfba10def2
+  path: api.operation.list-annotation-replies
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: List Annotation Replies
+  description: Returns the reply thread of an annotation; the Inspector's
+    annotation thread reads it.
+  attributes:
+    operationId: getAnnotationReplies
+    summary: List replies to an annotation
+    tags: Annotations
+    http_method: GET
+    http_path: /api/annotations/{annotationId}/replies
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: GET /api/annotations/{annotationId}/replies
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.create-annotation-reply:
+  id: 77f6d136-4d60-4543-bf8a-f010d960f2f7
+  path: api.operation.create-annotation-reply
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Create Annotation Reply
+  description: Adds a reply to an annotation thread.
+  attributes:
+    operationId: createAnnotationReply
+    summary: Reply to an annotation
+    tags: Annotations
+    http_method: POST
+    http_path: /api/annotations/{annotationId}/replies
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: POST /api/annotations/{annotationId}/replies
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.get-layer:
+  id: e337b583-9e61-412d-99a3-24964d062b3d
+  path: api.operation.get-layer
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Layer
+  description: Returns one layer of the model with its elements.
+  attributes:
+    operationId: getLayer
+    summary: Get a model layer by name
+    tags: Model
+    http_method: GET
+    http_path: /api/layers/{layerName}
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: GET /api/layers/{layerName}
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.commit-changeset:
+  id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
+  path: api.operation.commit-changeset
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Commit Changeset
+  description: Applies a staged changeset to the base model (the viewer's Apply).
+    404 unknown, 409 not staged or model drifted, 422 failed validation, body {
+    error }.
+  attributes:
+    operationId: commitChangeset
+    summary: Apply a staged changeset to the model
+    tags: Changesets
+    http_method: POST
+    http_path: /api/changesets/{changesetId}/commit
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: POST /api/changesets/{changesetId}/commit
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.operation.discard-changeset:
+  id: 2b3c326a-8b39-4355-9831-b5c73095c45e
+  path: api.operation.discard-changeset
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Discard Changeset
+  description: Discards a staged changeset without touching the model (the
+    viewer's Discard).
+  attributes:
+    operationId: discardChangeset
+    summary: Discard a staged changeset
+    tags: Changesets
+    http_method: POST
+    http_path: /api/changesets/{changesetId}/discard
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: POST /api/changesets/{changesetId}/discard
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
     version: 1

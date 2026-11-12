@@ -1,0 +1,18 @@
+ux.subview.changeset-impact-tab:
+  id: f80be9c7-b219-41e8-874e-dafd31c26402
+  path: ux.subview.changeset-impact-tab
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Changeset Impact Tab
+  description: "The Changesets view's Impact tab: layer lanes of what the changed
+    elements reach, with Follow and Labels controls."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+        symbol: ChangesetImpactView
+  metadata:
+    created_at: 2026-11-12T13:45:15.985Z
+    updated_at: 2026-11-12T13:45:15.985Z
+    version: 1

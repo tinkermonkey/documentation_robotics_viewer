@@ -19,3 +19,112 @@ ux.view.auth-view:
     created_at: 2026-03-20T13:22:53.827Z
     updated_at: 2026-03-20T13:22:53.827Z
     version: 1
+ux.view.model-view:
+  id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+  path: ux.view.model-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Model View
+  description: A layer of the model as a graph of its elements (with inter-layer
+    neighbours), or in page mode as the layer / element record.
+  attributes:
+    type: page
+    title: Model
+    routable: true
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Canvas.tsx
+        symbol: Canvas
+  metadata:
+    created_at: 2026-11-12T13:45:15.984Z
+    updated_at: 2026-11-12T13:45:15.984Z
+    version: 1
+ux.view.schema-view:
+  id: 779c6767-e690-456f-a9f2-4a1f6e638154
+  path: ux.view.schema-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Schema View
+  description: A layer of the spec as a graph of its node types and relationship
+    schemas, or in page mode as the layer / spec node record.
+  attributes:
+    type: page
+    title: Schema
+    routable: true
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Canvas.tsx
+        symbol: Canvas
+  metadata:
+    created_at: 2026-11-12T13:45:15.984Z
+    updated_at: 2026-11-12T13:45:15.984Z
+    version: 1
+ux.view.changesets-view:
+  id: 51fcb9c1-f25b-48ae-a5fc-1fa7708e49fe
+  path: ux.view.changesets-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Changesets View
+  description: "One changeset: its change list (Changes) or its reach outside
+    itself (Impact), with the changeset inspector and Apply / Discard for a
+    staged changeset."
+  attributes:
+    type: page
+    title: Changesets
+    routable: true
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+        symbol: ChangesetCanvas
+  metadata:
+    created_at: 2026-11-12T13:45:15.984Z
+    updated_at: 2026-11-12T13:45:15.984Z
+    version: 1
+ux.view.inspector-drawer:
+  id: a7b64ef4-e6e3-482f-980f-2f74d8d40606
+  path: ux.view.inspector-drawer
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Inspector Drawer
+  description: Selection details floating over the graph; auto-hides when nothing
+    is selected.
+  attributes:
+    type: drawer
+    routable: false
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Inspector.tsx
+        symbol: Inspector
+  metadata:
+    created_at: 2026-11-12T13:45:15.984Z
+    updated_at: 2026-11-12T13:45:15.984Z
+    version: 1
+ux.view.dr-bot-chat-drawer:
+  id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+  path: ux.view.dr-bot-chat-drawer
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: DrBot Chat Drawer
+  description: "The DrBot assistant, scoped to the current selection: persistent
+    at 1300px and wider, an overlay below."
+  attributes:
+    type: drawer
+    routable: false
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChatPanel.tsx
+        symbol: ChatPanel
+  metadata:
+    created_at: 2026-11-12T13:45:15.984Z
+    updated_at: 2026-11-12T13:45:15.984Z
+    version: 1

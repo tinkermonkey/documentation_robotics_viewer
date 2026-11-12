@@ -72,7 +72,8 @@ motivation.goal.ensure-accessible-architecture-views:
   source_reference:
     provenance: extracted
     locations:
-      - file: documentation/ACCESSIBILITY.md
+      - file: CLAUDE.md
+        symbol: Accessibility Standards (WCAG 2.1 AA)
   metadata:
     created_at: 2026-03-20T13:41:19.813Z
     updated_at: 2026-03-20T13:41:19.813Z

@@ -17,9 +17,9 @@ Authentication, authorization, security threats, and controls.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 12    |
-| Intra-Layer Relationships | 19    |
-| Inter-Layer Relationships | 16    |
-| Inbound Relationships     | 14    |
+| Intra-Layer Relationships | 16    |
+| Inter-Layer Relationships | 20    |
+| Inbound Relationships     | 18    |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
@@ -44,22 +44,19 @@ flowchart LR
     security_securitymodel_documentation_robotics_viewer_security_model["Documentation Robotics Viewer Security Model"]
     security_securitypolicy_bearer_token_policy["Bearer Token Policy"]
     security_threat_unauthenticated_model_access["Unauthenticated Model Access"]
-    security_actor_developer -->|accesses| security_secureresource_model_rest_api
     security_actor_developer -->|assigned-to| security_role_authenticated_viewer
-    security_actor_developer -->|governed-by| security_authenticationconfig_bearer_token_authentication
-    security_actor_dr_cli_server -->|governed-by| security_authenticationconfig_bearer_token_authentication
+    security_authenticationconfig_bearer_token_authentication -->|authenticates| security_actor_developer
+    security_authenticationconfig_bearer_token_authentication -->|authenticates| security_actor_dr_cli_server
     security_authenticationconfig_bearer_token_authentication -->|constrained-by| security_securitypolicy_bearer_token_policy
     security_authenticationconfig_bearer_token_authentication -->|protects| security_secureresource_model_rest_api
     security_dataclassification_architecture_model_data -->|governs| security_secureresource_model_rest_api
-    security_dataclassification_architecture_model_data -->|supports| security_securitypolicy_bearer_token_policy
-    security_role_authenticated_viewer -->|accesses| security_secureresource_model_rest_api
-    security_role_authenticated_viewer -->|authorizes| security_permission_read_model_data
-    security_role_authenticated_viewer -->|authorizes| security_permission_write_annotations
+    security_role_authenticated_viewer -->|aggregates| security_permission_read_model_data
+    security_role_authenticated_viewer -->|aggregates| security_permission_write_annotations
     security_securitymodel_documentation_robotics_viewer_security_model -->|aggregates| security_actor_developer
+    security_securitymodel_documentation_robotics_viewer_security_model -->|aggregates| security_dataclassification_architecture_model_data
     security_securitymodel_documentation_robotics_viewer_security_model -->|aggregates| security_permission_read_model_data
     security_securitymodel_documentation_robotics_viewer_security_model -->|aggregates| security_secureresource_model_rest_api
     security_securitymodel_documentation_robotics_viewer_security_model -->|composes| security_securitypolicy_bearer_token_policy
-    security_securitymodel_documentation_robotics_viewer_security_model -->|governs| security_dataclassification_architecture_model_data
     security_securitypolicy_bearer_token_policy -->|governs| security_secureresource_model_rest_api
     security_threat_unauthenticated_model_access -->|influence| security_securitypolicy_bearer_token_policy
     security_threat_unauthenticated_model_access -->|targets| security_secureresource_model_rest_api
@@ -94,24 +91,28 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                            | Source Node                                           | Dest Node                                     | Dest Layer | Predicate        | Cardinality  | Strength |
-| ------------------------------------------------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------- | ---------- | ---------------- | ------------ | -------- |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`       | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`       | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`       | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`       | unknown      | unknown  |
-| `6f75bbfc-c13c-4c87-83e5-32f134902391-accesses-76929fbe-36ea-4c4f-80d5-eb054598571b`       | `6f75bbfc-c13c-4c87-83e5-32f134902391`                | `76929fbe-36ea-4c4f-80d5-eb054598571b`        | `security` | `accesses`       | unknown      | unknown  |
-| `6f75bbfc-c13c-4c87-83e5-32f134902391-constrained-by-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d` | `6f75bbfc-c13c-4c87-83e5-32f134902391`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `constrained-by` | unknown      | unknown  |
-| `6f75bbfc-c13c-4c87-83e5-32f134902391-mitigates-e15b6b69-cc67-4ab9-a3f9-566de56b4804`      | `6f75bbfc-c13c-4c87-83e5-32f134902391`                | `e15b6b69-cc67-4ab9-a3f9-566de56b4804`        | `security` | `mitigates`      | unknown      | unknown  |
-| `801c2caa-ec19-4175-bec8-970067823754-satisfies-0fa2ddb9-02df-426f-9c9c-89b857b9dc78`      | `801c2caa-ec19-4175-bec8-970067823754`                | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`        | `security` | `satisfies`      | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`       | `8630981b-236c-47ed-b99b-e977c56bdc63`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`       | unknown      | unknown  |
-| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`       | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`       | unknown      | unknown  |
-| `api.securityscheme.implements.security.securitypolicy`                                    | `api.securityscheme.bearer-auth-scheme`               | `security.securitypolicy.bearer-token-policy` | `security` | `implements`     | many-to-many | medium   |
-| `api.securityscheme.implements.security.securitypolicy`                                    | `api.securityscheme.query-auth-scheme`                | `security.securitypolicy.bearer-token-policy` | `security` | `implements`     | many-to-many | medium   |
-| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`       | `b7775f1a-2418-4c7a-84aa-997efd658a97`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`       | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`       | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`       | unknown      | unknown  |
-| `navigation.navigationguard.implements.security.securitypolicy`                            | `navigation.navigationguard.authentication-guard`     | `security.securitypolicy.bearer-token-policy` | `security` | `implements`     | many-to-many | medium   |
-| `navigation.navigationguard.requires.security.role`                                        | `navigation.navigationguard.authentication-guard`     | `security.role.authenticated-viewer`          | `security` | `requires`       | many-to-many | medium   |
-| `security.secureresource.references.business.businessobject`                               | `security.secureresource.model-rest-api`              | `business.businessobject.architecture-model`  | `business` | `references`     | many-to-many | medium   |
-| `security.secureresource.references.business.businessobject`                               | `security.secureresource.web-socket-json-rpc-channel` | `business.businessobject.architecture-model`  | `business` | `references`     | many-to-many | medium   |
+| Relationship ID                                                                        | Source Node                                           | Dest Node                                     | Dest Layer | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------- | ---------- | ------------ | ------------ | -------- |
+| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
+| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
+| `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`        | `security` | `references` | unknown      | unknown  |
+| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
+| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`   | unknown      | unknown  |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                      | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`               | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                     | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                        | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                             | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`               | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                    | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`               | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
+| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`   | unknown      | unknown  |
+| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
+| `navigation.navigationguard.realizes.security.securitypolicy`                          | `navigation.navigationguard.authentication-guard`     | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
+| `navigation.navigationguard.requires.security.role`                                    | `navigation.navigationguard.authentication-guard`     | `security.role.authenticated-viewer`          | `security` | `requires`   | many-to-many | medium   |
+| `security.secureresource.references.business.businessobject`                           | `security.secureresource.model-rest-api`              | `business.businessobject.architecture-model`  | `business` | `references` | many-to-many | medium   |
+| `security.secureresource.references.business.businessobject`                           | `security.secureresource.web-socket-json-rpc-channel` | `business.businessobject.architecture-model`  | `business` | `references` | many-to-many | medium   |
 
 ## Element Reference
 
@@ -131,12 +132,11 @@ Human user who authenticates via magic link to view and annotate architecture mo
 
 #### Relationships
 
-| Type        | Related Element                                                       | Predicate     | Direction |
-| ----------- | --------------------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `security.secureresource.model-rest-api`                              | `accesses`    | outbound  |
-| intra-layer | `security.role.authenticated-viewer`                                  | `assigned-to` | outbound  |
-| intra-layer | `security.authenticationconfig.bearer-token-authentication`           | `governed-by` | outbound  |
-| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `aggregates`  | inbound   |
+| Type        | Related Element                                                       | Predicate       | Direction |
+| ----------- | --------------------------------------------------------------------- | --------------- | --------- |
+| intra-layer | `security.role.authenticated-viewer`                                  | `assigned-to`   | outbound  |
+| intra-layer | `security.authenticationconfig.bearer-token-authentication`           | `authenticates` | inbound   |
+| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `aggregates`    | inbound   |
 
 ### DR CLI Server {#dr-cli-server}
 
@@ -154,9 +154,9 @@ External DR CLI server that issues authentication tokens and serves model data
 
 #### Relationships
 
-| Type        | Related Element                                             | Predicate     | Direction |
-| ----------- | ----------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `security.authenticationconfig.bearer-token-authentication` | `governed-by` | outbound  |
+| Type        | Related Element                                             | Predicate       | Direction |
+| ----------- | ----------------------------------------------------------- | --------------- | --------- |
+| intra-layer | `security.authenticationconfig.bearer-token-authentication` | `authenticates` | inbound   |
 
 ### Bearer Token Authentication {#bearer-token-authentication}
 
@@ -177,8 +177,8 @@ Magic-link bearer token auth: token arrives via ?token= URL param, stored in loc
 
 | Type        | Related Element                               | Predicate        | Direction |
 | ----------- | --------------------------------------------- | ---------------- | --------- |
-| intra-layer | `security.actor.developer`                    | `governed-by`    | inbound   |
-| intra-layer | `security.actor.dr-cli-server`                | `governed-by`    | inbound   |
+| intra-layer | `security.actor.developer`                    | `authenticates`  | outbound  |
+| intra-layer | `security.actor.dr-cli-server`                | `authenticates`  | outbound  |
 | intra-layer | `security.securitypolicy.bearer-token-policy` | `constrained-by` | outbound  |
 | intra-layer | `security.secureresource.model-rest-api`      | `protects`       | outbound  |
 
@@ -192,11 +192,10 @@ Internal architecture documentation data; confidential within organization
 
 #### Relationships
 
-| Type        | Related Element                                                       | Predicate  | Direction |
-| ----------- | --------------------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `security.secureresource.model-rest-api`                              | `governs`  | outbound  |
-| intra-layer | `security.securitypolicy.bearer-token-policy`                         | `supports` | outbound  |
-| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `governs`  | inbound   |
+| Type        | Related Element                                                       | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------------- | ------------ | --------- |
+| intra-layer | `security.secureresource.model-rest-api`                              | `governs`    | outbound  |
+| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `aggregates` | inbound   |
 
 ### Read Model Data {#read-model-data}
 
@@ -218,7 +217,7 @@ Permission to read architecture model layers, elements, and relationships
 
 | Type        | Related Element                                                       | Predicate    | Direction |
 | ----------- | --------------------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `security.role.authenticated-viewer`                                  | `authorizes` | inbound   |
+| intra-layer | `security.role.authenticated-viewer`                                  | `aggregates` | inbound   |
 | intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `aggregates` | inbound   |
 
 ### Write Annotations {#write-annotations}
@@ -241,7 +240,7 @@ Permission to create and update annotations on model elements
 
 | Type        | Related Element                      | Predicate    | Direction |
 | ----------- | ------------------------------------ | ------------ | --------- |
-| intra-layer | `security.role.authenticated-viewer` | `authorizes` | inbound   |
+| intra-layer | `security.role.authenticated-viewer` | `aggregates` | inbound   |
 
 ### Authenticated Viewer {#authenticated-viewer}
 
@@ -265,9 +264,8 @@ Role granted to users who possess a valid bearer token; can read model data and 
 | ----------- | ------------------------------------------------- | ------------- | --------- |
 | inter-layer | `navigation.navigationguard.authentication-guard` | `requires`    | inbound   |
 | intra-layer | `security.actor.developer`                        | `assigned-to` | inbound   |
-| intra-layer | `security.secureresource.model-rest-api`          | `accesses`    | outbound  |
-| intra-layer | `security.permission.read-model-data`             | `authorizes`  | outbound  |
-| intra-layer | `security.permission.write-annotations`           | `authorizes`  | outbound  |
+| intra-layer | `security.permission.read-model-data`             | `aggregates`  | outbound  |
+| intra-layer | `security.permission.write-annotations`           | `aggregates`  | outbound  |
 
 ### Model REST API {#model-rest-api}
 
@@ -289,10 +287,8 @@ DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.) protected by b
 | Type        | Related Element                                                       | Predicate    | Direction |
 | ----------- | --------------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `business.businessobject.architecture-model`                          | `references` | outbound  |
-| intra-layer | `security.actor.developer`                                            | `accesses`   | inbound   |
 | intra-layer | `security.authenticationconfig.bearer-token-authentication`           | `protects`   | inbound   |
 | intra-layer | `security.dataclassification.architecture-model-data`                 | `governs`    | inbound   |
-| intra-layer | `security.role.authenticated-viewer`                                  | `accesses`   | inbound   |
 | intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `aggregates` | inbound   |
 | intra-layer | `security.securitypolicy.bearer-token-policy`                         | `governs`    | inbound   |
 | intra-layer | `security.threat.unauthenticated-model-access`                        | `targets`    | inbound   |
@@ -338,10 +334,10 @@ Security model for the documentation_robotics_viewer browser application
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
 | intra-layer | `security.actor.developer`                            | `aggregates` | outbound  |
+| intra-layer | `security.dataclassification.architecture-model-data` | `aggregates` | outbound  |
 | intra-layer | `security.permission.read-model-data`                 | `aggregates` | outbound  |
 | intra-layer | `security.secureresource.model-rest-api`              | `aggregates` | outbound  |
 | intra-layer | `security.securitypolicy.bearer-token-policy`         | `composes`   | outbound  |
-| intra-layer | `security.dataclassification.architecture-model-data` | `governs`    | outbound  |
 
 ### Bearer Token Policy {#bearer-token-policy}
 
@@ -362,11 +358,17 @@ All REST requests inject Authorization: Bearer header via global fetch intercept
 
 | Type        | Related Element                                                       | Predicate        | Direction |
 | ----------- | --------------------------------------------------------------------- | ---------------- | --------- |
-| inter-layer | `api.securityscheme.bearer-auth-scheme`                               | `implements`     | inbound   |
-| inter-layer | `api.securityscheme.query-auth-scheme`                                | `implements`     | inbound   |
-| inter-layer | `navigation.navigationguard.authentication-guard`                     | `implements`     | inbound   |
+| inter-layer | `api.operation.commit-changeset`                                      | `requires`       | inbound   |
+| inter-layer | `api.operation.create-annotation-reply`                               | `requires`       | inbound   |
+| inter-layer | `api.operation.discard-changeset`                                     | `requires`       | inbound   |
+| inter-layer | `api.operation.get-annotation`                                        | `requires`       | inbound   |
+| inter-layer | `api.operation.get-layer`                                             | `requires`       | inbound   |
+| inter-layer | `api.operation.list-annotation-replies`                               | `requires`       | inbound   |
+| inter-layer | `api.operation.replace-annotation`                                    | `requires`       | inbound   |
+| inter-layer | `api.securityscheme.bearer-auth-scheme`                               | `realizes`       | inbound   |
+| inter-layer | `api.securityscheme.query-auth-scheme`                                | `realizes`       | inbound   |
+| inter-layer | `navigation.navigationguard.authentication-guard`                     | `realizes`       | inbound   |
 | intra-layer | `security.authenticationconfig.bearer-token-authentication`           | `constrained-by` | inbound   |
-| intra-layer | `security.dataclassification.architecture-model-data`                 | `supports`       | inbound   |
 | intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `composes`       | inbound   |
 | intra-layer | `security.secureresource.model-rest-api`                              | `governs`        | outbound  |
 | intra-layer | `security.threat.unauthenticated-model-access`                        | `influence`      | inbound   |
@@ -396,4 +398,4 @@ Risk that an unauthenticated user accesses model data if bearer token is absent 
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
