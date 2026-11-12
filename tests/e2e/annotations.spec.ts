@@ -15,13 +15,24 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 import { gotoView, ROUTES, BASE_URL, fetchModel } from './helpers';
 
-/** App's `slugifyName` (verbatim from `data/modelGraph.ts`). */
+/** App's `slugifyName` (verbatim from `data/modelGraph.ts`, a port of the dr CLI's `toKebabCase`). */
 function slugifyName(name: string): string {
+  const camel = (part: string) => /[a-z][A-Z]/.test(part);
   return name
+    .replace(/[A-Za-z0-9$]+(?:\.[A-Za-z0-9$]+)+/g, (chain) => {
+      const parts = chain.split('.');
+      return parts.reduce(
+        (joined, part, i) =>
+          i === 0 ? part : joined + (camel(parts[i - 1]) || camel(part) ? '-' : '.') + part,
+        '',
+      );
+    })
+    .replace(/[\s_]+/g, '-')
     .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/\./g, '')
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/\./g, '')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
 
