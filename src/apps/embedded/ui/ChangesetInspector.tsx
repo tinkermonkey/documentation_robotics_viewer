@@ -39,6 +39,7 @@ import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import {
   changesetActionErrorMessage,
+  changesetLoadErrorMessage,
   useChangeset,
   type ChangesetAction,
   type ChangesetActionResult,
@@ -300,7 +301,7 @@ function ChangesetActions({
 
 export function ChangesetInspector() {
   const changesetId = useUiStore((s) => s.changesetId);
-  const { detail } = useChangeset(changesetId);
+  const { detail, error } = useChangeset(changesetId);
   const [toast, setToast] = useState<ToastState>({ open: false, variant: 'success', title: '' });
   const notify = (variant: ToastVariant, title: string) => setToast({ open: true, variant, title });
 
@@ -331,7 +332,11 @@ export function ChangesetInspector() {
           }}
           data-testid="changeset-inspector-empty"
         >
-          {changesetId ? 'loading changeset…' : 'Select a changeset to inspect.'}
+          {!changesetId
+            ? 'Select a changeset to inspect.'
+            : error
+              ? changesetLoadErrorMessage(error)
+              : 'loading changeset…'}
         </div>
       ) : (
         <>

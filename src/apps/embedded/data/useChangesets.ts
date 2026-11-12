@@ -169,6 +169,22 @@ export function changesetActionErrorMessage(error: unknown): string {
 }
 
 /**
+ * What to show when a changeset's detail can't be loaded, instead of a
+ * "loading" message that never resolves. A refused token (401/403) usually
+ * means this tab holds an older server's token: reloading picks up the stored
+ * one.
+ */
+export function changesetLoadErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 401 || error.status === 403) {
+      return "couldn't load the changeset: the server refused this tab's access token. Reload the page, or open the viewer again from its link.";
+    }
+    if (error.status === 404) return "couldn't load the changeset: the server has no changeset with this id.";
+  }
+  return `couldn't load the changeset: ${changesetActionErrorMessage(error)}`;
+}
+
+/**
  * Refetch the changesets when the `dr visualize` server announces a changeset
  * change. It broadcasts `{ type: 'changesets.updated', ids, active }` after
  * any write under `documentation-robotics/changesets/` — a changeset created,

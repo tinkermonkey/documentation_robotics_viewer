@@ -19,7 +19,7 @@
 import { useState } from 'react';
 import { PageHeader, SegmentedControl, SideBySideDiff } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
-import { useChangesets, useChangeset } from '../data/useChangesets';
+import { useChangesets, useChangeset, changesetLoadErrorMessage } from '../data/useChangesets';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { ChangesetImpactView } from './ChangesetImpactView';
@@ -35,9 +35,10 @@ function statusColor(status: string): string {
 }
 
 /** Empty state shown when no changeset is selected. */
-function ChangesetEmptyState({ message }: { message: string }) {
+function ChangesetEmptyState({ message, alert = false }: { message: string; alert?: boolean }) {
   return (
     <div
+      role={alert ? 'alert' : undefined}
       style={{
         flex: 1,
         display: 'grid',
@@ -183,7 +184,7 @@ export function ChangesetCanvas() {
   const follow = useUiStore((s) => s.inspectorFollow);
   const setFollow = useUiStore((s) => s.setInspectorFollow);
   const { derived: registry } = useChangesets();
-  const { detail } = useChangeset(changesetId);
+  const { detail, error } = useChangeset(changesetId);
   const { derived: model } = useModel();
   const [tab, setTab] = useState<ChangesetTab>('changes');
   const impact = useChangesetImpact(model, tab === 'impact' ? detail : null, follow);
@@ -255,6 +256,8 @@ export function ChangesetCanvas() {
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {!changesetId ? (
           <ChangesetEmptyState message="select a changeset to view its changes" />
+        ) : !detail && error ? (
+          <ChangesetEmptyState message={changesetLoadErrorMessage(error)} alert />
         ) : !detail ? (
           <ChangesetEmptyState message="loading changeset…" />
         ) : tab === 'impact' ? (
