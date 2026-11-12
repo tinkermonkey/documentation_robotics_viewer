@@ -654,12 +654,12 @@ export function modelNodePageData(
   return {
     eyebrow: `ELEMENT · ${layerName}`,
     title: n.name,
-    idChip: n.id,
+    idChip: path,
     meta: `${out.length} outgoing · ${inc.length} incoming`,
     color,
     crumbs: [
       ...baseCrumbs('model', layerId, false),
-      { label: n.id, current: true },
+      { label: path.slice(path.lastIndexOf('.') + 1), current: true },
     ],
     description: n.description ?? '',
     stats: [

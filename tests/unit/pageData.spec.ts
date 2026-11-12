@@ -293,7 +293,10 @@ describe('modelNodePageData', () => {
     const pg = modelNodePageData('data-model', META_MODEL_ID, model, index, spec)!;
     expect(pg.eyebrow).toBe('ELEMENT · Data Model');
     expect(pg.title).toBe('MetaModel');
-    expect(pg.idChip).toBe(META_MODEL_ID);
+    // The header chip and last breadcrumb are the dotted path / its slug (#559);
+    // the UUID stays a fact.
+    expect(pg.idChip).toBe('data-model.objectschema.meta-model');
+    expect(pg.crumbs[pg.crumbs.length - 1]).toMatchObject({ label: 'meta-model', current: true });
     // 2 cross-layer (realizes/references -> business) + 1 intra-layer (extends -> Layer,
     // via the dotted-id link form) outgoing; 1 incoming (extends <- YAMLModelData).
     expect(pg.meta).toBe('3 outgoing · 1 incoming');
