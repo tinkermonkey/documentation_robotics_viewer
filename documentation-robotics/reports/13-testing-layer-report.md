@@ -18,13 +18,13 @@ Test strategies, test cases, test data, and test coverage.
 | ------------------------- | ----- |
 | Elements                  | 6     |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 17    |
+| Inter-Layer Relationships | 13    |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 17    |
+| Outbound Relationships    | 13    |
 
 **Cross-Layer References**:
 
-- **Downstream layers**: [Motivation](./01-motivation-layer-report.md)
+- **Downstream layers**: [Application](./05-application-layer-report.md), [Motivation](./01-motivation-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -37,11 +37,11 @@ flowchart LR
     testing_testcoveragemodel_viewer_test_coverage_model["Viewer Test Coverage Model"]
     testing_testcoveragetarget_cross_component_integration_test_coverage["Cross-Component Integration Test Coverage"]
     testing_testcoveragetarget_service_and_store_unit_test_coverage["Service and Store Unit Test Coverage"]
-    testing_coveragerequirement_all_partitions_unit_test_requirement -->|composes| testing_testcoveragetarget_service_and_store_unit_test_coverage
-    testing_coveragesummary_overall_test_coverage_summary -->|aggregates| testing_testcoveragemodel_viewer_test_coverage_model
-    testing_testcoveragemodel_viewer_test_coverage_model -->|aggregates| testing_contextvariation_functional_unit_test_context
+    testing_testcoveragemodel_viewer_test_coverage_model -->|composes| testing_contextvariation_functional_unit_test_context
     testing_testcoveragemodel_viewer_test_coverage_model -->|composes| testing_coveragesummary_overall_test_coverage_summary
-    testing_testcoveragetarget_service_and_store_unit_test_coverage -->|flows-to| testing_coveragerequirement_all_partitions_unit_test_requirement
+    testing_testcoveragemodel_viewer_test_coverage_model -->|composes| testing_testcoveragetarget_cross_component_integration_test_coverage
+    testing_testcoveragemodel_viewer_test_coverage_model -->|composes| testing_testcoveragetarget_service_and_store_unit_test_coverage
+    testing_testcoveragetarget_service_and_store_unit_test_coverage -->|composes| testing_coveragerequirement_all_partitions_unit_test_requirement
   end
 ```
 
@@ -63,31 +63,28 @@ flowchart TB
   navigation["Navigation"]
   apm["APM"]
   testing["Testing"]
+  testing --> application
   testing --> motivation
   class testing current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                                    | Source Node                                                       | Dest Node                                          | Dest Layer   | Predicate                | Cardinality  | Strength |
-| -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------- | ------------ | ------------------------ | ------------ | -------- |
-| `29043f3a-16fd-4cb7-af1c-660b3aaa63c6-supports-goals-ef84b64d-883c-4471-9b56-a58574bac2b9`         | `29043f3a-16fd-4cb7-af1c-660b3aaa63c6`                            | `ef84b64d-883c-4471-9b56-a58574bac2b9`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `37a7eff0-e17f-40f8-ac76-ea230513fc63-fulfills-requirements-9df37bbd-8ffd-4d80-899f-9437aa03282a`  | `37a7eff0-e17f-40f8-ac76-ea230513fc63`                            | `9df37bbd-8ffd-4d80-899f-9437aa03282a`             | `motivation` | `fulfills-requirements`  | unknown      | unknown  |
-| `37a7eff0-e17f-40f8-ac76-ea230513fc63-supports-goals-ef84b64d-883c-4471-9b56-a58574bac2b9`         | `37a7eff0-e17f-40f8-ac76-ea230513fc63`                            | `ef84b64d-883c-4471-9b56-a58574bac2b9`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `4e86c557-9c8e-435f-a770-651c0e238306-supports-goals-462e2931-4c7c-4051-a9ac-8817c270d650`         | `4e86c557-9c8e-435f-a770-651c0e238306`                            | `462e2931-4c7c-4051-a9ac-8817c270d650`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `52cfa9de-541d-44a0-9c21-34539c2e616c-fulfills-requirements-e748118c-b989-43fe-b0d2-9121e931fcd2`  | `52cfa9de-541d-44a0-9c21-34539c2e616c`                            | `e748118c-b989-43fe-b0d2-9121e931fcd2`             | `motivation` | `fulfills-requirements`  | unknown      | unknown  |
-| `52cfa9de-541d-44a0-9c21-34539c2e616c-supports-goals-731285cc-dc15-4c64-a342-a933ce00bd61`         | `52cfa9de-541d-44a0-9c21-34539c2e616c`                            | `731285cc-dc15-4c64-a342-a933ce00bd61`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `cee7be5d-f0f9-4291-a2ae-cf5011a61c2f-fulfills-requirements-9df37bbd-8ffd-4d80-899f-9437aa03282a`  | `cee7be5d-f0f9-4291-a2ae-cf5011a61c2f`                            | `9df37bbd-8ffd-4d80-899f-9437aa03282a`             | `motivation` | `fulfills-requirements`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-constrained-by-6ffaff00-8bf8-4580-98ff-8d2a612a9021`         | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`             | `motivation` | `constrained-by`         | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-constrained-by-9fe1281a-2547-416f-872f-38e1b066db15`         | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `9fe1281a-2547-416f-872f-38e1b066db15`             | `motivation` | `constrained-by`         | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-fulfills-requirements-9df37bbd-8ffd-4d80-899f-9437aa03282a`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `9df37bbd-8ffd-4d80-899f-9437aa03282a`             | `motivation` | `fulfills-requirements`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-fulfills-requirements-e748118c-b989-43fe-b0d2-9121e931fcd2`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `e748118c-b989-43fe-b0d2-9121e931fcd2`             | `motivation` | `fulfills-requirements`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-governed-by-principles-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `53fad2bb-e97d-44a2-83cf-61201e992163`             | `motivation` | `governed-by-principles` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-governed-by-principles-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`             | `motivation` | `governed-by-principles` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-goals-462e2931-4c7c-4051-a9ac-8817c270d650`         | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `462e2931-4c7c-4051-a9ac-8817c270d650`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-goals-ef84b64d-883c-4471-9b56-a58574bac2b9`         | `de956804-eabb-4548-8389-73cb6c63ef2f`                            | `ef84b64d-883c-4471-9b56-a58574bac2b9`             | `motivation` | `supports-goals`         | unknown      | unknown  |
-| `testing.coveragesummary.fulfills-requirements.motivation.requirement`                             | `testing.coveragesummary.overall-test-coverage-summary`           | `motivation.requirement.wcag-21-aa-compliance`     | `motivation` | `fulfills-requirements`  | many-to-many | medium   |
-| `testing.testcoveragetarget.fulfills-requirements.motivation.requirement`                          | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `motivation.requirement.dr-cli-server-integration` | `motivation` | `fulfills-requirements`  | many-to-many | medium   |
+| Relationship ID                                                                       | Source Node                                                            | Dest Node                                                  | Dest Layer    | Predicate   | Cardinality  | Strength |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------- | ------------- | ----------- | ------------ | -------- |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `53fad2bb-e97d-44a2-83cf-61201e992163`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9df37bbd-8ffd-4d80-899f-9437aa03282a` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `9df37bbd-8ffd-4d80-899f-9437aa03282a`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9fe1281a-2547-416f-872f-38e1b066db15` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `9fe1281a-2547-416f-872f-38e1b066db15`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `e748118c-b989-43fe-b0d2-9121e931fcd2`                     | `motivation`  | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `462e2931-4c7c-4051-a9ac-8817c270d650`                     | `motivation`  | `supports`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                 | `ef84b64d-883c-4471-9b56-a58574bac2b9`                     | `motivation`  | `supports`  | unknown      | unknown  |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.chat-service`              | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.web-socket-client`         | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-impact-analysis` | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layered-reach`             | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.model-graph-transform`     | `application` | `covers`    | many-to-many | medium   |
 
 ## Element Reference
 
@@ -107,9 +104,9 @@ Standard functional test context for unit, integration, and component tests; run
 
 #### Relationships
 
-| Type        | Related Element                                        | Predicate    | Direction |
-| ----------- | ------------------------------------------------------ | ------------ | --------- |
-| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `aggregates` | inbound   |
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `composes` | inbound   |
 
 ### All-Partitions Unit Test Requirement {#all-partitions-unit-test-requirement}
 
@@ -130,8 +127,7 @@ Requirement that all public service methods and store actions have at least one 
 
 | Type        | Related Element                                                   | Predicate  | Direction |
 | ----------- | ----------------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `composes` | outbound  |
-| intra-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `flows-to` | inbound   |
+| intra-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `composes` | inbound   |
 
 ### Overall Test Coverage Summary {#overall-test-coverage-summary}
 
@@ -151,11 +147,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                        | Predicate               | Direction |
-| ----------- | ------------------------------------------------------ | ----------------------- | --------- |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`         | `fulfills-requirements` | outbound  |
-| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `aggregates`            | outbound  |
-| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `composes`              | inbound   |
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `composes` | inbound   |
 
 ### Viewer Test Coverage Model {#viewer-test-coverage-model}
 
@@ -174,11 +168,12 @@ Root IEEE 829-style test coverage model for the documentation_robotics_viewer ap
 
 #### Relationships
 
-| Type        | Related Element                                         | Predicate    | Direction |
-| ----------- | ------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `testing.coveragesummary.overall-test-coverage-summary` | `aggregates` | inbound   |
-| intra-layer | `testing.contextvariation.functional-unit-test-context` | `aggregates` | outbound  |
-| intra-layer | `testing.coveragesummary.overall-test-coverage-summary` | `composes`   | outbound  |
+| Type        | Related Element                                                        | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `testing.contextvariation.functional-unit-test-context`                | `composes` | outbound  |
+| intra-layer | `testing.coveragesummary.overall-test-coverage-summary`                | `composes` | outbound  |
+| intra-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `composes` | outbound  |
+| intra-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `composes` | outbound  |
 
 ### Cross-Component Integration Test Coverage {#cross-component-integration-test-coverage}
 
@@ -194,6 +189,14 @@ Coverage target for integration tests verifying cross-component data flows: node
 | ---------- | ---------------- |
 | priority   | high             |
 | targetType | integration-flow |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.chat-service`          | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.web-socket-client`     | `covers`   | outbound  |
+| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model` | `composes` | inbound   |
 
 ### Service and Store Unit Test Coverage {#service-and-store-unit-test-coverage}
 
@@ -212,12 +215,14 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 #### Relationships
 
-| Type        | Related Element                                                    | Predicate               | Direction |
-| ----------- | ------------------------------------------------------------------ | ----------------------- | --------- |
-| inter-layer | `motivation.requirement.dr-cli-server-integration`                 | `fulfills-requirements` | outbound  |
-| intra-layer | `testing.coveragerequirement.all-partitions-unit-test-requirement` | `composes`              | inbound   |
-| intra-layer | `testing.coveragerequirement.all-partitions-unit-test-requirement` | `flows-to`              | outbound  |
+| Type        | Related Element                                                    | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.changeset-impact-analysis`         | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.layered-reach`                     | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.model-graph-transform`             | `covers`   | outbound  |
+| intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model`             | `composes` | inbound   |
+| intra-layer | `testing.coveragerequirement.all-partitions-unit-test-requirement` | `composes` | outbound  |
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0

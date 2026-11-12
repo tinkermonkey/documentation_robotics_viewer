@@ -5,10 +5,9 @@ navigation.navigationtransition.tab-navigation-transition:
   type: navigationtransition
   layer_id: navigation
   name: Tab Navigation Transition
-  description: User-triggered switch between main sections (Model, Spec,
-    Changesets); fires when the user clicks a section header in the 3-level
-    NavTree, updating uiStore.view which router.tsx syncs to the /:section/:view
-    URL hash
+  description: "Switching between the Model, Schema and Changesets sections in the
+    sidebar nav tree (an accordion: opening a section collapses the others). The
+    section is the route's :section segment."
   attributes:
     from: any-route
     to: section-root
@@ -16,8 +15,8 @@ navigation.navigationtransition.tab-navigation-transition:
   source_reference:
     provenance: extracted
     locations:
-      - file: src/apps/embedded/EmbeddedLayout.tsx
-        symbol: handleTabChange
+      - file: src/apps/embedded/ui/NavTree.tsx
+        symbol: NavTree
   metadata:
     created_at: 2026-03-20T13:26:14.912Z
     updated_at: 2026-03-20T13:26:14.912Z
@@ -29,11 +28,10 @@ navigation.navigationtransition.layer-deep-link-transition:
   type: navigationtransition
   layer_id: navigation
   name: Layer Deep-Link Transition
-  description: Programmatic cross-layer navigation to a specific element or spec
-    node, triggered by click-to-navigate relationship links in
-    GraphInspector/Inspector; implemented via
-    uiStore.navigateToElement/navigateToSpecNode (Zustand state), no longer a
-    ?layer= URL search parameter
+  description: "Deep links into a layer, element or changeset: the router two-way
+    syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph
+    viewport) with the UI store, so a shared link, reload or back/forward
+    restores the selection."
   attributes:
     from: model-graph-view
     to: model-graph-view
@@ -41,7 +39,8 @@ navigation.navigationtransition.layer-deep-link-transition:
   source_reference:
     provenance: inferred
     locations:
-      - file: src/apps/embedded/components/CrossLayerPanel.tsx
+      - file: src/apps/embedded/router.tsx
+        symbol: AppShellRoute
   metadata:
     created_at: 2026-03-20T13:26:31.679Z
     updated_at: 2026-03-20T13:26:31.679Z

@@ -17,15 +17,15 @@ Infrastructure, platforms, systems, and technology components.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 24    |
-| Intra-Layer Relationships | 24    |
-| Inter-Layer Relationships | 4     |
+| Intra-Layer Relationships | 21    |
+| Inter-Layer Relationships | 9     |
 | Inbound Relationships     | 2     |
-| Outbound Relationships    | 2     |
+| Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [API](./07-api-layer-report.md), [Data Model](./08-data-model-layer-report.md)
-- **Downstream layers**: [Application](./05-application-layer-report.md)
+- **Upstream layers**: [UX](./10-ux-layer-report.md)
+- **Downstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -56,30 +56,27 @@ flowchart LR
     technology_technologyprocess_vite_build_pipeline["Vite Build Pipeline"]
     technology_technologyservice_dr_cli_rest_server["DR CLI REST Server"]
     technology_technologyservice_web_socket_model_service["WebSocket Model Service"]
-    technology_artifact_docker_agent_image -->|associated-with| technology_systemsoftware_nodejs
-    technology_artifact_embedded_app_bundle -->|associated-with| technology_systemsoftware_vite_6
-    technology_artifact_embedded_app_bundle -->|flows-to| technology_technologyprocess_vite_build_pipeline
-    technology_artifact_open_api_specification -->|flows-to| technology_technologyprocess_open_api_type_generation
+    technology_artifact_docker_agent_image -->|realizes| technology_systemsoftware_nodejs
+    technology_artifact_embedded_app_bundle -->|realizes| technology_systemsoftware_vite_6
     technology_node_docker_agent_container -->|composes| technology_systemsoftware_playwright
-    technology_path_app_to_dr_cli_web_socket_path -->|serves| technology_node_docker_agent_container
+    technology_node_docker_agent_container -->|composes| technology_technologyinterface_rest_https_interface
+    technology_node_docker_agent_container -->|composes| technology_technologyinterface_web_socket_interface
+    technology_path_app_to_dr_cli_https_path -->|connects| technology_node_docker_agent_container
+    technology_path_app_to_dr_cli_web_socket_path -->|connects| technology_node_docker_agent_container
     technology_systemsoftware_playwright -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_react_19 -->|depends-on| technology_systemsoftware_nodejs
-    technology_systemsoftware_react_19 -->|uses| technology_path_app_to_dr_cli_https_path
     technology_systemsoftware_tan_stack_router -->|depends-on| technology_systemsoftware_react_19
     technology_systemsoftware_type_script_59 -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_vite_6 -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_zustand_5 -->|depends-on| technology_systemsoftware_react_19
-    technology_technologyinterface_rest_https_interface -->|assigned-to| technology_node_docker_agent_container
+    technology_technologyinterface_rest_https_interface -->|assigned-to| technology_technologyservice_dr_cli_rest_server
     technology_technologyinterface_rest_https_interface -->|serves| technology_technologyprocess_open_api_type_generation
-    technology_technologyinterface_web_socket_interface -->|assigned-to| technology_node_docker_agent_container
+    technology_technologyinterface_rest_https_interface -->|serves| technology_technologyprocess_vite_build_pipeline
+    technology_technologyinterface_web_socket_interface -->|assigned-to| technology_technologyservice_web_socket_model_service
     technology_technologyinterface_web_socket_interface -->|serves| technology_technologyprocess_playwright_test_execution
-    technology_technologyprocess_playwright_test_execution -->|uses| technology_path_app_to_dr_cli_web_socket_path
-    technology_technologyprocess_vite_build_pipeline -->|uses| technology_technologyinterface_rest_https_interface
-    technology_technologyservice_dr_cli_rest_server -->|aggregates| technology_technologyprocess_vite_build_pipeline
-    technology_technologyservice_dr_cli_rest_server -->|depends-on| technology_node_vite_dev_server
-    technology_technologyservice_dr_cli_rest_server -->|provides| technology_technologyinterface_rest_https_interface
-    technology_technologyservice_web_socket_model_service -->|depends-on| technology_node_vite_dev_server
-    technology_technologyservice_web_socket_model_service -->|provides| technology_technologyinterface_web_socket_interface
+    technology_technologyprocess_open_api_type_generation -->|accesses| technology_artifact_open_api_specification
+    technology_technologyprocess_vite_build_pipeline -->|accesses| technology_artifact_embedded_app_bundle
+    technology_technologyprocess_vite_build_pipeline -->|realizes| technology_technologyservice_dr_cli_rest_server
   end
 ```
 
@@ -101,20 +98,25 @@ flowchart TB
   navigation["Navigation"]
   apm["APM"]
   testing["Testing"]
-  api --> technology
-  data_model --> technology
+  technology --> api
   technology --> application
+  ux --> technology
   class technology current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                     | Source Node                                                         | Dest Node                                         | Dest Layer    | Predicate    | Cardinality  | Strength |
-| ------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
-| `api.openapidocument.depends-on.technology.technologyservice`       | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `technology.technologyservice.dr-cli-rest-server` | `technology`  | `depends-on` | many-to-many | medium   |
-| `data-model.schemadefinition.depends-on.technology.systemsoftware`  | `data-model.schemadefinition.changeset-id`                          | `technology.systemsoftware.type-script-59`        | `technology`  | `depends-on` | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`                             | `application.applicationcomponent.graph-canvas`   | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query`                   | `application.applicationcomponent.graph-canvas`   | `application` | `serves`     | many-to-many | medium   |
+| Relationship ID                                                     | Source Node                                       | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
+| ------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
+| `technology.node.serves.application.applicationcomponent`           | `technology.node.vite-dev-server`                 | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-impact-view`            | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query` | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.technologyservice.serves.api.openapidocument`           | `technology.technologyservice.dr-cli-rest-server` | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.changesets-view`                         | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.model-view`                              | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
 
 ## Element Reference
 
@@ -134,9 +136,9 @@ Docker container image for the Claude Code agent runtime, defined in Dockerfile.
 
 #### Relationships
 
-| Type        | Related Element                    | Predicate         | Direction |
-| ----------- | ---------------------------------- | ----------------- | --------- |
-| intra-layer | `technology.systemsoftware.nodejs` | `associated-with` | outbound  |
+| Type        | Related Element                    | Predicate  | Direction |
+| ----------- | ---------------------------------- | ---------- | --------- |
+| intra-layer | `technology.systemsoftware.nodejs` | `realizes` | outbound  |
 
 ### Embedded App Bundle {#embedded-app-bundle}
 
@@ -154,10 +156,10 @@ Production Vite build output; bundled React application (JS/CSS) packaged as an 
 
 #### Relationships
 
-| Type        | Related Element                                    | Predicate         | Direction |
-| ----------- | -------------------------------------------------- | ----------------- | --------- |
-| intra-layer | `technology.systemsoftware.vite-6`                 | `associated-with` | outbound  |
-| intra-layer | `technology.technologyprocess.vite-build-pipeline` | `flows-to`        | outbound  |
+| Type        | Related Element                                    | Predicate  | Direction |
+| ----------- | -------------------------------------------------- | ---------- | --------- |
+| intra-layer | `technology.systemsoftware.vite-6`                 | `realizes` | outbound  |
+| intra-layer | `technology.technologyprocess.vite-build-pipeline` | `accesses` | inbound   |
 
 ### OpenAPI Specification {#openapi-specification}
 
@@ -177,7 +179,7 @@ OpenAPI 3.0 REST API contract (docs/api-spec.yaml) describing the DR CLI server 
 
 | Type        | Related Element                                         | Predicate  | Direction |
 | ----------- | ------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `technology.technologyprocess.open-api-type-generation` | `flows-to` | outbound  |
+| intra-layer | `technology.technologyprocess.open-api-type-generation` | `accesses` | inbound   |
 
 ### Docker Agent Container {#docker-agent-container}
 
@@ -195,12 +197,13 @@ Container runtime node for the Claude Code agent process; defined by Dockerfile.
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate     | Direction |
-| ----------- | ----------------------------------------------------- | ------------- | --------- |
-| intra-layer | `technology.systemsoftware.playwright`                | `composes`    | outbound  |
-| intra-layer | `technology.path.app-to-dr-cli-web-socket-path`       | `serves`      | inbound   |
-| intra-layer | `technology.technologyinterface.rest-https-interface` | `assigned-to` | inbound   |
-| intra-layer | `technology.technologyinterface.web-socket-interface` | `assigned-to` | inbound   |
+| Type        | Related Element                                       | Predicate  | Direction |
+| ----------- | ----------------------------------------------------- | ---------- | --------- |
+| intra-layer | `technology.systemsoftware.playwright`                | `composes` | outbound  |
+| intra-layer | `technology.technologyinterface.rest-https-interface` | `composes` | outbound  |
+| intra-layer | `technology.technologyinterface.web-socket-interface` | `composes` | outbound  |
+| intra-layer | `technology.path.app-to-dr-cli-https-path`            | `connects` | inbound   |
+| intra-layer | `technology.path.app-to-dr-cli-web-socket-path`       | `connects` | inbound   |
 
 ### Vite Dev Server {#vite-dev-server}
 
@@ -218,10 +221,9 @@ Development HTTP server node running on port 3001; spawned by Vite with HMR, hos
 
 #### Relationships
 
-| Type        | Related Element                                         | Predicate    | Direction |
-| ----------- | ------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.technologyservice.dr-cli-rest-server`       | `depends-on` | inbound   |
-| intra-layer | `technology.technologyservice.web-socket-model-service` | `depends-on` | inbound   |
+| Type        | Related Element                              | Predicate | Direction |
+| ----------- | -------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell` | `serves`  | outbound  |
 
 ### App to DR CLI HTTPS Path {#app-to-dr-cli-https-path}
 
@@ -240,9 +242,9 @@ HTTPS communication path from browser application to the DR CLI REST server; car
 
 #### Relationships
 
-| Type        | Related Element                      | Predicate | Direction |
-| ----------- | ------------------------------------ | --------- | --------- |
-| intra-layer | `technology.systemsoftware.react-19` | `uses`    | inbound   |
+| Type        | Related Element                          | Predicate  | Direction |
+| ----------- | ---------------------------------------- | ---------- | --------- |
+| intra-layer | `technology.node.docker-agent-container` | `connects` | outbound  |
 
 ### App to DR CLI WebSocket Path {#app-to-dr-cli-websocket-path}
 
@@ -261,10 +263,9 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate | Direction |
-| ----------- | -------------------------------------------------------- | --------- | --------- |
-| intra-layer | `technology.node.docker-agent-container`                 | `serves`  | outbound  |
-| intra-layer | `technology.technologyprocess.playwright-test-execution` | `uses`    | inbound   |
+| Type        | Related Element                          | Predicate  | Direction |
+| ----------- | ---------------------------------------- | ---------- | --------- |
+| intra-layer | `technology.node.docker-agent-container` | `connects` | outbound  |
 
 ### Heimdall UI {#heimdall-ui}
 
@@ -282,9 +283,13 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 
 #### Relationships
 
-| Type        | Related Element                                 | Predicate | Direction |
-| ----------- | ----------------------------------------------- | --------- | --------- |
-| inter-layer | `application.applicationcomponent.graph-canvas` | `serves`  | outbound  |
+| Type        | Related Element                                          | Predicate    | Direction |
+| ----------- | -------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`             | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.changeset-impact-view` | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.graph-canvas`          | `serves`     | outbound  |
+| inter-layer | `ux.view.changesets-view`                                | `depends-on` | inbound   |
+| inter-layer | `ux.view.model-view`                                     | `depends-on` | inbound   |
 
 ### Node.js {#node-js}
 
@@ -302,13 +307,13 @@ JavaScript runtime environment powering the build toolchain, dev server, and tes
 
 #### Relationships
 
-| Type        | Related Element                            | Predicate         | Direction |
-| ----------- | ------------------------------------------ | ----------------- | --------- |
-| intra-layer | `technology.artifact.docker-agent-image`   | `associated-with` | inbound   |
-| intra-layer | `technology.systemsoftware.playwright`     | `depends-on`      | inbound   |
-| intra-layer | `technology.systemsoftware.react-19`       | `depends-on`      | inbound   |
-| intra-layer | `technology.systemsoftware.type-script-59` | `depends-on`      | inbound   |
-| intra-layer | `technology.systemsoftware.vite-6`         | `depends-on`      | inbound   |
+| Type        | Related Element                            | Predicate    | Direction |
+| ----------- | ------------------------------------------ | ------------ | --------- |
+| intra-layer | `technology.artifact.docker-agent-image`   | `realizes`   | inbound   |
+| intra-layer | `technology.systemsoftware.playwright`     | `depends-on` | inbound   |
+| intra-layer | `technology.systemsoftware.react-19`       | `depends-on` | inbound   |
+| intra-layer | `technology.systemsoftware.type-script-59` | `depends-on` | inbound   |
+| intra-layer | `technology.systemsoftware.vite-6`         | `depends-on` | inbound   |
 
 ### Playwright {#playwright}
 
@@ -350,7 +355,6 @@ Core UI rendering framework; component-based architecture with concurrent render
 | Type        | Related Element                              | Predicate    | Direction |
 | ----------- | -------------------------------------------- | ------------ | --------- |
 | intra-layer | `technology.systemsoftware.nodejs`           | `depends-on` | outbound  |
-| intra-layer | `technology.path.app-to-dr-cli-https-path`   | `uses`       | outbound  |
 | intra-layer | `technology.systemsoftware.tan-stack-router` | `depends-on` | inbound   |
 | intra-layer | `technology.systemsoftware.zustand-5`        | `depends-on` | inbound   |
 
@@ -367,6 +371,12 @@ Utility-first CSS framework v4 with PostCSS pipeline; all styling via utility cl
 | Name         | Value      |
 | ------------ | ---------- |
 | softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                              | Predicate | Direction |
+| ----------- | -------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell` | `serves`  | outbound  |
 
 ### TanStack React Query {#tanstack-react-query}
 
@@ -424,10 +434,9 @@ Statically-typed JavaScript superset providing compile-time type safety across a
 
 #### Relationships
 
-| Type        | Related Element                            | Predicate    | Direction |
-| ----------- | ------------------------------------------ | ------------ | --------- |
-| inter-layer | `data-model.schemadefinition.changeset-id` | `depends-on` | inbound   |
-| intra-layer | `technology.systemsoftware.nodejs`         | `depends-on` | outbound  |
+| Type        | Related Element                    | Predicate    | Direction |
+| ----------- | ---------------------------------- | ------------ | --------- |
+| intra-layer | `technology.systemsoftware.nodejs` | `depends-on` | outbound  |
 
 ### Vite 6 {#vite-6}
 
@@ -445,10 +454,10 @@ Next-generation build toolchain and HMR dev server for the React application; ha
 
 #### Relationships
 
-| Type        | Related Element                           | Predicate         | Direction |
-| ----------- | ----------------------------------------- | ----------------- | --------- |
-| intra-layer | `technology.artifact.embedded-app-bundle` | `associated-with` | inbound   |
-| intra-layer | `technology.systemsoftware.nodejs`        | `depends-on`      | outbound  |
+| Type        | Related Element                           | Predicate    | Direction |
+| ----------- | ----------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.artifact.embedded-app-bundle` | `realizes`   | inbound   |
+| intra-layer | `technology.systemsoftware.nodejs`        | `depends-on` | outbound  |
 
 ### Zustand 5 {#zustand-5}
 
@@ -488,10 +497,10 @@ HTTPS interface point exposing DR CLI REST API endpoints to the browser applicat
 
 | Type        | Related Element                                         | Predicate     | Direction |
 | ----------- | ------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `technology.node.docker-agent-container`                | `assigned-to` | outbound  |
+| intra-layer | `technology.node.docker-agent-container`                | `composes`    | inbound   |
+| intra-layer | `technology.technologyservice.dr-cli-rest-server`       | `assigned-to` | outbound  |
 | intra-layer | `technology.technologyprocess.open-api-type-generation` | `serves`      | outbound  |
-| intra-layer | `technology.technologyprocess.vite-build-pipeline`      | `uses`        | inbound   |
-| intra-layer | `technology.technologyservice.dr-cli-rest-server`       | `provides`    | inbound   |
+| intra-layer | `technology.technologyprocess.vite-build-pipeline`      | `serves`      | outbound  |
 
 ### WebSocket Interface {#websocket-interface}
 
@@ -511,9 +520,9 @@ WebSocket interface providing full-duplex communication channel for real-time JS
 
 | Type        | Related Element                                          | Predicate     | Direction |
 | ----------- | -------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `technology.node.docker-agent-container`                 | `assigned-to` | outbound  |
+| intra-layer | `technology.node.docker-agent-container`                 | `composes`    | inbound   |
+| intra-layer | `technology.technologyservice.web-socket-model-service`  | `assigned-to` | outbound  |
 | intra-layer | `technology.technologyprocess.playwright-test-execution` | `serves`      | outbound  |
-| intra-layer | `technology.technologyservice.web-socket-model-service`  | `provides`    | inbound   |
 
 ### OpenAPI Type Generation {#openapi-type-generation}
 
@@ -527,8 +536,8 @@ Code-generation process using openapi-typescript to produce src/core/types/api-c
 
 | Type        | Related Element                                       | Predicate  | Direction |
 | ----------- | ----------------------------------------------------- | ---------- | --------- |
-| intra-layer | `technology.artifact.open-api-specification`          | `flows-to` | inbound   |
 | intra-layer | `technology.technologyinterface.rest-https-interface` | `serves`   | inbound   |
+| intra-layer | `technology.artifact.open-api-specification`          | `accesses` | outbound  |
 
 ### Playwright Test Execution {#playwright-test-execution}
 
@@ -543,7 +552,6 @@ Automated test pipeline running 1170 Playwright tests across unit, integration, 
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | intra-layer | `technology.technologyinterface.web-socket-interface` | `serves`  | inbound   |
-| intra-layer | `technology.path.app-to-dr-cli-web-socket-path`       | `uses`    | outbound  |
 
 ### Vite Build Pipeline {#vite-build-pipeline}
 
@@ -555,11 +563,11 @@ Automated build sequence: copy WASM assets → generate OpenAPI client → check
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.artifact.embedded-app-bundle`             | `flows-to`   | inbound   |
-| intra-layer | `technology.technologyinterface.rest-https-interface` | `uses`       | outbound  |
-| intra-layer | `technology.technologyservice.dr-cli-rest-server`     | `aggregates` | inbound   |
+| Type        | Related Element                                       | Predicate  | Direction |
+| ----------- | ----------------------------------------------------- | ---------- | --------- |
+| intra-layer | `technology.technologyinterface.rest-https-interface` | `serves`   | inbound   |
+| intra-layer | `technology.artifact.embedded-app-bundle`             | `accesses` | outbound  |
+| intra-layer | `technology.technologyservice.dr-cli-rest-server`     | `realizes` | outbound  |
 
 ### DR CLI REST Server {#dr-cli-rest-server}
 
@@ -577,12 +585,11 @@ HTTP compute service exposing the DR model management REST API; the embedded app
 
 #### Relationships
 
-| Type        | Related Element                                                     | Predicate    | Direction |
-| ----------- | ------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `depends-on` | inbound   |
-| intra-layer | `technology.technologyprocess.vite-build-pipeline`                  | `aggregates` | outbound  |
-| intra-layer | `technology.node.vite-dev-server`                                   | `depends-on` | outbound  |
-| intra-layer | `technology.technologyinterface.rest-https-interface`               | `provides`   | outbound  |
+| Type        | Related Element                                                     | Predicate     | Direction |
+| ----------- | ------------------------------------------------------------------- | ------------- | --------- |
+| inter-layer | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `serves`      | outbound  |
+| intra-layer | `technology.technologyinterface.rest-https-interface`               | `assigned-to` | inbound   |
+| intra-layer | `technology.technologyprocess.vite-build-pipeline`                  | `realizes`    | inbound   |
 
 ### WebSocket Model Service {#websocket-model-service}
 
@@ -600,11 +607,10 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.node.vite-dev-server`                     | `depends-on` | outbound  |
-| intra-layer | `technology.technologyinterface.web-socket-interface` | `provides`   | outbound  |
+| Type        | Related Element                                       | Predicate     | Direction |
+| ----------- | ----------------------------------------------------- | ------------- | --------- |
+| intra-layer | `technology.technologyinterface.web-socket-interface` | `assigned-to` | inbound   |
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0

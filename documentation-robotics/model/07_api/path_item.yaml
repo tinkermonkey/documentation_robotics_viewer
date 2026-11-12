@@ -151,3 +151,79 @@ api.pathitem.web-socket-path:
     created_at: 2026-03-20T12:58:50.807Z
     updated_at: 2026-03-20T12:58:50.807Z
     version: 1
+api.pathitem.annotation-replies-path:
+  id: c1733bb5-8735-42a8-9714-589e65e9f8bb
+  path: api.pathitem.annotation-replies-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Annotation Replies Path
+  description: Path /api/annotations/{annotationId}/replies — list and add replies
+  attributes:
+    summary: /api/annotations/{annotationId}/replies endpoint
+    description: List and add replies to an annotation
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.pathitem.layer-path:
+  id: 841d1dba-7778-466d-aa50-924ec20e6ddf
+  path: api.pathitem.layer-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Layer Path
+  description: Path /api/layers/{layerName} — one model layer
+  attributes:
+    summary: /api/layers/{layerName} endpoint
+    description: Get one model layer
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.pathitem.changeset-commit-path:
+  id: ded1741b-ca17-4c0d-8786-6c4ee7b6b34e
+  path: api.pathitem.changeset-commit-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changeset Commit Path
+  description: Path /api/changesets/{changesetId}/commit — apply a staged changeset
+  attributes:
+    summary: /api/changesets/{changesetId}/commit endpoint
+    description: Apply a staged changeset
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+  metadata:
+    created_at: 2026-11-12T13:42:29.415Z
+    updated_at: 2026-11-12T13:42:29.415Z
+    version: 1
+api.pathitem.changeset-discard-path:
+  id: 293c8662-566e-4c85-83a3-b65a8d85840b
+  path: api.pathitem.changeset-discard-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changeset Discard Path
+  description: Path /api/changesets/{changesetId}/discard — discard a staged changeset
+  attributes:
+    summary: /api/changesets/{changesetId}/discard endpoint
+    description: Discard a staged changeset
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+  metadata:
+    created_at: 2026-11-12T13:42:29.416Z
+    updated_at: 2026-11-12T13:42:29.416Z
+    version: 1

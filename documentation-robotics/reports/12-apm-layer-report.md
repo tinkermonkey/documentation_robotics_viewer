@@ -16,22 +16,21 @@ Observability, monitoring, metrics, logging, and tracing.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 8     |
-| Intra-Layer Relationships | 7     |
-| Inter-Layer Relationships | 2     |
+| Elements                  | 7     |
+| Intra-Layer Relationships | 5     |
+| Inter-Layer Relationships | 1     |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 2     |
+| Outbound Relationships    | 1     |
 
 **Cross-Layer References**:
 
-- **Downstream layers**: [Application](./05-application-layer-report.md), [Business](./02-business-layer-report.md)
+- **Downstream layers**: [Application](./05-application-layer-report.md)
 
 ## Intra-Layer Relationships
 
 ```mermaid
 flowchart LR
   subgraph apm
-    apm_alert_playwright_test_failure_alert["Playwright Test Failure Alert"]
     apm_alert_web_socket_disconnect_alert["WebSocket Disconnect Alert"]
     apm_instrumentationconfig_browser_error_instrumentation["Browser Error Instrumentation"]
     apm_instrumentationscope_error_tracker_instrumentation_scope["Error Tracker Instrumentation Scope"]
@@ -40,12 +39,10 @@ flowchart LR
     apm_metricinstrument_web_socket_reconnection_attempt_counter["WebSocket Reconnection Attempt Counter"]
     apm_resource_embedded_app_resource["Embedded App Resource"]
     apm_alert_web_socket_disconnect_alert -->|monitors| apm_metricinstrument_web_socket_connection_state_gauge
-    apm_instrumentationconfig_browser_error_instrumentation -->|serves| apm_instrumentationscope_error_tracker_instrumentation_scope
+    apm_instrumentationconfig_browser_error_instrumentation -->|references| apm_instrumentationscope_error_tracker_instrumentation_scope
     apm_instrumentationscope_error_tracker_instrumentation_scope -->|aggregates| apm_metricinstrument_web_socket_connection_state_gauge
-    apm_logconfiguration_browser_console_error_log_configuration -->|serves| apm_resource_embedded_app_resource
-    apm_metricinstrument_web_socket_connection_state_gauge -->|depends-on| apm_instrumentationscope_error_tracker_instrumentation_scope
-    apm_metricinstrument_web_socket_reconnection_attempt_counter -->|depends-on| apm_instrumentationscope_error_tracker_instrumentation_scope
-    apm_resource_embedded_app_resource -->|aggregates| apm_metricinstrument_web_socket_connection_state_gauge
+    apm_instrumentationscope_error_tracker_instrumentation_scope -->|aggregates| apm_metricinstrument_web_socket_reconnection_attempt_counter
+    apm_logconfiguration_browser_console_error_log_configuration -->|depends-on| apm_resource_embedded_app_resource
   end
 ```
 
@@ -68,33 +65,16 @@ flowchart TB
   apm["APM"]
   testing["Testing"]
   apm --> application
-  apm --> business
   class apm current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                | Source Node                                                    | Dest Node                                                   | Dest Layer    | Predicate  | Cardinality  | Strength |
-| -------------------------------------------------------------- | -------------------------------------------------------------- | ----------------------------------------------------------- | ------------- | ---------- | ------------ | -------- |
-| `apm.logconfiguration.monitors.business.businessservice`       | `apm.logconfiguration.browser-console-error-log-configuration` | `business.businessservice.architecture-model-visualization` | `business`    | `monitors` | many-to-many | medium   |
-| `apm.metricinstrument.monitors.application.applicationservice` | `apm.metricinstrument.web-socket-reconnection-attempt-counter` | `application.applicationservice.web-socket-client`          | `application` | `monitors` | many-to-many | medium   |
+| Relationship ID                                                | Source Node                                                    | Dest Node                                          | Dest Layer    | Predicate  | Cardinality  | Strength |
+| -------------------------------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------- | ------------- | ---------- | ------------ | -------- |
+| `apm.metricinstrument.monitors.application.applicationservice` | `apm.metricinstrument.web-socket-reconnection-attempt-counter` | `application.applicationservice.web-socket-client` | `application` | `monitors` | many-to-many | medium   |
 
 ## Element Reference
-
-### Playwright Test Failure Alert {#playwright-test-failure-alert}
-
-**ID**: `apm.alert.playwright-test-failure-alert`
-
-**Type**: `alert`
-
-Critical alert triggered when the Playwright E2E test suite exits with failures (tests/e2e only — unit/integration/component tests now run under Vitest, not Playwright); indicates a regression in the built production bundle's shell, views, chat, annotations, or accessibility behavior.
-
-#### Attributes
-
-| Name      | Value                                  |
-| --------- | -------------------------------------- |
-| condition | playwright test exit code not equals 0 |
-| severity  | critical                               |
 
 ### WebSocket Disconnect Alert {#websocket-disconnect-alert}
 
@@ -102,7 +82,7 @@ Critical alert triggered when the Playwright E2E test suite exits with failures 
 
 **Type**: `alert`
 
-Warning alert triggered when the DR CLI WebSocket connection drops and falls back to REST-only polling mode; indicates the real-time model update channel is unavailable.
+Aspirational: an alert when the DR CLI WebSocket drops and live updates stop. Today the drop only shows in the UI (the topbar's connection indicator, from useConnectionStore); no alerting pipeline exists.
 
 #### Attributes
 
@@ -134,9 +114,9 @@ Manual browser error instrumentation configuration for the embedded viewer; the 
 
 #### Relationships
 
-| Type        | Related Element                                                | Predicate | Direction |
-| ----------- | -------------------------------------------------------------- | --------- | --------- |
-| intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `serves`  | outbound  |
+| Type        | Related Element                                                | Predicate    | Direction |
+| ----------- | -------------------------------------------------------------- | ------------ | --------- |
+| intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `references` | outbound  |
 
 ### Error Tracker Instrumentation Scope {#error-tracker-instrumentation-scope}
 
@@ -156,10 +136,9 @@ Named instrumentation scope for the errorTracker and exceptionClassifier service
 
 | Type        | Related Element                                                | Predicate    | Direction |
 | ----------- | -------------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `apm.instrumentationconfig.browser-error-instrumentation`      | `serves`     | inbound   |
+| intra-layer | `apm.instrumentationconfig.browser-error-instrumentation`      | `references` | inbound   |
 | intra-layer | `apm.metricinstrument.web-socket-connection-state-gauge`       | `aggregates` | outbound  |
-| intra-layer | `apm.metricinstrument.web-socket-connection-state-gauge`       | `depends-on` | inbound   |
-| intra-layer | `apm.metricinstrument.web-socket-reconnection-attempt-counter` | `depends-on` | inbound   |
+| intra-layer | `apm.metricinstrument.web-socket-reconnection-attempt-counter` | `aggregates` | outbound  |
 
 ### Browser Console Error Log Configuration {#browser-console-error-log-configuration}
 
@@ -178,10 +157,9 @@ Log configuration for browser console error capture; the errorTracker service wr
 
 #### Relationships
 
-| Type        | Related Element                                             | Predicate  | Direction |
-| ----------- | ----------------------------------------------------------- | ---------- | --------- |
-| inter-layer | `business.businessservice.architecture-model-visualization` | `monitors` | outbound  |
-| intra-layer | `apm.resource.embedded-app-resource`                        | `serves`   | outbound  |
+| Type        | Related Element                      | Predicate    | Direction |
+| ----------- | ------------------------------------ | ------------ | --------- |
+| intra-layer | `apm.resource.embedded-app-resource` | `depends-on` | outbound  |
 
 ### WebSocket Connection State Gauge {#websocket-connection-state-gauge}
 
@@ -189,7 +167,7 @@ Log configuration for browser console error capture; the errorTracker service wr
 
 **Type**: `metricinstrument`
 
-Gauge instrument tracking the current DR CLI WebSocket connection state (1=connected, 0=disconnected); sourced from connectionStore connection status transitions; enables alerting on connection loss.
+Aspirational: the DR CLI WebSocket connection state (connected / disconnected) as a gauge. Today it is app state in useConnectionStore, shown as the topbar's connected indicator; no OpenTelemetry SDK is installed and nothing exports it as a metric.
 
 #### Attributes
 
@@ -204,8 +182,6 @@ Gauge instrument tracking the current DR CLI WebSocket connection state (1=conne
 | ----------- | -------------------------------------------------------------- | ------------ | --------- |
 | intra-layer | `apm.alert.web-socket-disconnect-alert`                        | `monitors`   | inbound   |
 | intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `aggregates` | inbound   |
-| intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `depends-on` | outbound  |
-| intra-layer | `apm.resource.embedded-app-resource`                           | `aggregates` | inbound   |
 
 ### WebSocket Reconnection Attempt Counter {#websocket-reconnection-attempt-counter}
 
@@ -213,7 +189,7 @@ Gauge instrument tracking the current DR CLI WebSocket connection state (1=conne
 
 **Type**: `metricinstrument`
 
-Counter tracking cumulative WebSocket reconnection attempts; incremented by the websocketClient reconnect loop; measures connection stability over a session.
+Aspirational: cumulative WebSocket reconnection attempts as a counter. Today the count lives in WebSocketClient's reconnect loop; no OpenTelemetry SDK is installed and nothing exports it as a metric.
 
 #### Attributes
 
@@ -227,7 +203,7 @@ Counter tracking cumulative WebSocket reconnection attempts; incremented by the 
 | Type        | Related Element                                                | Predicate    | Direction |
 | ----------- | -------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `application.applicationservice.web-socket-client`             | `monitors`   | outbound  |
-| intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `depends-on` | outbound  |
+| intra-layer | `apm.instrumentationscope.error-tracker-instrumentation-scope` | `aggregates` | inbound   |
 
 ### Embedded App Resource {#embedded-app-resource}
 
@@ -235,7 +211,7 @@ Counter tracking cumulative WebSocket reconnection attempts; incremented by the 
 
 **Type**: `resource`
 
-OpenTelemetry-style resource identity for the browser-based embedded architecture viewer; identifies the frontend service unit producing all observability signals.
+Aspirational: an OpenTelemetry-style resource identity for the browser viewer (the App Shell). No OpenTelemetry SDK is installed, so no telemetry carries it today.
 
 #### Attributes
 
@@ -247,9 +223,8 @@ OpenTelemetry-style resource identity for the browser-based embedded architectur
 
 | Type        | Related Element                                                | Predicate    | Direction |
 | ----------- | -------------------------------------------------------------- | ------------ | --------- |
-| intra-layer | `apm.logconfiguration.browser-console-error-log-configuration` | `serves`     | inbound   |
-| intra-layer | `apm.metricinstrument.web-socket-connection-state-gauge`       | `aggregates` | outbound  |
+| intra-layer | `apm.logconfiguration.browser-console-error-log-configuration` | `depends-on` | inbound   |
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0

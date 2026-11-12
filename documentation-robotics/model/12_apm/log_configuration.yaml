@@ -15,7 +15,7 @@ apm.logconfiguration.browser-console-error-log-configuration:
     provenance: extracted
     locations:
       - file: src/apps/embedded/services/errorTracker.ts
-        symbol: errorTracker
+        symbol: getErrorLog
   metadata:
     created_at: 2026-03-20T13:32:17.866Z
     updated_at: 2026-03-20T13:32:17.866Z

@@ -206,3 +206,124 @@ application.applicationservice.relationship-derivation:
     created_at: 2026-09-19T15:18:10.343Z
     updated_at: 2026-09-19T15:18:10.343Z
     version: 1
+application.applicationservice.spec-graph-transform:
+  id: cdc0d563-37f6-4ffb-90a5-e59432086bbd
+  path: application.applicationservice.spec-graph-transform
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Spec Graph Transform
+  description: Turns /api/spec into per-layer node-type graphs, attribute rows and
+    relationship-schema counts for the Schema view.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/specGraph.ts
+        symbol: schemaForLayer
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.page-data-builder:
+  id: 9037c16e-7a88-4afa-8199-0e80bcd5bc96
+  path: application.applicationservice.page-data-builder
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Page Data Builder
+  description: Builds the page view's records (header, breadcrumb, stats, facts,
+    tables) for a layer, spec node type or model element.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/pageData.ts
+        symbol: layerPageData
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.layered-reach:
+  id: 2127243e-6612-4325-982e-2184e0269da2
+  path: application.applicationservice.layered-reach
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Layered Reach
+  description: Whole-model heimdall-ui layered index and the inspector's
+    followed-across-layers reach (computeReach at the chosen follow depth).
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/reach.ts
+        symbol: elementReach
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.changeset-impact-analysis:
+  id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+  path: application.applicationservice.changeset-impact-analysis
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Impact Analysis
+  description: Lays a changeset over the model (staged additions included), nets
+    its ops in order, runs multi-origin computeReach from every changed element
+    and returns the reached subgraph and per-layer blast radius.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesetImpact.ts
+        symbol: changesetImpact
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.chat-context-builder:
+  id: 3c551f82-499b-4cf7-9b71-285cf8f4f14b
+  path: application.applicationservice.chat-context-builder
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Context Builder
+  description: Builds the <viewer-context> block (view, layer, selected element or
+    changeset) sent ahead of each DrBot message.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/chatContext.ts
+        symbol: buildChatContext
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.neighborhood-graph:
+  id: 82d54efd-afe7-4daa-a81d-f8305b417f9f
+  path: application.applicationservice.neighborhood-graph
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Neighborhood Graph
+  description: The one-hop neighborhood graph of a model element or spec node type
+    shown on its page.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/neighborhoodGraph.ts
+        symbol: modelElementNeighborhoodGraph
+  metadata:
+    created_at: 2026-11-12T13:44:46.093Z
+    updated_at: 2026-11-12T13:44:46.093Z
+    version: 1

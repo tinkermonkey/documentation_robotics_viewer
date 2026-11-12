@@ -1,0 +1,3748 @@
+- type: relationship-add
+  elementId: application.applicationfunction.chat-store::accesses::data-model.objectschema.chat-message
+  layerName: application
+  after:
+    source: application.applicationfunction.chat-store
+    target: data-model.objectschema.chat-message
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationfunction.chat-store::accesses::data-model.objectschema.tool-invocation-content
+  layerName: application
+  after:
+    source: application.applicationfunction.chat-store
+    target: data-model.objectschema.tool-invocation-content
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationfunction.element-store::accesses::data-model.objectschema.model-element
+  layerName: application
+  after:
+    source: application.applicationfunction.element-store
+    target: data-model.objectschema.model-element
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.layer
+  layerName: application
+  after:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.layer
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.model-element
+  layerName: application
+  after:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.model-element
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.predicate-definition
+  layerName: application
+  after:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.predicate-definition
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.spec-layer-data
+  layerName: application
+  after:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.spec-layer-data
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: application.applicationservice.chat-service::depends-on::application.applicationservice.error-tracker
+  layerName: application
+  after:
+    source: application.applicationservice.chat-service
+    target: application.applicationservice.error-tracker
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationservice.chat-service::depends-on::application.applicationservice.json-rpc-handler
+  layerName: application
+  after:
+    source: application.applicationservice.chat-service
+    target: application.applicationservice.json-rpc-handler
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationservice.chat-validation::serves::application.applicationfunction.chat-store
+  layerName: application
+  after:
+    source: application.applicationservice.chat-validation
+    target: application.applicationfunction.chat-store
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.error-tracker
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.error-tracker
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::serves::application.applicationfunction.annotation-store
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationfunction.annotation-store
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::serves::application.applicationfunction.changeset-store
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationfunction.changeset-store
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: application.applicationservice.error-tracker::depends-on::application.applicationservice.exception-classifier
+  layerName: application
+  after:
+    source: application.applicationservice.error-tracker
+    target: application.applicationservice.exception-classifier
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: application.applicationservice.error-tracker::serves::application.applicationfunction.annotation-store
+  layerName: application
+  after:
+    source: application.applicationservice.error-tracker
+    target: application.applicationfunction.annotation-store
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationservice.json-rpc-handler::depends-on::application.applicationservice.error-tracker
+  layerName: application
+  after:
+    source: application.applicationservice.json-rpc-handler
+    target: application.applicationservice.error-tracker
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: application.applicationservice.json-rpc-handler::depends-on::application.applicationservice.web-socket-client
+  layerName: application
+  after:
+    source: application.applicationservice.json-rpc-handler
+    target: application.applicationservice.web-socket-client
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: application.applicationservice.model-graph-transform::serves::application.applicationcomponent.graph-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.model-graph-transform
+    target: application.applicationcomponent.graph-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: application.applicationservice.web-socket-client::depends-on::application.applicationservice.error-tracker
+  layerName: application
+  after:
+    source: application.applicationservice.web-socket-client
+    target: application.applicationservice.error-tracker
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:40:30.319Z
+  sequenceNumber: 34
+- type: update
+  elementId: api.operation.get-architecture-model
+  layerName: api
+  before:
+    id: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+    path: api.operation.get-architecture-model
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Architecture Model
+    description: Returns full architecture model from documentation-robotics/model/
+      including all layers, elements, relationships, and cross-layer references
+    attributes:
+      operationId: getModel
+      summary: Get full architecture model
+      tags: Model
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a1
+      created_at: 2026-03-20T12:57:42.953Z
+      updated_at: 2026-03-20T12:57:42.954Z
+      version: 1
+  after:
+    id: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+    path: api.operation.get-architecture-model
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Architecture Model
+    description: Returns full architecture model from documentation-robotics/model/
+      including all layers, elements, relationships, and cross-layer references
+    attributes:
+      operationId: getModel
+      summary: Get full architecture model
+      tags: Model
+      http_method: GET
+      http_path: /api/model
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/model
+    metadata: *a1
+  timestamp: 2026-11-12T13:42:03.915Z
+  sequenceNumber: 36
+- type: update
+  elementId: api.operation.get-schema-specifications
+  layerName: api
+  before:
+    id: dc2da0b6-3de0-44d1-840f-5d49cc976cd9
+    path: api.operation.get-schema-specifications
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Schema Specifications
+    description: Returns all JSON Schema files from .dr/schemas/ including layer
+      schemas, relationship catalog, and link registry
+    attributes:
+      operationId: getSpec
+      summary: Get all JSON Schema specification files
+      tags: Schema
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a2
+      created_at: 2026-03-20T12:57:39.761Z
+      updated_at: 2026-03-20T12:57:39.761Z
+      version: 1
+  after:
+    id: dc2da0b6-3de0-44d1-840f-5d49cc976cd9
+    path: api.operation.get-schema-specifications
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Schema Specifications
+    description: Returns all JSON Schema files from .dr/schemas/ including layer
+      schemas, relationship catalog, and link registry
+    attributes:
+      operationId: getSpec
+      summary: Get all JSON Schema specification files
+      tags: Schema
+      http_method: GET
+      http_path: /api/spec
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/spec
+    metadata: *a2
+  timestamp: 2026-11-12T13:42:04.386Z
+  sequenceNumber: 37
+- type: update
+  elementId: api.operation.health-check
+  layerName: api
+  before:
+    id: ea592d05-3a1a-4b06-8591-24f53f6cf98c
+    path: api.operation.health-check
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Health Check
+    description: No auth required; returns server status and version
+    attributes:
+      operationId: getHealth
+      summary: Check server health and version
+      tags: Health
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a3
+      created_at: 2026-03-20T12:57:38.001Z
+      updated_at: 2026-03-20T12:57:38.001Z
+      version: 1
+  after:
+    id: ea592d05-3a1a-4b06-8591-24f53f6cf98c
+    path: api.operation.health-check
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Health Check
+    description: No auth required; returns server status and version
+    attributes:
+      operationId: getHealth
+      summary: Check server health and version
+      tags: Health
+      http_method: GET
+      http_path: /health
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /health
+    metadata: *a3
+  timestamp: 2026-11-12T13:42:04.870Z
+  sequenceNumber: 38
+- type: update
+  elementId: api.operation.list-changesets
+  layerName: api
+  before:
+    id: f952fcc0-7c42-4586-a306-a5f2f94a3068
+    path: api.operation.list-changesets
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: List Changesets
+    description: Returns registry of all available changesets with summaries
+    attributes:
+      operationId: listChangesets
+      summary: List all changesets
+      tags: Changesets
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a4
+      created_at: 2026-03-20T12:57:43.877Z
+      updated_at: 2026-03-20T12:57:43.878Z
+      version: 1
+  after:
+    id: f952fcc0-7c42-4586-a306-a5f2f94a3068
+    path: api.operation.list-changesets
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: List Changesets
+    description: Returns registry of all available changesets with summaries
+    attributes:
+      operationId: listChangesets
+      summary: List all changesets
+      tags: Changesets
+      http_method: GET
+      http_path: /api/changesets
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/changesets
+    metadata: *a4
+  timestamp: 2026-11-12T13:42:05.331Z
+  sequenceNumber: 39
+- type: update
+  elementId: api.operation.get-changeset-details
+  layerName: api
+  before:
+    id: e067f83f-1f31-44d7-a5d0-86059f8beb9f
+    path: api.operation.get-changeset-details
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Changeset Details
+    description: Returns detailed changeset including all element changes with
+      before/after states
+    attributes:
+      operationId: getChangeset
+      summary: Get changeset by ID
+      tags: Changesets
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a5
+      created_at: 2026-03-20T12:57:46.588Z
+      updated_at: 2026-03-20T12:57:46.588Z
+      version: 1
+  after:
+    id: e067f83f-1f31-44d7-a5d0-86059f8beb9f
+    path: api.operation.get-changeset-details
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Changeset Details
+    description: Returns detailed changeset including all element changes with
+      before/after states
+    attributes:
+      operationId: getChangeset
+      summary: Get changeset by ID
+      tags: Changesets
+      http_method: GET
+      http_path: /api/changesets/{changesetId}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/changesets/{changesetId}
+    metadata: *a5
+  timestamp: 2026-11-12T13:42:05.581Z
+  sequenceNumber: 40
+- type: update
+  elementId: api.operation.get-annotations
+  layerName: api
+  before:
+    id: ff16c609-618e-4dd9-b477-12e17c000df8
+    path: api.operation.get-annotations
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Annotations
+    description: Returns annotations optionally filtered by elementId query param
+    attributes:
+      operationId: getAnnotations
+      summary: Get annotations with optional elementId filter
+      tags: Annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a6
+      created_at: 2026-03-20T12:57:49.814Z
+      updated_at: 2026-03-20T12:57:49.814Z
+      version: 1
+  after:
+    id: ff16c609-618e-4dd9-b477-12e17c000df8
+    path: api.operation.get-annotations
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Annotations
+    description: Returns annotations optionally filtered by elementId query param
+    attributes:
+      operationId: getAnnotations
+      summary: Get annotations with optional elementId filter
+      tags: Annotations
+      http_method: GET
+      http_path: /api/annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/annotations
+    metadata: *a6
+  timestamp: 2026-11-12T13:42:06.212Z
+  sequenceNumber: 41
+- type: update
+  elementId: api.operation.create-annotation
+  layerName: api
+  before:
+    id: 8630981b-236c-47ed-b99b-e977c56bdc63
+    path: api.operation.create-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Create Annotation
+    description: Creates a new annotation on a model element
+    attributes:
+      operationId: createAnnotation
+      summary: Create a new annotation
+      tags: Annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a7
+      created_at: 2026-03-20T12:57:50.656Z
+      updated_at: 2026-03-20T12:57:50.656Z
+      version: 1
+  after:
+    id: 8630981b-236c-47ed-b99b-e977c56bdc63
+    path: api.operation.create-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Create Annotation
+    description: Creates a new annotation on a model element
+    attributes:
+      operationId: createAnnotation
+      summary: Create a new annotation
+      tags: Annotations
+      http_method: POST
+      http_path: /api/annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: POST /api/annotations
+    metadata: *a7
+  timestamp: 2026-11-12T13:42:06.792Z
+  sequenceNumber: 42
+- type: update
+  elementId: api.operation.update-annotation
+  layerName: api
+  before:
+    id: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+    path: api.operation.update-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Update Annotation
+    description: Updates content or tags of an existing annotation
+    attributes:
+      operationId: updateAnnotation
+      summary: Update an existing annotation
+      tags: Annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a8
+      created_at: 2026-03-20T12:57:54.837Z
+      updated_at: 2026-03-20T12:57:54.837Z
+      version: 1
+  after:
+    id: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
+    path: api.operation.update-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Update Annotation
+    description: Updates content or tags of an existing annotation
+    attributes:
+      operationId: updateAnnotation
+      summary: Update an existing annotation
+      tags: Annotations
+      http_method: PATCH
+      http_path: /api/annotations/{annotationId}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: PATCH /api/annotations/{annotationId}
+    metadata: *a8
+  timestamp: 2026-11-12T13:42:07.265Z
+  sequenceNumber: 43
+- type: update
+  elementId: api.operation.delete-annotation
+  layerName: api
+  before:
+    id: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+    path: api.operation.delete-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Delete Annotation
+    description: Deletes an existing annotation
+    attributes:
+      operationId: deleteAnnotation
+      summary: Delete an annotation
+      tags: Annotations
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata: &a9
+      created_at: 2026-03-20T12:57:55.598Z
+      updated_at: 2026-03-20T12:57:55.598Z
+      version: 1
+  after:
+    id: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
+    path: api.operation.delete-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Delete Annotation
+    description: Deletes an existing annotation
+    attributes:
+      operationId: deleteAnnotation
+      summary: Delete an annotation
+      tags: Annotations
+      http_method: DELETE
+      http_path: /api/annotations/{annotationId}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: DELETE /api/annotations/{annotationId}
+    metadata: *a9
+  timestamp: 2026-11-12T13:42:07.676Z
+  sequenceNumber: 44
+- type: add
+  elementId: api.operation.get-annotation
+  layerName: api
+  after:
+    id: f842e585-1144-49eb-aa9e-89eeb1f63f99
+    path: api.operation.get-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Annotation
+    description: Returns one annotation by id.
+    attributes:
+      operationId: getAnnotation
+      summary: Get an annotation by ID
+      tags: Annotations
+      http_method: GET
+      http_path: /api/annotations/{annotationId}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/annotations/{annotationId}
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 45
+- type: add
+  elementId: api.operation.replace-annotation
+  layerName: api
+  after:
+    id: b17db3d2-4a06-41c9-af37-844c12d5cd82
+    path: api.operation.replace-annotation
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Replace Annotation
+    description: Replaces an annotation's content and tags (PUT form of Update Annotation).
+    attributes:
+      operationId: replaceAnnotation
+      summary: Replace an annotation
+      tags: Annotations
+      http_method: PUT
+      http_path: /api/annotations/{annotationId}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: PUT /api/annotations/{annotationId}
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 46
+- type: add
+  elementId: api.operation.list-annotation-replies
+  layerName: api
+  after:
+    id: 4f171c52-31b5-4fee-b3ed-babfba10def2
+    path: api.operation.list-annotation-replies
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: List Annotation Replies
+    description: Returns the reply thread of an annotation; the Inspector's
+      annotation thread reads it.
+    attributes:
+      operationId: getAnnotationReplies
+      summary: List replies to an annotation
+      tags: Annotations
+      http_method: GET
+      http_path: /api/annotations/{annotationId}/replies
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/annotations/{annotationId}/replies
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 47
+- type: add
+  elementId: api.operation.create-annotation-reply
+  layerName: api
+  after:
+    id: 77f6d136-4d60-4543-bf8a-f010d960f2f7
+    path: api.operation.create-annotation-reply
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Create Annotation Reply
+    description: Adds a reply to an annotation thread.
+    attributes:
+      operationId: createAnnotationReply
+      summary: Reply to an annotation
+      tags: Annotations
+      http_method: POST
+      http_path: /api/annotations/{annotationId}/replies
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: POST /api/annotations/{annotationId}/replies
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 48
+- type: add
+  elementId: api.operation.get-layer
+  layerName: api
+  after:
+    id: e337b583-9e61-412d-99a3-24964d062b3d
+    path: api.operation.get-layer
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Layer
+    description: Returns one layer of the model with its elements.
+    attributes:
+      operationId: getLayer
+      summary: Get a model layer by name
+      tags: Model
+      http_method: GET
+      http_path: /api/layers/{layerName}
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: GET /api/layers/{layerName}
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 49
+- type: add
+  elementId: api.operation.commit-changeset
+  layerName: api
+  after:
+    id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
+    path: api.operation.commit-changeset
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Commit Changeset
+    description: Applies a staged changeset to the base model (the viewer's Apply).
+      404 unknown, 409 not staged or model drifted, 422 failed validation, body
+      { error }.
+    attributes:
+      operationId: commitChangeset
+      summary: Apply a staged changeset to the model
+      tags: Changesets
+      http_method: POST
+      http_path: /api/changesets/{changesetId}/commit
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: POST /api/changesets/{changesetId}/commit
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 50
+- type: add
+  elementId: api.operation.discard-changeset
+  layerName: api
+  after:
+    id: 2b3c326a-8b39-4355-9831-b5c73095c45e
+    path: api.operation.discard-changeset
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Discard Changeset
+    description: Discards a staged changeset without touching the model (the
+      viewer's Discard).
+    attributes:
+      operationId: discardChangeset
+      summary: Discard a staged changeset
+      tags: Changesets
+      http_method: POST
+      http_path: /api/changesets/{changesetId}/discard
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: POST /api/changesets/{changesetId}/discard
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 51
+- type: add
+  elementId: api.pathitem.annotation-replies-path
+  layerName: api
+  after:
+    id: c1733bb5-8735-42a8-9714-589e65e9f8bb
+    path: api.pathitem.annotation-replies-path
+    spec_node_id: api.pathitem
+    type: pathitem
+    layer_id: api
+    name: Annotation Replies Path
+    description: Path /api/annotations/{annotationId}/replies — list and add replies
+    attributes:
+      summary: /api/annotations/{annotationId}/replies endpoint
+      description: List and add replies to an annotation
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 52
+- type: add
+  elementId: api.pathitem.layer-path
+  layerName: api
+  after:
+    id: 841d1dba-7778-466d-aa50-924ec20e6ddf
+    path: api.pathitem.layer-path
+    spec_node_id: api.pathitem
+    type: pathitem
+    layer_id: api
+    name: Layer Path
+    description: Path /api/layers/{layerName} — one model layer
+    attributes:
+      summary: /api/layers/{layerName} endpoint
+      description: Get one model layer
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 53
+- type: add
+  elementId: api.pathitem.changeset-commit-path
+  layerName: api
+  after:
+    id: ded1741b-ca17-4c0d-8786-6c4ee7b6b34e
+    path: api.pathitem.changeset-commit-path
+    spec_node_id: api.pathitem
+    type: pathitem
+    layer_id: api
+    name: Changeset Commit Path
+    description: Path /api/changesets/{changesetId}/commit — apply a staged changeset
+    attributes:
+      summary: /api/changesets/{changesetId}/commit endpoint
+      description: Apply a staged changeset
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata:
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 54
+- type: add
+  elementId: api.pathitem.changeset-discard-path
+  layerName: api
+  after:
+    id: 293c8662-566e-4c85-83a3-b65a8d85840b
+    path: api.pathitem.changeset-discard-path
+    spec_node_id: api.pathitem
+    type: pathitem
+    layer_id: api
+    name: Changeset Discard Path
+    description: Path /api/changesets/{changesetId}/discard — discard a staged changeset
+    attributes:
+      summary: /api/changesets/{changesetId}/discard endpoint
+      description: Discard a staged changeset
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+    metadata:
+      created_at: 2026-11-12T13:42:29.416Z
+      updated_at: 2026-11-12T13:42:29.416Z
+      version: 1
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 55
+- type: relationship-add
+  elementId: api.pathitem.annotation-detail-path::composes::api.operation.get-annotation
+  layerName: api
+  after:
+    source: api.pathitem.annotation-detail-path
+    target: api.operation.get-annotation
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: api.pathitem.annotation-detail-path::composes::api.operation.replace-annotation
+  layerName: api
+  after:
+    source: api.pathitem.annotation-detail-path
+    target: api.operation.replace-annotation
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: api.pathitem.annotation-replies-path::composes::api.operation.list-annotation-replies
+  layerName: api
+  after:
+    source: api.pathitem.annotation-replies-path
+    target: api.operation.list-annotation-replies
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: api.pathitem.annotation-replies-path::composes::api.operation.create-annotation-reply
+  layerName: api
+  after:
+    source: api.pathitem.annotation-replies-path
+    target: api.operation.create-annotation-reply
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: api.pathitem.layer-path::composes::api.operation.get-layer
+  layerName: api
+  after:
+    source: api.pathitem.layer-path
+    target: api.operation.get-layer
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: api.pathitem.changeset-commit-path::composes::api.operation.commit-changeset
+  layerName: api
+  after:
+    source: api.pathitem.changeset-commit-path
+    target: api.operation.commit-changeset
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: api.pathitem.changeset-discard-path::composes::api.operation.discard-changeset
+  layerName: api
+  after:
+    source: api.pathitem.changeset-discard-path
+    target: api.operation.discard-changeset
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: api.operation.get-annotation::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.get-annotation
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: api.operation.replace-annotation::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.replace-annotation
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: api.operation.list-annotation-replies::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.list-annotation-replies
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 65
+- type: relationship-add
+  elementId: api.operation.create-annotation-reply::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.create-annotation-reply
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 66
+- type: relationship-add
+  elementId: api.operation.get-layer::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.get-layer
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: api.operation.commit-changeset::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.commit-changeset
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 68
+- type: relationship-add
+  elementId: api.operation.discard-changeset::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.discard-changeset
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 69
+- type: relationship-add
+  elementId: api.operation.delete-annotation::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.delete-annotation
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-12T13:42:29.441Z
+  sequenceNumber: 70
+- type: update
+  elementId: application.applicationfunction.auth-store
+  layerName: application
+  before:
+    id: 5f23d5e0-b6f6-46ed-be70-1b9869b7bf30
+    path: application.applicationfunction.auth-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Auth Store
+    description: Zustand store managing the DR CLI auth token, authentication state,
+      and magic-link token extraction
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/authStore.ts
+          symbol: authStore
+    metadata: &a10
+      created_at: 2026-03-20T12:56:59.895Z
+      updated_at: 2026-03-20T12:56:59.896Z
+      version: 1
+  after:
+    id: 5f23d5e0-b6f6-46ed-be70-1b9869b7bf30
+    path: application.applicationfunction.auth-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Auth Store
+    description: Zustand store managing the DR CLI auth token, authentication state,
+      and magic-link token extraction
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/authStore.ts
+          symbol: useAuthStore
+    metadata: *a10
+  timestamp: 2026-11-12T13:42:45.123Z
+  sequenceNumber: 71
+- type: update
+  elementId: apm.instrumentationconfig.browser-error-instrumentation
+  layerName: apm
+  before:
+    id: fcb5f30b-1f67-4743-82f8-0e35c4894de7
+    path: apm.instrumentationconfig.browser-error-instrumentation
+    spec_node_id: apm.instrumentationconfig
+    type: instrumentationconfig
+    layer_id: apm
+    name: Browser Error Instrumentation
+    description: Manual browser error instrumentation configuration for the embedded
+      viewer; the errorTracker service captures runtime exceptions, classifies
+      them by category (network, rendering, data, auth), and logs structured
+      error records.
+    attributes: &a11
+      type: browser-error-tracking
+      instrumentationType: manual
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: errorTracker
+    metadata: &a12
+      created_at: 2026-03-20T13:30:53.287Z
+      updated_at: 2026-03-20T13:30:53.287Z
+      version: 1
+  after:
+    id: fcb5f30b-1f67-4743-82f8-0e35c4894de7
+    path: apm.instrumentationconfig.browser-error-instrumentation
+    spec_node_id: apm.instrumentationconfig
+    type: instrumentationconfig
+    layer_id: apm
+    name: Browser Error Instrumentation
+    description: Manual browser error instrumentation configuration for the embedded
+      viewer; the errorTracker service captures runtime exceptions, classifies
+      them by category (network, rendering, data, auth), and logs structured
+      error records.
+    attributes: *a11
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: logError
+    metadata: *a12
+  timestamp: 2026-11-12T13:43:18.537Z
+  sequenceNumber: 72
+- type: update
+  elementId: apm.instrumentationscope.error-tracker-instrumentation-scope
+  layerName: apm
+  before:
+    id: 76a68af2-6323-47e9-8eca-9852ea65e0db
+    path: apm.instrumentationscope.error-tracker-instrumentation-scope
+    spec_node_id: apm.instrumentationscope
+    type: instrumentationscope
+    layer_id: apm
+    name: Error Tracker Instrumentation Scope
+    description: Named instrumentation scope for the errorTracker and
+      exceptionClassifier services; groups all error/exception signals produced
+      by the frontend error handling subsystem.
+    attributes: &a13
+      droppedAttributesCount: 0
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: errorTracker
+    metadata: &a14
+      created_at: 2026-03-20T13:31:37.032Z
+      updated_at: 2026-03-20T13:31:37.033Z
+      version: 1
+  after:
+    id: 76a68af2-6323-47e9-8eca-9852ea65e0db
+    path: apm.instrumentationscope.error-tracker-instrumentation-scope
+    spec_node_id: apm.instrumentationscope
+    type: instrumentationscope
+    layer_id: apm
+    name: Error Tracker Instrumentation Scope
+    description: Named instrumentation scope for the errorTracker and
+      exceptionClassifier services; groups all error/exception signals produced
+      by the frontend error handling subsystem.
+    attributes: *a13
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: logError
+    metadata: *a14
+  timestamp: 2026-11-12T13:43:20.600Z
+  sequenceNumber: 73
+- type: update
+  elementId: apm.logconfiguration.browser-console-error-log-configuration
+  layerName: apm
+  before:
+    id: e0620bce-d90e-4052-93b4-0b877a235445
+    path: apm.logconfiguration.browser-console-error-log-configuration
+    spec_node_id: apm.logconfiguration
+    type: logconfiguration
+    layer_id: apm
+    name: Browser Console Error Log Configuration
+    description: Log configuration for browser console error capture; the
+      errorTracker service writes structured error records with classification
+      category, stack trace, and context; minimum severity ERROR.
+    attributes: &a15
+      serviceName: documentation-robotics-viewer
+      minimumSeverity: ERROR
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: errorTracker
+    metadata: &a16
+      created_at: 2026-03-20T13:32:17.866Z
+      updated_at: 2026-03-20T13:32:17.866Z
+      version: 1
+  after:
+    id: e0620bce-d90e-4052-93b4-0b877a235445
+    path: apm.logconfiguration.browser-console-error-log-configuration
+    spec_node_id: apm.logconfiguration
+    type: logconfiguration
+    layer_id: apm
+    name: Browser Console Error Log Configuration
+    description: Log configuration for browser console error capture; the
+      errorTracker service writes structured error records with classification
+      category, stack trace, and context; minimum severity ERROR.
+    attributes: *a15
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/errorTracker.ts
+          symbol: getErrorLog
+    metadata: *a16
+  timestamp: 2026-11-12T13:43:22.264Z
+  sequenceNumber: 74
+- type: update
+  elementId: apm.metricinstrument.web-socket-connection-state-gauge
+  layerName: apm
+  before:
+    id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+    path: apm.metricinstrument.web-socket-connection-state-gauge
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Connection State Gauge
+    description: Gauge instrument tracking the current DR CLI WebSocket connection
+      state (1=connected, 0=disconnected); sourced from connectionStore
+      connection status transitions; enables alerting on connection loss.
+    attributes: &a17
+      type: Gauge
+      unit: state
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/connectionStore.ts
+          symbol: connectionStore
+    metadata: &a18
+      created_at: 2026-03-20T13:31:41.379Z
+      updated_at: 2026-03-20T13:31:41.379Z
+      version: 1
+  after:
+    id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+    path: apm.metricinstrument.web-socket-connection-state-gauge
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Connection State Gauge
+    description: Gauge instrument tracking the current DR CLI WebSocket connection
+      state (1=connected, 0=disconnected); sourced from connectionStore
+      connection status transitions; enables alerting on connection loss.
+    attributes: *a17
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/connectionStore.ts
+          symbol: useConnectionStore
+    metadata: *a18
+  timestamp: 2026-11-12T13:43:23.935Z
+  sequenceNumber: 75
+- type: update
+  elementId: apm.resource.embedded-app-resource
+  layerName: apm
+  before:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: OpenTelemetry-style resource identity for the browser-based
+      embedded architecture viewer; identifies the frontend service unit
+      producing all observability signals.
+    attributes: &a19
+      droppedAttributesCount: 0
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/main.tsx
+          symbol: EmbeddedApp
+    metadata: &a20
+      created_at: 2026-03-20T13:31:24.895Z
+      updated_at: 2026-03-20T13:31:24.895Z
+      version: 1
+  after:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: OpenTelemetry-style resource identity for the browser-based
+      embedded architecture viewer; identifies the frontend service unit
+      producing all observability signals.
+    attributes: *a19
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata: *a20
+  timestamp: 2026-11-12T13:43:25.100Z
+  sequenceNumber: 76
+- type: update
+  elementId: business.businessservice.ai-assisted-architecture-chat
+  layerName: business
+  before:
+    id: e642ad79-62ea-47a4-ae04-d512d0ef7881
+    path: business.businessservice.ai-assisted-architecture-chat
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: AI-Assisted Architecture Chat
+    description: Conversational interface to query and explore the architecture
+      model via DR CLI AI assistant (DrBot); streamed over WebSocket JSON-RPC,
+      rendered through Heimdall's ChatContainer/ChatMessage components in a
+      372px drawer (ui/ChatDrawer.tsx, ui/ChatPanel.tsx, ui/chatAdapter.ts) fed
+      by services/chatService.ts
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/components/chat
+    metadata: &a21
+      created_at: 2026-03-20T13:40:27.965Z
+      updated_at: 2026-03-20T13:40:27.965Z
+      version: 1
+  after:
+    id: e642ad79-62ea-47a4-ae04-d512d0ef7881
+    path: business.businessservice.ai-assisted-architecture-chat
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: AI-Assisted Architecture Chat
+    description: "DrBot: a chat drawer scoped to the current selection that answers
+      questions about the model and can stage changesets for review, streamed
+      over the DR CLI's JSON-RPC WebSocket."
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata: *a21
+  timestamp: 2026-11-12T13:43:25.937Z
+  sequenceNumber: 77
+- type: update
+  elementId: business.businessservice.changeset-review
+  layerName: business
+  before:
+    id: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+    path: business.businessservice.changeset-review
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Changeset Review
+    description: Visual diff review of proposed architecture changes via DR CLI changesets
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: changesetsViewRoute
+    metadata: &a22
+      created_at: 2026-03-20T13:40:23.062Z
+      updated_at: 2026-03-20T13:40:23.062Z
+      version: 1
+  after:
+    id: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+    path: business.businessservice.changeset-review
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Changeset Review
+    description: "Review a changeset before it lands: its op-coded change list with
+      before/after diffs, its Impact (what it reaches outside itself, as layer
+      lanes, plus a blast-radius summary), and Apply / Discard for a staged
+      changeset."
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: *a22
+  timestamp: 2026-11-12T13:43:26.628Z
+  sequenceNumber: 78
+- type: update
+  elementId: business.businessservice.schema-exploration
+  layerName: business
+  before:
+    id: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+    path: business.businessservice.schema-exploration
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Schema Exploration
+    description: Browse and inspect layer specification schemas to understand the
+      architecture meta-model
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: specViewRoute
+    metadata: &a23
+      created_at: 2026-03-20T13:40:23.409Z
+      updated_at: 2026-03-20T13:40:23.409Z
+      version: 1
+  after:
+    id: 5308e41f-71c9-4ca6-8dfc-11d8b0483ce8
+    path: business.businessservice.schema-exploration
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Schema Exploration
+    description: Browse and inspect layer specification schemas to understand the
+      architecture meta-model
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata: *a23
+  timestamp: 2026-11-12T13:43:27.249Z
+  sequenceNumber: 79
+- type: update
+  elementId: motivation.goal.ensure-accessible-architecture-views
+  layerName: motivation
+  before:
+    id: ef84b64d-883c-4471-9b56-a58574bac2b9
+    path: motivation.goal.ensure-accessible-architecture-views
+    spec_node_id: motivation.goal
+    type: goal
+    layer_id: motivation
+    name: Ensure Accessible Architecture Views
+    description: Meet WCAG 2.1 AA accessibility standards so all team members can
+      use the viewer regardless of assistive technology needs; standard now
+      documented directly in CLAUDE.md (documentation/ACCESSIBILITY.md was
+      removed in the Heimdall rebuild) and enforced by axe-core Playwright
+      checks on every view in light + dark
+    attributes: &a24
+      priority: medium
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: documentation/ACCESSIBILITY.md
+    metadata: &a25
+      created_at: 2026-03-20T13:41:19.813Z
+      updated_at: 2026-03-20T13:41:19.813Z
+      version: 1
+  after:
+    id: ef84b64d-883c-4471-9b56-a58574bac2b9
+    path: motivation.goal.ensure-accessible-architecture-views
+    spec_node_id: motivation.goal
+    type: goal
+    layer_id: motivation
+    name: Ensure Accessible Architecture Views
+    description: Meet WCAG 2.1 AA accessibility standards so all team members can
+      use the viewer regardless of assistive technology needs; standard now
+      documented directly in CLAUDE.md (documentation/ACCESSIBILITY.md was
+      removed in the Heimdall rebuild) and enforced by axe-core Playwright
+      checks on every view in light + dark
+    attributes: *a24
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: CLAUDE.md
+          symbol: Accessibility Standards (WCAG 2.1 AA)
+    metadata: *a25
+  timestamp: 2026-11-12T13:43:27.962Z
+  sequenceNumber: 80
+- type: update
+  elementId: motivation.requirement.wcag-21-aa-compliance
+  layerName: motivation
+  before:
+    id: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+    path: motivation.requirement.wcag-21-aa-compliance
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: WCAG 2.1 AA Compliance
+    description: All interactive components must pass axe-core automated
+      accessibility testing and meet WCAG 2.1 Level AA; verified via
+      @axe-core/playwright in tests/e2e/a11y.spec.ts against every view in light
+      + dark canvas mode
+    attributes: &a26
+      requirementType: quality
+      priority: high
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: documentation/ACCESSIBILITY.md
+    metadata: &a27
+      created_at: 2026-03-20T13:41:28.155Z
+      updated_at: 2026-03-20T13:41:28.156Z
+      version: 1
+  after:
+    id: 9df37bbd-8ffd-4d80-899f-9437aa03282a
+    path: motivation.requirement.wcag-21-aa-compliance
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: WCAG 2.1 AA Compliance
+    description: All interactive components must pass axe-core automated
+      accessibility testing and meet WCAG 2.1 Level AA; verified via
+      @axe-core/playwright in tests/e2e/a11y.spec.ts against every view in light
+      + dark canvas mode
+    attributes: *a26
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: CLAUDE.md
+          symbol: Accessibility Standards (WCAG 2.1 AA)
+    metadata: *a27
+  timestamp: 2026-11-12T13:43:28.682Z
+  sequenceNumber: 81
+- type: update
+  elementId: navigation.navigationtransition.layer-deep-link-transition
+  layerName: navigation
+  before:
+    id: ff98ecbb-8bc5-4687-bcea-8d208c56496c
+    path: navigation.navigationtransition.layer-deep-link-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Layer Deep-Link Transition
+    description: Programmatic cross-layer navigation to a specific element or spec
+      node, triggered by click-to-navigate relationship links in
+      GraphInspector/Inspector; implemented via
+      uiStore.navigateToElement/navigateToSpecNode (Zustand state), no longer a
+      ?layer= URL search parameter
+    attributes: &a28
+      from: model-graph-view
+      to: model-graph-view
+      trigger: programmatic
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/components/CrossLayerPanel.tsx
+    metadata: &a29
+      created_at: 2026-03-20T13:26:31.679Z
+      updated_at: 2026-03-20T13:26:31.679Z
+      version: 1
+  after:
+    id: ff98ecbb-8bc5-4687-bcea-8d208c56496c
+    path: navigation.navigationtransition.layer-deep-link-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Layer Deep-Link Transition
+    description: "Deep links into a layer, element or changeset: the router two-way
+      syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph
+      viewport) with the UI store, so a shared link, reload or back/forward
+      restores the selection."
+    attributes: *a28
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: AppShellRoute
+    metadata: *a29
+  timestamp: 2026-11-12T13:43:29.933Z
+  sequenceNumber: 82
+- type: update
+  elementId: navigation.navigationtransition.tab-navigation-transition
+  layerName: navigation
+  before:
+    id: 6194b2d5-7baf-49ca-b7c3-8e96b5405e06
+    path: navigation.navigationtransition.tab-navigation-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Tab Navigation Transition
+    description: User-triggered switch between main sections (Model, Spec,
+      Changesets); fires when the user clicks a section header in the 3-level
+      NavTree, updating uiStore.view which router.tsx syncs to the
+      /:section/:view URL hash
+    attributes: &a30
+      from: any-route
+      to: section-root
+      trigger: user-click
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/EmbeddedLayout.tsx
+          symbol: handleTabChange
+    metadata: &a31
+      created_at: 2026-03-20T13:26:14.912Z
+      updated_at: 2026-03-20T13:26:14.912Z
+      version: 1
+  after:
+    id: 6194b2d5-7baf-49ca-b7c3-8e96b5405e06
+    path: navigation.navigationtransition.tab-navigation-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Tab Navigation Transition
+    description: "Switching between the Model, Schema and Changesets sections in the
+      sidebar nav tree (an accordion: opening a section collapses the others).
+      The section is the route's :section segment."
+    attributes: *a30
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata: *a31
+  timestamp: 2026-11-12T13:43:31.215Z
+  sequenceNumber: 83
+- type: update
+  elementId: technology.path.app-to-dr-cli-https-path
+  layerName: technology
+  before:
+    id: 3f9b73e6-3457-4671-a83a-67ec4846df95
+    path: technology.path.app-to-dr-cli-https-path
+    spec_node_id: technology.path
+    type: path
+    layer_id: technology
+    name: App to DR CLI HTTPS Path
+    description: HTTPS communication path from browser application to the DR CLI
+      REST server; carries JSON model management requests and responses
+    attributes: &a32
+      pathType: point-to-point
+      protocol: https
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/connectionStore.ts
+          symbol: connectionStore
+    metadata: &a33
+      created_at: 2026-03-20T12:38:25.074Z
+      updated_at: 2026-03-24T09:10:00.000Z
+      version: 2
+  after:
+    id: 3f9b73e6-3457-4671-a83a-67ec4846df95
+    path: technology.path.app-to-dr-cli-https-path
+    spec_node_id: technology.path
+    type: path
+    layer_id: technology
+    name: App to DR CLI HTTPS Path
+    description: HTTPS communication path from browser application to the DR CLI
+      REST server; carries JSON model management requests and responses
+    attributes: *a32
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/utils/fetchInterceptor.ts
+          symbol: installFetchInterceptor
+    metadata: *a33
+  timestamp: 2026-11-12T13:43:31.989Z
+  sequenceNumber: 84
+- type: update
+  elementId: technology.path.app-to-dr-cli-web-socket-path
+  layerName: technology
+  before:
+    id: 14bf08c0-716e-4bca-b169-996fc9bb3e33
+    path: technology.path.app-to-dr-cli-web-socket-path
+    spec_node_id: technology.path
+    type: path
+    layer_id: technology
+    name: App to DR CLI WebSocket Path
+    description: Persistent WebSocket path between browser application and DR CLI
+      server; carries JSON-RPC 2.0 real-time model update messages
+    attributes: &a34
+      pathType: bidirectional
+      protocol: websocket
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/core/services/generatedApiClient.ts
+          symbol: websocketConnect
+    metadata: &a35
+      created_at: 2026-03-20T12:38:25.346Z
+      updated_at: 2026-03-24T09:10:00.000Z
+      version: 2
+  after:
+    id: 14bf08c0-716e-4bca-b169-996fc9bb3e33
+    path: technology.path.app-to-dr-cli-web-socket-path
+    spec_node_id: technology.path
+    type: path
+    layer_id: technology
+    name: App to DR CLI WebSocket Path
+    description: Persistent WebSocket path between browser application and DR CLI
+      server; carries JSON-RPC 2.0 real-time model update messages
+    attributes: *a34
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: WebSocketClient
+    metadata: *a35
+  timestamp: 2026-11-12T13:43:32.979Z
+  sequenceNumber: 85
+- type: update
+  elementId: technology.technologyinterface.web-socket-interface
+  layerName: technology
+  before:
+    id: efbf1dbb-a8e5-4fa0-9d74-9952ad12a7cc
+    path: technology.technologyinterface.web-socket-interface
+    spec_node_id: technology.technologyinterface
+    type: technologyinterface
+    layer_id: technology
+    name: WebSocket Interface
+    description: WebSocket interface providing full-duplex communication channel for
+      real-time JSON-RPC 2.0 model update notifications
+    attributes: &a36
+      protocol: websocket
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/generatedApiClient.ts
+          symbol: websocketConnect
+    metadata: &a37
+      created_at: 2026-03-20T12:38:11.130Z
+      updated_at: 2026-03-24T09:10:00.000Z
+      version: 2
+  after:
+    id: efbf1dbb-a8e5-4fa0-9d74-9952ad12a7cc
+    path: technology.technologyinterface.web-socket-interface
+    spec_node_id: technology.technologyinterface
+    type: technologyinterface
+    layer_id: technology
+    name: WebSocket Interface
+    description: WebSocket interface providing full-duplex communication channel for
+      real-time JSON-RPC 2.0 model update notifications
+    attributes: *a36
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: WebSocketClient
+    metadata: *a37
+  timestamp: 2026-11-12T13:43:34.071Z
+  sequenceNumber: 86
+- type: update
+  elementId: ux.uxapplication.embedded-architecture-viewer
+  layerName: ux
+  before:
+    id: e346087f-72f5-4d98-993f-a830357b81e2
+    path: ux.uxapplication.embedded-architecture-viewer
+    spec_node_id: ux.uxapplication
+    type: uxapplication
+    layer_id: ux
+    name: Embedded Architecture Viewer
+    description: Single-page web application (hash-based SPA) for visualizing
+      multi-layer architecture documentation models; embeds in an iframe and
+      connects to the DR CLI visualization server.
+    attributes: &a38
+      channel: web
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/main.tsx
+          symbol: EmbeddedApp
+    metadata: &a39
+      created_at: 2026-03-20T13:22:20.438Z
+      updated_at: 2026-03-20T13:22:20.438Z
+      version: 1
+  after:
+    id: e346087f-72f5-4d98-993f-a830357b81e2
+    path: ux.uxapplication.embedded-architecture-viewer
+    spec_node_id: ux.uxapplication
+    type: uxapplication
+    layer_id: ux
+    name: Embedded Architecture Viewer
+    description: "The Documentation Robotics Viewer: a React app built on the
+      Heimdall design system and served by `dr visualize`. Dark shell around a
+      light/dark canvas with a sidebar nav tree, Model / Schema / Changesets
+      views (graph or page mode), an inspector drawer, and the DrBot chat
+      drawer."
+    attributes: *a38
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata: *a39
+  timestamp: 2026-11-12T13:43:35.297Z
+  sequenceNumber: 87
+- type: add
+  elementId: application.applicationcomponent.app-shell
+  layerName: application
+  after:
+    id: 069d7627-9798-4334-9c79-f20fb7294746
+    path: application.applicationcomponent.app-shell
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: App Shell
+    description: "The viewer's four-pane frame: topbar, sidebar nav tree, the active
+      view's canvas (with its inspector), the DrBot chat drawer and the status
+      bar. Mounts the live model/changeset/annotation refetch hooks."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata:
+      created_at: 2026-11-12T13:44:46.072Z
+      updated_at: 2026-11-12T13:44:46.072Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 88
+- type: add
+  elementId: application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with its 12 layers and their elements or node types (or the
+      changesets). Reveals the current selection."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata:
+      created_at: 2026-11-12T13:44:46.089Z
+      updated_at: 2026-11-12T13:44:46.089Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 89
+- type: add
+  elementId: application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    id: c68ffa8b-a94f-484b-bf31-b423a8867491
+    path: application.applicationcomponent.inspector-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Inspector Drawer
+    description: "Selection details over the graph (Heimdall DetailDrawer +
+      GraphInspector): element identity by dotted path, curated properties,
+      outgoing/incoming and cross-layer relationships, the
+      followed-across-layers reach, and annotations."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Inspector.tsx
+          symbol: Inspector
+    metadata:
+      created_at: 2026-11-12T13:44:46.090Z
+      updated_at: 2026-11-12T13:44:46.090Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 90
+- type: add
+  elementId: application.applicationcomponent.page-view
+  layerName: application
+  after:
+    id: 853ab423-dc51-43cf-b564-91bbb62771ce
+    path: application.applicationcomponent.page-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Page View
+    description: "The graph/page toggle's page mode: the full record of a layer,
+      spec node type or model element as breadcrumb, stats, facts and navigable
+      tables, with a neighborhood graph."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/PageView.tsx
+          symbol: PageView
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 91
+- type: add
+  elementId: application.applicationcomponent.changeset-canvas
+  layerName: application
+  after:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the op-coded change list with
+      side-by-side diffs, and a Changes / Impact switch."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 92
+- type: add
+  elementId: application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    id: 45f5d489-3338-4821-82e0-dae0d3684317
+    path: application.applicationcomponent.changeset-impact-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Impact View
+    description: "The Impact tab: every changed element as a reach origin, drawn as
+      heimdall-ui layer lanes (gutter-routed skip-layer links, bundled
+      same-layer links); click an element to isolate its reach."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+          symbol: ChangesetImpactView
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 93
+- type: add
+  elementId: application.applicationcomponent.changeset-inspector
+  layerName: application
+  after:
+    id: 73fb36fd-1239-4405-80eb-41d7428b0c12
+    path: application.applicationcomponent.changeset-inspector
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Inspector
+    description: "The Changesets view's right pane: status, blast radius,
+      added/modified/deleted counts, and Apply / Discard (behind confirmation)
+      for a staged changeset."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetInspector.tsx
+          symbol: ChangesetInspector
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 94
+- type: add
+  elementId: application.applicationcomponent.chat-panel
+  layerName: application
+  after:
+    id: 0310b836-8c96-4ab6-874b-94af3975edf8
+    path: application.applicationcomponent.chat-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Panel
+    description: "The DrBot drawer: Heimdall ChatContainer with streamed text, tool
+      and thinking blocks, suggestions, and a composer that sends the viewer
+      context with each message."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 95
+- type: add
+  elementId: application.applicationcomponent.annotations-section
+  layerName: application
+  after:
+    id: be688fce-dcde-4cf6-bf03-eef985286acd
+    path: application.applicationcomponent.annotations-section
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Annotations Section
+    description: "Annotation threads on the selected element in the inspector:
+      create, edit, resolve, delete and reply, refreshed live from the server's
+      annotation.* broadcasts."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AnnotationsSection.tsx
+          symbol: AnnotationsSection
+    metadata:
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 96
+- type: add
+  elementId: application.applicationservice.spec-graph-transform
+  layerName: application
+  after:
+    id: cdc0d563-37f6-4ffb-90a5-e59432086bbd
+    path: application.applicationservice.spec-graph-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Spec Graph Transform
+    description: Turns /api/spec into per-layer node-type graphs, attribute rows and
+      relationship-schema counts for the Schema view.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/specGraph.ts
+          symbol: schemaForLayer
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 97
+- type: add
+  elementId: application.applicationservice.page-data-builder
+  layerName: application
+  after:
+    id: 9037c16e-7a88-4afa-8199-0e80bcd5bc96
+    path: application.applicationservice.page-data-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Page Data Builder
+    description: Builds the page view's records (header, breadcrumb, stats, facts,
+      tables) for a layer, spec node type or model element.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/pageData.ts
+          symbol: layerPageData
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 98
+- type: add
+  elementId: application.applicationservice.layered-reach
+  layerName: application
+  after:
+    id: 2127243e-6612-4325-982e-2184e0269da2
+    path: application.applicationservice.layered-reach
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Layered Reach
+    description: Whole-model heimdall-ui layered index and the inspector's
+      followed-across-layers reach (computeReach at the chosen follow depth).
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/reach.ts
+          symbol: elementReach
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 99
+- type: add
+  elementId: application.applicationservice.changeset-impact-analysis
+  layerName: application
+  after:
+    id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+    path: application.applicationservice.changeset-impact-analysis
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Impact Analysis
+    description: Lays a changeset over the model (staged additions included), nets
+      its ops in order, runs multi-origin computeReach from every changed
+      element and returns the reached subgraph and per-layer blast radius.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/changesetImpact.ts
+          symbol: changesetImpact
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 100
+- type: add
+  elementId: application.applicationservice.chat-context-builder
+  layerName: application
+  after:
+    id: 3c551f82-499b-4cf7-9b71-285cf8f4f14b
+    path: application.applicationservice.chat-context-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Chat Context Builder
+    description: Builds the <viewer-context> block (view, layer, selected element or
+      changeset) sent ahead of each DrBot message.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/chatContext.ts
+          symbol: buildChatContext
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 101
+- type: add
+  elementId: application.applicationservice.neighborhood-graph
+  layerName: application
+  after:
+    id: 82d54efd-afe7-4daa-a81d-f8305b417f9f
+    path: application.applicationservice.neighborhood-graph
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Neighborhood Graph
+    description: The one-hop neighborhood graph of a model element or spec node type
+      shown on its page.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/neighborhoodGraph.ts
+          symbol: modelElementNeighborhoodGraph
+    metadata:
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 102
+- type: add
+  elementId: application.applicationfunction.ui-store
+  layerName: application
+  after:
+    id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+    path: application.applicationfunction.ui-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: UI Store
+    description: "Zustand store for UI state: view, layer, selection, changeset,
+      graph/page mode, nav accordion, graph settings and canvas tone.
+      Preferences persist to localStorage; navigation state is the router's."
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/uiStore.ts
+          symbol: useUiStore
+    metadata:
+      created_at: 2026-11-12T13:44:46.094Z
+      updated_at: 2026-11-12T13:44:46.094Z
+      version: 1
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 103
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.nav-tree
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 104
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.graph-canvas
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.graph-canvas
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 105
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.changeset-canvas
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.changeset-canvas
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 106
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.changeset-inspector
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.changeset-inspector
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 107
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.chat-panel
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.chat-panel
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 108
+- type: relationship-add
+  elementId: application.applicationcomponent.graph-canvas::composes::application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    source: application.applicationcomponent.graph-canvas
+    target: application.applicationcomponent.inspector-drawer
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 109
+- type: relationship-add
+  elementId: application.applicationcomponent.graph-canvas::composes::application.applicationcomponent.page-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.graph-canvas
+    target: application.applicationcomponent.page-view
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 110
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-canvas::composes::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-canvas
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 111
+- type: relationship-add
+  elementId: application.applicationcomponent.inspector-drawer::composes::application.applicationcomponent.annotations-section
+  layerName: application
+  after:
+    source: application.applicationcomponent.inspector-drawer
+    target: application.applicationcomponent.annotations-section
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 112
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::assigned-to::application.applicationfunction.ui-store
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationfunction.ui-store
+    predicate: assigned-to
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 113
+- type: relationship-add
+  elementId: application.applicationcomponent.nav-tree::assigned-to::application.applicationfunction.ui-store
+  layerName: application
+  after:
+    source: application.applicationcomponent.nav-tree
+    target: application.applicationfunction.ui-store
+    predicate: assigned-to
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 114
+- type: relationship-add
+  elementId: application.applicationservice.spec-graph-transform::serves::application.applicationcomponent.graph-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.spec-graph-transform
+    target: application.applicationcomponent.graph-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 115
+- type: relationship-add
+  elementId: application.applicationservice.page-data-builder::serves::application.applicationcomponent.page-view
+  layerName: application
+  after:
+    source: application.applicationservice.page-data-builder
+    target: application.applicationcomponent.page-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 116
+- type: relationship-add
+  elementId: application.applicationservice.neighborhood-graph::serves::application.applicationcomponent.page-view
+  layerName: application
+  after:
+    source: application.applicationservice.neighborhood-graph
+    target: application.applicationcomponent.page-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 117
+- type: relationship-add
+  elementId: application.applicationservice.layered-reach::serves::application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    source: application.applicationservice.layered-reach
+    target: application.applicationcomponent.inspector-drawer
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 118
+- type: relationship-add
+  elementId: application.applicationservice.relationship-derivation::serves::application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    source: application.applicationservice.relationship-derivation
+    target: application.applicationcomponent.inspector-drawer
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 119
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 120
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::serves::application.applicationcomponent.changeset-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationcomponent.changeset-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 121
+- type: relationship-add
+  elementId: application.applicationservice.chat-context-builder::serves::application.applicationcomponent.chat-panel
+  layerName: application
+  after:
+    source: application.applicationservice.chat-context-builder
+    target: application.applicationcomponent.chat-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 122
+- type: relationship-add
+  elementId: application.applicationservice.chat-service::serves::application.applicationcomponent.chat-panel
+  layerName: application
+  after:
+    source: application.applicationservice.chat-service
+    target: application.applicationcomponent.chat-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 123
+- type: relationship-add
+  elementId: application.applicationservice.generated-api-client::serves::application.applicationcomponent.changeset-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.generated-api-client
+    target: application.applicationcomponent.changeset-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 124
+- type: relationship-add
+  elementId: application.applicationservice.page-data-builder::depends-on::application.applicationservice.spec-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.page-data-builder
+    target: application.applicationservice.spec-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 125
+- type: relationship-add
+  elementId: application.applicationservice.page-data-builder::depends-on::application.applicationservice.model-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.page-data-builder
+    target: application.applicationservice.model-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 126
+- type: relationship-add
+  elementId: application.applicationservice.layered-reach::depends-on::application.applicationservice.model-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.layered-reach
+    target: application.applicationservice.model-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 127
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::depends-on::application.applicationservice.model-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationservice.model-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 128
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::realizes::business.businessservice.changeset-review
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: business.businessservice.changeset-review
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 129
+- type: relationship-add
+  elementId: application.applicationservice.spec-graph-transform::realizes::business.businessservice.schema-exploration
+  layerName: application
+  after:
+    source: application.applicationservice.spec-graph-transform
+    target: business.businessservice.schema-exploration
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 130
+- type: relationship-add
+  elementId: application.applicationservice.model-graph-transform::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.model-graph-transform
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 131
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::accesses::business.businessobject.changeset
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: business.businessobject.changeset
+    predicate: accesses
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 132
+- type: relationship-add
+  elementId: application.applicationservice.embedded-data-loader::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.embedded-data-loader
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 133
+- type: relationship-add
+  elementId: application.applicationservice.exception-classifier::serves::application.applicationcomponent.app-shell
+  layerName: application
+  after:
+    source: application.applicationservice.exception-classifier
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:44:46.371Z
+  sequenceNumber: 134
+- type: add
+  elementId: ux.uxspec.architecture-exploration-spec
+  layerName: ux
+  after:
+    id: ee79d4ae-cf52-4f95-96f2-b46238fdcc6d
+    path: ux.uxspec.architecture-exploration-spec
+    spec_node_id: ux.uxspec
+    type: uxspec
+    layer_id: ux
+    name: Architecture Exploration Spec
+    description: "The viewer's main experience: browse the model and the spec layer
+      by layer as graphs or pages, inspect elements, review changesets and their
+      impact, and ask DrBot."
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata:
+      created_at: 2026-11-12T13:45:15.980Z
+      updated_at: 2026-11-12T13:45:15.980Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 135
+- type: add
+  elementId: ux.view.model-view
+  layerName: ux
+  after:
+    id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+    path: ux.view.model-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Model View
+    description: A layer of the model as a graph of its elements (with inter-layer
+      neighbours), or in page mode as the layer / element record.
+    attributes:
+      type: page
+      title: Model
+      routable: true
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata:
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 136
+- type: add
+  elementId: ux.view.schema-view
+  layerName: ux
+  after:
+    id: 779c6767-e690-456f-a9f2-4a1f6e638154
+    path: ux.view.schema-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Schema View
+    description: A layer of the spec as a graph of its node types and relationship
+      schemas, or in page mode as the layer / spec node record.
+    attributes:
+      type: page
+      title: Schema
+      routable: true
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata:
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 137
+- type: add
+  elementId: ux.view.changesets-view
+  layerName: ux
+  after:
+    id: 51fcb9c1-f25b-48ae-a5fc-1fa7708e49fe
+    path: ux.view.changesets-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Changesets View
+    description: "One changeset: its change list (Changes) or its reach outside
+      itself (Impact), with the changeset inspector and Apply / Discard for a
+      staged changeset."
+    attributes:
+      type: page
+      title: Changesets
+      routable: true
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata:
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 138
+- type: add
+  elementId: ux.view.inspector-drawer
+  layerName: ux
+  after:
+    id: a7b64ef4-e6e3-482f-980f-2f74d8d40606
+    path: ux.view.inspector-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Inspector Drawer
+    description: Selection details floating over the graph; auto-hides when nothing
+      is selected.
+    attributes:
+      type: drawer
+      routable: false
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Inspector.tsx
+          symbol: Inspector
+    metadata:
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 139
+- type: add
+  elementId: ux.view.dr-bot-chat-drawer
+  layerName: ux
+  after:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: persistent
+      at 1300px and wider, an overlay below."
+    attributes:
+      type: drawer
+      routable: false
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata:
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 140
+- type: add
+  elementId: ux.subview.changeset-impact-tab
+  layerName: ux
+  after:
+    id: f80be9c7-b219-41e8-874e-dafd31c26402
+    path: ux.subview.changeset-impact-tab
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Changeset Impact Tab
+    description: "The Changesets view's Impact tab: layer lanes of what the changed
+      elements reach, with Follow and Labels controls."
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+          symbol: ChangesetImpactView
+    metadata:
+      created_at: 2026-11-12T13:45:15.985Z
+      updated_at: 2026-11-12T13:45:15.985Z
+      version: 1
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 141
+- type: relationship-add
+  elementId: ux.uxapplication.embedded-architecture-viewer::aggregates::ux.uxspec.architecture-exploration-spec
+  layerName: ux
+  after:
+    source: ux.uxapplication.embedded-architecture-viewer
+    target: ux.uxspec.architecture-exploration-spec
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 142
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.model-view
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.model-view
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 143
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.schema-view
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.schema-view
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 144
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.changesets-view
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.changesets-view
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 145
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.inspector-drawer
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.inspector-drawer
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 146
+- type: relationship-add
+  elementId: ux.view.changesets-view::composes::ux.subview.changeset-impact-tab
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: ux.subview.changeset-impact-tab
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 147
+- type: relationship-add
+  elementId: ux.view.model-view::references::business.businessobject.architecture-model
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: business.businessobject.architecture-model
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 148
+- type: relationship-add
+  elementId: ux.view.schema-view::references::business.businessobject.architecture-model
+  layerName: ux
+  after:
+    source: ux.view.schema-view
+    target: business.businessobject.architecture-model
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 149
+- type: relationship-add
+  elementId: ux.view.changesets-view::references::business.businessobject.changeset
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: business.businessobject.changeset
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 150
+- type: relationship-add
+  elementId: ux.view.inspector-drawer::references::business.businessobject.annotation
+  layerName: ux
+  after:
+    source: ux.view.inspector-drawer
+    target: business.businessobject.annotation
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 151
+- type: relationship-add
+  elementId: ux.view.changesets-view::serves::business.businessrole.architecture-reviewer
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: business.businessrole.architecture-reviewer
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 152
+- type: relationship-add
+  elementId: ux.view.model-view::serves::business.businessrole.architecture-reviewer
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: business.businessrole.architecture-reviewer
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 153
+- type: relationship-add
+  elementId: ux.view.model-view::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 154
+- type: relationship-add
+  elementId: ux.view.schema-view::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: ux
+  after:
+    source: ux.view.schema-view
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 155
+- type: relationship-add
+  elementId: ux.view.changesets-view::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 156
+- type: relationship-add
+  elementId: ux.view.model-view::supports::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: supports
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 157
+- type: relationship-add
+  elementId: ux.view.changesets-view::supports::motivation.goal.enable-real-time-collaboration
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: motivation.goal.enable-real-time-collaboration
+    predicate: supports
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 158
+- type: relationship-add
+  elementId: ux.view.model-view::depends-on::technology.systemsoftware.heimdall-ui
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: technology.systemsoftware.heimdall-ui
+    predicate: depends-on
+    layer: ux
+    targetLayer: technology
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 159
+- type: relationship-add
+  elementId: ux.view.changesets-view::depends-on::technology.systemsoftware.heimdall-ui
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: technology.systemsoftware.heimdall-ui
+    predicate: depends-on
+    layer: ux
+    targetLayer: technology
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 160
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.model-view
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.model-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 161
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.schema-view
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.schema-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 162
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.changesets-view
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.changesets-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 163
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::depends-on::application.applicationcomponent.app-shell
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: application.applicationcomponent.app-shell
+    predicate: depends-on
+    layer: navigation
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 164
+- type: relationship-add
+  elementId: navigation.route.index-route::navigates-to::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  after:
+    source: navigation.route.index-route
+    target: navigation.route.app-shell-sectionview-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 165
+- type: relationship-add
+  elementId: navigation.navigationgraph.embedded-app-navigation-graph::composes::navigation.route.index-route
+  layerName: navigation
+  after:
+    source: navigation.navigationgraph.embedded-app-navigation-graph
+    target: navigation.route.index-route
+    predicate: composes
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 166
+- type: relationship-add
+  elementId: navigation.navigationgraph.embedded-app-navigation-graph::composes::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  after:
+    source: navigation.navigationgraph.embedded-app-navigation-graph
+    target: navigation.route.app-shell-sectionview-route
+    predicate: composes
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 167
+- type: relationship-add
+  elementId: navigation.flowstep.post-auth-model-entry-step::navigates-to::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  after:
+    source: navigation.flowstep.post-auth-model-entry-step
+    target: navigation.route.app-shell-sectionview-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 168
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.app-shell
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 169
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.changeset-impact-view
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 170
+- type: relationship-add
+  elementId: technology.systemsoftware.tailwind-css-v4::serves::application.applicationcomponent.app-shell
+  layerName: technology
+  after:
+    source: technology.systemsoftware.tailwind-css-v4
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 171
+- type: relationship-add
+  elementId: technology.node.vite-dev-server::serves::application.applicationcomponent.app-shell
+  layerName: technology
+  after:
+    source: technology.node.vite-dev-server
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 172
+- type: relationship-add
+  elementId: technology.path.app-to-dr-cli-https-path::connects::technology.node.docker-agent-container
+  layerName: technology
+  after:
+    source: technology.path.app-to-dr-cli-https-path
+    target: technology.node.docker-agent-container
+    predicate: connects
+    layer: technology
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 173
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.changeset-impact-analysis
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.changeset-impact-analysis
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 174
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.model-graph-transform
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.model-graph-transform
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 175
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.layered-reach
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.layered-reach
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 176
+- type: relationship-add
+  elementId: testing.testcoveragetarget.cross-component-integration-test-coverage::covers::application.applicationservice.chat-service
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.cross-component-integration-test-coverage
+    target: application.applicationservice.chat-service
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 177
+- type: relationship-add
+  elementId: testing.testcoveragetarget.cross-component-integration-test-coverage::covers::application.applicationservice.web-socket-client
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.cross-component-integration-test-coverage
+    target: application.applicationservice.web-socket-client
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 178
+- type: relationship-add
+  elementId: testing.testcoveragemodel.viewer-test-coverage-model::composes::testing.testcoveragetarget.service-and-store-unit-test-coverage
+  layerName: testing
+  after:
+    source: testing.testcoveragemodel.viewer-test-coverage-model
+    target: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    predicate: composes
+    layer: testing
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 179
+- type: relationship-add
+  elementId: testing.testcoveragemodel.viewer-test-coverage-model::composes::testing.testcoveragetarget.cross-component-integration-test-coverage
+  layerName: testing
+  after:
+    source: testing.testcoveragemodel.viewer-test-coverage-model
+    target: testing.testcoveragetarget.cross-component-integration-test-coverage
+    predicate: composes
+    layer: testing
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 180
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::composes::testing.coveragerequirement.all-partitions-unit-test-requirement
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: testing.coveragerequirement.all-partitions-unit-test-requirement
+    predicate: composes
+    layer: testing
+    category: structural
+  timestamp: 2026-11-12T13:45:16.460Z
+  sequenceNumber: 181
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.dr-bot-chat-drawer
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.dr-bot-chat-drawer
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-12T13:45:21.771Z
+  sequenceNumber: 182
+- type: relationship-add
+  elementId: ux.view.dr-bot-chat-drawer::serves::business.businessrole.model-author
+  layerName: ux
+  after:
+    source: ux.view.dr-bot-chat-drawer
+    target: business.businessrole.model-author
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-12T13:45:21.771Z
+  sequenceNumber: 183
+- type: delete
+  elementId: apm.alert.playwright-test-failure-alert
+  layerName: apm
+  before:
+    id: bc1b7107-c90f-466c-b28e-63f8eb7c232b
+    path: apm.alert.playwright-test-failure-alert
+    spec_node_id: apm.alert
+    type: alert
+    layer_id: apm
+    name: Playwright Test Failure Alert
+    description: Critical alert triggered when the Playwright E2E test suite exits
+      with failures (tests/e2e only — unit/integration/component tests now run
+      under Vitest, not Playwright); indicates a regression in the built
+      production bundle's shell, views, chat, annotations, or accessibility
+      behavior.
+    attributes:
+      severity: critical
+      condition: playwright test exit code not equals 0
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: playwright.config.ts
+    metadata:
+      created_at: 2026-03-20T13:32:13.589Z
+      updated_at: 2026-03-20T13:32:13.589Z
+      version: 1
+  timestamp: 2026-11-12T13:45:31.914Z
+  sequenceNumber: 186
+- type: relationship-add
+  elementId: api.operation.get-annotation::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  after:
+    source: api.operation.get-annotation
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 187
+- type: relationship-add
+  elementId: api.operation.replace-annotation::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  after:
+    source: api.operation.replace-annotation
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 188
+- type: relationship-add
+  elementId: api.operation.list-annotation-replies::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  after:
+    source: api.operation.list-annotation-replies
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 189
+- type: relationship-add
+  elementId: api.operation.create-annotation-reply::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  after:
+    source: api.operation.create-annotation-reply
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 190
+- type: relationship-add
+  elementId: api.operation.get-layer::realizes::application.applicationfunction.layer-store
+  layerName: api
+  after:
+    source: api.operation.get-layer
+    target: application.applicationfunction.layer-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 191
+- type: relationship-add
+  elementId: api.operation.commit-changeset::realizes::application.applicationfunction.changeset-store
+  layerName: api
+  after:
+    source: api.operation.commit-changeset
+    target: application.applicationfunction.changeset-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 192
+- type: relationship-add
+  elementId: api.operation.discard-changeset::realizes::application.applicationfunction.changeset-store
+  layerName: api
+  after:
+    source: api.operation.discard-changeset
+    target: application.applicationfunction.changeset-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 193
+- type: relationship-add
+  elementId: api.operation.get-annotation::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.get-annotation
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 194
+- type: relationship-add
+  elementId: api.operation.replace-annotation::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.replace-annotation
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 195
+- type: relationship-add
+  elementId: api.operation.list-annotation-replies::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.list-annotation-replies
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 196
+- type: relationship-add
+  elementId: api.operation.create-annotation-reply::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.create-annotation-reply
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 197
+- type: relationship-add
+  elementId: api.operation.get-layer::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.get-layer
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 198
+- type: relationship-add
+  elementId: api.operation.commit-changeset::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.commit-changeset
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 199
+- type: relationship-add
+  elementId: api.operation.discard-changeset::references::application.applicationservice.generated-api-client
+  layerName: api
+  after:
+    source: api.operation.discard-changeset
+    target: application.applicationservice.generated-api-client
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 200
+- type: relationship-add
+  elementId: api.operation.get-annotation::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.get-annotation
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 201
+- type: relationship-add
+  elementId: api.operation.replace-annotation::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.replace-annotation
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 202
+- type: relationship-add
+  elementId: api.operation.list-annotation-replies::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.list-annotation-replies
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 203
+- type: relationship-add
+  elementId: api.operation.create-annotation-reply::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.create-annotation-reply
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 204
+- type: relationship-add
+  elementId: api.operation.get-layer::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.get-layer
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 205
+- type: relationship-add
+  elementId: api.operation.commit-changeset::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.commit-changeset
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 206
+- type: relationship-add
+  elementId: api.operation.discard-changeset::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.discard-changeset
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 207
+- type: relationship-add
+  elementId: application.applicationcomponent.inspector-drawer::realizes::application.applicationservice.layered-reach
+  layerName: application
+  after:
+    source: application.applicationcomponent.inspector-drawer
+    target: application.applicationservice.layered-reach
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 208
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-impact-view::realizes::application.applicationservice.changeset-impact-analysis
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-impact-view
+    target: application.applicationservice.changeset-impact-analysis
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 209
+- type: relationship-add
+  elementId: application.applicationcomponent.page-view::realizes::application.applicationservice.page-data-builder
+  layerName: application
+  after:
+    source: application.applicationcomponent.page-view
+    target: application.applicationservice.page-data-builder
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 210
+- type: relationship-add
+  elementId: application.applicationcomponent.chat-panel::realizes::application.applicationservice.chat-context-builder
+  layerName: application
+  after:
+    source: application.applicationcomponent.chat-panel
+    target: application.applicationservice.chat-context-builder
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:45:53.432Z
+  sequenceNumber: 211
+- type: relationship-add
+  elementId: application.applicationcomponent.inspector-drawer::uses::application.applicationcomponent.annotations-section
+  layerName: application
+  after:
+    source: application.applicationcomponent.inspector-drawer
+    target: application.applicationcomponent.annotations-section
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:46:04.689Z
+  sequenceNumber: 212
+- type: relationship-add
+  elementId: application.applicationservice.model-graph-transform::serves::application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    source: application.applicationservice.model-graph-transform
+    target: application.applicationcomponent.inspector-drawer
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-12T13:46:04.689Z
+  sequenceNumber: 213
+- type: update
+  elementId: apm.metricinstrument.web-socket-connection-state-gauge
+  layerName: apm
+  before:
+    id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+    path: apm.metricinstrument.web-socket-connection-state-gauge
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Connection State Gauge
+    description: Gauge instrument tracking the current DR CLI WebSocket connection
+      state (1=connected, 0=disconnected); sourced from connectionStore
+      connection status transitions; enables alerting on connection loss.
+    attributes: &a40
+      type: Gauge
+      unit: state
+    source_reference: &a41
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/connectionStore.ts
+          symbol: useConnectionStore
+    metadata: &a42
+      created_at: 2026-03-20T13:31:41.379Z
+      updated_at: 2026-03-20T13:31:41.379Z
+      version: 1
+  after:
+    id: 430cdd17-5a41-45c0-b393-fac66e6e250b
+    path: apm.metricinstrument.web-socket-connection-state-gauge
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Connection State Gauge
+    description: "Aspirational: the DR CLI WebSocket connection state (connected /
+      disconnected) as a gauge. Today it is app state in useConnectionStore,
+      shown as the topbar's connected indicator; no OpenTelemetry SDK is
+      installed and nothing exports it as a metric."
+    attributes: *a40
+    source_reference: *a41
+    metadata: *a42
+  timestamp: 2026-11-12T13:46:27.291Z
+  sequenceNumber: 214
+- type: update
+  elementId: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  layerName: apm
+  before:
+    id: dc82a912-c252-4aaa-b268-504da18d8f55
+    path: apm.metricinstrument.web-socket-reconnection-attempt-counter
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Reconnection Attempt Counter
+    description: Counter tracking cumulative WebSocket reconnection attempts;
+      incremented by the websocketClient reconnect loop; measures connection
+      stability over a session.
+    attributes: &a43
+      type: Counter
+      unit: attempts
+    source_reference: &a44
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: websocketClient
+    metadata: &a45
+      created_at: 2026-03-20T13:31:45.904Z
+      updated_at: 2026-03-20T13:31:45.904Z
+      version: 1
+  after:
+    id: dc82a912-c252-4aaa-b268-504da18d8f55
+    path: apm.metricinstrument.web-socket-reconnection-attempt-counter
+    spec_node_id: apm.metricinstrument
+    type: metricinstrument
+    layer_id: apm
+    name: WebSocket Reconnection Attempt Counter
+    description: "Aspirational: cumulative WebSocket reconnection attempts as a
+      counter. Today the count lives in WebSocketClient's reconnect loop; no
+      OpenTelemetry SDK is installed and nothing exports it as a metric."
+    attributes: *a43
+    source_reference: *a44
+    metadata: *a45
+  timestamp: 2026-11-12T13:46:29.648Z
+  sequenceNumber: 215
+- type: update
+  elementId: apm.resource.embedded-app-resource
+  layerName: apm
+  before:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: OpenTelemetry-style resource identity for the browser-based
+      embedded architecture viewer; identifies the frontend service unit
+      producing all observability signals.
+    attributes: &a46
+      droppedAttributesCount: 0
+    source_reference: &a47
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata: &a48
+      created_at: 2026-03-20T13:31:24.895Z
+      updated_at: 2026-03-20T13:31:24.895Z
+      version: 1
+  after:
+    id: bd62bfe5-a0be-42e1-abb4-6e95236fec06
+    path: apm.resource.embedded-app-resource
+    spec_node_id: apm.resource
+    type: resource
+    layer_id: apm
+    name: Embedded App Resource
+    description: "Aspirational: an OpenTelemetry-style resource identity for the
+      browser viewer (the App Shell). No OpenTelemetry SDK is installed, so no
+      telemetry carries it today."
+    attributes: *a46
+    source_reference: *a47
+    metadata: *a48
+  timestamp: 2026-11-12T13:46:32.265Z
+  sequenceNumber: 216
+- type: update
+  elementId: apm.alert.web-socket-disconnect-alert
+  layerName: apm
+  before:
+    id: 758a1c95-870f-4667-b49d-6d6a1724fcd0
+    path: apm.alert.web-socket-disconnect-alert
+    spec_node_id: apm.alert
+    type: alert
+    layer_id: apm
+    name: WebSocket Disconnect Alert
+    description: Warning alert triggered when the DR CLI WebSocket connection drops
+      and falls back to REST-only polling mode; indicates the real-time model
+      update channel is unavailable.
+    attributes: &a49
+      severity: warning
+      condition: connectionStore.status === 'rest-mode'
+    source_reference: &a50
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/connectionStore.ts
+    metadata: &a51
+      created_at: 2026-03-20T13:31:58.975Z
+      updated_at: 2026-03-20T13:31:58.975Z
+      version: 1
+  after:
+    id: 758a1c95-870f-4667-b49d-6d6a1724fcd0
+    path: apm.alert.web-socket-disconnect-alert
+    spec_node_id: apm.alert
+    type: alert
+    layer_id: apm
+    name: WebSocket Disconnect Alert
+    description: "Aspirational: an alert when the DR CLI WebSocket drops and live
+      updates stop. Today the drop only shows in the UI (the topbar's connection
+      indicator, from useConnectionStore); no alerting pipeline exists."
+    attributes: *a49
+    source_reference: *a50
+    metadata: *a51
+  timestamp: 2026-11-12T13:46:35.215Z
+  sequenceNumber: 217

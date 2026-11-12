@@ -82,7 +82,7 @@ application.applicationfunction.auth-store:
     provenance: extracted
     locations:
       - file: src/apps/embedded/stores/authStore.ts
-        symbol: authStore
+        symbol: useAuthStore
   metadata:
     created_at: 2026-03-20T12:56:59.895Z
     updated_at: 2026-03-20T12:56:59.896Z
@@ -158,4 +158,23 @@ application.applicationfunction.chat-store:
   metadata:
     created_at: 2026-03-20T12:57:10.392Z
     updated_at: 2026-03-20T12:57:10.392Z
+    version: 1
+application.applicationfunction.ui-store:
+  id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+  path: application.applicationfunction.ui-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: UI Store
+  description: "Zustand store for UI state: view, layer, selection, changeset,
+    graph/page mode, nav accordion, graph settings and canvas tone. Preferences
+    persist to localStorage; navigation state is the router's."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/uiStore.ts
+        symbol: useUiStore
+  metadata:
+    created_at: 2026-11-12T13:44:46.094Z
+    updated_at: 2026-11-12T13:44:46.094Z
     version: 1

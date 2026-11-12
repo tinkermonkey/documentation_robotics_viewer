@@ -4,12 +4,12 @@
 
 | Metric              | Value                    |
 | ------------------- | ------------------------ |
-| Total Elements      | 171                      |
-| Total Relationships | 279                      |
+| Total Elements      | 204                      |
+| Total Relationships | 344                      |
 | Populated Layers    | 12                       |
-| Last Updated        | 2026-09-19T15:37:38.403Z |
-| CLI Version         | 0.2.0                    |
-| Spec Version        | 0.10.0                   |
+| Last Updated        | 2026-11-12T13:57:21.192Z |
+| CLI Version         | 0.4.0                    |
+| Spec Version        | 0.12.0                   |
 
 ## Project Summary
 
@@ -58,16 +58,16 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | Business    | 14       | [02-business-layer-report.md](./reports/02-business-layer-report.md)       |
 | Product     | 0        | —                                                                          |
 | Security    | 12       | [04-security-layer-report.md](./reports/04-security-layer-report.md)       |
-| Application | 23       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
+| Application | 39       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
 | Technology  | 24       | [06-technology-layer-report.md](./reports/06-technology-layer-report.md)   |
-| API         | 22       | [07-api-layer-report.md](./reports/07-api-layer-report.md)                 |
+| API         | 33       | [07-api-layer-report.md](./reports/07-api-layer-report.md)                 |
 | Data Model  | 23       | [08-data-model-layer-report.md](./reports/08-data-model-layer-report.md)   |
 | Data Store  | 6        | [09-data-store-layer-report.md](./reports/09-data-store-layer-report.md)   |
-| UX          | 5        | [10-ux-layer-report.md](./reports/10-ux-layer-report.md)                   |
+| UX          | 12       | [10-ux-layer-report.md](./reports/10-ux-layer-report.md)                   |
 | Navigation  | 10       | [11-navigation-layer-report.md](./reports/11-navigation-layer-report.md)   |
-| APM         | 8        | [12-apm-layer-report.md](./reports/12-apm-layer-report.md)                 |
+| APM         | 7        | [12-apm-layer-report.md](./reports/12-apm-layer-report.md)                 |
 | Testing     | 6        | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
