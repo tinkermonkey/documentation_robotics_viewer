@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { screen, within, waitFor } from '@testing-library/react';
+import { act, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { NavTree } from '@/apps/embedded/ui/NavTree';
@@ -178,11 +178,8 @@ describe('NavTree — clicks drive the uiStore', () => {
     expect(useUiStore.getState().layerId).toBe('data-model');
     expect(useUiStore.getState().view).toBe('spec');
 
-    // Collapse the Model section to remove its leaves from the DOM, so we can
-    // unambiguously select a spec node leaf under data-model.
-    const modelRow = (await screen.findAllByText('Model'))[0].closest('button')!;
-    await user.click(modelRow);
-
+    // Opening Schema collapsed Model (accordion, #560), so the only leaves in
+    // the tree are the spec node types under data-model.
     // Now get the first spec node leaf under data-model.
     const navTree = screen.getByTestId('nav-tree');
     const targetLeaf = navTree.querySelector('.drv-nav-l2');
@@ -249,5 +246,62 @@ describe('NavTree — Schema counts differ from Model', () => {
       .getAllByText(/^\d+$/)[0]
       .textContent!.trim();
     expect(Number(countText)).toBeGreaterThan(0);
+  });
+
+  it('opens one section at a time and reports it with aria-expanded (#560)', async () => {
+    const user = userEvent.setup();
+    useUiStore.setState({ view: 'model', expandedSections: new Set(['model']) });
+    renderWithProviders(<NavTree />);
+    const section = (label: string) => screen.getAllByRole('button').find((b) => b.textContent?.startsWith(label))!;
+
+    expect(section('Model')).toHaveAttribute('aria-expanded', 'true');
+    await user.click(section('Schema'));
+    expect(useUiStore.getState().view).toBe('spec');
+    expect(section('Schema')).toHaveAttribute('aria-expanded', 'true');
+    expect(section('Model')).toHaveAttribute('aria-expanded', 'false');
+
+    // Clicking another section switches to it and opens it — never the old
+    // "switch to Model but collapse it" state.
+    await user.click(section('Model'));
+    expect(useUiStore.getState().view).toBe('model');
+    expect([...useUiStore.getState().expandedSections]).toEqual(['model']);
+
+    // Clicking the current view's own section toggles it.
+    await user.click(section('Model'));
+    expect(useUiStore.getState().expandedSections.size).toBe(0);
+  });
+
+  it('collapses sibling sections on a URL-driven view change and cross-layer navigation (#560)', () => {
+    useUiStore.setState({ view: 'model', expandedSections: new Set(['model']) });
+    useUiStore.getState().setView('spec');
+    expect([...useUiStore.getState().expandedSections]).toEqual(['spec']);
+    useUiStore.getState().navigateToElement('some-uuid', 'api');
+    expect([...useUiStore.getState().expandedSections]).toEqual(['model']);
+    useUiStore.getState().selectChangeset('cs-1');
+    expect([...useUiStore.getState().expandedSections]).toEqual(['changesets']);
+  });
+});
+
+describe('NavTree — reveals the selection', () => {
+  it('scrolls to a deep-linked leaf once the model loads, not just its layer', async () => {
+    const scrolled: string[] = [];
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = function (this: HTMLElement) {
+      scrolled.push(this.textContent ?? '');
+    };
+    try {
+      renderWithProviders(<NavTree />);
+      // A cold deep link: the router sets layer + node before /api/model returns.
+      const node = model.nodes.find((n) => n.layer_id === 'application')!;
+      act(() => {
+        useUiStore.getState().selectLayer('application');
+        useUiStore.getState().selectNode(node.id);
+      });
+      expect(screen.queryByText(node.name)).not.toBeInTheDocument();
+
+      await waitFor(() => expect(scrolled[scrolled.length - 1] ?? '').toContain(node.name));
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+    }
   });
 });

@@ -9,7 +9,7 @@
  *   Model view  — eyebrow `INSTANCE MODEL · {standard}`, title = layer label,
  *                 meta = `{n} elements`; nodes/edges are layer instances.
  *   Schema view — eyebrow `META-MODEL · {standard}`, title = `{layer} schema`,
- *                 meta = `{n} node types · {m} relationships`; nodes are
+ *                 meta = `{n} node types · {m} within-layer relationships`; nodes are
  *                 node-types, edges are intra-layer relationship schemas.
  *
  * In page mode, the header's eyebrow/title/idChip/meta/swatch are overridden
@@ -752,7 +752,9 @@ export function Canvas() {
     if (isSpec) {
       const typeCount = spec.byLayer[slug]?.typeCount ?? 0;
       const relCount = intraRelCount(specRaw, slug);
-      return `${typeCount} node types · ${relCount} relationships`;
+      // The graph draws only the within-layer relationship schemas; say so
+      // (the layer page counts all of them, #561).
+      return `${typeCount} node types · ${relCount} within-layer relationships`;
     }
     return `${model.countsByLayer[slug] ?? 0} elements`;
   }, [isSpec, layerId, slug, spec, specRaw, model]);

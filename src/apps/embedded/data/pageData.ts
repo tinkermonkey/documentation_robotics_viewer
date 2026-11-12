@@ -26,6 +26,7 @@ import {
   shortName,
   cardShort,
   intraRelCount,
+  layerRelCount,
   attributeRows,
   titleForSpecNode,
   allRelationshipSchemas,
@@ -233,7 +234,10 @@ export function layerPageData(
   const standard = layer?.inspired_by?.standard ?? layerStandard(layerId);
   const nodeSchemas = schema?.nodeSchemas ?? {};
   const typeCount = Object.keys(nodeSchemas).length;
-  const relCount = intraRelCount(specRaw, layerId);
+  // All the layer's relationship schemas, cross-layer included (#561); the
+  // within-layer share is what the Schema graph draws.
+  const relCount = layerRelCount(specRaw, layerId);
+  const intraCount = intraRelCount(specRaw, layerId);
   const elements = model.nodesByLayer[layerId] ?? [];
   const color = layerColor(layerId);
   const name = layerLabel(layerId);
@@ -312,7 +316,8 @@ export function layerPageData(
     description:
       `${name} is layer ${fmt(number)} of 12 in the federated model, inspired by ${standard}. ` +
       `The spec defines ${typeCount} node types and ${relCount} valid relationship schemas for ` +
-      `this layer; the loaded model holds ${elements.length} elements.`,
+      `this layer (${intraCount} within the layer, ${relCount - intraCount} to other layers); ` +
+      `the loaded model holds ${elements.length} elements.`,
     stats: [
       { label: 'NODE TYPES', value: typeCount, color },
       { label: 'RELATIONSHIPS', value: relCount, color: INDIGO },
@@ -654,12 +659,12 @@ export function modelNodePageData(
   return {
     eyebrow: `ELEMENT · ${layerName}`,
     title: n.name,
-    idChip: n.id,
+    idChip: path,
     meta: `${out.length} outgoing · ${inc.length} incoming`,
     color,
     crumbs: [
       ...baseCrumbs('model', layerId, false),
-      { label: n.id, current: true },
+      { label: path.slice(path.lastIndexOf('.') + 1), current: true },
     ],
     description: n.description ?? '',
     stats: [

@@ -140,7 +140,7 @@ describe('metadataForElement', () => {
     } as unknown as ModelNode;
 
     const meta = metadataForElement(node, 'Application');
-    expect(meta.id).toBe('n1');
+    expect(meta.id).toBe('application.service.my-service');
     expect(meta.title).toBe('My Service');
     expect(meta.kind).toBe('service');
     expect(meta.domain).toBe('application');

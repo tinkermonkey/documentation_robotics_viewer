@@ -523,7 +523,7 @@ describe('Canvas — heimdall-ui 0.7.0 prop wiring', () => {
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
     await waitFor(() => expect(graphNodeCount()).toBe(11));
-    const [first, second] = lastGraphCanvasProps!.nodes;
+    const [first, second] = lastGraphCanvasProps!.nodes ?? [];
 
     // On-canvas click on the card itself (ModelCardNode handles its own
     // click): the node is already in view, so no re-centering.

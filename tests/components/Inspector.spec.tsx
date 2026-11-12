@@ -38,9 +38,10 @@ describe('Inspector — Model element detail', () => {
   it('renders the element title, id and a curated PROPERTIES grid', async () => {
     renderModelSelection('application', DATA_LOADER_UUID);
 
-    // Title + id come from the resolved model node.
+    // Title + the element's dotted path (the design's identity line, #559).
     expect(await screen.findByTestId('inspector-title')).toHaveTextContent('Data Loader');
-    expect(screen.getByTestId('inspector-id')).toHaveTextContent(DATA_LOADER_UUID);
+    expect(screen.getByTestId('inspector-id')).toHaveTextContent(/^application\.[a-z]+\.data-loader$/);
+    expect(screen.getByTestId('inspector-id')).not.toHaveTextContent(DATA_LOADER_UUID);
 
     // The curated metadata grid carries layer + type + provenance (not a raw
     // attribute spread).

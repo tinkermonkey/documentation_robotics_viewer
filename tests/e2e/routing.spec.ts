@@ -28,6 +28,7 @@ test.describe('URL routing — left-panel selections', () => {
 
   test('selecting a node in the nav tree updates the URL with ?layer=&node=, matching the inspector', async ({
     page,
+    request,
   }) => {
     await gotoView(page, ROUTES.model);
     const firstLeaf = await openLayer(page, 'APM');
@@ -37,9 +38,15 @@ test.describe('URL routing — left-panel selections', () => {
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
     await expect(page).toHaveURL(/[?&]node=[^&]+/);
 
+    // The URL carries the UUID; the inspector names the element by its dotted
+    // path (`layer.type.slug`, #559).
     const nodeParam = hashSearchParams(page.url()).get('node');
     expect(nodeParam).toBeTruthy();
-    await expect(page.getByTestId('inspector').getByTestId('inspector-id')).toHaveText(nodeParam!);
+    const node = (await fetchModel(request)).nodes.find((n) => n.id === nodeParam);
+    expect(node).toBeTruthy();
+    await expect(page.getByTestId('inspector').getByTestId('inspector-id')).toHaveText(
+      new RegExp(`^${node!.layer_id}\\.${node!.type}\\.[a-z0-9-]+$`),
+    );
   });
 
   test('reloading a deep-linked layer+node URL restores that selection', async ({ page, request }) => {
@@ -51,7 +58,9 @@ test.describe('URL routing — left-panel selections', () => {
     await expect(page.getByTestId('app-shell')).toBeVisible();
 
     await expect(page.getByTestId('page-header-id-chip')).toHaveText('apm');
-    await expect(page.getByTestId('inspector').getByTestId('inspector-id')).toHaveText(apmNode!.id);
+    await expect(page.getByTestId('inspector').getByTestId('inspector-id')).toHaveText(
+      new RegExp(`^apm\\.${apmNode!.type}\\.[a-z0-9-]+$`),
+    );
   });
 
   test('selecting a changeset updates the URL with ?changeset=', async ({ page }) => {

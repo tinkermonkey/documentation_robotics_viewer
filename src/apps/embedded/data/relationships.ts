@@ -14,7 +14,7 @@ import type {
   GraphNodeMetadata,
 } from '@tinkermonkey/heimdall-ui';
 import type { ModelDerived, ModelNode } from './useModel';
-import { resolveEndpoint, type ModelIndex } from './modelGraph';
+import { dottedId, resolveEndpoint, type ModelIndex } from './modelGraph';
 
 /**
  * Extended relationship link with tooltip metadata for predicates.
@@ -147,7 +147,10 @@ export function metadataForElement(
   if (source) metadata.source = source;
 
   return {
-    id: node.id,
+    // The element's dotted path (`layer.type.slug`), as the design shows under
+    // the name — what `dr`, DrBot and the annotations API call it. The UUID
+    // stays on the page view's `id` fact.
+    id: dottedId(node),
     title: node.name,
     kind: node.type,
     domain: node.layer_id,

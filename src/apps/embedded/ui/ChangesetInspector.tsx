@@ -16,6 +16,10 @@
  * --with-changesets`, which never lets DrBot commit. A refused action (failed
  * validation, model changed since the changeset was made) shows the server's
  * message inline, since validation errors are too long for a toast.
+ *
+ * Above them, a blast-radius summary (`BlastRadius`): how many elements outside
+ * the changeset its changes reach, per layer, at the inspector's follow depth
+ * — the same reach the canvas's Impact tab draws as lanes.
  */
 
 import { useState } from 'react';
@@ -25,10 +29,14 @@ import {
   StatTile,
   StatusBadge,
   Toast,
+  followOptionLabel,
   type BadgeColor,
   type ToastVariant,
 } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
+import { layerColor, layerLabel } from './domain';
+import { useModel } from '../data/useModel';
+import { useChangesetImpact } from '../data/changesetImpact';
 import {
   changesetActionErrorMessage,
   useChangeset,
@@ -94,6 +102,90 @@ function MetaRow({ label, value }: { label: string; value: string }) {
 
 function plural(n: number, word: string): string {
   return `${n} ${word}${n === 1 ? '' : 's'}`;
+}
+
+/** What the changeset reaches outside itself, per layer, with a reach strip. */
+function BlastRadius({ detail }: { detail: ChangesetDetail }) {
+  const follow = useUiStore((s) => s.inspectorFollow);
+  const { derived: model } = useModel();
+  const { originIds, outsideCount, byLayer } = useChangesetImpact(model, detail, follow);
+  if (originIds.length === 0) return null;
+  const stripLabel = `Reached by layer: ${byLayer.map((l) => `${layerLabel(l.layerId)} ${l.count}`).join(', ')}`;
+
+  return (
+    <section
+      aria-label="Blast radius"
+      style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+      data-testid="changeset-blast-radius"
+    >
+      <span
+        style={{
+          fontFamily: "'JetBrains Mono',monospace",
+          fontSize: 10,
+          letterSpacing: '0.1em',
+          textTransform: 'uppercase',
+          color: 'rgb(var(--canvas-fg-3))',
+        }}
+      >
+        Blast radius · {followOptionLabel(follow)}
+      </span>
+      <span style={{ fontSize: 13, fontWeight: 600, color: 'rgb(var(--canvas-fg-1))' }} data-testid="blast-radius-summary">
+        {outsideCount === 0
+          ? 'Reaches nothing outside the changeset'
+          : `${plural(outsideCount, 'element')} in ${plural(byLayer.length, 'layer')} outside the changeset`}
+      </span>
+      {byLayer.length > 0 && (
+        <>
+          <div className="drv-reach-strip" role="img" aria-label={stripLabel}>
+            {byLayer.map((l) => (
+              <span
+                key={l.layerId}
+                className="drv-reach-strip__seg"
+                style={{ flexGrow: l.count, background: layerColor(l.layerId) }}
+                title={`${layerLabel(l.layerId)} · ${l.count}`}
+              />
+            ))}
+          </div>
+          <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column' }}>
+            {[...byLayer]
+              .sort((a, b) => b.count - a.count)
+              .map((l) => (
+                <li
+                  key={l.layerId}
+                  style={{ padding: '6px 0', borderBottom: '1px dashed rgb(var(--canvas-border))' }}
+                  data-testid="blast-radius-layer"
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12 }}>
+                    <span
+                      aria-hidden="true"
+                      style={{ width: 8, height: 8, borderRadius: 2, flex: 'none', background: layerColor(l.layerId) }}
+                    />
+                    <span style={{ flex: 1, color: 'rgb(var(--canvas-fg-1))' }}>{layerLabel(l.layerId)}</span>
+                    <span style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, color: 'rgb(var(--canvas-fg-2))' }}>
+                      {l.count}
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 11,
+                      color: 'rgb(var(--canvas-fg-3))',
+                      paddingLeft: 16,
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                    title={l.names.join(', ')}
+                  >
+                    {l.names.slice(0, 3).join(', ')}
+                    {l.names.length > 3 ? ` +${l.names.length - 3}` : ''}
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </>
+      )}
+    </section>
+  );
 }
 
 interface ToastState {
@@ -286,6 +378,11 @@ export function ChangesetInspector() {
 
           <div
             className="drv-scroll"
+            // Focusable so keyboard users can scroll it when it holds nothing
+            // else focusable (a committed changeset: no Apply / Discard).
+            tabIndex={0}
+            role="region"
+            aria-label="Changeset details"
             style={{
               flex: 1,
               minHeight: 0,
@@ -309,6 +406,8 @@ export function ChangesetInspector() {
                 {statusBadge(detail.status).label}
               </span>
             </div>
+
+            <BlastRadius detail={detail} />
 
             {detail.status === 'staged' && (
               <ChangesetActions key={detail.id} detail={detail} notify={notify} />
