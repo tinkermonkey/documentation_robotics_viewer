@@ -251,7 +251,7 @@ The Changesets view's main pane: the op-coded change list with side-by-side diff
 
 **Type**: `applicationcomponent`
 
-The Impact tab: every changed element as a reach origin, drawn as heimdall-ui layer lanes (gutter-routed skip-layer links, bundled same-layer links); click an element to isolate its reach.
+The Impact tab: every changed element as a reach origin, drawn as heimdall-ui layer lanes (gutter-routed skip-layer links, bundled same-layer links). Clicking a changed element isolates its reach; clicking an element the changeset only reaches shows the changeset's reach through it (the graph holds only the links the changeset's reach travels).
 
 #### Attributes
 
@@ -319,7 +319,7 @@ The DrBot drawer: Heimdall ChatContainer with streamed text, tool and thinking b
 
 **Type**: `applicationcomponent`
 
-The primary graph-view component for the Model and Schema views; mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with layout="force", keyed by view:layerId so it recenters on layer/view switch. Replaced the old React Flow-based GraphViewer + pluggable Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026 Heimdall UX rebuild — GraphCanvas's force layout is now the only layout mode the app renders, and is the exact integration point the sibling heimdall-layout-loop harness targets for layout improvements.
+The primary graph-view component for the Model and Schema views; mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a user-chosen layout (Clustered force-clustered, Organic default, or Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it re-lays out and recenters on any of those changes. Inter-layer (foreign) neighbours render as pills with a dashed border and faded swatch, at full text contrast, and navigate to their home layer on click. Replaced the old React Flow-based GraphViewer + pluggable Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026 Heimdall UX rebuild.
 
 #### Attributes
 
@@ -373,7 +373,7 @@ Selection details over the graph (Heimdall DetailDrawer + GraphInspector): eleme
 
 **Type**: `applicationcomponent`
 
-Sidebar navigation: an accordion of Model / Schema / Changesets sections, each with its 12 layers and their elements or node types (or the changesets). Reveals the current selection.
+Sidebar navigation: an accordion of Model / Schema / Changesets sections, each with its 12 layers and their elements or node types (or the changesets). Reveals the current selection, scrolling it into view after any navigation, including a deep link whose element rows only appear once the model or changesets load.
 
 #### Attributes
 
@@ -875,7 +875,7 @@ Whole-model heimdall-ui layered index and the inspector's followed-across-layers
 
 **Type**: `applicationservice`
 
-Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas view models (nodes + edges); builds the dual-index (UUID + derived dotted id) used to resolve every link endpoint, since links reference nodes by either form. Replaced the old dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON from the DR CLI REST API via React Query.
+Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas view models (nodes + edges); builds the dual-index (UUID + derived dotted id) used to resolve every link endpoint, since links reference nodes by either form. /api/model doesn't send the dotted id, so it is derived from the element's name with a verbatim port of the dr CLI's toKebabCase (punctuation dropped, dotted chains joined as the CLI does); any other rule leaves links unresolved. Replaced the old dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON from the DR CLI REST API via React Query.
 
 #### Attributes
 
@@ -1011,4 +1011,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-12T16:19:59.959Z | Model Version: 0.1.0

@@ -169,7 +169,10 @@ application.applicationservice.model-graph-transform:
   description: Pure transforms of the /api/model payload into per-layer Heimdall
     GraphCanvas view models (nodes + edges); builds the dual-index (UUID +
     derived dotted id) used to resolve every link endpoint, since links
-    reference nodes by either form. Replaced the old
+    reference nodes by either form. /api/model doesn't send the dotted id, so it
+    is derived from the element's name with a verbatim port of the dr CLI's
+    toKebabCase (punctuation dropped, dotted chains joined as the CLI does); any
+    other rule leaves links unresolved. Replaced the old
     dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts
     client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON
     from the DR CLI REST API via React Query.

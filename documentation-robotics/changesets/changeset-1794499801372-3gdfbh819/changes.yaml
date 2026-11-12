@@ -1,0 +1,182 @@
+- type: update
+  elementId: application.applicationcomponent.graph-canvas
+  layerName: application
+  before:
+    id: 7c84e0d3-4126-4ac7-af5d-a30f4708e031
+    path: application.applicationcomponent.graph-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Graph Canvas
+    description: The primary graph-view component for the Model and Schema views;
+      mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with
+      layout="force", keyed by view:layerId so it recenters on layer/view
+      switch. Replaced the old React Flow-based GraphViewer + pluggable
+      Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026
+      Heimdall UX rebuild — GraphCanvas's force layout is now the only layout
+      mode the app renders, and is the exact integration point the sibling
+      heimdall-layout-loop harness targets for layout improvements.
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata: &a3
+      created_at: 2026-09-19T15:17:12.908Z
+      updated_at: 2026-09-19T15:17:12.908Z
+      version: 1
+  after:
+    id: 7c84e0d3-4126-4ac7-af5d-a30f4708e031
+    path: application.applicationcomponent.graph-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Graph Canvas
+    description: The primary graph-view component for the Model and Schema views;
+      mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a
+      user-chosen layout (Clustered force-clustered, Organic default, or
+      Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it
+      re-lays out and recenters on any of those changes. Inter-layer (foreign)
+      neighbours render as pills with a dashed border and faded swatch, at full
+      text contrast, and navigate to their home layer on click. Replaced the old
+      React Flow-based GraphViewer + pluggable Dagre/ELK/D3-Force/Graphviz
+      layout-engine registry in the June 2026 Heimdall UX rebuild.
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-12T16:10:10.043Z
+  sequenceNumber: 0
+- type: update
+  elementId: application.applicationservice.model-graph-transform
+  layerName: application
+  before:
+    id: 6bc69ab9-b486-4104-8008-f7ff4ebcd484
+    path: application.applicationservice.model-graph-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Model Graph Transform
+    description: Pure transforms of the /api/model payload into per-layer Heimdall
+      GraphCanvas view models (nodes + edges); builds the dual-index (UUID +
+      derived dotted id) used to resolve every link endpoint, since links
+      reference nodes by either form. Replaced the old
+      dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts
+      client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON
+      from the DR CLI REST API via React Query.
+    attributes: &a4
+      serviceType: synchronous
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/modelGraph.ts
+          symbol: buildModelIndex
+    metadata: &a6
+      created_at: 2026-09-19T15:18:09.691Z
+      updated_at: 2026-09-19T15:18:09.691Z
+      version: 1
+  after:
+    id: 6bc69ab9-b486-4104-8008-f7ff4ebcd484
+    path: application.applicationservice.model-graph-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Model Graph Transform
+    description: Pure transforms of the /api/model payload into per-layer Heimdall
+      GraphCanvas view models (nodes + edges); builds the dual-index (UUID +
+      derived dotted id) used to resolve every link endpoint, since links
+      reference nodes by either form. /api/model doesn't send the dotted id, so
+      it is derived from the element's name with a verbatim port of the dr CLI's
+      toKebabCase (punctuation dropped, dotted chains joined as the CLI does);
+      any other rule leaves links unresolved. Replaced the old
+      dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts
+      client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON
+      from the DR CLI REST API via React Query.
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-12T16:10:10.109Z
+  sequenceNumber: 1
+- type: update
+  elementId: application.applicationcomponent.changeset-impact-view
+  layerName: application
+  before:
+    id: 45f5d489-3338-4821-82e0-dae0d3684317
+    path: application.applicationcomponent.changeset-impact-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Impact View
+    description: "The Impact tab: every changed element as a reach origin, drawn as
+      heimdall-ui layer lanes (gutter-routed skip-layer links, bundled
+      same-layer links); click an element to isolate its reach."
+    attributes: &a7
+      type: internal
+    source_reference: &a8
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+          symbol: ChangesetImpactView
+    metadata: &a9
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: 45f5d489-3338-4821-82e0-dae0d3684317
+    path: application.applicationcomponent.changeset-impact-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Impact View
+    description: "The Impact tab: every changed element as a reach origin, drawn as
+      heimdall-ui layer lanes (gutter-routed skip-layer links, bundled
+      same-layer links). Clicking a changed element isolates its reach; clicking
+      an element the changeset only reaches shows the changeset's reach through
+      it (the graph holds only the links the changeset's reach travels)."
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-12T16:10:10.167Z
+  sequenceNumber: 2
+- type: update
+  elementId: application.applicationcomponent.nav-tree
+  layerName: application
+  before:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with its 12 layers and their elements or node types (or the
+      changesets). Reveals the current selection."
+    attributes: &a10
+      type: internal
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata: &a12
+      created_at: 2026-11-12T13:44:46.089Z
+      updated_at: 2026-11-12T13:44:46.089Z
+      version: 1
+  after:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with its 12 layers and their elements or node types (or the
+      changesets). Reveals the current selection, scrolling it into view after
+      any navigation, including a deep link whose element rows only appear once
+      the model or changesets load."
+    attributes: *a10
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-11-12T16:10:10.222Z
+  sequenceNumber: 3
