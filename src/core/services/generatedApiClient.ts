@@ -45,27 +45,29 @@ export class ApiError extends Error {
  */
 export class ApiClient {
   private baseUrl: string;
-  private token: string | null = null;
+  /** Set by setToken(); undefined means "read localStorage at request time". */
+  private token: string | null | undefined = undefined;
 
   constructor(baseUrl: string) {
     this.baseUrl = baseUrl;
-    this.loadToken();
   }
 
   /**
-   * Load authentication token from storage
+   * Set authentication token (overrides the stored token until set to undefined)
    */
-  private loadToken(): void {
-    if (typeof window !== 'undefined') {
-      this.token = localStorage.getItem('dr_auth_token');
-    }
-  }
-
-  /**
-   * Set authentication token
-   */
-  setToken(token: string | null): void {
+  setToken(token: string | null | undefined): void {
     this.token = token;
+  }
+
+  /**
+   * The token for the next request. Read when the request is made, never cached
+   * at construction: the client is created when this module is imported, before
+   * main.tsx stores a magic link's new token, and a cached older token would be
+   * sent (and refused) on every request until a reload.
+   */
+  private currentToken(): string | null {
+    if (this.token !== undefined) return this.token;
+    return typeof window !== 'undefined' ? localStorage.getItem('dr_auth_token') : null;
   }
 
   /**
@@ -83,8 +85,9 @@ export class ApiClient {
       'Content-Type': 'application/json'
     };
 
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+    const token = this.currentToken();
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
     }
 
     return headers;
@@ -480,7 +483,7 @@ export function getApiClient(baseUrl?: string): ApiClient {
 /**
  * Set authentication token on the API client
  */
-export function setApiToken(token: string | null): void {
+export function setApiToken(token: string | null | undefined): void {
   getApiClient().setToken(token);
 }
 

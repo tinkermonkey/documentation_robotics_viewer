@@ -17,6 +17,8 @@ import { ChangesetCanvas } from '@/apps/embedded/ui/ChangesetCanvas';
 import { ChangesetInspector } from '@/apps/embedded/ui/ChangesetInspector';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { renderWithProviders } from '../helpers/renderWithProviders';
+import { mswServer } from '../helpers/mswServer';
+import { http, HttpResponse } from 'msw';
 
 const CHANGESET_ID = 'changeset-1774309821523-1gs13ct6s';
 
@@ -183,5 +185,28 @@ describe('ChangesetInspector — blast radius', () => {
     renderInspector();
     await screen.findByTestId('changeset-blast-radius');
     expect(screen.getByRole('region', { name: 'Changeset details' })).toHaveAttribute('tabindex', '0');
+  });
+});
+
+describe('ChangesetCanvas — a changeset that fails to load', () => {
+  it('says why instead of "loading changeset…" forever (canvas and inspector)', async () => {
+    // A tab holding an older server's token: the server refuses it.
+    mswServer.use(
+      http.get('*/api/changesets/:id', () =>
+        HttpResponse.json({ error: 'Forbidden' }, { status: 403 }),
+      ),
+    );
+    renderWithProviders(
+      <>
+        <ChangesetCanvas />
+        <ChangesetInspector />
+      </>,
+    );
+    useUiStore.getState().selectChangeset(CHANGESET_ID);
+
+    const alert = await screen.findByRole('alert', {}, { timeout: 4000 });
+    expect(alert).toHaveTextContent(/access token/);
+    expect(screen.getByTestId('changeset-inspector-empty')).toHaveTextContent(/access token/);
+    expect(screen.queryByText('loading changeset…')).not.toBeInTheDocument();
   });
 });
