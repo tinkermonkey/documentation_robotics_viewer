@@ -124,6 +124,25 @@ function packageEmbedded() {
     log('   Warning: dist/embedded/favicon.svg not found — favicon will 404.', colors.yellow);
   }
 
+  // Font licences. Vite emits heimdall-ui's Inter and JetBrains Mono woff2 files
+  // into assets/ (the font CSS references them), but not the licence files beside
+  // them. The SIL OFL requires its text to travel with redistributed fonts, so
+  // copy each one in; a missing licence fails the build rather than shipping
+  // the fonts without it.
+  log('3b. Copying font licences...', colors.blue);
+  const fontsSource = path.join(
+    __dirname, '..', 'node_modules', '@tinkermonkey', 'heimdall-ui', 'dist', 'fonts',
+  );
+  const licencesDir = path.join(BUNDLE_DIR, 'licenses', 'fonts');
+  fs.mkdirSync(licencesDir, { recursive: true });
+  for (const font of ['inter', 'jetbrains-mono']) {
+    const licence = path.join(fontsSource, font, 'OFL.txt');
+    if (!fs.existsSync(licence)) {
+      throw new Error(`Font licence not found: ${licence}`);
+    }
+    fs.copyFileSync(licence, path.join(licencesDir, `${font}-OFL.txt`));
+  }
+
   // Generate manifest
   log('4. Generating manifest...', colors.blue);
   const manifest = generateManifest();

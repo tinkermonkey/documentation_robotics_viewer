@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.0] - 2026-11-12
 
-`@tinkermonkey/heimdall-ui` bumped `0.10.0` → `0.11.0` (exact npm-registry version). No `dr` CLI change is
+`@tinkermonkey/heimdall-ui` bumped `0.10.0` → `0.12.0` (exact npm-registry version). No `dr` CLI change is
 needed.
 
 ### Added
@@ -34,7 +34,8 @@ needed.
 - **Inter-layer nodes** in the Model graph are marked with a dashed border and a faded swatch instead of 60%
   opacity, which dropped their type tag below WCAG AA contrast.
 - **Fonts ship inside the bundle**: heimdall-ui 0.11's font CSS uses relative URLs, so the `public/fonts` copy
-  and the packaging step that copied it are gone.
+  and the packaging step that copied it are gone. Their SIL Open Font License texts ship alongside them in
+  `licenses/fonts/` (from heimdall-ui 0.12), as the licence requires for redistributed fonts.
 
 ### Fixed
 - **Review links stuck on "loading changeset…"**: a tab that already held an older server's token kept
