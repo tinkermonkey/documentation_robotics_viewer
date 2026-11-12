@@ -124,3 +124,54 @@ describe('ChangesetInspector — stat tiles + status pill', () => {
     ).toHaveTextContent('Select a changeset to inspect.');
   });
 });
+
+describe('ChangesetCanvas — Impact tab', () => {
+  it('switches from the change list to the impact lanes and back', async () => {
+    const user = userEvent.setup();
+    renderCanvas();
+    await screen.findByTestId('changeset-list');
+
+    await user.click(within(screen.getByTestId('changeset-tab-control')).getByRole('radio', { name: 'Impact' }));
+    const impact = await screen.findByTestId('changeset-impact');
+    expect(screen.queryByTestId('changeset-list')).not.toBeInTheDocument();
+
+    // The legend counts the changed elements by op (12 added, 7 modified in the fixture).
+    const legend = within(impact).getByRole('list', { name: 'Changed elements' });
+    expect(within(legend).getByText(/12 added/)).toBeInTheDocument();
+    expect(within(legend).getByText(/7 modified/)).toBeInTheDocument();
+    expect(screen.queryByTestId('impact-unresolved')).not.toBeInTheDocument();
+
+    // Each changed element gets a scoped outline rule keyed on its lane node.
+    const styles = impact.querySelector('style')!.textContent!;
+    expect(styles).toMatch(/\.drv-impact \[data-node-id="[^"]+"\] \.graph-lane-node\{outline:2px solid/);
+    expect(styles).toMatch(/outline:2px dashed/);
+
+    await user.click(within(screen.getByTestId('changeset-tab-control')).getByRole('radio', { name: 'Changes' }));
+    expect(await screen.findByTestId('changeset-list')).toBeInTheDocument();
+  });
+
+  it('shares its follow depth with the Model inspector', async () => {
+    const user = userEvent.setup();
+    useUiStore.getState().setInspectorFollow(1);
+    renderCanvas();
+    await screen.findByTestId('changeset-list');
+    await user.click(within(screen.getByTestId('changeset-tab-control')).getByRole('radio', { name: 'Impact' }));
+    await screen.findByTestId('changeset-impact');
+
+    await user.click(within(screen.getByTestId('impact-follow-control')).getByRole('radio', { name: /Direct/ }));
+    expect(useUiStore.getState().inspectorFollow).toBe(0);
+  });
+});
+
+describe('ChangesetInspector — blast radius', () => {
+  it('summarizes what the changeset reaches outside itself, per layer', async () => {
+    renderInspector();
+    const section = await screen.findByTestId('changeset-blast-radius');
+    expect(within(section).getByTestId('blast-radius-summary')).toHaveTextContent(
+      /\d+ elements? in \d+ layers? outside the changeset/,
+    );
+    const rows = within(section).getAllByTestId('blast-radius-layer');
+    expect(rows.length).toBeGreaterThan(0);
+    expect(within(section).getByRole('img')).toHaveAttribute('aria-label', expect.stringMatching(/^Reached by layer: /));
+  });
+});

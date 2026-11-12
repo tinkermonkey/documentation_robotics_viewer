@@ -124,33 +124,6 @@ function packageEmbedded() {
     log('   Warning: dist/embedded/favicon.svg not found — favicon will 404.', colors.yellow);
   }
 
-  // Copy self-hosted fonts. The @font-face rules with absolute `/fonts/...` URLs
-  // are already compiled into the bundle's main CSS (from the
-  // @tinkermonkey/heimdall-ui/fonts import), so only the woff2 files need to ship
-  // — the woff2 directories (copied from node_modules/@tinkermonkey/heimdall-ui/
-  // dist/fonts into public/fonts, emitted by Vite to dist/embedded/fonts) MUST be
-  // present in the bundle root. Without this the DR CLI serves the SPA index.html
-  // for every `/fonts/*.woff2` request and the browser fails to decode it ("OTS
-  // parsing error"), falling back to system fonts. The standalone fonts.css is
-  // redundant (nothing links it) so we skip it to avoid shipping a dead
-  // stylesheet. See public/fonts/.
-  log('3b. Copying fonts...', colors.blue);
-  const fontsSource = path.join(DIST_DIR, 'fonts');
-  const fontsDest = path.join(BUNDLE_DIR, 'fonts');
-  if (fs.existsSync(fontsSource)) {
-    for (const entry of fs.readdirSync(fontsSource, { withFileTypes: true })) {
-      // Skip the unused standalone fonts.css; copy only the woff2 subdirectories.
-      if (entry.isDirectory()) {
-        copyDirectory(
-          path.join(fontsSource, entry.name),
-          path.join(fontsDest, entry.name)
-        );
-      }
-    }
-  } else {
-    log('   Warning: dist/embedded/fonts not found — fonts will 404 in production.', colors.yellow);
-  }
-
   // Generate manifest
   log('4. Generating manifest...', colors.blue);
   const manifest = generateManifest();

@@ -9,12 +9,20 @@
  * are expandable into a readable side-by-side diff (Heimdall `SideBySideDiff`).
  *
  * Empty state shows when no changeset is selected.
+ *
+ * A Changes / Impact switch in the header's action slot swaps the list for
+ * `ChangesetImpactView` — the elements the changeset reaches outside itself,
+ * as heimdall-ui lanes. Its follow depth is the Model inspector's
+ * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
  */
 
 import { useState } from 'react';
-import { PageHeader, SideBySideDiff } from '@tinkermonkey/heimdall-ui';
+import { PageHeader, SegmentedControl, SideBySideDiff } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { useChangesets, useChangeset } from '../data/useChangesets';
+import { useModel } from '../data/useModel';
+import { useChangesetImpact } from '../data/changesetImpact';
+import { ChangesetImpactView } from './ChangesetImpactView';
 import {
   buildDiffLines,
   changesetSummary,
@@ -168,10 +176,17 @@ function ChangeRowItem({ row }: { row: ChangeRow }) {
   );
 }
 
+type ChangesetTab = 'changes' | 'impact';
+
 export function ChangesetCanvas() {
   const changesetId = useUiStore((s) => s.changesetId);
+  const follow = useUiStore((s) => s.inspectorFollow);
+  const setFollow = useUiStore((s) => s.setInspectorFollow);
   const { derived: registry } = useChangesets();
   const { detail } = useChangeset(changesetId);
+  const { derived: model } = useModel();
+  const [tab, setTab] = useState<ChangesetTab>('changes');
+  const impact = useChangesetImpact(model, tab === 'impact' ? detail : null, follow);
 
   const summaryEntry = registry.list.find((c) => c.id === changesetId);
   const name = detail?.name ?? summaryEntry?.name ?? '';
@@ -212,15 +227,27 @@ export function ChangesetCanvas() {
           title={name}
           idChip={status}
           actions={
-            <span
-              style={{
-                fontFamily: "'JetBrains Mono',monospace",
-                fontSize: 11,
-                color: 'rgb(var(--canvas-fg-3))',
-              }}
-            >
-              {changesCount} changes
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span
+                style={{
+                  fontFamily: "'JetBrains Mono',monospace",
+                  fontSize: 11,
+                  color: 'rgb(var(--canvas-fg-3))',
+                }}
+              >
+                {changesCount} changes
+              </span>
+              <SegmentedControl
+                value={tab}
+                onChange={(v) => setTab(v as ChangesetTab)}
+                options={[
+                  { value: 'changes', label: 'Changes' },
+                  { value: 'impact', label: 'Impact' },
+                ]}
+                aria-label="Changeset view"
+                data-testid="changeset-tab-control"
+              />
+            </div>
           }
         />
       )}
@@ -230,6 +257,13 @@ export function ChangesetCanvas() {
           <ChangesetEmptyState message="select a changeset to view its changes" />
         ) : !detail ? (
           <ChangesetEmptyState message="loading changeset…" />
+        ) : tab === 'impact' ? (
+          <ChangesetImpactView
+            changesetId={detail.id}
+            impact={impact}
+            follow={follow}
+            onFollowChange={setFollow}
+          />
         ) : (
           <div
             className="drv-scroll"

@@ -2,9 +2,24 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "dr-backend",
+      "runtimeExecutable": "dr",
+      "runtimeArgs": [
+        "visualize",
+        "--no-auth",
+        "--port",
+        "8080",
+        "--no-browser"
+      ],
+      "port": 8080
+    },
+    {
       "name": "viewer-dev",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3001
     }
   ]

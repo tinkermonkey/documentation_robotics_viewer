@@ -41,6 +41,7 @@ src/
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
+│   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
@@ -52,6 +53,7 @@ src/
 │   │   ├── specGraph.ts       # /api/spec → node-type graph
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
 │   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
+│   │   ├── changesetImpact.ts # changeset over the model → multi-origin reach subgraph + per-layer blast radius
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
 │   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
@@ -63,7 +65,6 @@ src/
 │   ├── stores/                # modelStore, layerStore, elementStore, crossLayerStore
 │   └── types/                 # model.ts, layers.ts, api-client.ts (generated), exceptions.ts
 ├── index.css                  # Tailwind v4 import + Heimdall css/fonts + domain swatch / nav helper CSS
-public/fonts/                  # Self-hosted Inter + JetBrains Mono woff2 (served at /fonts/...)
 ```
 
 **Architecture Rules:**
@@ -101,8 +102,9 @@ Use them as `rgb(var(--canvas-bg))` etc. so the **dark-canvas toggle** (`uiStore
 `DiffViewer` / `SideBySideDiff`, `StatTile` / `StatGrid`, `StatusBadge` / `Badge` / `Chip`, `Button`,
 `TextArea` / `TextInput`, `Select`, `Modal` / `ConfirmDialog` / `Toast`, `RowMenu`, `KVGrid`, `Icon`, and
 from 0.10's layered-graph framework the headless `buildLayeredIndex` / `computeReach` (+ `followOptionLabel`).
-The framework's views (`LayerStack`, `layout="layer-lanes"`, `AdjacencyMatrix`, `HivePlot`,
-`LayeredGraphExplorer`) are not used yet. (We
+heimdall-ui 0.11's `useLayeredGraph` + `GraphCanvas layout="layer-lanes"` drive the Changesets Impact
+tab; the other framework views (`LayerStack`, `AdjacencyMatrix`, `HivePlot`, `LayeredGraphExplorer`) are
+not used yet. (We
 hand-roll the `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are
 single-canvas / 2-level only.)
 
@@ -223,6 +225,22 @@ For local dev use `dr visualize --no-auth`.
   WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useLiveChangesetUpdates`
   (`data/useChangesets.ts`) refetches changesets on the server's `changesets.updated` broadcast (any write
   under `documentation-robotics/changesets/`, including the active marker, and every Apply / Discard).
+- **Changeset Impact tab** (heimdall-ui 0.11) — a Changes / Impact `SegmentedControl` in
+  `ChangesetCanvas`'s header swaps the diff list for `ChangesetImpactView`: what the changeset reaches
+  outside itself, before Apply. `data/changesetImpact.ts` lays the changeset over the model first (a STAGED
+  changeset's added elements and `relationship-add`s join the graph; ends of relationship changes are
+  marked `relink`), then runs the multi-origin `computeReach` from every marked element at
+  `uiStore.inspectorFollow` (shared with the Model inspector's Follow control) and returns the reached
+  subgraph. The view renders it as lanes (`skipLayerRouting: 'gutter'`, `intraLinks: 'bundled'`, a
+  Reached / All `nodeLabels` toggle) with every origin in a CONTROLLED `selectedIds`; isolation goes
+  through `onNodeSelect`, not `onSelectedIdsChange` (the lanes' own click toggles the primary off, which
+  never yields a single id). Heimdall's default lane node has no status slot, so ops are a scoped
+  `<style>` keyed on `[data-node-id]` (each op a distinct outline style as well as colour) — keeping the
+  default node's chips, tags and roving keyboard focus that a `renderNode` would lose. Changes whose
+  element isn't in the current model are counted ("n changes not in the model"), not dropped silently.
+  `ChangesetInspector`'s `BlastRadius` shows the same reach per layer above Apply / Discard. Verify the
+  lanes' fit in a visible browser or headless Chrome: a hidden Browser pane throttles animation frames
+  and the mount fit never lands.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
@@ -310,7 +328,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~610 tests)
+npm test            # Vitest: unit + integration + component (~630 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -341,7 +359,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | GraphCanvas overflows its box onto content below | Heimdall's `.graph-canvas` has `min-height: 360px`; a smaller fixed-height box with an absolutely positioned canvas can't contain it | Keep the canvas in normal flow (`flex: 1`) inside a box whose min-height is ≥ 360px (see `NeighborhoodGraphView`) |
 | A RichTooltip swallows the click on its own trigger | No side had room, so clamping put the card over the trigger and the mouseup landed on it | `computeTooltipPosition` tries all four sides, then sets `overlapsAnchor` → the card gets `pointer-events: none` |
 | `?vp=` stripped on load in dev only | StrictMode re-runs the router's store → URL effect with a stale closure where `graphViewport` isn't seeded yet | Read `useUiStore.getState()` inside that effect for the viewport (router.tsx does) |
-| Fonts fall back to system | woff2 404 (served as HTML) | Self-hosted under `public/fonts`; keep `@font-face` `/fonts/...` paths |
+| Fonts fall back to system | woff2 404 (served as HTML) | Since heimdall-ui 0.11 `@tinkermonkey/heimdall-ui/fonts` uses relative URLs, so Vite emits the woff2 files into `assets/` — keep that import in `main.tsx`; there is no `public/fonts` copy any more |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |
 
@@ -349,8 +367,8 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~610 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
-  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `uiStore`,
+- **Vitest** (`npm test`, **~630 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+  445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
