@@ -1,0 +1,18 @@
+id: changeset-1794499801372-3gdfbh819
+name: sync-pre-merge-fixes
+description: "Bring element descriptions in line with the fixes merged on
+  2026-11-12 (#558, #562): dotted ids derived with the dr CLI's slug rule
+  (#563), inter-layer graph nodes marked with a dashed border instead of
+  opacity, the Impact tab's isolation wording, and the nav tree revealing a
+  deep-linked element once data loads. Also corrects the graph-canvas
+  description, which still described a force-only layout. Descriptions only; no
+  elements or relationships added or removed."
+created: 2026-11-12T16:10:01.374Z
+modified: 2026-11-12T16:19:59.956Z
+status: committed
+baseSnapshot: sha256:88fac0155bda54a9924b824c15d8c5b741138550b776c425bada47b42500237d
+stats:
+  additions: 0
+  modifications: 4
+  deletions: 0
+lastSequence: 3

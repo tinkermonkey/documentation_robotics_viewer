@@ -6,13 +6,14 @@ application.applicationcomponent.graph-canvas:
   layer_id: application
   name: Graph Canvas
   description: The primary graph-view component for the Model and Schema views;
-    mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with
-    layout="force", keyed by view:layerId so it recenters on layer/view switch.
-    Replaced the old React Flow-based GraphViewer + pluggable
-    Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026 Heimdall
-    UX rebuild — GraphCanvas's force layout is now the only layout mode the app
-    renders, and is the exact integration point the sibling heimdall-layout-loop
-    harness targets for layout improvements.
+    mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a user-chosen
+    layout (Clustered force-clustered, Organic default, or Orthogonal), keyed by
+    view:layerId:graphLayout:nodeMarginPreset so it re-lays out and recenters on
+    any of those changes. Inter-layer (foreign) neighbours render as pills with
+    a dashed border and faded swatch, at full text contrast, and navigate to
+    their home layer on click. Replaced the old React Flow-based GraphViewer +
+    pluggable Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June
+    2026 Heimdall UX rebuild.
   attributes:
     type: internal
   source_reference:
@@ -54,7 +55,9 @@ application.applicationcomponent.nav-tree:
   name: Nav Tree
   description: "Sidebar navigation: an accordion of Model / Schema / Changesets
     sections, each with its 12 layers and their elements or node types (or the
-    changesets). Reveals the current selection."
+    changesets). Reveals the current selection, scrolling it into view after any
+    navigation, including a deep link whose element rows only appear once the
+    model or changesets load."
   attributes:
     type: internal
   source_reference:
@@ -138,7 +141,9 @@ application.applicationcomponent.changeset-impact-view:
   name: Changeset Impact View
   description: "The Impact tab: every changed element as a reach origin, drawn as
     heimdall-ui layer lanes (gutter-routed skip-layer links, bundled same-layer
-    links); click an element to isolate its reach."
+    links). Clicking a changed element isolates its reach; clicking an element
+    the changeset only reaches shows the changeset's reach through it (the graph
+    holds only the links the changeset's reach travels)."
   attributes:
     type: internal
   source_reference:
