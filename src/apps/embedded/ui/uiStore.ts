@@ -188,6 +188,11 @@ interface UiState {
 const initialWide =
   typeof window !== 'undefined' ? window.innerWidth >= 1300 : false;
 
+/** The nav's expanded sections with only `section` open. */
+function onlySection(section: string): Set<string> {
+  return new Set([section]);
+}
+
 function applyCanvasDark(dark: boolean): void {
   if (typeof document !== 'undefined') {
     document.body.classList.toggle('dark-canvas', dark);
@@ -244,7 +249,9 @@ export const useUiStore = create<UiState>()(
       showInterLayerNodes: true,
       inspectorFollow: 1,
 
-      setView: (view) => set({ view }),
+      // A view change opens that view's section alone (the nav is an
+      // accordion: opening a section collapses its siblings, #560).
+      setView: (view) => set((s) => (s.view === view ? { view } : { view, expandedSections: onlySection(view) })),
 
       selectLayer: (layerId) =>
         set((s) => {
@@ -256,7 +263,7 @@ export const useUiStore = create<UiState>()(
             selectedEdgeId: null,
             highlightedEdgeId: null,
             focus: 'layer',
-            expandedSections: new Set(s.expandedSections).add(s.view),
+            expandedSections: onlySection(s.view),
             expandedLayers,
           };
         }),
@@ -270,7 +277,7 @@ export const useUiStore = create<UiState>()(
           selectedEdgeId: null,
           highlightedEdgeId: null,
           focus: 'node',
-          expandedSections: new Set(s.expandedSections).add(s.view),
+          expandedSections: onlySection(s.view),
           expandedLayers: s.layerId
             ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
             : s.expandedLayers,
@@ -297,7 +304,7 @@ export const useUiStore = create<UiState>()(
             selectedEdgeId: null,
             highlightedEdgeId: null,
             focus: 'node',
-            expandedSections: new Set(s.expandedSections).add('model'),
+            expandedSections: onlySection('model'),
             expandedLayers,
           };
         }),
@@ -317,7 +324,7 @@ export const useUiStore = create<UiState>()(
             selectedEdgeId: null,
             highlightedEdgeId: edgeId,
             focus: 'node',
-            expandedSections: new Set(s.expandedSections).add('model'),
+            expandedSections: onlySection('model'),
             expandedLayers,
           };
         }),
@@ -336,18 +343,18 @@ export const useUiStore = create<UiState>()(
             selectedEdgeId: null,
             highlightedEdgeId: null,
             focus: 'node',
-            expandedSections: new Set(s.expandedSections).add('spec'),
+            expandedSections: onlySection('spec'),
             expandedLayers,
           };
         }),
 
       selectChangeset: (changesetId) =>
-        set((s) => ({
+        set({
           view: 'changesets',
           changesetId,
           highlightedEdgeId: null,
-          expandedSections: new Set(s.expandedSections).add('changesets'),
-        })),
+          expandedSections: onlySection('changesets'),
+        }),
 
       setMode: (mode) => set({ mode }),
 
@@ -362,13 +369,13 @@ export const useUiStore = create<UiState>()(
 
       toggleSection: (sectionId) =>
         set((s) => {
-          const expandedSections = new Set(s.expandedSections);
-          if (expandedSections.has(sectionId)) {
-            expandedSections.delete(sectionId);
-          } else {
-            expandedSections.add(sectionId);
-          }
           const viewChanged = s.view !== sectionId;
+          // Accordion (#560): another section opens alone; the current view's
+          // own section toggles open/closed.
+          const expandedSections =
+            !viewChanged && s.expandedSections.has(sectionId)
+              ? new Set<string>()
+              : onlySection(sectionId);
           return {
             view: sectionId as ViewKind,
             expandedSections,
@@ -405,7 +412,7 @@ export const useUiStore = create<UiState>()(
             selectedEdgeId: collapsing ? s.selectedEdgeId : null,
             highlightedEdgeId: collapsing ? s.highlightedEdgeId : null,
             focus: collapsing ? s.focus : 'layer',
-            expandedSections: new Set(s.expandedSections).add(sectionId),
+            expandedSections: onlySection(sectionId),
             expandedLayers,
           };
         }),

@@ -10,6 +10,7 @@
  * Changesets lists changesets, or a subtle empty hint when the model has none.
  */
 
+import { useEffect, useRef } from 'react';
 import { NavItem, type IconName } from '@tinkermonkey/heimdall-ui';
 import { useUiStore, type ViewKind } from './uiStore';
 import { LAYER_ORDER, layerLabel, type LayerSlug } from './domain';
@@ -62,6 +63,7 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
         count={count}
         active={view === section.id}
         depth={0}
+        aria-expanded={open}
         onClick={() => toggleSection(section.id)}
       />
       <Chevron open={open} />
@@ -120,6 +122,7 @@ function LayerRow({
           count={count}
           active={active}
           depth={1}
+          aria-expanded={open}
           onClick={() => toggleLayer(sectionId, slug)}
         />
         <Chevron open={open} />
@@ -194,9 +197,24 @@ function ChangesetRows() {
 
 export function NavTree() {
   const expandedSections = useUiStore((s) => s.expandedSections);
+  const view = useUiStore((s) => s.view);
+  const layerId = useUiStore((s) => s.layerId);
+  const selectedId = useUiStore((s) => s.selectedId);
+  const changesetId = useUiStore((s) => s.changesetId);
+  const treeRef = useRef<HTMLDivElement>(null);
+
+  // Reveal the selection (#560): after any navigation — a nav click, a
+  // cross-layer link, a deep link, back/forward — scroll the deepest active
+  // row into view. `nearest` leaves it alone when it's already visible.
+  useEffect(() => {
+    const active = treeRef.current?.querySelectorAll<HTMLElement>('.nav-item--active');
+    const deepest = active?.[active.length - 1];
+    deepest?.scrollIntoView?.({ block: 'nearest' });
+  }, [view, layerId, selectedId, changesetId, expandedSections]);
 
   return (
     <div
+      ref={treeRef}
       className="drv-scroll drv-noscroll"
       style={{ flex: 1, overflowY: 'auto', padding: '8px' }}
       data-testid="nav-tree"
