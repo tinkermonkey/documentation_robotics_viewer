@@ -204,6 +204,16 @@ export function intraRelCount(
 }
 
 /**
+ * Every relationship schema whose source is a node type in `slug`'s layer,
+ * cross-layer ones included — the layer's relationship schemas as the spec
+ * (and the design's layer page) counts them. A layer's `relationshipSchemas`
+ * holds exactly the rules it is the source of.
+ */
+export function layerRelCount(spec: SpecPayload | undefined, slug: string): number {
+  return Object.keys(schemaForLayer(spec, slug)?.relationshipSchemas ?? {}).length;
+}
+
+/**
  * All relationship schemas across every layer, aggregating both intra-layer and
  * cross-layer relationships. A layer's own `relationshipSchemas` only includes
  * relationships where that layer is the source; to find both outgoing and
