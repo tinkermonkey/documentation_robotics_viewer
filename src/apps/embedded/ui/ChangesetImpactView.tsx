@@ -206,7 +206,10 @@ export function ChangesetImpactView({
         {isolatedNode && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginLeft: 'auto' }} data-testid="impact-isolating">
             <span style={{ fontSize: 12, color: 'rgb(var(--canvas-fg-2))' }}>
-              Showing the reach of <strong style={{ color: 'rgb(var(--canvas-fg-1))' }}>{isolatedNode.label}</strong>
+              {/* A reached element's own reach runs past this graph, which holds only
+                  the links the changeset's reach travels, so say what's shown. */}
+              {opOf.has(isolatedNode.id) ? 'Showing the reach of ' : 'Showing the changeset’s reach through '}
+              <strong style={{ color: 'rgb(var(--canvas-fg-1))' }}>{isolatedNode.label}</strong>
             </span>
             <button
               type="button"

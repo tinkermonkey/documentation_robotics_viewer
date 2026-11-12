@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { screen, within, waitFor } from '@testing-library/react';
+import { act, screen, within, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { NavTree } from '@/apps/embedded/ui/NavTree';
@@ -279,5 +279,29 @@ describe('NavTree — Schema counts differ from Model', () => {
     expect([...useUiStore.getState().expandedSections]).toEqual(['model']);
     useUiStore.getState().selectChangeset('cs-1');
     expect([...useUiStore.getState().expandedSections]).toEqual(['changesets']);
+  });
+});
+
+describe('NavTree — reveals the selection', () => {
+  it('scrolls to a deep-linked leaf once the model loads, not just its layer', async () => {
+    const scrolled: string[] = [];
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = function (this: HTMLElement) {
+      scrolled.push(this.textContent ?? '');
+    };
+    try {
+      renderWithProviders(<NavTree />);
+      // A cold deep link: the router sets layer + node before /api/model returns.
+      const node = model.nodes.find((n) => n.layer_id === 'application')!;
+      act(() => {
+        useUiStore.getState().selectLayer('application');
+        useUiStore.getState().selectNode(node.id);
+      });
+      expect(screen.queryByText(node.name)).not.toBeInTheDocument();
+
+      await waitFor(() => expect(scrolled[scrolled.length - 1] ?? '').toContain(node.name));
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+    }
   });
 });
