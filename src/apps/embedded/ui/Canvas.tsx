@@ -584,7 +584,7 @@ export function Canvas() {
 
   const renderCardNode = useCallback(
     (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
-      // Foreign nodes always render as pills at 60% opacity, regardless of
+      // Foreign nodes always render as `drv-foreign-node` pills, regardless of
       // nodeDisplay setting — provides clear visual subordination.
       const isForeignNode = interLayerData.foreignNodeIds.has(node.id);
       if (isForeignNode) {
@@ -592,7 +592,7 @@ export function Canvas() {
 
         return (
           <div
-            style={{ opacity: 0.6 }}
+            className="drv-foreign-node"
             data-testid={`foreign-node-wrapper-${node.id}`}
           >
             <PillNode
@@ -638,7 +638,7 @@ export function Canvas() {
   // renderCardNode wires for card mode. Schema-view nodes ARE node types, so
   // their tooltip lookup uses the node's own id (already `<slug>.<short>`)
   // rather than `kind` (the generic 'spec node' label nodeTypesForLayer sets).
-  // Foreign nodes (inter-layer) render at reduced opacity and navigate to their
+  // Foreign nodes (inter-layer) render as `drv-foreign-node` and navigate to their
   // home layer on click rather than selecting within the current layer.
   const renderPillNode = useCallback(
     (node: GraphNodeData, selected: boolean, hierarchy?: GraphNodeHierarchyMeta) => {
@@ -669,7 +669,7 @@ export function Canvas() {
 
       return (
         <div
-          style={{ opacity: 0.6 }}
+          className="drv-foreign-node"
           data-testid={`foreign-node-wrapper-${node.id}`}
         >
           {content}

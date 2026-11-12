@@ -929,7 +929,7 @@ describe('Canvas — Inter-layer nodes control', () => {
     await waitFor(() => expect(graphNodeCount()).toBe(11));
   });
 
-  it('foreign nodes render with distinct styling (reduced opacity)', async () => {
+  it('foreign nodes render with distinct styling, without fading their text', async () => {
     renderWithProviders(<Canvas />);
     useUiStore.getState().setView('model');
     useUiStore.getState().selectLayer('apm');
@@ -938,13 +938,15 @@ describe('Canvas — Inter-layer nodes control', () => {
     // Wait for graph to render with foreign nodes
     await waitFor(() => expect(graphNodeCount()).toBeGreaterThan(11));
 
-    // Query for foreign node wrappers and verify opacity
+    // Query for foreign node wrappers and verify their styling
     const foreignWrappers = screen.getAllByTestId(/^foreign-node-wrapper-/);
     expect(foreignWrappers.length).toBeGreaterThan(0);
 
-    // Assert that each foreign node wrapper has opacity: 0.6
+    // Each is marked for the dashed / faded-swatch styling, and none is faded
+    // with opacity (that dropped the type tag below AA contrast).
     foreignWrappers.forEach((wrapper) => {
-      expect(wrapper).toHaveStyle({ opacity: '0.6' });
+      expect(wrapper).toHaveClass('drv-foreign-node');
+      expect(wrapper.style.opacity).toBe('');
     });
   });
 
