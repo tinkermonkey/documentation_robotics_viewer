@@ -166,3 +166,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Documentation Robotics: code-analyzer runtime state (index jobs, extract
+# caches, per-machine analyzer status). Machine-local and rewritten on every
+# index; the spec pin (.dr/spec, .dr/manifest.json) stays tracked.
+.dr/analyzers/
