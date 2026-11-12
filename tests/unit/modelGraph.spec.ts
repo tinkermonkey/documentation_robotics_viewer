@@ -79,6 +79,12 @@ describe('slugifyName', () => {
     ['a2Server', 'a2server', 'digit→Upper (2S) does not split'],
     ['already-slugged', 'already-slugged', 'idempotent on a clean slug'],
     ['', '', 'empty string'],
+    // where the CLI's rule differs from a plain "non-alphanumeric → hyphen" (#563)
+    ['App Shell Section/View Route', 'app-shell-sectionview-route', 'punctuation inside a word is dropped'],
+    ["Author's Notes", 'authors-notes', 'apostrophe dropped, not hyphenated'],
+    ['WebSocket.connect', 'web-socket-connect', 'dotted chain with a camelCase side joins with a hyphen'],
+    ['uiStore.setView', 'ui-store-set-view', 'camelCase on both sides of the dot'],
+    ['A + B', 'a-b', 'a symbol between spaces leaves one hyphen'],
   ];
 
   it.each(cases)('slugifyName(%j) === %j  // %s', (input, expected) => {

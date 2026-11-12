@@ -202,6 +202,10 @@ export function NavTree() {
   const selectedId = useUiStore((s) => s.selectedId);
   const changesetId = useUiStore((s) => s.changesetId);
   const treeRef = useRef<HTMLDivElement>(null);
+  // The leaf rows render from these, so a cold deep link (store set before the
+  // data arrives) reveals the selected leaf once they load, not just its layer.
+  const modelNodes = useModel().derived.nodes.length;
+  const changesetCount = useChangesets().derived.list.length;
 
   // Reveal the selection (#560): after any navigation — a nav click, a
   // cross-layer link, a deep link, back/forward — scroll the deepest active
@@ -210,7 +214,7 @@ export function NavTree() {
     const active = treeRef.current?.querySelectorAll<HTMLElement>('.nav-item--active');
     const deepest = active?.[active.length - 1];
     deepest?.scrollIntoView?.({ block: 'nearest' });
-  }, [view, layerId, selectedId, changesetId, expandedSections]);
+  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount]);
 
   return (
     <div

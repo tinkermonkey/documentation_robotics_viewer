@@ -26,18 +26,35 @@ import { isStructuralPredicate } from './predicates';
 /**
  * Slugify an element name to match the model's canonical dotted-id segment.
  *
- * Rules (reverse-engineered + verified against all 445 live links):
- *  - insert a hyphen at lower→Upper camel boundaries ("WebSocket" → "web-socket")
- *    but NOT at digit→Upper boundaries ("E2E" stays "e2e")
- *  - drop dots entirely so "2.1" → "21"
- *  - lowercase, collapse any other non-alphanumeric run to a single hyphen, trim
+ * A port of the dr CLI's `toKebabCase` (`@documentation-robotics/cli`
+ * `dist/utils/id-generator.js`), which makes the ids. `/api/model` doesn't send
+ * them, so the rule must match exactly or links that name an element by its
+ * dotted id stop resolving (#563):
+ *  - a dotted chain (`a.b`, `fooBar.baz`) joins with a hyphen where either side
+ *    is camelCase, otherwise the dot is dropped ("2.1" → "21")
+ *  - whitespace and underscores become hyphens
+ *  - a hyphen goes at lower→Upper camel boundaries ("WebSocket" → "web-socket"),
+ *    not at digit→Upper ones ("E2E" stays "e2e")
+ *  - lowercase, then DROP anything else outside [a-z0-9-] ("Section/View" →
+ *    "sectionview"), collapse hyphen runs, trim
  */
 export function slugifyName(name: string): string {
+  const camel = (part: string) => /[a-z][A-Z]/.test(part);
   return name
+    .replace(/[A-Za-z0-9$]+(?:\.[A-Za-z0-9$]+)+/g, (chain) => {
+      const parts = chain.split('.');
+      return parts.reduce(
+        (joined, part, i) =>
+          i === 0 ? part : joined + (camel(parts[i - 1]) || camel(part) ? '-' : '.') + part,
+        '',
+      );
+    })
+    .replace(/[\s_]+/g, '-')
     .replace(/([a-z])([A-Z])/g, '$1-$2')
-    .replace(/\./g, '')
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/\./g, '')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
     .replace(/^-+|-+$/g, '');
 }
 
