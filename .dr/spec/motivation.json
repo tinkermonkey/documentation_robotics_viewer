@@ -1,10 +1,10 @@
 {
-  "specVersion": "0.10.0",
+  "specVersion": "0.12.0",
   "layer": {
     "id": "motivation",
     "number": 1,
     "name": "Motivation Layer",
-    "description": "Layer 1: Motivation Layer",
+    "description": "Captures why the system exists: stakeholders and their drivers, assessments, goals and outcomes, principles, requirements and constraints, and the meaning and value attached to them (ArchiMate 3.2 motivation elements). Motivation elements are expressed in documents, decision records and requirement text rather than in executable code; every lower layer should be traceable back to an element here. Modelling rules: realization runs through motivation, as in ArchiMate: requirements realize the outcomes, goals and principles they make concrete, and outcomes realize goals. Decomposition is same-type only: an element aggregates the narrower elements of its own type that make it up, and specializes a more general one. Influence is one motivation element shaping another: drivers, assessments, stakeholders, goals, principles and constraints influence goals, outcomes, principles, requirements and constraints, and a constraint constrains the requirements it limits. Association is kept for concerns and interpretation: a stakeholder is associated with the drivers, goals, requirements, principles, outcomes and constraints it cares about, an assessment with the drivers it evaluates, and meaning and value are associated with any concept and are always the source of that association. Other layers trace to motivation with one predicate per meaning: they satisfy requirements, constraints and principles; an element realizes a goal or outcome it exists to achieve and supports one it contributes to alongside others; services and features deliver value, and user workflows deliver the outcomes they produce. A stakeholder is not served: business actors and roles, like personas, reference the stakeholder whose concerns they stand for.",
     "inspired_by": {
       "standard": "ArchiMate 3.2",
       "version": "3.2",
@@ -27,7 +27,7 @@
     "assessment": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Assessment",
-      "description": "Outcome of analysis of the state of affairs of the enterprise or any part of it, and its environment. Assessments commonly take the form of strengths, weaknesses, opportunities, or threats (SWOT).",
+      "description": "A recorded finding or judgement produced by analysing the current state of the enterprise, a system, or its environment, such as an identified strength, weakness, risk, gap, or feasibility verdict. It states what is the case, not a desired end state, a result to achieve, or an obligation on the solution. Use Driver instead when the element names the motivating condition or concern itself (e.g. 'GDPR compliance', 'rising cloud cost') rather than an analytical finding about it (e.g. 'current logging stores PII unencrypted'). Use Outcome instead when the statement describes an end result the organization plans to achieve or has achieved, with a lifecycle status, rather than a diagnosis of the present situation. Use Constraint instead when the statement restricts which design or implementation options are allowed, rather than reporting an evaluated fact about the current state. Use Requirement instead when the statement prescribes a need the system must satisfy (e.g. 'must encrypt PII at rest') instead of describing the observed deficiency that prompted it.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -47,7 +47,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the finding, including what was analysed, the evidence or source (e.g. audit, ADR, threat model), and when it was assessed. Set it for every assessment so the finding can be verified."
             },
             "assessmentType": {
               "type": "string",
@@ -66,12 +67,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.2.3 Assessment",
+      "x-dr-evidence": [
+        "The 'Context' or 'Problem Statement' section of an ADR stating an observed weakness, limitation, or risk of the existing design that the decision responds to.",
+        "Entries in a risk register, threat model (e.g. STRIDE table in threat-model.md), or security/audit findings file listing identified threats or vulnerabilities with likelihood or severity.",
+        "A tech-debt, gap-analysis, or readiness/feasibility document (or tracked issue labelled tech-debt/gap) recording that a current capability is missing, inadequate, or viable."
+      ],
+      "x-dr-distinguish": {
+        "motivation.driver": "the element names the motivating condition or concern itself (e.g. 'GDPR compliance', 'rising cloud cost') rather than an analytical finding about it (e.g. 'current logging stores PII unencrypted').",
+        "motivation.outcome": "the statement describes an end result the organization plans to achieve or has achieved, with a lifecycle status, rather than a diagnosis of the present situation.",
+        "motivation.constraint": "the statement restricts which design or implementation options are allowed, rather than reporting an evaluated fact about the current state.",
+        "motivation.requirement": "the statement prescribes a need the system must satisfy (e.g. 'must encrypt PII at rest') instead of describing the observed deficiency that prompted it."
+      },
       "$id": "urn:dr:spec:node:motivation.assessment"
     },
     "constraint": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Constraint",
-      "description": "Restriction on the freedom of design and implementation choices available when realizing a system, as opposed to requirements which must be satisfied.",
+      "description": "A stated restriction on the solution space, such as a mandated or forbidden technology, a deadline, a budget ceiling, a jurisdiction or a contractual term, that limits which design or implementation options are permissible without describing a capability or quality the system must deliver. It is stated in decision records, policies or requirement text; code such as a fitness test may enforce it, but is not where it is defined. Use Requirement instead when the statement describes a function or quality the system must provide (what it must do or how well), rather than ruling options in or out for how it is built. Use Principle instead when the statement is a general normative rule meant to guide many decisions across systems (e.g. 'prefer managed services') rather than a specific, checkable limit on one solution. Use Driver instead when the item is the underlying condition or force (a new regulation, a market shift) that motivates change, rather than the concrete restriction derived from it. Use Assessment instead when the item is an analytical finding about the current state (a risk, gap or weakness) rather than a binding limit on design choices.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -91,7 +104,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the restriction, giving its source (regulation, contract, decision record, budget), the scope it applies to and how compliance can be checked; set it for every constraint so the limit can be verified."
             },
             "constraintType": {
               "type": "string",
@@ -114,12 +128,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.3.5 Constraint",
+      "x-dr-evidence": [
+        "An ADR or design doc section titled 'Constraints' or 'Decision drivers' with mandatory wording such as 'must use PostgreSQL 14', 'no GPL dependencies' or 'must ship before Q3'",
+        "Code comments or config justified by a cited rule, e.g. cloud region pinned to eu-* with a comment referencing GDPR data residency, or a deny-list of licences in a dependency-audit config",
+        "Architecture fitness tests or lint rules (ArchUnit, dependency-cruiser, import-linter) that forbid certain imports, libraries or runtime versions, together with documentation naming the restriction they enforce"
+      ],
+      "x-dr-distinguish": {
+        "motivation.requirement": "the statement describes a function or quality the system must provide (what it must do or how well), rather than ruling options in or out for how it is built",
+        "motivation.principle": "the statement is a general normative rule meant to guide many decisions across systems (e.g. 'prefer managed services') rather than a specific, checkable limit on one solution",
+        "motivation.driver": "the item is the underlying condition or force (a new regulation, a market shift) that motivates change, rather than the concrete restriction derived from it",
+        "motivation.assessment": "the item is an analytical finding about the current state (a risk, gap or weakness) rather than a binding limit on design choices"
+      },
       "$id": "urn:dr:spec:node:motivation.constraint"
     },
     "driver": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Driver",
-      "description": "External or internal condition that motivates an organization to change its goals, strategy, or architecture.",
+      "description": "A motivation element naming an external or internal condition or force (e.g. a regulation coming into effect, market pressure, rising operating cost, technical debt) that prompts the organization to set or change goals, requirements or architecture. It names the condition itself, not an evaluation of it and not the response to it. Use Assessment instead when the element records the result of analysing a condition (a SWOT finding, risk rating, gap or feasibility conclusion) rather than naming the condition itself. Use Goal instead when the statement expresses a desired end state or direction the organization intends to pursue in response to the condition. Use Constraint instead when the element is a fixed restriction on design or implementation choices (e.g. 'must run on-prem') rather than a force that motivates change. Use Stakeholder instead when the element is the person, team or organization holding the concern, not the concern or condition itself.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -139,7 +165,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text description of the motivating condition: what it is, where it originates (internal or external), and any source evidence such as a regulation citation, incident or metric. Set it whenever the name alone does not make the condition unambiguous."
             },
             "category": {
               "type": "string",
@@ -160,12 +187,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.2.2 Driver",
+      "x-dr-evidence": [
+        "An ADR or design doc 'Context' / 'Motivation' / 'Background' section naming an external or internal condition, such as 'GDPR enforcement deadline' or 'p95 latency complaints from customers', as the reason for the change.",
+        "Issue tracker epics or labels (e.g. 'compliance', 'tech-debt', 'cost-reduction') whose description cites a regulation, market event or operational problem that triggers a body of work.",
+        "Code comments or README notes that justify a module's existence by citing a condition, e.g. '// Required due to PCI-DSS 4.0 rollout' or 'Introduced because vendor X API is deprecated in 2025'."
+      ],
+      "x-dr-distinguish": {
+        "motivation.assessment": "the element records the result of analysing a condition (a SWOT finding, risk rating, gap or feasibility conclusion) rather than naming the condition itself.",
+        "motivation.goal": "the statement expresses a desired end state or direction the organization intends to pursue in response to the condition.",
+        "motivation.constraint": "the element is a fixed restriction on design or implementation choices (e.g. 'must run on-prem') rather than a force that motivates change.",
+        "motivation.stakeholder": "the element is the person, team or organization holding the concern, not the concern or condition itself."
+      },
       "$id": "urn:dr:spec:node:motivation.driver"
     },
     "goal": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Goal",
-      "description": "High-level statement of intent, direction, or desired end state",
+      "description": "A motivation statement of an end state or direction that stakeholders intend to reach, expressed qualitatively and at a level general enough that it does not prescribe a specific system property or measurable result, and is refined by requirements and outcomes. Use Outcome instead when the statement names a concrete, measurable or time-bound result, or tracks one that is planned, in progress or achieved, such as 'checkout p95 latency under 300 ms by Q3'. Use Requirement instead when the statement specifies a need that a particular system, component or solution must satisfy and that can be verified against it, such as 'the API shall support OAuth2 client credentials'. Use Principle instead when the statement is a standing rule that governs how all designs in a context are made, such as 'prefer managed services', rather than an end state to reach. Use Driver instead when the statement describes the condition or force prompting change, such as a new regulation or market pressure, rather than the intended end state that responds to it.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -185,7 +224,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text prose that states the intended end state, its scope and owning stakeholders, and links to the source document. Set it whenever the goal's name alone does not make the intent unambiguous."
             },
             "priority": {
               "type": "string",
@@ -201,12 +241,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.3.1 Goal",
+      "x-dr-evidence": [
+        "A 'Goals', 'Objectives' or 'Vision' section in a README, design document or product brief that lists intended end states without acceptance criteria.",
+        "An 'Objective' entry in an OKR or roadmap file (e.g. okrs.yaml, ROADMAP.md) that sits above its measurable key results.",
+        "An ADR or RFC 'Context' or 'Motivation' section stating what the change is meant to achieve, such as 'enable self-service onboarding for partners', and referenced by the requirements or decisions that follow."
+      ],
+      "x-dr-distinguish": {
+        "motivation.outcome": "the statement names a concrete, measurable or time-bound result, or tracks one that is planned, in progress or achieved, such as 'checkout p95 latency under 300 ms by Q3'.",
+        "motivation.requirement": "the statement specifies a need that a particular system, component or solution must satisfy and that can be verified against it, such as 'the API shall support OAuth2 client credentials'.",
+        "motivation.principle": "the statement is a standing rule that governs how all designs in a context are made, such as 'prefer managed services', rather than an end state to reach.",
+        "motivation.driver": "the statement describes the condition or force prompting change, such as a new regulation or market pressure, rather than the intended end state that responds to it."
+      },
       "$id": "urn:dr:spec:node:motivation.goal"
     },
     "meaning": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Meaning",
-      "description": "Knowledge or expertise present in, or the interpretation given to, a concept in a particular context, as understood by stakeholders.",
+      "description": "A motivation element recording the interpretation or knowledge that stakeholders attach to a specific concept (a term, data item, artifact, or other architecture element) within a stated context, expressed as an explanatory statement of what the concept signifies rather than as an intent, need, condition, or worth. Use Value instead when the statement expresses how much a concept is worth or how useful it is to a stakeholder (financial, strategic, reputational benefit), not what it signifies. Use Principle instead when the statement is normative, prescribing how systems or decisions should behave, rather than explaining what a concept means. Use Requirement instead when the statement declares a need that a system must satisfy, including a requirement that a term be interpreted a certain way. Use Assessment instead when the statement is a finding from analysing the current state of affairs (strength, weakness, risk, gap), not the interpretation of a concept.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -226,18 +278,31 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the interpretation itself: which concept it applies to, the context or stakeholder group in which the interpretation holds, and the meaning given; set it on every instance, since it is the substance of the element."
             }
           },
           "additionalProperties": false
         }
+      },
+      "x-dr-standard": "ArchiMate 3.2 §6.4.1 Meaning",
+      "x-dr-evidence": [
+        "a glossary or ubiquitous-language document (e.g. GLOSSARY.md, docs/domain-terms.md) defining business terms as used in a specific bounded context",
+        "a docstring or comment on a domain class, enum value, or field explaining the business interpretation of the concept, e.g. 'An \"active\" customer means one with a purchase in the last 90 days'",
+        "a data dictionary or schema description entry (e.g. dbt schema.yml column description, JSON Schema 'description', OpenAPI field description) stating what a field signifies for its consumers"
+      ],
+      "x-dr-distinguish": {
+        "motivation.value": "the statement expresses how much a concept is worth or how useful it is to a stakeholder (financial, strategic, reputational benefit), not what it signifies",
+        "motivation.principle": "the statement is normative, prescribing how systems or decisions should behave, rather than explaining what a concept means",
+        "motivation.requirement": "the statement declares a need that a system must realize, including a requirement that a term be interpreted a certain way",
+        "motivation.assessment": "the statement is a finding from analysing the current state of affairs (strength, weakness, risk, gap), not the interpretation of a concept"
       },
       "$id": "urn:dr:spec:node:motivation.meaning"
     },
     "outcome": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Outcome",
-      "description": "End result intended or already achieved by the organization or a system, distinct from a Goal which expresses the desired direction.",
+      "description": "A motivation element stating a concrete, preferably measurable end result that the organization or a system has achieved or intends to achieve, usually with a target value, threshold or time frame. It describes a state that can be checked as reached or not reached, not a direction of intent or a capability the system must provide. Use Goal instead when the statement expresses a desired direction or end state without a measurable target or verifiable completion point (e.g. 'improve customer satisfaction'). Use Requirement instead when the statement specifies what a system or solution must do or exhibit (a need to be realized by design), rather than the business or system result that follows from it. Use Value instead when the element expresses the worth or utility to a stakeholder (e.g. 'lower operating cost'), not the concrete result that produces that worth. Use Assessment instead when the statement records a finding about the current state of affairs (a SWOT item, risk or gap) rather than an intended or achieved result.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -257,7 +322,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the result, including the measure, target value or threshold, and target date where known; set it for every outcome so its achievement can be verified."
             },
             "status": {
               "type": "string",
@@ -279,12 +345,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.3.2 Outcome",
+      "x-dr-evidence": [
+        "A key result or success criterion in an OKR, roadmap or epic document stating a measurable target with a date, e.g. 'checkout abandonment below 20% by Q4'",
+        "A 'Success metrics' or 'Expected outcome' section in a PRD, RFC or ADR describing the verifiable result after delivery, often tagged with a tracking status such as done, on-track or at-risk",
+        "An SLO or KPI objective in monitoring or dashboard configuration (e.g. a Datadog/Prometheus SLO target) whose name and description reference a business result and link to a stated goal"
+      ],
+      "x-dr-distinguish": {
+        "motivation.goal": "the statement expresses a desired direction or end state without a measurable target or verifiable completion point (e.g. 'improve customer satisfaction')",
+        "motivation.requirement": "the statement specifies what a system or solution must do or exhibit (a need to be realized by design), rather than the business or system result that follows from it",
+        "motivation.value": "the element expresses the worth or utility to a stakeholder (e.g. 'lower operating cost'), not the concrete result that produces that worth",
+        "motivation.assessment": "the statement records a finding about the current state of affairs (a SWOT item, risk or gap) rather than an intended or achieved result"
+      },
       "$id": "urn:dr:spec:node:motivation.outcome"
     },
     "principle": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Principle",
-      "description": "Normative property of all systems in a given context, or a statement governing how an organization intends to fulfill its mission and guide decision-making.",
+      "description": "A normative statement, applying across all systems or decisions within a stated scope (enterprise, domain, or programme), that prescribes how design and implementation choices should generally be made, without targeting one specific system or being directly verifiable as met by it. Use Requirement instead when the statement names a specific system, component or solution and can be verified as satisfied or not for that system (e.g. 'the Orders API must use OAuth 2.0'). Use Constraint instead when the statement is an externally imposed or fixed restriction on the solution space for a particular realization (e.g. a mandated vendor, deadline or budget) rather than a self-adopted guideline. Use Goal instead when the statement expresses a desired end state or direction to reach (e.g. 'reduce time-to-market') rather than a rule for how decisions are made. Use Value instead when the element captures the worth or importance of something to stakeholders rather than a prescription governing choices.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -304,7 +382,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the principle, ideally with its rationale and implications, written as a single prescriptive sentence followed by explanatory prose; set it for every principle."
             },
             "category": {
               "type": "string",
@@ -328,12 +407,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.3.3 Principle",
+      "x-dr-evidence": [
+        "An architecture-principles document or ADR section listing broad prescriptive statements (e.g. 'API-first', 'Data is owned by a single service') each with rationale and implications.",
+        "An engineering handbook or CONTRIBUTING.md passage stating repository-wide conventions phrased as 'we always/never …' that are cited as justification in multiple ADRs or code reviews.",
+        "An architecture fitness test or lint rule set (e.g. ArchUnit, dependency-cruiser, eslint config) whose comments or names cite a named principle enforced across all modules rather than one feature."
+      ],
+      "x-dr-distinguish": {
+        "motivation.requirement": "the statement names a specific system, component or solution and can be verified as satisfied or not for that system (e.g. 'the Orders API must use OAuth 2.0').",
+        "motivation.constraint": "the statement is an externally imposed or fixed restriction on the solution space for a particular realization (e.g. a mandated vendor, deadline or budget) rather than a self-adopted guideline.",
+        "motivation.goal": "the statement expresses a desired end state or direction to reach (e.g. 'reduce time-to-market') rather than a rule for how decisions are made.",
+        "motivation.value": "the element captures the worth or importance of something to stakeholders rather than a prescription governing choices."
+      },
       "$id": "urn:dr:spec:node:motivation.principle"
     },
     "requirement": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Requirement",
-      "description": "Statement of need that must be realized by a system, component, or solution, and that can be associated with stakeholders, goals, or constraints.",
+      "description": "A statement of need that a system, component, or solution must satisfy, phrased as a specific, verifiable behavior or property (typically a 'shall/must' statement with acceptance criteria) and traceable to the stakeholders, drivers, or goals that motivate it. Use Goal instead when the statement expresses a high-level desired direction or end state that cannot be directly verified against a specific system, rather than a concrete need the system must meet. Use Constraint instead when the statement limits the design or implementation options (e.g. a mandated technology, budget, deadline, or regulation) rather than stating something the system must do or exhibit. Use Principle instead when the statement is a general normative rule that applies to all systems in a context and guides decisions, rather than a need assigned to a particular system or solution. Use Outcome instead when the statement describes a measurable end result the organization intends or has achieved, rather than a property the system must have to contribute to it.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -353,7 +444,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text statement of the requirement, including its full wording, rationale, source, and acceptance or verification criteria; set it whenever the name alone does not make the need verifiable."
             },
             "requirementType": {
               "type": "string",
@@ -380,12 +472,24 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.3.4 Requirement",
+      "x-dr-evidence": [
+        "A requirements document, PRD, or SRS entry with a stable identifier (e.g. REQ-042, FR-7, NFR-3) and 'shall'/'must' wording",
+        "A user story or issue tracker ticket labeled as a requirement, with acceptance criteria that tests or reviewers check against",
+        "Test annotations, docstrings, or traceability matrices that reference a requirement ID (e.g. @Requirement(\"REQ-042\"), '# Verifies NFR-3') linking code or tests back to the stated need"
+      ],
+      "x-dr-distinguish": {
+        "motivation.goal": "the statement expresses a high-level desired direction or end state that cannot be directly verified against a specific system, rather than a concrete need the system must meet",
+        "motivation.constraint": "the statement limits the design or implementation options (e.g. a mandated technology, budget, deadline, or regulation) rather than stating something the system must do or exhibit",
+        "motivation.principle": "the statement is a general normative rule that applies to all systems in a context and guides decisions, rather than a need assigned to a particular system or solution",
+        "motivation.outcome": "the statement describes a measurable end result the organization intends or has achieved, rather than a property the system must have to contribute to it"
+      },
       "$id": "urn:dr:spec:node:motivation.requirement"
     },
     "stakeholder": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Stakeholder",
-      "description": "Individual, team, or organization that has an interest in, or is affected by, the effects of the architecture.",
+      "description": "A motivation element naming a person, group, team, organization, or class of such parties, by its role or perspective, whose interests or concerns about the architecture are what drivers, goals, and requirements are traced back to. It captures who cares and why, not who performs behavior. Use Driver instead when the element states the concern or condition itself (e.g. 'GDPR fines', 'customer churn') rather than the party who holds it. Use Requirement instead when the text is a need the system must satisfy, such as a user story 'As a clerk I want…', where the clerk is only the associated stakeholder. Use Value instead when the element expresses the worth or benefit a party gains, rather than the party itself. Use business BusinessActor or BusinessRole instead when the party performs behaviour in the business; the actor or role references the stakeholder whose concerns it stands for.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -405,7 +509,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text description of the stakeholder's role, scope, and principal concerns or interests in the architecture. Set it whenever the name alone does not make clear who the party is or what it cares about."
             },
             "type": {
               "type": "string",
@@ -425,12 +530,23 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.2.1 Stakeholder",
+      "x-dr-evidence": [
+        "A 'Stakeholders' section or RACI table in a README, architecture document, or ADR that lists named roles or teams together with their concerns",
+        "MADR or ADR front-matter fields such as 'deciders', 'consulted', or 'informed' that list teams, roles, or external bodies",
+        "Compliance or requirements documents that name an external authority or audience (e.g. 'PCI SSC', 'data protection officer', 'merchant partners') as the source of an obligation or concern"
+      ],
+      "x-dr-distinguish": {
+        "motivation.driver": "the element states the concern or condition itself (e.g. 'GDPR fines', 'customer churn') rather than the party who holds it",
+        "motivation.requirement": "the text is a need the system must satisfy, such as a user story 'As a clerk I want…', where the clerk is only the associated stakeholder",
+        "motivation.value": "the element expresses the worth or benefit a party gains, rather than the party itself"
+      },
       "$id": "urn:dr:spec:node:motivation.stakeholder"
     },
     "value": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Value",
-      "description": "Relative worth, utility, or importance of a concept, phenomenon, or outcome to one or more stakeholders.",
+      "description": "A motivation element stating the worth, benefit, or utility that a specific concept, service, feature, or outcome has for one or more named stakeholders, expressed from the stakeholder's perspective (for example 'saves customers ten minutes per order') rather than as a target, a result, or a need. Use Outcome instead when the statement describes an end result the organization intends or has achieved, such as a measurable state change, rather than why that result is worth something to a stakeholder. Use Goal instead when the statement expresses a desired direction or end state the organization strives toward, not the benefit a stakeholder derives. Use Meaning instead when the statement gives the interpretation or definition of a concept in a context, not its worth or importance. Use Driver instead when the statement describes a condition or force that motivates change, such as market pressure or regulation, rather than a benefit delivered.",
       "allOf": [
         {
           "$ref": "urn:dr:spec:base:spec-node"
@@ -450,7 +566,8 @@
           "type": "object",
           "properties": {
             "documentation": {
-              "type": "string"
+              "type": "string",
+              "description": "Free-text explanation of the value: which stakeholders it applies to, what benefit they gain, and any quantification or evidence. Set it whenever the element name alone does not state who benefits and how."
             },
             "valueType": {
               "type": "string",
@@ -472,31 +589,33 @@
           "additionalProperties": false
         }
       },
+      "x-dr-standard": "ArchiMate 3.2 §6.4.2 Value",
+      "x-dr-evidence": [
+        "A 'Value proposition', 'Benefits' or 'Why this matters' section in a product spec, PRD or README that names a stakeholder and the benefit they receive",
+        "A business case, OKR or ADR 'Consequences/Benefits' entry quantifying worth to a stakeholder, such as cost saved, revenue enabled or time reduced",
+        "A feature, epic or service catalogue entry with a 'value', 'benefit' or 'business value' field describing what a user or customer gains"
+      ],
+      "x-dr-distinguish": {
+        "motivation.outcome": "the statement describes an end result the organization intends or has achieved, such as a measurable state change, rather than why that result is worth something to a stakeholder",
+        "motivation.goal": "the statement expresses a desired direction or end state the organization strives toward, not the benefit a stakeholder derives",
+        "motivation.meaning": "the statement gives the interpretation or definition of a concept in a context, not its worth or importance",
+        "motivation.driver": "the statement describes a condition or force that motivates change, such as market pressure or regulation, rather than a benefit delivered"
+      },
       "$id": "urn:dr:spec:node:motivation.value"
     }
   },
   "relationshipSchemas": {
-    "motivation.assessment.associated-with.motivation.constraint": {
-      "id": "motivation.assessment.associated-with.motivation.constraint",
+    "motivation.assessment.associated-with.motivation.driver": {
+      "id": "motivation.assessment.associated-with.motivation.driver",
       "source_spec_node_id": "motivation.assessment",
       "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.constraint",
+      "destination_spec_node_id": "motivation.driver",
       "destination_layer": "motivation",
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.assessment.associated-with.motivation.outcome": {
-      "id": "motivation.assessment.associated-with.motivation.outcome",
-      "source_spec_node_id": "motivation.assessment",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.outcome",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The assessment evaluates the driver, such as a gap analysis of how far the organization is from meeting a new regulation. Use influence instead when the finding shapes a goal, requirement or principle."
     },
     "motivation.assessment.influence.motivation.assessment": {
       "id": "motivation.assessment.influence.motivation.assessment",
@@ -507,18 +626,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.assessment.influence.motivation.driver": {
-      "id": "motivation.assessment.influence.motivation.driver",
-      "source_spec_node_id": "motivation.assessment",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.driver",
-      "destination_layer": "motivation",
-      "predicate": "influence",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "One finding leads to or changes another, such as a risk assessment that prompts a feasibility review."
     },
     "motivation.assessment.influence.motivation.goal": {
       "id": "motivation.assessment.influence.motivation.goal",
@@ -529,7 +638,20 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The finding shapes a goal: a weakness or opportunity the organization decides to act on becomes, or changes, an end state it pursues."
+    },
+    "motivation.assessment.influence.motivation.outcome": {
+      "id": "motivation.assessment.influence.motivation.outcome",
+      "source_spec_node_id": "motivation.assessment",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.outcome",
+      "destination_layer": "motivation",
+      "predicate": "influence",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The finding shapes an outcome, such as a measured gap that sets the target value of the outcome meant to close it."
     },
     "motivation.assessment.influence.motivation.principle": {
       "id": "motivation.assessment.influence.motivation.principle",
@@ -540,7 +662,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The finding shapes a principle, such as repeated integration failures leading to a 'prefer asynchronous messaging' principle."
     },
     "motivation.assessment.influence.motivation.requirement": {
       "id": "motivation.assessment.influence.motivation.requirement",
@@ -551,7 +674,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The finding shapes a requirement, such as 'logs store PII unencrypted' leading to 'logs must not contain PII'."
     },
     "motivation.constraint.constrains.motivation.requirement": {
       "id": "motivation.constraint.constrains.motivation.requirement",
@@ -562,7 +686,8 @@
       "predicate": "constrains",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint limits how the requirement may be met, such as a mandated cloud provider restricting how an availability requirement is satisfied. Use influence instead when the constraint shapes a goal, outcome or principle rather than limiting a requirement."
     },
     "motivation.constraint.influence.motivation.assessment": {
       "id": "motivation.constraint.influence.motivation.assessment",
@@ -573,7 +698,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint changes a finding, such as a budget ceiling turning an option the assessment rated feasible into an infeasible one."
     },
     "motivation.constraint.influence.motivation.goal": {
       "id": "motivation.constraint.influence.motivation.goal",
@@ -584,7 +710,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint shapes a goal, narrowing or redirecting the end state the organization can pursue, such as a deadline that scopes a modernization goal."
     },
     "motivation.constraint.influence.motivation.outcome": {
       "id": "motivation.constraint.influence.motivation.outcome",
@@ -595,7 +722,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint shapes an outcome, such as a budget ceiling that lowers the target value an outcome can reach."
     },
     "motivation.constraint.influence.motivation.principle": {
       "id": "motivation.constraint.influence.motivation.principle",
@@ -606,18 +734,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.constraint.influence.motivation.requirement": {
-      "id": "motivation.constraint.influence.motivation.requirement",
-      "source_spec_node_id": "motivation.constraint",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.requirement",
-      "destination_layer": "motivation",
-      "predicate": "influence",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint shapes a principle, such as a data-residency rule leading to a 'keep customer data in region' principle."
     },
     "motivation.constraint.specializes.motivation.constraint": {
       "id": "motivation.constraint.specializes.motivation.constraint",
@@ -628,29 +746,8 @@
       "predicate": "specializes",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.driver.associated-with.motivation.constraint": {
-      "id": "motivation.driver.associated-with.motivation.constraint",
-      "source_spec_node_id": "motivation.driver",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.constraint",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.driver.associated-with.motivation.value": {
-      "id": "motivation.driver.associated-with.motivation.value",
-      "source_spec_node_id": "motivation.driver",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The constraint is a narrower case of a more general constraint, such as 'EU data stays in Frankfurt' specializing 'EU data stays in the EU'."
     },
     "motivation.driver.influence.motivation.assessment": {
       "id": "motivation.driver.influence.motivation.assessment",
@@ -661,7 +758,20 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The driver prompts or frames an assessment, such as a new regulation prompting a compliance gap analysis. Use the assessment's association instead to record which driver an assessment evaluates."
+    },
+    "motivation.driver.influence.motivation.constraint": {
+      "id": "motivation.driver.influence.motivation.constraint",
+      "source_spec_node_id": "motivation.driver",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.constraint",
+      "destination_layer": "motivation",
+      "predicate": "influence",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The driver gives rise to a constraint, such as a regulation that forbids storing data outside a jurisdiction."
     },
     "motivation.driver.influence.motivation.driver": {
       "id": "motivation.driver.influence.motivation.driver",
@@ -672,7 +782,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "One driver strengthens or causes another, such as rising cloud cost adding to pressure to consolidate platforms."
     },
     "motivation.driver.influence.motivation.goal": {
       "id": "motivation.driver.influence.motivation.goal",
@@ -683,7 +794,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The driver prompts or changes a goal: the condition the organization responds to shapes the end state it sets out to reach."
     },
     "motivation.driver.influence.motivation.outcome": {
       "id": "motivation.driver.influence.motivation.outcome",
@@ -694,7 +806,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The driver prompts or changes an outcome, such as market pressure setting a time-to-market target."
     },
     "motivation.driver.influence.motivation.principle": {
       "id": "motivation.driver.influence.motivation.principle",
@@ -705,7 +818,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The driver prompts a principle, such as technical debt leading to a 'retire before you build' principle."
     },
     "motivation.driver.influence.motivation.requirement": {
       "id": "motivation.driver.influence.motivation.requirement",
@@ -716,7 +830,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The driver prompts a requirement directly, such as a regulation that a system must log consent. Use the goal and outcome links instead when the driver works through an intended end state."
     },
     "motivation.goal.aggregates.motivation.goal": {
       "id": "motivation.goal.aggregates.motivation.goal",
@@ -727,40 +842,8 @@
       "predicate": "aggregates",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.aggregates.motivation.requirement": {
-      "id": "motivation.goal.aggregates.motivation.requirement",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.requirement",
-      "destination_layer": "motivation",
-      "predicate": "aggregates",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.associated-with.motivation.constraint": {
-      "id": "motivation.goal.associated-with.motivation.constraint",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.constraint",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.influence.motivation.assessment": {
-      "id": "motivation.goal.influence.motivation.assessment",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.assessment",
-      "destination_layer": "motivation",
-      "predicate": "influence",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The goal is made up of narrower sub-goals, each part of reaching it. Use specializes instead when the narrower goal is a variant of the general one rather than a part of it."
     },
     "motivation.goal.influence.motivation.goal": {
       "id": "motivation.goal.influence.motivation.goal",
@@ -771,7 +854,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "One goal contributes to or conflicts with another without being part of it, such as 'reduce cost' working against 'improve resilience'."
     },
     "motivation.goal.influence.motivation.outcome": {
       "id": "motivation.goal.influence.motivation.outcome",
@@ -782,7 +866,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The goal shapes which outcomes are set and what their targets are. Use the outcome's realizes instead to record that reaching the outcome achieves the goal."
     },
     "motivation.goal.influence.motivation.principle": {
       "id": "motivation.goal.influence.motivation.principle",
@@ -793,7 +878,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The goal prompts or shapes a principle that guides decisions toward it, such as 'reduce time to market' leading to 'prefer managed services'."
     },
     "motivation.goal.influence.motivation.requirement": {
       "id": "motivation.goal.influence.motivation.requirement",
@@ -804,29 +890,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.realizes.motivation.goal": {
-      "id": "motivation.goal.realizes.motivation.goal",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "realizes",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.realizes.motivation.value": {
-      "id": "motivation.goal.realizes.motivation.value",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "realizes",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The goal shapes a requirement without the requirement fully realizing it. Use the requirement's realizes instead when meeting the requirement makes the goal concrete."
     },
     "motivation.goal.specializes.motivation.goal": {
       "id": "motivation.goal.specializes.motivation.goal",
@@ -837,18 +902,8 @@
       "predicate": "specializes",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.goal.supports.motivation.principle": {
-      "id": "motivation.goal.supports.motivation.principle",
-      "source_spec_node_id": "motivation.goal",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.principle",
-      "destination_layer": "motivation",
-      "predicate": "supports",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The goal is a narrower variant of a more general goal, such as 'improve mobile checkout' specializing 'improve checkout'."
     },
     "motivation.meaning.associated-with.motivation.constraint": {
       "id": "motivation.meaning.associated-with.motivation.constraint",
@@ -859,7 +914,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning explains a term or concept the constraint relies on, such as what 'personal data' covers in a data-residency constraint."
     },
     "motivation.meaning.associated-with.motivation.driver": {
       "id": "motivation.meaning.associated-with.motivation.driver",
@@ -870,7 +926,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning explains how stakeholders interpret the driver or a term it uses, such as what a regulation's 'processor' means in this organization."
     },
     "motivation.meaning.associated-with.motivation.goal": {
       "id": "motivation.meaning.associated-with.motivation.goal",
@@ -881,7 +938,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning explains a term or concept the goal relies on, such as what 'active customer' means in a retention goal."
     },
     "motivation.meaning.associated-with.motivation.outcome": {
       "id": "motivation.meaning.associated-with.motivation.outcome",
@@ -892,7 +950,32 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning explains how a term in the outcome is interpreted, such as how 'resolved' is defined for a ticket-resolution target."
+    },
+    "motivation.meaning.associated-with.motivation.principle": {
+      "id": "motivation.meaning.associated-with.motivation.principle",
+      "source_spec_node_id": "motivation.meaning",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.principle",
+      "destination_layer": "motivation",
+      "predicate": "associated-with",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The meaning explains a term or concept the principle relies on, such as what counts as a 'managed service'."
+    },
+    "motivation.meaning.associated-with.motivation.requirement": {
+      "id": "motivation.meaning.associated-with.motivation.requirement",
+      "source_spec_node_id": "motivation.meaning",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.requirement",
+      "destination_layer": "motivation",
+      "predicate": "associated-with",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The meaning explains a term or concept the requirement relies on, such as the definition of 'session' in a timeout requirement."
     },
     "motivation.meaning.associated-with.motivation.stakeholder": {
       "id": "motivation.meaning.associated-with.motivation.stakeholder",
@@ -903,7 +986,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning is the interpretation a stakeholder attaches to a concept, recording whose understanding it is."
     },
     "motivation.meaning.associated-with.motivation.value": {
       "id": "motivation.meaning.associated-with.motivation.value",
@@ -914,40 +998,20 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The meaning explains how stakeholders interpret a value, such as what 'convenience' means to a customer segment."
     },
-    "motivation.outcome.associated-with.motivation.constraint": {
-      "id": "motivation.outcome.associated-with.motivation.constraint",
-      "source_spec_node_id": "motivation.outcome",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.constraint",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.outcome.associated-with.motivation.driver": {
-      "id": "motivation.outcome.associated-with.motivation.driver",
-      "source_spec_node_id": "motivation.outcome",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.driver",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.outcome.associated-with.motivation.outcome": {
-      "id": "motivation.outcome.associated-with.motivation.outcome",
+    "motivation.outcome.aggregates.motivation.outcome": {
+      "id": "motivation.outcome.aggregates.motivation.outcome",
       "source_spec_node_id": "motivation.outcome",
       "source_layer": "motivation",
       "destination_spec_node_id": "motivation.outcome",
       "destination_layer": "motivation",
-      "predicate": "associated-with",
+      "predicate": "aggregates",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The outcome is made up of narrower outcomes, each a measurable part of it, such as regional targets that make up a global one."
     },
     "motivation.outcome.associated-with.motivation.stakeholder": {
       "id": "motivation.outcome.associated-with.motivation.stakeholder",
@@ -958,18 +1022,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.outcome.influence.motivation.goal": {
-      "id": "motivation.outcome.influence.motivation.goal",
-      "source_spec_node_id": "motivation.outcome",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "influence",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder has a stake in the outcome: it is the party who cares whether the outcome is reached."
     },
     "motivation.outcome.realizes.motivation.goal": {
       "id": "motivation.outcome.realizes.motivation.goal",
@@ -980,29 +1034,8 @@
       "predicate": "realizes",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.outcome.realizes.motivation.value": {
-      "id": "motivation.outcome.realizes.motivation.value",
-      "source_spec_node_id": "motivation.outcome",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "realizes",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.principle.associated-with.motivation.value": {
-      "id": "motivation.principle.associated-with.motivation.value",
-      "source_spec_node_id": "motivation.principle",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "Reaching the outcome achieves the goal, or the part of it the outcome measures. This is the link from a measurable result to the end state it makes concrete."
     },
     "motivation.principle.influence.motivation.assessment": {
       "id": "motivation.principle.influence.motivation.assessment",
@@ -1013,7 +1046,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The principle frames how a situation is judged, such as a 'prefer open standards' principle shaping an assessment of a vendor lock-in risk."
     },
     "motivation.principle.influence.motivation.goal": {
       "id": "motivation.principle.influence.motivation.goal",
@@ -1024,7 +1058,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The principle shapes a goal, guiding which end states are pursued or how."
     },
     "motivation.principle.influence.motivation.principle": {
       "id": "motivation.principle.influence.motivation.principle",
@@ -1035,7 +1070,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "One principle shapes or refines another, such as an enterprise principle shaping a domain principle."
     },
     "motivation.principle.influence.motivation.requirement": {
       "id": "motivation.principle.influence.motivation.requirement",
@@ -1046,29 +1082,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.principle.realizes.motivation.goal": {
-      "id": "motivation.principle.realizes.motivation.goal",
-      "source_spec_node_id": "motivation.principle",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "realizes",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.aggregates.motivation.goal": {
-      "id": "motivation.requirement.aggregates.motivation.goal",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "aggregates",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The principle shapes a requirement without the requirement fully applying it. Use the requirement's realizes instead when the requirement makes the principle concrete for one system."
     },
     "motivation.requirement.aggregates.motivation.requirement": {
       "id": "motivation.requirement.aggregates.motivation.requirement",
@@ -1079,73 +1094,8 @@
       "predicate": "aggregates",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.constraint": {
-      "id": "motivation.requirement.associated-with.motivation.constraint",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.constraint",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.driver": {
-      "id": "motivation.requirement.associated-with.motivation.driver",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.driver",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.goal": {
-      "id": "motivation.requirement.associated-with.motivation.goal",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.outcome": {
-      "id": "motivation.requirement.associated-with.motivation.outcome",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.outcome",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.stakeholder": {
-      "id": "motivation.requirement.associated-with.motivation.stakeholder",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.stakeholder",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.requirement.associated-with.motivation.value": {
-      "id": "motivation.requirement.associated-with.motivation.value",
-      "source_spec_node_id": "motivation.requirement",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The requirement is made up of narrower requirements, each part of meeting it. Use specializes instead when the narrower requirement is a variant rather than a part."
     },
     "motivation.requirement.realizes.motivation.goal": {
       "id": "motivation.requirement.realizes.motivation.goal",
@@ -1156,7 +1106,32 @@
       "predicate": "realizes",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "Meeting the requirement makes the goal concrete for a system or solution: the requirement is how the goal is refined into something verifiable."
+    },
+    "motivation.requirement.realizes.motivation.outcome": {
+      "id": "motivation.requirement.realizes.motivation.outcome",
+      "source_spec_node_id": "motivation.requirement",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.outcome",
+      "destination_layer": "motivation",
+      "predicate": "realizes",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "Meeting the requirement makes the outcome concrete, such as a latency requirement that delivers a response-time target."
+    },
+    "motivation.requirement.realizes.motivation.principle": {
+      "id": "motivation.requirement.realizes.motivation.principle",
+      "source_spec_node_id": "motivation.requirement",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.principle",
+      "destination_layer": "motivation",
+      "predicate": "realizes",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The requirement applies the principle to one system or solution, making a general rule concrete and verifiable."
     },
     "motivation.requirement.specializes.motivation.requirement": {
       "id": "motivation.requirement.specializes.motivation.requirement",
@@ -1167,7 +1142,20 @@
       "predicate": "specializes",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The requirement is a narrower variant of a more general one, such as 'encrypt backups with AES-256' specializing 'encrypt data at rest'."
+    },
+    "motivation.stakeholder.aggregates.motivation.stakeholder": {
+      "id": "motivation.stakeholder.aggregates.motivation.stakeholder",
+      "source_spec_node_id": "motivation.stakeholder",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.stakeholder",
+      "destination_layer": "motivation",
+      "predicate": "aggregates",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The stakeholder group is made up of narrower stakeholders, such as a business unit that includes several teams."
     },
     "motivation.stakeholder.associated-with.motivation.constraint": {
       "id": "motivation.stakeholder.associated-with.motivation.constraint",
@@ -1178,7 +1166,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder is concerned with the constraint, such as the legal department with a data-residency rule."
     },
     "motivation.stakeholder.associated-with.motivation.driver": {
       "id": "motivation.stakeholder.associated-with.motivation.driver",
@@ -1189,18 +1178,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.stakeholder.associated-with.motivation.goal": {
-      "id": "motivation.stakeholder.associated-with.motivation.goal",
-      "source_spec_node_id": "motivation.stakeholder",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.goal",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder holds the concern the driver expresses: the driver is why the stakeholder cares."
     },
     "motivation.stakeholder.associated-with.motivation.outcome": {
       "id": "motivation.stakeholder.associated-with.motivation.outcome",
@@ -1211,7 +1190,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder is concerned with the outcome, such as finance with a cost-reduction target."
     },
     "motivation.stakeholder.associated-with.motivation.principle": {
       "id": "motivation.stakeholder.associated-with.motivation.principle",
@@ -1222,7 +1202,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder is concerned with the principle, such as an architecture board with the principles it owns."
     },
     "motivation.stakeholder.associated-with.motivation.requirement": {
       "id": "motivation.stakeholder.associated-with.motivation.requirement",
@@ -1233,29 +1214,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.stakeholder.associated-with.motivation.stakeholder": {
-      "id": "motivation.stakeholder.associated-with.motivation.stakeholder",
-      "source_spec_node_id": "motivation.stakeholder",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.stakeholder",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
-    },
-    "motivation.stakeholder.associated-with.motivation.value": {
-      "id": "motivation.stakeholder.associated-with.motivation.value",
-      "source_spec_node_id": "motivation.stakeholder",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder is concerned with the requirement, such as the user group a user story is written for."
     },
     "motivation.stakeholder.influence.motivation.assessment": {
       "id": "motivation.stakeholder.influence.motivation.assessment",
@@ -1266,18 +1226,8 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.stakeholder.influence.motivation.driver": {
-      "id": "motivation.stakeholder.influence.motivation.driver",
-      "source_spec_node_id": "motivation.stakeholder",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.driver",
-      "destination_layer": "motivation",
-      "predicate": "influence",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder shapes an assessment, such as a sponsor commissioning or contesting a finding."
     },
     "motivation.stakeholder.influence.motivation.goal": {
       "id": "motivation.stakeholder.influence.motivation.goal",
@@ -1288,7 +1238,20 @@
       "predicate": "influence",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder sets or shapes the goal. Use association instead when the stakeholder only has a stake in a goal it does not shape."
+    },
+    "motivation.value.aggregates.motivation.value": {
+      "id": "motivation.value.aggregates.motivation.value",
+      "source_spec_node_id": "motivation.value",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.value",
+      "destination_layer": "motivation",
+      "predicate": "aggregates",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The value is made up of narrower values, such as 'lower total cost' made up of lower licence and lower operating cost."
     },
     "motivation.value.associated-with.motivation.constraint": {
       "id": "motivation.value.associated-with.motivation.constraint",
@@ -1299,7 +1262,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The value is affected by the constraint, such as a budget ceiling that limits a value the solution can deliver."
     },
     "motivation.value.associated-with.motivation.driver": {
       "id": "motivation.value.associated-with.motivation.driver",
@@ -1310,7 +1274,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The value is what responding to the driver is worth to stakeholders, such as avoided fines for a regulatory driver."
     },
     "motivation.value.associated-with.motivation.goal": {
       "id": "motivation.value.associated-with.motivation.goal",
@@ -1321,7 +1286,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The value is the worth of reaching the goal to stakeholders, the reason the goal is pursued."
     },
     "motivation.value.associated-with.motivation.outcome": {
       "id": "motivation.value.associated-with.motivation.outcome",
@@ -1332,7 +1298,32 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The value is the worth of the outcome to stakeholders, such as time saved when a response-time target is met."
+    },
+    "motivation.value.associated-with.motivation.principle": {
+      "id": "motivation.value.associated-with.motivation.principle",
+      "source_spec_node_id": "motivation.value",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.principle",
+      "destination_layer": "motivation",
+      "predicate": "associated-with",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The value is what following the principle is worth, such as lower maintenance cost for 'prefer managed services'."
+    },
+    "motivation.value.associated-with.motivation.requirement": {
+      "id": "motivation.value.associated-with.motivation.requirement",
+      "source_spec_node_id": "motivation.value",
+      "source_layer": "motivation",
+      "destination_spec_node_id": "motivation.requirement",
+      "destination_layer": "motivation",
+      "predicate": "associated-with",
+      "cardinality": "many-to-many",
+      "strength": "medium",
+      "required": false,
+      "description": "The value is what meeting the requirement is worth to stakeholders."
     },
     "motivation.value.associated-with.motivation.stakeholder": {
       "id": "motivation.value.associated-with.motivation.stakeholder",
@@ -1343,18 +1334,8 @@
       "predicate": "associated-with",
       "cardinality": "many-to-many",
       "strength": "medium",
-      "required": false
-    },
-    "motivation.value.associated-with.motivation.value": {
-      "id": "motivation.value.associated-with.motivation.value",
-      "source_spec_node_id": "motivation.value",
-      "source_layer": "motivation",
-      "destination_spec_node_id": "motivation.value",
-      "destination_layer": "motivation",
-      "predicate": "associated-with",
-      "cardinality": "many-to-many",
-      "strength": "medium",
-      "required": false
+      "required": false,
+      "description": "The stakeholder is the party for whom the value is a worth or benefit. Every value should be associated with at least one stakeholder."
     }
   }
 }

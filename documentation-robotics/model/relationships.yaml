@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-09-19T15:37:38.337Z
+# Last updated: 2026-11-12T13:39:39.704Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -76,7 +76,7 @@
     confidence: high
 - source: motivation.constraint.browser-only-deployment
   target: motivation.requirement.embedded-deployment-mode
-  predicate: influence
+  predicate: constrains
   layer: motivation
   category: structural
   properties:
@@ -84,7 +84,7 @@
     confidence: high
 - source: motivation.constraint.dr-cli-server-dependency
   target: motivation.requirement.dr-cli-server-integration
-  predicate: influence
+  predicate: constrains
   layer: motivation
   category: structural
   properties:
@@ -92,7 +92,7 @@
     confidence: high
 - source: motivation.constraint.type-script-strict-mode
   target: motivation.requirement.wcag-21-aa-compliance
-  predicate: influence
+  predicate: constrains
   layer: motivation
   category: structural
   properties:
@@ -124,7 +124,7 @@
     confidence: medium
 - source: motivation.principle.core-app-architectural-separation
   target: motivation.goal.accelerate-architecture-documentation
-  predicate: realizes
+  predicate: influence
   layer: motivation
   category: structural
   properties:
@@ -132,7 +132,7 @@
     confidence: medium
 - source: motivation.principle.read-first-always
   target: motivation.goal.accelerate-architecture-documentation
-  predicate: realizes
+  predicate: influence
   layer: motivation
   category: structural
   properties:
@@ -244,7 +244,7 @@
     confidence: high
 - source: business.businessrole.architecture-reviewer
   target: business.businessprocess.changeset-review-flow
-  predicate: performs
+  predicate: assigned-to
   layer: business
   category: structural
   properties:
@@ -284,7 +284,7 @@
     confidence: high
 - source: security.securitymodel.documentation-robotics-viewer-security-model
   target: security.dataclassification.architecture-model-data
-  predicate: governs
+  predicate: aggregates
   layer: security
   category: structural
   properties:
@@ -298,17 +298,9 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: security.actor.developer
-  target: security.authenticationconfig.bearer-token-authentication
-  predicate: governed-by
-  layer: security
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: security.actor.developer
-  target: security.secureresource.model-rest-api
-  predicate: accesses
+- source: security.authenticationconfig.bearer-token-authentication
+  target: security.actor.developer
+  predicate: authenticates
   layer: security
   category: structural
   properties:
@@ -332,7 +324,7 @@
     confidence: high
 - source: security.role.authenticated-viewer
   target: security.permission.read-model-data
-  predicate: authorizes
+  predicate: aggregates
   layer: security
   category: structural
   properties:
@@ -340,15 +332,7 @@
     confidence: high
 - source: security.role.authenticated-viewer
   target: security.permission.write-annotations
-  predicate: authorizes
-  layer: security
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: security.role.authenticated-viewer
-  target: security.secureresource.model-rest-api
-  predicate: accesses
+  predicate: aggregates
   layer: security
   category: structural
   properties:
@@ -381,14 +365,6 @@
 - source: security.dataclassification.architecture-model-data
   target: security.secureresource.model-rest-api
   predicate: governs
-  layer: security
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: security.dataclassification.architecture-model-data
-  target: security.securitypolicy.bearer-token-policy
-  predicate: supports
   layer: security
   category: structural
   properties:
@@ -444,7 +420,7 @@
     confidence: medium
 - source: application.applicationfunction.auth-store
   target: application.applicationservice.generated-api-client
-  predicate: delivers-value
+  predicate: realizes
   layer: application
   category: structural
   properties:
@@ -452,7 +428,7 @@
     confidence: high
 - source: application.applicationfunction.connection-store
   target: application.applicationservice.web-socket-client
-  predicate: delivers-value
+  predicate: realizes
   layer: application
   category: structural
   properties:
@@ -486,7 +462,7 @@
     confidence: high
 - source: application.applicationinterface.dr-cli-rest-interface
   target: application.applicationservice.generated-api-client
-  predicate: depends-on
+  predicate: assigned-to
   layer: application
   category: structural
   properties:
@@ -494,7 +470,7 @@
     confidence: high
 - source: application.applicationinterface.dr-cli-web-socket-interface
   target: application.applicationservice.web-socket-client
-  predicate: depends-on
+  predicate: assigned-to
   layer: application
   category: structural
   properties:
@@ -502,7 +478,7 @@
     confidence: high
 - source: application.applicationinterface.dr-cli-web-socket-interface
   target: application.applicationservice.json-rpc-handler
-  predicate: serves
+  predicate: assigned-to
   layer: application
   category: structural
   properties:
@@ -558,7 +534,7 @@
     confidence: high
 - source: technology.artifact.embedded-app-bundle
   target: technology.systemsoftware.vite-6
-  predicate: associated-with
+  predicate: realizes
   layer: technology
   category: structural
   properties:
@@ -566,84 +542,60 @@
     confidence: high
 - source: technology.artifact.docker-agent-image
   target: technology.systemsoftware.nodejs
-  predicate: associated-with
+  predicate: realizes
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: medium
-- source: technology.artifact.open-api-specification
-  target: technology.technologyprocess.open-api-type-generation
-  predicate: flows-to
+- source: technology.technologyprocess.open-api-type-generation
+  target: technology.artifact.open-api-specification
+  predicate: accesses
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.artifact.embedded-app-bundle
-  target: technology.technologyprocess.vite-build-pipeline
-  predicate: flows-to
+- source: technology.technologyprocess.vite-build-pipeline
+  target: technology.artifact.embedded-app-bundle
+  predicate: accesses
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.technologyservice.dr-cli-rest-server
-  target: technology.technologyinterface.rest-https-interface
-  predicate: provides
+- source: technology.technologyinterface.rest-https-interface
+  target: technology.technologyservice.dr-cli-rest-server
+  predicate: assigned-to
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.technologyservice.web-socket-model-service
-  target: technology.technologyinterface.web-socket-interface
-  predicate: provides
+- source: technology.technologyinterface.web-socket-interface
+  target: technology.technologyservice.web-socket-model-service
+  predicate: assigned-to
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-- source: technology.technologyservice.dr-cli-rest-server
-  target: technology.technologyprocess.vite-build-pipeline
-  predicate: aggregates
+- source: technology.technologyprocess.vite-build-pipeline
+  target: technology.technologyservice.dr-cli-rest-server
+  predicate: realizes
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: low
-- source: technology.technologyservice.dr-cli-rest-server
-  target: technology.node.vite-dev-server
-  predicate: depends-on
+- source: technology.technologyinterface.rest-https-interface
+  target: technology.technologyprocess.vite-build-pipeline
+  predicate: serves
   layer: technology
   category: structural
   properties:
     source_provenance: inferred
     confidence: medium
-- source: technology.technologyservice.web-socket-model-service
-  target: technology.node.vite-dev-server
-  predicate: depends-on
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: technology.technologyprocess.vite-build-pipeline
-  target: technology.technologyinterface.rest-https-interface
-  predicate: uses
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-- source: technology.systemsoftware.react-19
-  target: technology.path.app-to-dr-cli-https-path
-  predicate: uses
-  layer: technology
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: api.pathitem.health-path
   target: api.operation.health-check
   predicate: composes
@@ -750,7 +702,7 @@
     confidence: high
 - source: api.securityscheme.bearer-auth-scheme
   target: security.securitypolicy.bearer-token-policy
-  predicate: implements
+  predicate: realizes
   layer: api
   targetLayer: security
   category: structural
@@ -759,7 +711,7 @@
     confidence: high
 - source: api.securityscheme.query-auth-scheme
   target: security.securitypolicy.bearer-token-policy
-  predicate: implements
+  predicate: realizes
   layer: api
   targetLayer: security
   category: structural
@@ -768,7 +720,7 @@
     confidence: high
 - source: data-model.objectschema.tool-invocation-content
   target: data-model.objectschema.chat-message
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -776,7 +728,7 @@
     confidence: high
 - source: data-model.objectschema.annotation-create
   target: data-model.objectschema.annotation
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -784,7 +736,7 @@
     confidence: high
 - source: data-model.objectschema.meta-model
   target: data-model.objectschema.layer
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -792,7 +744,7 @@
     confidence: medium
 - source: data-model.objectschema.model-element
   target: data-model.objectschema.relationship
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -800,7 +752,7 @@
     confidence: medium
 - source: data-model.objectschema.chat-conversation
   target: data-model.objectschema.chat-message
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -808,7 +760,7 @@
     confidence: high
 - source: data-model.objectschema.web-socket-message
   target: data-model.objectschema.json-rpc-request
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -816,7 +768,7 @@
     confidence: high
 - source: data-model.objectschema.web-socket-event-map
   target: data-model.objectschema.web-socket-message
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
   properties:
@@ -872,15 +824,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: ux.view.auth-view
-  target: business.businessprocess.authentication-flow
-  predicate: realizes
-  layer: ux
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: navigation.navigationguard.authentication-guard
   target: security.role.authenticated-viewer
   predicate: requires
@@ -892,16 +835,16 @@
     confidence: high
 - source: navigation.navigationguard.authentication-guard
   target: security.securitypolicy.bearer-token-policy
-  predicate: implements
+  predicate: realizes
   layer: navigation
   targetLayer: security
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-- source: navigation.navigationtransition.auth-redirect-transition
-  target: navigation.navigationguard.authentication-guard
-  predicate: requires
+- source: navigation.navigationguard.authentication-guard
+  target: navigation.navigationtransition.auth-redirect-transition
+  predicate: protects
   layer: navigation
   category: structural
   properties:
@@ -909,15 +852,7 @@
     confidence: high
 - source: navigation.navigationflow.authentication-to-model-flow
   target: navigation.flowstep.token-extraction-step
-  predicate: aggregates
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.navigationflow.authentication-to-model-flow
-  target: navigation.navigationtransition.auth-redirect-transition
-  predicate: flows-to
+  predicate: composes
   layer: navigation
   category: structural
   properties:
@@ -932,9 +867,9 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: navigation.navigationflow.authentication-to-model-flow
-  target: navigation.navigationguard.authentication-guard
-  predicate: requires
+- source: navigation.navigationguard.authentication-guard
+  target: navigation.navigationflow.authentication-to-model-flow
+  predicate: protects
   layer: navigation
   category: structural
   properties:
@@ -948,17 +883,9 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: apm.metricinstrument.web-socket-connection-state-gauge
-  target: apm.instrumentationscope.error-tracker-instrumentation-scope
-  predicate: depends-on
-  layer: apm
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: apm.metricinstrument.web-socket-reconnection-attempt-counter
-  target: apm.instrumentationscope.error-tracker-instrumentation-scope
-  predicate: depends-on
+- source: apm.instrumentationscope.error-tracker-instrumentation-scope
+  target: apm.metricinstrument.web-socket-reconnection-attempt-counter
+  predicate: aggregates
   layer: apm
   category: structural
   properties:
@@ -966,7 +893,7 @@
     confidence: high
 - source: apm.instrumentationconfig.browser-error-instrumentation
   target: apm.instrumentationscope.error-tracker-instrumentation-scope
-  predicate: serves
+  predicate: references
   layer: apm
   category: structural
   properties:
@@ -991,14 +918,6 @@
     confidence: high
 - source: testing.testcoveragemodel.viewer-test-coverage-model
   target: testing.contextvariation.functional-unit-test-context
-  predicate: aggregates
-  layer: testing
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: testing.coveragerequirement.all-partitions-unit-test-requirement
-  target: testing.testcoveragetarget.service-and-store-unit-test-coverage
   predicate: composes
   layer: testing
   category: structural
@@ -1011,9 +930,9 @@
   layer: business
   targetLayer: motivation
   category: structural
-- source: security.actor.dr-cli-server
-  target: security.authenticationconfig.bearer-token-authentication
-  predicate: governed-by
+- source: security.authenticationconfig.bearer-token-authentication
+  target: security.actor.dr-cli-server
+  predicate: authenticates
   layer: security
   category: structural
 - source: security.secureresource.web-socket-json-rpc-channel
@@ -1028,12 +947,6 @@
   layer: application
   targetLayer: business
   category: structural
-- source: api.operation.delete-annotation
-  target: business.businessprocess.changeset-review-flow
-  predicate: realizes
-  layer: api
-  targetLayer: business
-  category: structural
 - source: technology.node.docker-agent-container
   target: technology.systemsoftware.playwright
   predicate: composes
@@ -1041,24 +954,8 @@
   category: structural
 - source: technology.path.app-to-dr-cli-web-socket-path
   target: technology.node.docker-agent-container
-  predicate: serves
+  predicate: connects
   layer: technology
-  category: structural
-- source: technology.technologyprocess.playwright-test-execution
-  target: technology.path.app-to-dr-cli-web-socket-path
-  predicate: uses
-  layer: technology
-  category: structural
-- source: apm.resource.embedded-app-resource
-  target: apm.metricinstrument.web-socket-connection-state-gauge
-  predicate: aggregates
-  layer: apm
-  category: structural
-- source: apm.logconfiguration.browser-console-error-log-configuration
-  target: business.businessservice.architecture-model-visualization
-  predicate: monitors
-  layer: apm
-  targetLayer: business
   category: structural
 - source: data-model.objectschema.extracted-reference
   target: business.businessobject.architecture-model
@@ -1348,26 +1245,6 @@
     confidence: high
     basis: domain-pattern
 - source: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
-  target: 731285cc-dc15-4c64-a342-a933ce00bd61
-  predicate: realizes
-  layer: business
-  targetLayer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-    basis: domain-pattern
-- source: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
-  target: 59d25358-33d1-4c2d-b8fb-2a03ab216ae6
-  predicate: realizes
-  layer: business
-  targetLayer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-    basis: domain-pattern
-- source: 83c81f34-4376-4ff9-8fb4-98f3ecbc6d68
   target: e748118c-b989-43fe-b0d2-9121e931fcd2
   predicate: satisfies
   layer: business
@@ -1397,19 +1274,9 @@
     source_provenance: inferred
     confidence: high
     basis: domain-pattern
-- source: 389d0672-e5c3-4d4e-acc9-227e8f5521f7
-  target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
-  predicate: references
-  layer: data-model
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
-    basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: 6ffaff00-8bf8-4580-98ff-8d2a612a9021
-  predicate: constrained-by
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1419,7 +1286,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: 9fe1281a-2547-416f-872f-38e1b066db15
-  predicate: constrained-by
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1429,7 +1296,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: 9df37bbd-8ffd-4d80-899f-9437aa03282a
-  predicate: fulfills-requirements
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1439,7 +1306,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: e748118c-b989-43fe-b0d2-9121e931fcd2
-  predicate: fulfills-requirements
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1449,7 +1316,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: b3d7f834-dc3f-49fd-8044-8b6aca045dbe
-  predicate: governed-by-principles
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1459,7 +1326,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: 53fad2bb-e97d-44a2-83cf-61201e992163
-  predicate: governed-by-principles
+  predicate: satisfies
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1469,7 +1336,7 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: 462e2931-4c7c-4051-a9ac-8817c270d650
-  predicate: supports-goals
+  predicate: supports
   layer: testing
   targetLayer: motivation
   category: structural
@@ -1479,23 +1346,13 @@
     basis: domain-pattern
 - source: de956804-eabb-4548-8389-73cb6c63ef2f
   target: ef84b64d-883c-4471-9b56-a58574bac2b9
-  predicate: supports-goals
+  predicate: supports
   layer: testing
   targetLayer: motivation
   category: structural
   properties:
     source_provenance: inferred
     confidence: high
-    basis: domain-pattern
-- source: cee7be5d-f0f9-4291-a2ae-cf5011a61c2f
-  target: 9df37bbd-8ffd-4d80-899f-9437aa03282a
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: medium
     basis: domain-pattern
 - source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
   target: 3b08f432-72aa-4df6-978c-d76d3312f72b
@@ -1569,7 +1426,7 @@
     basis: domain-pattern
 - source: 801c2caa-ec19-4175-bec8-970067823754
   target: 0fa2ddb9-02df-426f-9c9c-89b857b9dc78
-  predicate: satisfies
+  predicate: references
   layer: data-model
   targetLayer: security
   category: structural
@@ -1591,46 +1448,6 @@
   target: ea84399d-45dc-4fef-a5a1-759c9b5b5870
   predicate: accesses
   layer: application
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-    basis: domain-pattern
-- source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
-  target: fb417c37-45b0-460f-80bb-4782d6c1a11a
-  predicate: serves
-  layer: api
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-    basis: domain-pattern
-- source: 8630981b-236c-47ed-b99b-e977c56bdc63
-  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
-  predicate: serves
-  layer: api
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-    basis: domain-pattern
-- source: 3dee662b-7dc2-4fcc-8677-15a2ba06136e
-  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
-  predicate: serves
-  layer: api
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-    basis: domain-pattern
-- source: 406200e9-ef8b-46c9-a1fe-1ff06d6d5602
-  target: ed8f5b8f-54e4-498c-a8d9-ebe4ee430b6a
-  predicate: serves
-  layer: api
   targetLayer: business
   category: structural
   properties:
@@ -1664,33 +1481,24 @@
     source_provenance: inferred
     confidence: high
     basis: domain-pattern
-- source: api.info.dr-cli-visualization-server-api
-  target: api.openapidocument.dr-cli-visualization-server-open-api-document
-  predicate: associated-with
-  layer: api
-  category: structural
-  properties:
-    source_provenance: extracted
-    confidence: high
-    basis: shared source file
 - source: data-model.objectschema.source-reference
   target: data-model.objectschema.model-element
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
 - source: data-model.objectschema.predicate-definition
   target: data-model.objectschema.relationship
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
 - source: data-model.objectschema.spec-layer-data
   target: data-model.objectschema.spec-node-relationship
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
 - source: data-model.objectschema.relationship-type
   target: data-model.objectschema.relationship
-  predicate: extends
+  predicate: specializes
   layer: data-model
   category: structural
 - source: technology.technologyinterface.rest-https-interface
@@ -1703,14 +1511,14 @@
   predicate: serves
   layer: technology
   category: structural
-- source: technology.technologyinterface.rest-https-interface
-  target: technology.node.docker-agent-container
-  predicate: assigned-to
+- source: technology.node.docker-agent-container
+  target: technology.technologyinterface.rest-https-interface
+  predicate: composes
   layer: technology
   category: structural
-- source: technology.technologyinterface.web-socket-interface
-  target: technology.node.docker-agent-container
-  predicate: assigned-to
+- source: technology.node.docker-agent-container
+  target: technology.technologyinterface.web-socket-interface
+  predicate: composes
   layer: technology
   category: structural
 - source: api.openapidocument.dr-cli-visualization-server-open-api-document
@@ -1718,11 +1526,11 @@
   predicate: composes
   layer: api
   category: structural
-- source: api.openapidocument.dr-cli-visualization-server-open-api-document
-  target: technology.technologyservice.dr-cli-rest-server
-  predicate: depends-on
-  layer: api
-  targetLayer: technology
+- source: technology.technologyservice.dr-cli-rest-server
+  target: api.openapidocument.dr-cli-visualization-server-open-api-document
+  predicate: serves
+  layer: technology
+  targetLayer: api
   category: structural
 - source: api.openapidocument.dr-cli-visualization-server-open-api-document
   target: api.securityscheme.bearer-auth-scheme
@@ -1736,17 +1544,17 @@
   category: structural
 - source: motivation.goal.visualize-multi-layer-architecture-models
   target: motivation.principle.core-app-architectural-separation
-  predicate: supports
+  predicate: influence
   layer: motivation
   category: structural
 - source: motivation.goal.enable-real-time-collaboration
   target: motivation.principle.zustand-only-state-management
-  predicate: supports
+  predicate: influence
   layer: motivation
   category: structural
 - source: motivation.goal.accelerate-architecture-documentation
   target: motivation.principle.read-first-always
-  predicate: supports
+  predicate: influence
   layer: motivation
   category: structural
 - source: motivation.goal.ensure-accessible-architecture-views
@@ -1780,12 +1588,6 @@
   predicate: specializes
   layer: data-model
   category: structural
-- source: data-model.schemadefinition.changeset-id
-  target: technology.systemsoftware.type-script-59
-  predicate: depends-on
-  layer: data-model
-  targetLayer: technology
-  category: structural
 - source: data-model.schemadefinition.element-id
   target: data-model.schemadefinition.annotation-id
   predicate: composes
@@ -1813,40 +1615,8 @@
   category: structural
 - source: apm.logconfiguration.browser-console-error-log-configuration
   target: apm.resource.embedded-app-resource
-  predicate: serves
+  predicate: depends-on
   layer: apm
-  category: structural
-- source: testing.coveragesummary.overall-test-coverage-summary
-  target: testing.testcoveragemodel.viewer-test-coverage-model
-  predicate: aggregates
-  layer: testing
-  category: structural
-- source: testing.coveragesummary.overall-test-coverage-summary
-  target: motivation.requirement.wcag-21-aa-compliance
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: testing.testcoveragetarget.service-and-store-unit-test-coverage
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: fulfills-requirements
-  layer: testing
-  targetLayer: motivation
-  category: structural
-- source: api.securityscheme.bearer-auth-scheme
-  target: api.operation.get-architecture-model
-  predicate: serves
-  layer: api
-  category: structural
-- source: api.securityscheme.query-auth-scheme
-  target: api.operation.web-socket-real-time-updates
-  predicate: serves
-  layer: api
-  category: structural
-- source: testing.testcoveragetarget.service-and-store-unit-test-coverage
-  target: testing.coveragerequirement.all-partitions-unit-test-requirement
-  predicate: flows-to
-  layer: testing
   category: structural
 - source: application.applicationservice.model-graph-transform
   target: application.applicationservice.generated-api-client

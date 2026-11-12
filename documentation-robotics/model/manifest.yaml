@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.2.0
-spec_version: 0.10.0
+cli_version: 0.4.0
+spec_version: 0.12.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-09-19T15:37:38.403Z
+updated: 2026-11-12T13:39:39.826Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -28,17 +28,16 @@ layers:
     path: documentation-robotics/model/02_business/
     enabled: true
     elements:
+      businessfunction: 1
       businessobject: 3
       businessprocess: 3
       businessrole: 2
       businessservice: 5
-      businessfunction: 1
   product:
     order: 3
     name: Product
     path: documentation-robotics/model/03_product/
     enabled: true
-    elements: {}
   security:
     order: 4
     name: Security
@@ -60,11 +59,11 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
+      applicationcomponent: 1
       applicationfunction: 9
       applicationinterface: 2
       applicationprocess: 1
       applicationservice: 10
-      applicationcomponent: 1
   technology:
     order: 6
     name: Technology
@@ -150,7 +149,3 @@ layers:
       coveragesummary: 1
       testcoveragemodel: 1
       testcoveragetarget: 2
-changeset_history:
-  - name: sync-heimdall-ux-rebuild
-    committed_at: 2026-09-19T15:37:38.403Z
-    action: committed
