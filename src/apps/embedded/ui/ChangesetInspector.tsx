@@ -378,6 +378,11 @@ export function ChangesetInspector() {
 
           <div
             className="drv-scroll"
+            // Focusable so keyboard users can scroll it when it holds nothing
+            // else focusable (a committed changeset: no Apply / Discard).
+            tabIndex={0}
+            role="region"
+            aria-label="Changeset details"
             style={{
               flex: 1,
               minHeight: 0,

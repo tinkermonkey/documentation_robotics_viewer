@@ -7,7 +7,7 @@
  * relationship deletes — every element it names is in the model fixture).
  */
 import { describe, it, expect } from 'vitest';
-import { changesetImpact, EMPTY_IMPACT } from '@/apps/embedded/data/changesetImpact';
+import { changesetImpact, EMPTY_IMPACT, netOp } from '@/apps/embedded/data/changesetImpact';
 import { buildModelIndex } from '@/apps/embedded/data/modelGraph';
 import { LAYER_ORDER } from '@/apps/embedded/ui/domain';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
@@ -96,6 +96,51 @@ describe('changesetImpact — origins', () => {
     );
     expect(impact.unresolved).toBe(2);
     expect(impact.opOf.size).toBe(changesetImpact(model, changes, 1).opOf.size);
+  });
+});
+
+describe('changesetImpact — net ops over a sequence of changes', () => {
+  it('nets two changes to one element', () => {
+    expect(netOp(undefined, 'update')).toBe('update');
+    expect(netOp('add', 'update')).toBe('add');
+    expect(netOp('add', 'delete')).toBeNull();
+    expect(netOp('update', 'delete')).toBe('delete');
+    expect(netOp('delete', 'add')).toBe('update');
+    expect(netOp('update', 'update')).toBe('update');
+  });
+
+  const newElement = (type: string, after?: Record<string, unknown>): ChangeRecord => ({
+    type,
+    elementId: 'technology.node.brand-new-server',
+    layerName: 'technology',
+    after: after ?? { id: 'new-uuid', name: 'Brand New Server', type: 'node', layer_id: 'technology' },
+  });
+
+  it('keeps an element the changeset adds and then updates as added', () => {
+    const impact = changesetImpact(model, [newElement('add'), newElement('update', { id: 'new-uuid', name: 'Renamed Server' })], 0);
+    expect(impact.opOf.get('new-uuid')).toBe('add');
+    expect(impact.nodes.find((n) => n.id === 'new-uuid')?.label).toBe('Renamed Server');
+  });
+
+  it('drops an element the changeset adds and then deletes', () => {
+    const impact = changesetImpact(model, [newElement('add'), { ...newElement('delete'), after: undefined, before: { id: 'new-uuid' } }], 1);
+    expect(impact.opOf.has('new-uuid')).toBe(false);
+    expect(impact.nodes.some((n) => n.id === 'new-uuid')).toBe(false);
+  });
+
+  it('cancels a relationship added and then deleted: no edge, no relinked ends', () => {
+    const [a, b] = raw.nodes.filter((n) => n.layer_id === 'motivation');
+    const rel = { source: a.id, target: b.id, predicate: 'influence' };
+    const impact = changesetImpact(
+      model,
+      [
+        { type: 'relationship-add', elementId: 'r', after: rel },
+        { type: 'relationship-delete', elementId: 'r', before: rel },
+      ],
+      1,
+    );
+    expect(impact.originIds).toEqual([]);
+    expect(impact.unresolved).toBe(0);
   });
 });
 

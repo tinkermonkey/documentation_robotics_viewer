@@ -146,6 +146,10 @@ describe('ChangesetCanvas — Impact tab', () => {
     expect(styles).toMatch(/\.drv-impact \[data-node-id="[^"]+"\] \.graph-lane-node\{outline:2px solid/);
     expect(styles).toMatch(/outline:2px dashed/);
 
+    // The op is in each changed element's accessible name, not only its outline.
+    expect(within(impact).getAllByRole('button', { name: /· added/ }).length).toBeGreaterThan(0);
+    expect(within(impact).getAllByRole('button', { name: /· modified/ }).length).toBeGreaterThan(0);
+
     await user.click(within(screen.getByTestId('changeset-tab-control')).getByRole('radio', { name: 'Changes' }));
     expect(await screen.findByTestId('changeset-list')).toBeInTheDocument();
   });
@@ -173,5 +177,11 @@ describe('ChangesetInspector — blast radius', () => {
     const rows = within(section).getAllByTestId('blast-radius-layer');
     expect(rows.length).toBeGreaterThan(0);
     expect(within(section).getByRole('img')).toHaveAttribute('aria-label', expect.stringMatching(/^Reached by layer: /));
+  });
+
+  it('keeps its scrolling body reachable by keyboard', async () => {
+    renderInspector();
+    await screen.findByTestId('changeset-blast-radius');
+    expect(screen.getByRole('region', { name: 'Changeset details' })).toHaveAttribute('tabindex', '0');
   });
 });

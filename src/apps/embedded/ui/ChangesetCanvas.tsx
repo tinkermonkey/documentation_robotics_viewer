@@ -259,6 +259,8 @@ export function ChangesetCanvas() {
           <ChangesetEmptyState message="loading changeset…" />
         ) : tab === 'impact' ? (
           <ChangesetImpactView
+            // Remount per changeset so an isolated element never carries over.
+            key={detail.id}
             changesetId={detail.id}
             impact={impact}
             follow={follow}

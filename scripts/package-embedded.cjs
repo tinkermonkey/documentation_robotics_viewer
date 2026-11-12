@@ -202,31 +202,6 @@ function generateManifest() {
     manifest.totalSize += getFileSize(faviconPath);
   }
 
-  // Add self-hosted font files (recursive: fonts/{inter,jetbrains-mono}/*.woff2).
-  const fontsRoot = path.join(BUNDLE_DIR, 'fonts');
-  if (fs.existsSync(fontsRoot)) {
-    const walk = (dir) => {
-      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-        const abs = path.join(dir, entry.name);
-        if (entry.isDirectory()) {
-          walk(abs);
-        } else {
-          const rel = path.relative(BUNDLE_DIR, abs).split(path.sep).join('/');
-          const size = getFileSize(abs);
-          manifest.files.push({
-            path: rel,
-            hash: getFileHash(abs).substring(0, 16),
-            size,
-            type: abs.endsWith('.woff2') ? 'font' :
-                  abs.endsWith('.css') ? 'stylesheet' : 'other'
-          });
-          manifest.totalSize += size;
-        }
-      }
-    };
-    walk(fontsRoot);
-  }
-
   // Sort files by size (largest first)
   manifest.files.sort((a, b) => b.size - a.size);
 

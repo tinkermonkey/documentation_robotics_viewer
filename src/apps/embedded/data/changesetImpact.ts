@@ -85,6 +85,18 @@ function str(value: unknown): string | undefined {
   return typeof value === 'string' && value.length > 0 ? value : undefined;
 }
 
+/**
+ * The net op after `next` follows `prev` for one element, or null when they
+ * cancel out: add + update stays add, add + delete is nothing, update +
+ * delete is delete, delete + add is a re-created element (update).
+ */
+export function netOp(prev: ImpactOp | undefined, next: ImpactOp): ImpactOp | null {
+  if (!prev || prev === 'relink') return next;
+  if (prev === 'add') return next === 'delete' ? null : 'add';
+  if (prev === 'delete') return next === 'delete' ? 'delete' : 'update';
+  return next === 'delete' ? 'delete' : 'update';
+}
+
 function edgeCategory(predicate: string): string {
   return isStructuralPredicate(predicate) ? 'structural' : 'relational';
 }
@@ -123,14 +135,11 @@ export function changesetImpact(
   });
 
   let unresolved = 0;
-  const opOf = new Map<string, ImpactOp>();
+  /** Net element op so far, in change order (see `netOp`). */
+  const elementOp = new Map<string, ImpactOp>();
   const order: string[] = [];
-  const mark = (id: string, op: ImpactOp) => {
-    if (!opOf.has(id)) order.push(id);
-    // An element's own change outranks a relationship change at its ends.
-    if (op === 'relink' && opOf.has(id)) return;
-    opOf.set(id, op);
-  };
+  /** Elements this changeset created (absent from the model). */
+  const createdHere = new Set<string>();
   const resolve = (ref: string | undefined) =>
     ref ? resolveEndpoint(index, ref)?.id ?? added.get(ref) : undefined;
 
@@ -149,6 +158,7 @@ export function changesetImpact(
       }
       id = str(obj.id) ?? change.elementId ?? `${layer}.${name}`;
       nodes.set(id, { id, label: name, kind: str(obj.type) ?? 'element', domainColor: layer });
+      createdHere.add(id);
       added.set(id, id);
       if (change.elementId) added.set(change.elementId, id);
     }
@@ -156,28 +166,54 @@ export function changesetImpact(
       unresolved++;
       continue;
     }
-    if (op === 'update' && change.after) {
+    if (op !== 'delete' && change.after) {
       const name = str((change.after as Record<string, unknown>).name);
       const node = nodes.get(id);
       if (node && name) nodes.set(id, { ...node, label: name });
     }
-    mark(id, op);
+    const net = netOp(elementOp.get(id), op);
+    if (!elementOp.has(id)) order.push(id);
+    if (net) {
+      elementOp.set(id, net);
+    } else {
+      // Added then deleted: no net change, and the element never existed.
+      elementOp.delete(id);
+      order.splice(order.indexOf(id), 1);
+      if (createdHere.has(id)) nodes.delete(id);
+    }
   }
 
+  // Relationships, netted per (source, predicate, target): added then deleted
+  // (or deleted then re-added) is no change at all.
+  const relNet = new Map<string, { op: 'add' | 'delete' | null; id: string; src: string; tgt: string; predicate: string }>();
   changes.forEach((change, i) => {
     if (!(change.type ?? '').includes('relationship')) return;
     const rel = (change.after ?? change.before ?? {}) as Record<string, unknown>;
     const src = resolve(str(rel.source));
     const tgt = resolve(str(rel.target));
     const predicate = str(rel.predicate) ?? str(rel.type);
-    if (!src || !tgt || !predicate) {
+    if (!src || !tgt || !predicate || !nodes.has(src) || !nodes.has(tgt)) {
       unresolved++;
       return;
     }
-    if (normalizeOp(change.type) === 'add') addEdge(`changeset:${change.elementId ?? i}`, src, tgt, predicate);
-    mark(src, 'relink');
-    mark(tgt, 'relink');
+    const key = `${src}|${predicate}|${tgt}`;
+    const op = normalizeOp(change.type) === 'add' ? 'add' : 'delete';
+    const prev = relNet.get(key);
+    const next = !prev || prev.op === null ? op : prev.op === op ? op : null;
+    relNet.set(key, { op: next, id: `changeset:${change.elementId ?? i}`, src, tgt, predicate });
   });
+
+  const opOf = new Map(elementOp);
+  for (const { op, id, src, tgt, predicate } of relNet.values()) {
+    if (!op) continue;
+    if (op === 'add') addEdge(id, src, tgt, predicate);
+    for (const end of [src, tgt]) {
+      // An element's own change outranks a relationship change at its ends.
+      if (opOf.has(end)) continue;
+      opOf.set(end, 'relink');
+      order.push(end);
+    }
+  }
 
   const layered = buildLayeredIndex([...nodes.values()], edges, IMPACT_LAYERING);
   const originIds = order.filter((id) => layered.nodeById.has(id));

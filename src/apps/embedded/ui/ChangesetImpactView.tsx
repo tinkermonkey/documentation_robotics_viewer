@@ -81,7 +81,17 @@ export function ChangesetImpactView({
 }) {
   const [isolated, setIsolated] = useState<string | null>(null);
   const [labels, setLabels] = useState<LaneNodeLabels>('reached');
-  const { nodes, edges, originIds, opOf } = impact;
+  const { edges, originIds, opOf } = impact;
+  // The op is in each changed element's name too ("Foo · added"), so it reaches
+  // screen readers and the lane name tags, not only the outline.
+  const nodes = useMemo(
+    () =>
+      impact.nodes.map((n) => {
+        const op = opOf.get(n.id);
+        return op ? { ...n, label: `${n.label} · ${OP_OUTLINE[op].label}` } : n;
+      }),
+    [impact.nodes, opOf],
+  );
 
   // Isolating an element that's no longer in the graph (another follow depth,
   // a refetch) falls back to every origin.
@@ -115,7 +125,8 @@ export function ChangesetImpactView({
     return (
       <div
         style={{
-          flex: 1,
+          position: 'absolute',
+          inset: 0,
           display: 'grid',
           placeItems: 'center',
           color: 'rgb(var(--canvas-fg-3))',
