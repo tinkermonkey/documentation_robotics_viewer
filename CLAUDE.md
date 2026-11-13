@@ -41,6 +41,8 @@ src/
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
+│   │   ├── ChangesetInbox.tsx ChangesetReviewPanel.tsx ChangeInspector.tsx ApplyReview.tsx  # per-change review
+│   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
@@ -54,6 +56,7 @@ src/
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
 │   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   ├── changesetImpact.ts # changeset over the model → multi-origin reach subgraph + per-layer blast radius
+│   │   ├── changesetReview.ts useChangesetReview.ts  # pure review model + verdict hook (server or localStorage)
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
 │   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
@@ -128,9 +131,11 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
 - `GET /api/model` → `{ nodes:[{id(UUID), spec_node_id, type, layer_id, name, description, attributes,
   source_reference, metadata}], links:[{id, source, target, type, source_layer_id?, target_layer_id?}] }`
 - `GET /api/layers/:name`, `GET /api/spec` (per-layer `nodeSchemas` + `relationshipSchemas`),
-  `GET /api/changesets`, `GET /api/changesets/:id`, `POST /api/changesets/:id/commit` /
+  `GET /api/changesets`, `GET /api/changesets/:id` (+ `revision`, `origin`, `unstaged` tombstones, `review`,
+  delete `blockers`), `PUT /api/changesets/:id/review` (`{ decisions: [{ sequence, verdict|null, note? }] }`),
+  `POST /api/changesets/:id/commit` (optional `{ drop, deleteBlockedLinks }` → `dropped`, `linksDeleted`) /
   `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
-  validation — body `{ error }`)
+  validation or deletes still in use — body `{ error, blockers? }`)
 - Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
   `GET/POST /api/annotations/:id/replies`
 
@@ -212,21 +217,44 @@ For local dev use `dr visualize --no-auth`.
   via `ui/edgeTooltipAnchor.ts` and auto-placed on a side with room (`track` follows it through pan/zoom,
   `passThrough` keeps it out of the pointer's way). That hover state is local to Canvas — never route edge
   hover through the store or the `edges` memo (re-runs the layout; see `useEdgeInteraction.ts`).
-- **Changesets view** — op-coded diff list (add=emerald / update=cyan / delete=rose) + `StatTile` inspector +
-  expandable `SideBySideDiff`. A STAGED changeset gets Apply (commit to the model) and Discard buttons in
-  `ChangesetInspector`, each behind a `ConfirmDialog` — the user's review step for changes DrBot staged under
-  `dr visualize --with-changesets` (DrBot can stage but never commit). The buttons use the generated
-  `usePostapichangesetschangesetIdcommit` / `...discard` hooks, whose invalidation (changesets, plus model
-  and layers after a commit) is mapped in `scripts/generate-api-client.js`'s `getInvalidationQueries`. A
-  refusal shows the server's `{ error }` inline (`changesetActionErrorMessage`, via the generated client's
-  `ApiError.serverMessage`); success toasts from the inspector (the actions block unmounts once the changeset
-  leaves `staged`). Two hooks in `AppShell` keep the cache fresh past its 5-minute `staleTime`:
-  `useLiveModelUpdates` (`data/useModel.ts`) refetches model + changesets on the server's `model.updated`
-  WebSocket broadcast (any model-file write: CLI, DrBot, an Apply); `useLiveChangesetUpdates`
-  (`data/useChangesets.ts`) refetches changesets on the server's `changesets.updated` broadcast (any write
-  under `documentation-robotics/changesets/`, including the active marker, and every Apply / Discard).
-- **Changeset Impact tab** (heimdall-ui 0.11) — a Changes / Impact `SegmentedControl` in
-  `ChangesetCanvas`'s header swaps the diff list for `ChangesetImpactView`: what the changeset reaches
+- **Changesets view: review, change by change** — the view opens on an inbox (`ChangesetInbox`, no
+  changeset selected; `AppShell` no longer auto-selects one and hides the inspector column): staged changesets
+  *waiting on you* / *waiting on DrBot* (every change decided, some asks) with review progress, then *applied
+  and discarded*. Opening/closing a changeset PUSHES history; a `#/changesets/list` entry without `?changeset=`
+  is the inbox. A changeset's Review tab (`ChangesetReviewPanel`) gives each change a verdict — Keep / Drop /
+  Ask DrBot — instead of one Apply for the lot (DrBot stages under `dr visualize --with-changesets`, never
+  commits). `data/changesetReview.ts` is the pure model (see its header): review-weight groups (blocked
+  deletes, routine updates with a bulk "Keep N routine", new elements, new links, removals), add-then-delete
+  "cancel out" pairs folded away, effective decisions (a decision on a change rewritten after it no longer
+  counts), the server's drop cascade (dropping an add leaves out its links/updates), dropped link deletes a
+  kept element delete contradicts (`conflicts`, Apply waits), the since-your-review diff (revised / new /
+  withdrawn / carried over, from `revision`, `unstaged` tombstones and `review.lastReviewedRevision`) and the
+  apply plan. A summary card (headline, tally, pills, `ProgressBar`, Discard / Keep the other N / Apply) and
+  Show (Since your review · Needs decision · Decided · All) / Group by (Review weight · Layer · Sequence)
+  `SegmentedControl`s sit over the rows. A row selects `uiStore.changeSeq` (not persisted, cleared on a
+  changeset switch), and the permanent inspector column becomes `ChangeInspector`: decision + note (Ask DrBot
+  with a note also posts it as an annotation on the element), a blocked delete's Resolve choices (Delete the
+  links too = keep, Keep the element = drop), before/after per changed field (field in amber), source, the
+  changeset's other changes on that element, the JSON diff and comments; with no change selected it shows the
+  changeset overview (`BlastRadius`, StatTiles). Apply opens `ApplyConfirm` (what lands, what's left out
+  incl. cascades, links deleted with their elements) and commits through the generated
+  `usePostapichangesetschangesetIdcommit` with body `{ drop, deleteBlockedLinks }` (BOTH lists, always — the
+  server only applies reviewed-commit rules when the body names either); a committed changeset shows
+  `AppliedResult` (landed by layer, what was left out). Refusals inline: 409 drift ("nothing was written, your
+  decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
+  Verdicts: `useChangesetReview` → generated `usePutapichangesetschangesetIdreview` (optimistic write into the
+  cached detail, rolled back on refusal; invalidation mapped in `getInvalidationQueries`). **Older dr CLI**
+  (no `review` in the detail, or the PUT answers 404/405 without a JSON `{ error }`): verdicts live in
+  localStorage (`stores/localReviewStore.ts`, key `dr-viewer-local-review`, by changeset id + sequence), Drop
+  is hidden with an explanation, and Apply sends no body. The generated mutation hooks are typed without
+  variables — pass a body through `mutateWithBody`. Two hooks in `AppShell` keep the cache fresh past its
+  5-minute `staleTime`: `useLiveModelUpdates` (`data/useModel.ts`) refetches model + changesets on the
+  server's `model.updated` WebSocket broadcast (any model-file write: CLI, DrBot, an Apply);
+  `useLiveChangesetUpdates` (`data/useChangesets.ts`) refetches changesets on the server's
+  `changesets.updated` broadcast (any write under `documentation-robotics/changesets/`, every verdict, Apply
+  and Discard). Styles: `ui/changeset-review.css` (tokens + Heimdall `--semantic-*` chip colours only).
+- **Changeset Impact tab** (heimdall-ui 0.11) — a Review (Changes once applied) / Impact `SegmentedControl` in
+  `ChangesetCanvas`'s header swaps the review list for `ChangesetImpactView`: what the changeset reaches
   outside itself, before Apply. `data/changesetImpact.ts` lays the changeset over the model first (a STAGED
   changeset's added elements and `relationship-add`s join the graph; ends of relationship changes are
   marked `relink`), then runs the multi-origin `computeReach` from every marked element at
@@ -238,7 +266,7 @@ For local dev use `dr visualize --no-auth`.
   `<style>` keyed on `[data-node-id]` (each op a distinct outline style as well as colour) — keeping the
   default node's chips, tags and roving keyboard focus that a `renderNode` would lose. Changes whose
   element isn't in the current model are counted ("n changes not in the model"), not dropped silently.
-  `ChangesetInspector`'s `BlastRadius` shows the same reach per layer above Apply / Discard. Verify the
+  `ChangesetInspector`'s `BlastRadius` shows the same reach per layer in the changeset overview. Verify the
   lanes' fit in a visible browser or headless Chrome: a hidden Browser pane throttles animation frames
   and the mount fit never lands.
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
@@ -328,7 +356,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~630 tests)
+npm test            # Vitest: unit + integration + component (~690 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -367,7 +395,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~630 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~690 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
