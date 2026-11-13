@@ -1,6 +1,6 @@
 /**
  * Auto-generated API Client with React Query Hooks
- * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/docs/api-spec.yaml
+ * Generated from: /Users/austinsand/workspace/documentation_robotics_viewer/.claude/worktrees/agent-aaafcfaaee1ccb3e9/docs/api-spec.yaml
  * API Version: 0.1.0
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
@@ -417,7 +417,7 @@ export class ApiClient {
     return response.json();
   }
 
-  async postapichangesetschangesetIdcommit(changesetId: string): Promise<unknown> {
+  async postapichangesetschangesetIdcommit(changesetId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/commit`;
     const url = `${baseUrl}${pathStr}`;
@@ -428,12 +428,34 @@ export class ApiClient {
       credentials: 'include'
     };
 
-    
+    if (body) options.body = JSON.stringify(body);
 
     const response = await fetch(url, options);
 
     if (!response.ok) {
       throw new ApiError('POST /api/changesets/:changesetId/commit', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async putapichangesetschangesetIdreview(changesetId: string, body?: unknown): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/review`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    if (body) options.body = JSON.stringify(body);
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('PUT /api/changesets/:changesetId/review', response.status, await response.text());
     }
 
     return response.json();
@@ -685,12 +707,28 @@ const apiClient = getApiClient();
     const queryClient = useQueryClient();
 
     return useMutation({
-      mutationFn: () => apiClient.postapichangesetschangesetIdcommit(changesetId),
+      mutationFn: (data: unknown) => apiClient.postapichangesetschangesetIdcommit(changesetId, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
         queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
         queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
         queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
+      },
+      ...options
+    } as any);
+  }
+
+  /**
+   * React Query mutation hook for putapichangesetschangesetIdreview
+   */
+  export function usePutapichangesetschangesetIdreview(changesetId: string, options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: (data: unknown) => apiClient.putapichangesetschangesetIdreview(changesetId, data),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
       },
       ...options
     } as any);

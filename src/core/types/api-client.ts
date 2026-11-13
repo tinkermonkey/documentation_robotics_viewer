@@ -928,6 +928,20 @@ export interface paths {
                                     status: "staged" | "committed" | "discarded";
                                     created: string;
                                     changes_count: number;
+                                    description?: string;
+                                    origin?: {
+                                        /** @enum {string} */
+                                        kind: "chat" | "plan" | "extract" | "cli";
+                                        detail?: string;
+                                    };
+                                    /** @description The changeset's nextSequenceNumber (raised by a restage) */
+                                    revision?: number;
+                                    /** @description Review progress over the current staged changes */
+                                    review?: {
+                                        decided: number;
+                                        total: number;
+                                        asked: number;
+                                    };
                                 };
                             };
                         };
@@ -995,7 +1009,34 @@ export interface paths {
                                 before?: unknown;
                                 /** @description New element state (for add/update operations) */
                                 after?: unknown;
+                                /** @description Assigned once at staging; never renumbered */
+                                sequenceNumber?: number;
+                                /** @description Delete changes only. Relationships in the projected model that still reference the deleted element and are not deleted by this changeset. */
+                                blockers?: {
+                                    relationshipId: string;
+                                    /** @enum {string} */
+                                    direction: "in" | "out";
+                                    otherElementId: string;
+                                    predicate: string;
+                                }[];
                             }[];
+                            /** @description The changeset's nextSequenceNumber (raised by a restage) */
+                            revision?: number;
+                            origin?: {
+                                /** @enum {string} */
+                                kind: "chat" | "plan" | "extract" | "cli";
+                                detail?: string;
+                            };
+                            /** @description Tombstones of unstaged (or rewritten) changes */
+                            unstaged?: {
+                                sequence: number;
+                                removedAt: number;
+                                rewritten?: boolean;
+                                change?: {
+                                    [key: string]: unknown;
+                                };
+                            }[];
+                            review?: components["schemas"]["ChangesetReview"];
                         };
                     };
                 };
@@ -1043,7 +1084,16 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description Sequence numbers to leave out. Staged changes that depend on an element added by a dropped add are left out too. */
+                        drop?: number[];
+                        /** @description Delete changes whose blocking relationships are deleted with the element */
+                        deleteBlockedLinks?: number[];
+                    };
+                };
+            };
             responses: {
                 /** @description Action completed */
                 200: {
@@ -1062,6 +1112,10 @@ export interface paths {
                             skipped?: number;
                             /** @description Changes that failed to apply (commit only) */
                             failed?: number;
+                            /** @description Every sequence number left out, including cascaded ones */
+                            dropped?: number[];
+                            /** @description Blocking relationships deleted with their elements */
+                            linksDeleted?: number;
                         };
                     };
                 };
@@ -1089,7 +1143,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description The changeset failed validation; nothing was applied */
+                /** @description The changeset failed validation, or a delete is still in use (blockers); nothing was applied */
                 422: {
                     headers: {
                         [name: string]: unknown;
@@ -1098,11 +1152,105 @@ export interface paths {
                         "application/json": {
                             /** @description Error message */
                             error: string;
+                            /** @description Per delete sequence number, the relationships that still use it */
+                            blockers?: {
+                                [key: string]: {
+                                    relationshipId?: string;
+                                    direction?: string;
+                                    otherElementId?: string;
+                                    predicate?: string;
+                                }[];
+                            };
                         };
                     };
                 };
             };
         };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changesets/:changesetId/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Record review verdicts
+         * @description Record per-change verdicts (keep / drop / ask) on a staged changeset. A null verdict clears a decision. The server stamps atRevision and decidedAt and broadcasts changesets.updated.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    changesetId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        decisions: {
+                            sequence: number;
+                            /** @enum {string|null} */
+                            verdict: "keep" | "drop" | "ask" | null;
+                            note?: string;
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description The changeset's review after the update */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["ChangesetReview"];
+                    };
+                };
+                /** @description Changeset not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Changeset is not staged */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+                /** @description A decision names a sequence the changeset doesn't have */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1200,7 +1348,23 @@ export interface paths {
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        /** @description The reviewer's per-change verdicts on a staged changeset */
+        ChangesetReview: {
+            /** @description Keyed by the change's sequenceNumber, as a string */
+            decisions: {
+                [key: string]: {
+                    /** @enum {string} */
+                    verdict: "keep" | "drop" | "ask";
+                    note?: string;
+                    atRevision: number;
+                    decidedAt: string;
+                };
+            };
+            /** @description Highest atRevision among the decisions; absent if none */
+            lastReviewedRevision?: number;
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;

@@ -25,7 +25,38 @@ components:
       description:
         "API token (shown at server startup, pass as Authorization: Bearer
         <token>)"
-  schemas: {}
+  schemas:
+    ChangesetReview:
+      type: object
+      description: The reviewer's per-change verdicts on a staged changeset
+      properties:
+        decisions:
+          type: object
+          description: Keyed by the change's sequenceNumber, as a string
+          additionalProperties:
+            type: object
+            properties:
+              verdict:
+                type: string
+                enum:
+                  - keep
+                  - drop
+                  - ask
+              note:
+                type: string
+              atRevision:
+                type: number
+              decidedAt:
+                type: string
+            required:
+              - verdict
+              - atRevision
+              - decidedAt
+        lastReviewedRevision:
+          type: number
+          description: Highest atRevision among the decisions; absent if none
+      required:
+        - decisions
   parameters: {}
 paths:
   /health:
@@ -1130,6 +1161,39 @@ paths:
                           type: string
                         changes_count:
                           type: number
+                        description:
+                          type: string
+                        origin:
+                          type: object
+                          properties:
+                            kind:
+                              type: string
+                              enum:
+                                - chat
+                                - plan
+                                - extract
+                                - cli
+                            detail:
+                              type: string
+                          required:
+                            - kind
+                        revision:
+                          type: number
+                          description: The changeset's nextSequenceNumber (raised by a restage)
+                        review:
+                          type: object
+                          description: Review progress over the current staged changes
+                          properties:
+                            decided:
+                              type: number
+                            total:
+                              type: number
+                            asked:
+                              type: number
+                          required:
+                            - decided
+                            - total
+                            - asked
                       required:
                         - name
                         - status
@@ -1214,10 +1278,74 @@ paths:
                           description: Previous element state (for update/delete operations)
                         after:
                           description: New element state (for add/update operations)
+                        sequenceNumber:
+                          type: number
+                          description: Assigned once at staging; never renumbered
+                        blockers:
+                          type: array
+                          description: Delete changes only. Relationships in the projected
+                            model that still reference the deleted element and are not
+                            deleted by this changeset.
+                          items:
+                            type: object
+                            properties:
+                              relationshipId:
+                                type: string
+                              direction:
+                                type: string
+                                enum:
+                                  - in
+                                  - out
+                              otherElementId:
+                                type: string
+                              predicate:
+                                type: string
+                            required:
+                              - relationshipId
+                              - direction
+                              - otherElementId
+                              - predicate
                       required:
                         - type
                         - elementId
                         - layerName
+                  revision:
+                    type: number
+                    description: The changeset's nextSequenceNumber (raised by a restage)
+                  origin:
+                    type: object
+                    properties:
+                      kind:
+                        type: string
+                        enum:
+                          - chat
+                          - plan
+                          - extract
+                          - cli
+                      detail:
+                        type: string
+                    required:
+                      - kind
+                  unstaged:
+                    type: array
+                    description: Tombstones of unstaged (or rewritten) changes
+                    items:
+                      type: object
+                      properties:
+                        sequence:
+                          type: number
+                        removedAt:
+                          type: number
+                        rewritten:
+                          type: boolean
+                        change:
+                          type: object
+                          additionalProperties: true
+                      required:
+                        - sequence
+                        - removedAt
+                  review:
+                    $ref: "#/components/schemas/ChangesetReview"
                 required:
                   - id
                   - name
@@ -1257,6 +1385,25 @@ paths:
           required: true
           name: changesetId
           in: path
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                drop:
+                  type: array
+                  description: Sequence numbers to leave out. Staged changes that depend on
+                    an element added by a dropped add are left out too.
+                  items:
+                    type: number
+                deleteBlockedLinks:
+                  type: array
+                  description: Delete changes whose blocking relationships are deleted with
+                    the element
+                  items:
+                    type: number
       responses:
         "200":
           description: Action completed
@@ -1284,6 +1431,14 @@ paths:
                   failed:
                     type: number
                     description: Changes that failed to apply (commit only)
+                  dropped:
+                    type: array
+                    description: Every sequence number left out, including cascaded ones
+                    items:
+                      type: number
+                  linksDeleted:
+                    type: number
+                    description: Blocking relationships deleted with their elements
                 required:
                   - id
                   - name
@@ -1313,7 +1468,8 @@ paths:
                 required:
                   - error
         "422":
-          description: The changeset failed validation; nothing was applied
+          description: The changeset failed validation, or a delete is still in use
+            (blockers); nothing was applied
           content:
             application/json:
               schema:
@@ -1322,6 +1478,108 @@ paths:
                   error:
                     type: string
                     description: Error message
+                  blockers:
+                    type: object
+                    description: Per delete sequence number, the relationships that still use it
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          relationshipId:
+                            type: string
+                          direction:
+                            type: string
+                          otherElementId:
+                            type: string
+                          predicate:
+                            type: string
+                required:
+                  - error
+  /api/changesets/:changesetId/review:
+    put:
+      tags:
+        - Changesets
+      summary: Record review verdicts
+      description: "Record per-change verdicts (keep / drop / ask) on a staged changeset.
+        A null verdict clears a decision. The server stamps atRevision and decidedAt and
+        broadcasts changesets.updated."
+      security:
+        - bearerAuth: []
+      parameters:
+        - schema:
+            type: string
+            minLength: 1
+            pattern: ^[a-z0-9_-]+$
+          required: true
+          name: changesetId
+          in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                decisions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      sequence:
+                        type: number
+                      verdict:
+                        type: string
+                        nullable: true
+                        enum:
+                          - keep
+                          - drop
+                          - ask
+                      note:
+                        type: string
+                    required:
+                      - sequence
+                      - verdict
+              required:
+                - decisions
+      responses:
+        "200":
+          description: The changeset's review after the update
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChangesetReview"
+        "404":
+          description: Changeset not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "409":
+          description: Changeset is not staged
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                required:
+                  - error
+        "422":
+          description: A decision names a sequence the changeset doesn't have
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
                 required:
                   - error
   /api/changesets/:changesetId/discard:
