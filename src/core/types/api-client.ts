@@ -1238,7 +1238,7 @@ export interface paths {
                     "application/json": {
                         /** @description Sequence numbers to leave out. Changes that depend on an element a dropped add creates (relationship-adds with it at either end, updates of it) are left out too. All are unstaged (tombstoned) before the commit. */
                         drop?: number[];
-                        /** @description Sequence numbers of delete changes whose blockers may be deleted with the element. With a body, any other delete with blockers is refused (422). */
+                        /** @description Sequence numbers of delete changes whose blockers may be deleted with the element. With either field present, any other delete with blockers is refused (422). */
                         deleteBlockedLinks?: number[];
                     };
                 };
@@ -1273,6 +1273,18 @@ export interface paths {
                         };
                     };
                 };
+                /** @description The body is not JSON, or does not match the schema (an empty body is the plain commit) */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
                 /** @description Changeset not found */
                 404: {
                     headers: {
@@ -1297,7 +1309,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description The changeset failed validation; nothing was applied. Or (body given) a sequence number names no staged change, or a delete has blockers and is not in deleteBlockedLinks (blockers lists them) */
+                /** @description The changeset failed validation; nothing was applied. Or (body given) a sequence number names no staged change, a delete has blockers and is not in deleteBlockedLinks (blockers lists them), or a staged relationship-add names an element the changeset deletes */
                 422: {
                     headers: {
                         [name: string]: unknown;
