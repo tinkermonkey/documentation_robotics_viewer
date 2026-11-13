@@ -307,7 +307,7 @@ function generateApiClient(spec, endpoints) {
 
   const code = `/**
  * Auto-generated API Client with React Query Hooks
- * Generated from: ${specPath}
+ * Generated from: ${path.relative(process.cwd(), specPath)}
  * API Version: ${spec.info?.version || 'unknown'}
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
