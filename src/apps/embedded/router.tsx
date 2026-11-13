@@ -266,6 +266,12 @@ function AppShellRoute() {
       selectChangeset(search.changeset);
       return;
     }
+    // A Changesets entry without `?changeset=` is the inbox: back/forward onto
+    // it closes the changeset we're leaving.
+    if (section === 'changesets' && !search.changeset && changesetId) {
+      selectChangeset(null);
+      return;
+    }
     const layerChanged = !!search.layer && search.layer !== layerId;
     if (layerChanged) selectLayer(search.layer!);
     // An entry with a layer but no node or edge means nothing is selected in
@@ -396,7 +402,14 @@ function AppShellRoute() {
     // after back/forward. Never a new destination, so always replace.
     const push =
       !destinationMatchesUrl &&
-      (viewChanged || modeChanged || layerChanged || navigated || (mode === 'page' && selectionChanged));
+      (viewChanged ||
+        modeChanged ||
+        layerChanged ||
+        navigated ||
+        (mode === 'page' && selectionChanged) ||
+        // Opening or closing a changeset: the inbox and each changeset are
+        // destinations of their own.
+        (view === 'changesets' && selectionChanged));
 
     router.navigate({
       to: '/$section/$view',

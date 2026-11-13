@@ -66,8 +66,8 @@ export interface DecisionInput {
 
 /** `POST /api/changesets/:id/commit`'s optional body. */
 export interface CommitBody {
-  drop?: number[];
-  deleteBlockedLinks?: number[];
+  drop: number[];
+  deleteBlockedLinks: number[];
 }
 
 // ─── Items ────────────────────────────────────────────────────────────────────
@@ -433,9 +433,13 @@ export interface Cascade {
  * or an update whose element, is added by a dropped add is left out too.
  */
 export function cascadeOfDrops(items: ReviewItem[], dropped: Set<number>): Map<number, Cascade> {
+  // Keyed by dotted id and by UUID: a relationship may name its ends either way.
   const droppedAdds = new Map<string, number>();
   for (const item of items) {
-    if (item.kind === 'add' && dropped.has(item.seq)) droppedAdds.set(item.elementId, item.seq);
+    if (item.kind !== 'add' || !dropped.has(item.seq)) continue;
+    droppedAdds.set(item.elementId, item.seq);
+    const uuid = asString(item.record.after?.id);
+    if (uuid) droppedAdds.set(uuid, item.seq);
   }
   const out = new Map<number, Cascade>();
   if (droppedAdds.size === 0) return out;
@@ -448,6 +452,34 @@ export function cascadeOfDrops(items: ReviewItem[], dropped: Set<number>): Map<n
       by = droppedAdds.get(item.elementId);
     }
     if (by !== undefined) out.set(item.seq, { seq: item.seq, bySeq: by });
+  }
+  return out;
+}
+
+/**
+ * A dropped link delete whose element another kept (or undecided) delete still
+ * removes: the link would be left pointing at nothing, so the server refuses
+ * the commit. Keep the link delete, or drop the element delete too.
+ */
+export interface DropConflict {
+  linkSeq: number;
+  deleteSeq: number;
+}
+
+export function dropConflicts(items: ReviewItem[], dropped: Set<number>): DropConflict[] {
+  const deletes = new Map<string, number>();
+  for (const i of items) {
+    if (i.kind === 'delete' && !dropped.has(i.seq)) {
+      deletes.set(i.elementId, i.seq);
+      const uuid = asString(i.record.before?.id);
+      if (uuid) deletes.set(uuid, i.seq);
+    }
+  }
+  const out: DropConflict[] = [];
+  for (const i of items) {
+    if (i.kind !== 'link-delete' || !dropped.has(i.seq) || !i.link) continue;
+    const d = deletes.get(i.link.source) ?? deletes.get(i.link.target);
+    if (d !== undefined) out.push({ linkSeq: i.seq, deleteSeq: d });
   }
   return out;
 }
@@ -495,8 +527,11 @@ export interface RevisionDiff {
 }
 
 function tombstoneLabel(t: UnstagedChange, nameOf: NameOf): string {
-  const c = t.change;
-  if (!c) return `change ${t.sequence}`;
+  return t.change ? describeChange(t.change, nameOf) : `change ${t.sequence}`;
+}
+
+/** One line naming a change: "A predicate B" for a link, else the element's name. */
+export function describeChange(c: ChangeRecord, nameOf: NameOf = () => undefined): string {
   const kind = changeKind(c);
   if (kind === 'link-add' || kind === 'link-delete') {
     const l = linkOf(c);
@@ -505,7 +540,27 @@ function tombstoneLabel(t: UnstagedChange, nameOf: NameOf): string {
     }
   }
   const obj = c.after ?? c.before;
-  return asString(obj?.name) ?? (c.elementId ? (nameOf(c.elementId) ?? nameFromId(c.elementId)) : `change ${t.sequence}`);
+  return asString(obj?.name) ?? (c.elementId ? (nameOf(c.elementId) ?? nameFromId(c.elementId)) : 'a change');
+}
+
+/**
+ * What a committed changeset left out: the tombstones its commit made for the
+ * reviewer's drops (one revision for all, cascades included).
+ */
+export function leftOutAtCommit(
+  unstaged: UnstagedChange[],
+  review: ChangesetReview | undefined,
+  nameOf: NameOf = () => undefined,
+): { seq: number; label: string }[] {
+  const dropRevisions = new Set(
+    unstaged
+      .filter((t) => !t.rewritten && review?.decisions[String(t.sequence)]?.verdict === 'drop')
+      .map((t) => t.removedAt),
+  );
+  return unstaged
+    .filter((t) => !t.rewritten && dropRevisions.has(t.removedAt))
+    .sort((a, b) => a.sequence - b.sequence)
+    .map((t) => ({ seq: t.sequence, label: tombstoneLabel(t, nameOf) }));
 }
 
 /**
@@ -574,8 +629,12 @@ export interface ApplyPlan {
   deleteBlockedLinks: number[];
   /** How many blocking links go with them. */
   linksDeleted: number;
-  /** The commit body, or undefined when it would be empty (today's behaviour). */
-  body?: CommitBody;
+  /**
+   * The commit body for a dr CLI with review. Always carries both lists: the
+   * server only applies reviewed-commit rules (drops, blocker refusal) when the
+   * body names either, even empty.
+   */
+  body: CommitBody;
 }
 
 // ─── The model ────────────────────────────────────────────────────────────────
@@ -594,12 +653,16 @@ export interface ReviewModel {
   /** Decisions that still count, by sequence. */
   decisions: Map<number, ReviewDecision>;
   cascade: Map<number, Cascade>;
+  /** Dropped link deletes an element delete contradicts; Apply waits on them. */
+  conflicts: DropConflict[];
   tally: ReviewTally;
   diff: RevisionDiff | null;
   apply: ApplyPlan;
   /** Every change decided, none waiting on DrBot, and something lands. */
   ready: boolean;
   stateOf: (seq: number) => ItemState;
+  /** Element names: the model's, then the changeset's own adds. */
+  nameOf: NameOf;
 }
 
 const ZERO_KINDS = (): Record<ChangeKind, number> => ({
@@ -636,6 +699,7 @@ export function buildReviewModel({
   }
   const droppedSeqs = new Set([...decisions].filter(([, d]) => d.verdict === 'drop').map(([s]) => s));
   const cascade = cascadeOfDrops(items, droppedSeqs);
+  const conflicts = dropConflicts(items, droppedSeqs);
 
   const stateOf = (seq: number): ItemState => {
     const d = decisions.get(seq);
@@ -671,13 +735,10 @@ export function buildReviewModel({
   const deleteBlockedLinks = blockedKept.map((i) => i.seq);
   const linksDeleted = blockedKept.reduce((n, i) => n + i.blockers.length, 0);
   const drop = [...droppedSeqs].sort((a, b) => a - b);
-  const body: CommitBody | undefined =
-    drop.length > 0 || deleteBlockedLinks.length > 0
-      ? {
-          ...(drop.length > 0 ? { drop } : {}),
-          ...(deleteBlockedLinks.length > 0 ? { deleteBlockedLinks } : {}),
-        }
-      : undefined;
+  // Always both lists: with a body the server enforces blockers (a delete still
+  // in use and not in deleteBlockedLinks is refused) instead of silently
+  // removing the links, as a body-less commit does.
+  const body: CommitBody = { drop, deleteBlockedLinks };
 
   return {
     items,
@@ -685,11 +746,13 @@ export function buildReviewModel({
     pairs,
     decisions,
     cascade,
+    conflicts,
     tally,
     diff: revisionDiff(items, review, unstaged, nameOf),
     apply: { landing, landingByKind, dropped, deleteBlockedLinks, linksDeleted, body },
-    ready: tally.undecided === 0 && tally.asked === 0 && landing.length > 0,
+    ready: tally.undecided === 0 && tally.asked === 0 && conflicts.length === 0 && landing.length > 0,
     stateOf,
+    nameOf,
   };
 }
 

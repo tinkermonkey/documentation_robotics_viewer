@@ -1,33 +1,29 @@
 /**
  * ChangesetCanvas — the center pane for the Changesets view.
  *
- * Heimdall `PageHeader` (eyebrow = status-colored swatch + 'CHANGESET', title =
- * changeset name, id `Chip` = status, right meta = '{n} changes') over a
- * scrollable list of op-coded change rows. Each row is a colored op badge
- * (add = emerald / update = cyan / delete = rose, 42px) + the dotted element id
- * path (mono) + a one-line detail + the layer slug. Rows with before/after JSON
- * are expandable into a readable side-by-side diff (Heimdall `SideBySideDiff`).
+ * With no changeset open it is the inbox (`ChangesetInbox`): what waits on
+ * you, on DrBot, and the history. With one open: a Heimdall `PageHeader`
+ * (eyebrow = status swatch + 'CHANGESET' + where it came from, title = name,
+ * id chip = status, a back link to the inbox) over the Review tab
+ * (`ChangesetReviewPanel`: decide each change, then Apply what you kept).
  *
- * Empty state shows when no changeset is selected.
- *
- * A Changes / Impact switch in the header's action slot swaps the list for
+ * A Review / Impact switch in the header's action slot swaps the list for
  * `ChangesetImpactView` — the elements the changeset reaches outside itself,
  * as heimdall-ui lanes. Its follow depth is the Model inspector's
  * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
  */
 
 import { useState } from 'react';
-import { PageHeader, SegmentedControl, SideBySideDiff } from '@tinkermonkey/heimdall-ui';
+import { Button, PageHeader, SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { useChangesets, useChangeset, changesetLoadErrorMessage } from '../data/useChangesets';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
+import { useChangesetReview } from '../data/useChangesetReview';
+import { originLabel } from '../data/changesetReview';
 import { ChangesetImpactView } from './ChangesetImpactView';
-import {
-  buildDiffLines,
-  changesetSummary,
-  type ChangeRow,
-} from '../data/changesets';
+import { ChangesetReviewPanel } from './ChangesetReviewPanel';
+import { ChangesetInbox } from './ChangesetInbox';
 
 /** Status → swatch color (committed/discarded = emerald, staged = amber). */
 function statusColor(status: string): string {
@@ -54,138 +50,17 @@ function ChangesetEmptyState({ message, alert = false }: { message: string; aler
   );
 }
 
-/** A single op-coded change row (badge + path + detail + expandable diff). */
-function ChangeRowItem({ row }: { row: ChangeRow }) {
-  const [expanded, setExpanded] = useState(false);
-  const canvasDark = useUiStore((s) => s.canvasDark);
-  const diffLines = expanded && row.hasDiff ? buildDiffLines(row.raw) : [];
-
-  return (
-    <div
-      style={{
-        background: 'rgb(var(--canvas-card))',
-        border: '1px solid rgb(var(--canvas-border))',
-        borderRadius: 8,
-        overflow: 'hidden',
-      }}
-      data-testid="changeset-row"
-      data-op={row.op}
-    >
-      <div
-        role={row.hasDiff ? 'button' : undefined}
-        tabIndex={row.hasDiff ? 0 : undefined}
-        onClick={row.hasDiff ? () => setExpanded((v) => !v) : undefined}
-        onKeyDown={
-          row.hasDiff
-            ? (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  setExpanded((v) => !v);
-                }
-              }
-            : undefined
-        }
-        style={{
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 12,
-          padding: '12px 14px',
-          cursor: row.hasDiff ? 'pointer' : 'default',
-        }}
-      >
-        <span
-          style={{
-            flex: 'none',
-            fontFamily: "'JetBrains Mono',monospace",
-            fontSize: 10,
-            letterSpacing: '0.05em',
-            textTransform: 'uppercase',
-            padding: '3px 8px',
-            borderRadius: 4,
-            width: 42,
-            textAlign: 'center',
-            background: row.meta.background,
-            // Bright op color on the dark canvas; darker -700 shade on the light
-            // canvas so the badge text clears WCAG AA on its pale tint.
-            color: canvasDark ? row.meta.color : row.meta.colorLight,
-          }}
-          data-testid="changeset-op-badge"
-        >
-          {row.meta.label}
-        </span>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 3, minWidth: 0, flex: 1 }}>
-          <span
-            style={{
-              fontFamily: "'JetBrains Mono',monospace",
-              fontSize: 12,
-              color: 'rgb(var(--canvas-fg-1))',
-              wordBreak: 'break-all',
-            }}
-          >
-            {row.elementId}
-          </span>
-          <span
-            style={{
-              fontSize: 12,
-              color: 'rgb(var(--canvas-fg-3))',
-              lineHeight: 1.45,
-            }}
-          >
-            {row.detail}
-          </span>
-        </div>
-        {row.layerName && (
-          <span
-            style={{
-              flex: 'none',
-              fontFamily: "'JetBrains Mono',monospace",
-              fontSize: 10,
-              letterSpacing: '0.04em',
-              textTransform: 'uppercase',
-              // fg-3 (not fg-4) so the slug clears WCAG AA on the light canvas.
-              color: 'rgb(var(--canvas-fg-3))',
-              alignSelf: 'center',
-            }}
-          >
-            {row.layerName}
-          </span>
-        )}
-      </div>
-      {expanded && row.hasDiff && (
-        <div
-          style={{
-            borderTop: '1px solid rgb(var(--canvas-border))',
-            padding: '10px 14px 14px',
-          }}
-        >
-          {diffLines.length > 0 ? (
-            <SideBySideDiff lines={diffLines} />
-          ) : (
-            <div
-              style={{
-                fontFamily: "'JetBrains Mono',monospace",
-                fontSize: 11,
-                color: 'rgb(var(--canvas-fg-3))',
-              }}
-            >
-              no field-level changes
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 type ChangesetTab = 'changes' | 'impact';
 
 export function ChangesetCanvas() {
   const changesetId = useUiStore((s) => s.changesetId);
+  const selectChangeset = useUiStore((s) => s.selectChangeset);
   const follow = useUiStore((s) => s.inspectorFollow);
   const setFollow = useUiStore((s) => s.setInspectorFollow);
   const { derived: registry } = useChangesets();
   const { detail, error } = useChangeset(changesetId);
   const { derived: model } = useModel();
+  const review = useChangesetReview(detail);
   const [tab, setTab] = useState<ChangesetTab>('changes');
   const impact = useChangesetImpact(model, tab === 'impact' ? detail : null, follow);
 
@@ -193,6 +68,7 @@ export function ChangesetCanvas() {
   const name = detail?.name ?? summaryEntry?.name ?? '';
   const status = detail?.status ?? summaryEntry?.status ?? 'unknown';
   const changesCount = detail?.changesCount ?? summaryEntry?.changesCount ?? 0;
+  const origin = originLabel(detail?.origin ?? summaryEntry?.origin);
 
   return (
     <div
@@ -209,7 +85,8 @@ export function ChangesetCanvas() {
     >
       {changesetId && (
         <PageHeader
-          style={{ flex: 'none', padding: '16px 22px 14px' }}
+          className="canvas-header"
+          style={{ flex: 'none', padding: '12px 22px 14px' }}
           eyebrow={
             <>
               <span
@@ -222,13 +99,21 @@ export function ChangesetCanvas() {
                   display: 'inline-block',
                 }}
               />
-              <span>CHANGESET</span>
+              <span>CHANGESET{origin ? ` · ${origin.toUpperCase()}` : ''}</span>
             </>
           }
           title={name}
           idChip={status}
           actions={
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => selectChangeset(null)}
+                data-testid="changeset-back-to-inbox"
+              >
+                ← All changesets
+              </Button>
               <span
                 style={{
                   fontFamily: "'JetBrains Mono',monospace",
@@ -242,7 +127,7 @@ export function ChangesetCanvas() {
                 value={tab}
                 onChange={(v) => setTab(v as ChangesetTab)}
                 options={[
-                  { value: 'changes', label: 'Changes' },
+                  { value: 'changes', label: status === 'staged' ? 'Review' : 'Changes' },
                   { value: 'impact', label: 'Impact' },
                 ]}
                 aria-label="Changeset view"
@@ -255,7 +140,12 @@ export function ChangesetCanvas() {
 
       <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {!changesetId ? (
-          <ChangesetEmptyState message="select a changeset to view its changes" />
+          <div
+            className="drv-scroll"
+            style={{ position: 'absolute', inset: 0, overflowY: 'auto', padding: '22px 26px 32px' }}
+          >
+            <ChangesetInbox />
+          </div>
         ) : !detail && error ? (
           <ChangesetEmptyState message={changesetLoadErrorMessage(error)} alert />
         ) : !detail ? (
@@ -276,33 +166,25 @@ export function ChangesetCanvas() {
               position: 'absolute',
               inset: 0,
               overflowY: 'auto',
-              padding: '20px 22px',
+              padding: '18px 22px 28px',
             }}
             data-testid="changeset-list"
           >
-            <p
-              style={{
-                fontSize: 13,
-                color: 'rgb(var(--canvas-fg-2))',
-                margin: '0 0 18px 0',
-                maxWidth: 620,
-                lineHeight: 1.5,
-              }}
-            >
-              {changesetSummary(detail.name, detail.stats)}
-            </p>
-            <div
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 8,
-                maxWidth: 760,
-              }}
-            >
-              {detail.rows.map((row) => (
-                <ChangeRowItem key={row.key} row={row} />
-              ))}
-            </div>
+            {detail.description && (
+              <p
+                style={{
+                  fontSize: 13,
+                  color: 'rgb(var(--canvas-fg-2))',
+                  margin: '0 0 14px 0',
+                  maxWidth: 900,
+                  lineHeight: 1.5,
+                }}
+              >
+                {detail.description}
+              </p>
+            )}
+            {/* Remount per changeset so filters start from that changeset's state. */}
+            <ChangesetReviewPanel key={detail.id} detail={detail} review={review} />
           </div>
         )}
       </div>

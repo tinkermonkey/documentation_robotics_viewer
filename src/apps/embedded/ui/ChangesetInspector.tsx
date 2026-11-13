@@ -10,45 +10,33 @@
  * The live `/api/changesets/:id` payload has NO author field, so none is shown.
  * Empty state shows when no changeset is selected.
  *
- * A STAGED changeset also gets Apply (commit its changes to the model) and
- * Discard (throw them away) buttons, each behind a `ConfirmDialog`. This is the
- * user's review step for changes DrBot staged under `dr visualize
- * --with-changesets`, which never lets DrBot commit. A refused action (failed
- * validation, model changed since the changeset was made) shows the server's
- * message inline, since validation errors are too long for a toast.
+ * With a change open (`uiStore.changeSeq`, picked from the review list) it is
+ * the change inspector instead (`ChangeInspector`): the Keep / Drop / Ask
+ * DrBot decision, before/after, source, related links and comments. Apply
+ * and Discard live on the review's summary card (`ChangesetReviewPanel`).
  *
  * Above them, a blast-radius summary (`BlastRadius`): how many elements outside
  * the changeset its changes reach, per layer, at the inspector's follow depth
  * — the same reach the canvas's Impact tab draws as lanes.
  */
 
-import { useState } from 'react';
 import {
-  Button,
-  ConfirmDialog,
   StatTile,
   StatusBadge,
-  Toast,
   followOptionLabel,
   type BadgeColor,
-  type ToastVariant,
 } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerColor, layerLabel } from './domain';
+import { ChangeInspector } from './ChangeInspector';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
+import { useChangesetReview } from '../data/useChangesetReview';
 import {
-  changesetActionErrorMessage,
   changesetLoadErrorMessage,
   useChangeset,
-  type ChangesetAction,
-  type ChangesetActionResult,
   type ChangesetDetail,
 } from '../data/useChangesets';
-import {
-  usePostapichangesetschangesetIdcommit,
-  usePostapichangesetschangesetIddiscard,
-} from '../../../core/services/generatedApiClient';
 
 /** Status → Heimdall badge color + label. */
 function statusBadge(status: string): { color: BadgeColor; label: string } {
@@ -189,126 +177,17 @@ function BlastRadius({ detail }: { detail: ChangesetDetail }) {
   );
 }
 
-interface ToastState {
-  open: boolean;
-  variant: ToastVariant;
-  title: string;
-}
-
-/**
- * Apply / Discard for a staged changeset, with confirmation and inline errors.
- * Success is reported through `notify`: this unmounts as soon as the changeset
- * stops being staged, so a toast of its own would vanish with it.
- */
-function ChangesetActions({
-  detail,
-  notify,
-}: {
-  detail: ChangesetDetail;
-  notify: (variant: ToastVariant, title: string) => void;
-}) {
-  // Generated hooks: they also refetch the changesets and, after a commit, the model.
-  const commit = usePostapichangesetschangesetIdcommit(detail.id);
-  const discard = usePostapichangesetschangesetIddiscard(detail.id);
-  const [confirming, setConfirming] = useState<ChangesetAction | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  const busy = commit.isPending || discard.isPending;
-  const changes = plural(detail.changesCount, 'change');
-
-  const run = (action: ChangesetAction) => {
-    setConfirming(null);
-    setError(null);
-    const mutation = action === 'commit' ? commit : discard;
-    mutation.mutate(undefined, {
-      onSuccess: (data) => {
-        const result = data as ChangesetActionResult;
-        const title =
-          action === 'commit'
-            ? `Applied ${plural(result.committed ?? detail.changesCount, 'change')} to the model`
-            : `Discarded ${detail.name}`;
-        notify('success', title);
-      },
-      onError: (err) => setError(changesetActionErrorMessage(err)),
-    });
-  };
-
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }} data-testid="changeset-actions">
-      <div style={{ display: 'flex', gap: 8 }}>
-        <Button
-          variant="accent"
-          size="sm"
-          disabled={busy || detail.changesCount === 0}
-          onClick={() => setConfirming('commit')}
-          data-testid="changeset-apply-button"
-        >
-          {commit.isPending ? 'Applying…' : 'Apply'}
-        </Button>
-        <Button
-          variant="secondary"
-          size="sm"
-          disabled={busy}
-          onClick={() => setConfirming('discard')}
-          data-testid="changeset-discard-button"
-        >
-          {discard.isPending ? 'Discarding…' : 'Discard'}
-        </Button>
-      </div>
-
-      {error && (
-        <div
-          role="alert"
-          data-testid="changeset-action-error"
-          style={{
-            padding: '8px 10px',
-            borderRadius: 'var(--radius-md, 6px)',
-            border: '1px solid rgb(var(--status-error) / 0.5)',
-            background: 'rgb(var(--status-error) / 0.08)',
-            color: 'rgb(var(--canvas-fg-1))',
-            fontFamily: "'JetBrains Mono',monospace",
-            fontSize: 11,
-            lineHeight: 1.5,
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-word',
-          }}
-        >
-          {error}
-        </div>
-      )}
-
-      <ConfirmDialog
-        isOpen={confirming === 'commit'}
-        onClose={() => setConfirming(null)}
-        onConfirm={() => run('commit')}
-        title="Apply changeset"
-        message={`Apply the ${changes} in "${detail.name}" to the model? They are validated first, and nothing is written if any change fails.`}
-        confirmLabel="Apply"
-        variant="primary"
-      />
-      <ConfirmDialog
-        isOpen={confirming === 'discard'}
-        onClose={() => setConfirming(null)}
-        onConfirm={() => run('discard')}
-        title="Discard changeset"
-        message={`Throw away the ${changes} in "${detail.name}"? The model is not changed, and this can't be undone.`}
-        confirmLabel="Discard"
-        variant="danger"
-      />
-    </div>
-  );
-}
-
 export function ChangesetInspector() {
   const changesetId = useUiStore((s) => s.changesetId);
+  const changeSeq = useUiStore((s) => s.changeSeq);
   const { detail, error } = useChangeset(changesetId);
-  const [toast, setToast] = useState<ToastState>({ open: false, variant: 'success', title: '' });
-  const notify = (variant: ToastVariant, title: string) => setToast({ open: true, variant, title });
+  const review = useChangesetReview(detail);
+  const item = changeSeq !== null ? review.model?.bySeq.get(changeSeq) : undefined;
 
   return (
     <div
       style={{
-        width: 320,
+        width: item ? 380 : 320,
         flex: 'none',
         borderLeft: '1px solid rgb(var(--canvas-border))',
         background: 'rgb(var(--canvas-surface))',
@@ -318,7 +197,23 @@ export function ChangesetInspector() {
       }}
       data-testid="inspector"
     >
-      {!changesetId || !detail ? (
+      {detail && item && review.model ? (
+        <div
+          className="drv-scroll"
+          tabIndex={0}
+          role="region"
+          aria-label="Selected change"
+          style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}
+        >
+          <ChangeInspector
+            key={`${detail.id}:${item.seq}`}
+            item={item}
+            model={review.model}
+            review={review}
+            staged={detail.status === 'staged'}
+          />
+        </div>
+      ) : !changesetId || !detail ? (
         <div
           style={{
             flex: 1,
@@ -415,7 +310,10 @@ export function ChangesetInspector() {
             <BlastRadius detail={detail} />
 
             {detail.status === 'staged' && (
-              <ChangesetActions key={detail.id} detail={detail} notify={notify} />
+              <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
+                Select a change to decide it: Keep, Drop or Ask DrBot. Apply waits until every change has a
+                verdict.
+              </p>
             )}
 
             <div style={{ display: 'flex', gap: 8 }}>
@@ -449,12 +347,6 @@ export function ChangesetInspector() {
           </div>
         </>
       )}
-      <Toast
-        isOpen={toast.open}
-        onClose={() => setToast((t) => ({ ...t, open: false }))}
-        variant={toast.variant}
-        title={toast.title}
-      />
     </div>
   );
 }

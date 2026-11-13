@@ -149,13 +149,13 @@ describe('buildReviewModel', () => {
     expect(reviewHeadline(m.tally)).toBe('28 of 30 need a decision');
   });
 
-  it('is ready once every change is kept or dropped, and sends no body when nothing is dropped', () => {
+  it('is ready once every change is kept or dropped; the body still names both lists', () => {
     const decisions = Object.fromEntries(
       buildReviewModel({ changes: FIXTURE }).items.map((i) => [String(i.seq), { verdict: 'keep' as const }]),
     );
     const m = buildReviewModel({ changes: FIXTURE, review: { decisions } });
     expect(m.ready).toBe(true);
-    expect(m.apply.body).toBeUndefined();
+    expect(m.apply.body).toEqual({ drop: [], deleteBlockedLinks: [] });
     expect(m.apply.landing).toHaveLength(30);
     expect(reviewHeadline(m.tally)).toBe('Every change has a decision');
   });
@@ -170,7 +170,7 @@ describe('buildReviewModel', () => {
     expect(m.stateOf(7)).toBe('drop');
     expect(m.stateOf(32)).toBe('cascaded');
     expect(m.tally).toMatchObject({ dropped: 1, cascaded: 1, undecided: 0 });
-    expect(m.apply.body).toEqual({ drop: [7] });
+    expect(m.apply.body).toEqual({ drop: [7], deleteBlockedLinks: [] });
     expect(m.apply.dropped.map((d) => [d.item.seq, d.note, d.cascadedBy?.seq])).toEqual([
       [7, 'compat enum', undefined],
       [32, undefined, 7],
@@ -193,8 +193,25 @@ describe('buildReviewModel', () => {
       changes: [el(3, 'delete', A, { blockers })],
       review: { decisions: { '3': { verdict: 'keep' } } },
     });
-    expect(m.apply.body).toEqual({ deleteBlockedLinks: [3] });
+    expect(m.apply.body).toEqual({ drop: [], deleteBlockedLinks: [3] });
     expect(m.apply.linksDeleted).toBe(2);
+  });
+
+  it('flags a dropped link delete whose element a kept delete removes, and holds Apply', () => {
+    const changes = [el(1, 'delete', A), rel(3, 'relationship-delete', B, 'serves', A)];
+    const m = buildReviewModel({
+      changes,
+      review: { decisions: { '1': { verdict: 'keep' }, '3': { verdict: 'drop' } } },
+    });
+    expect(m.conflicts).toEqual([{ linkSeq: 3, deleteSeq: 1 }]);
+    expect(m.ready).toBe(false);
+    // Dropping the element delete too resolves it.
+    const both = buildReviewModel({
+      changes: [...changes, el(4, 'update', C, { before: { description: 'a' }, after: { description: 'b' } })],
+      review: { decisions: { '1': { verdict: 'drop' }, '3': { verdict: 'drop' }, '4': { verdict: 'keep' } } },
+    });
+    expect(both.conflicts).toEqual([]);
+    expect(both.ready).toBe(true);
   });
 
   it('ignores a decision on a change revised after it', () => {
@@ -300,6 +317,14 @@ describe('labels', () => {
     const m = buildReviewModel({ changes: FIXTURE });
     const apm = landedByLayer(m.items).find((l) => l.layerId === 'apm')!;
     expect(apm.counts.update).toBe(1);
+  });
+
+  it('cascadeOfDrops matches a link that names the dropped add by UUID', () => {
+    const items = toReviewItems(
+      [el(0, 'add', A, { after: { id: 'uuid-a', name: 'Alpha', type: 'applicationservice' } }), rel(1, 'relationship-add', 'uuid-a', 'serves', B)],
+      [],
+    );
+    expect(cascadeOfDrops(items, new Set([0])).get(1)).toEqual({ seq: 1, bySeq: 0 });
   });
 
   it('cascadeOfDrops is empty without dropped adds', () => {

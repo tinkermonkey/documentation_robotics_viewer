@@ -11,6 +11,7 @@ import '@tinkermonkey/heimdall-ui/css';
 import '@tinkermonkey/heimdall-ui/fonts';
 // DR domain swatches + nav helpers — imported AFTER Heimdall CSS so they win.
 import './ui/domain-and-nav.css';
+import './ui/changeset-review.css';
 
 // Handle token from magic link BEFORE router initializes
 // Magic link format: /?token=xyz#/model/graph
