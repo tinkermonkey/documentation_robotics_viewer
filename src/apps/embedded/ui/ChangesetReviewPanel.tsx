@@ -44,12 +44,14 @@ import {
   type ChangesetDetail,
 } from '../data/useChangesets';
 import { mutateWithBody, type ChangesetReviewState } from '../data/useChangesetReview';
+import { useLocalReviewStore } from '../stores/localReviewStore';
 import {
   countKinds,
   describeChange,
   groupReviewItems,
   kindCountsLabel,
   leftOutAtCommit,
+  reviewCounts,
   reviewHeadline,
   type GroupBy,
   type ReviewGroup,
@@ -311,8 +313,10 @@ function SummaryCard({
   // one deletes its links too, which wants its own look).
   const rest = model.items.filter((i) => model.stateOf(i.seq) === 'undecided' && i.blockers.length === 0);
   const blockedOpen = model.items.filter((i) => i.blockers.length > 0 && model.stateOf(i.seq) === 'undecided');
-  const pct = tally.total ? Math.round((tally.decided / tally.total) * 100) : 100;
-  const counts = countKinds(model.items);
+  // The same counts the dr CLI's list reports (and the inbox shows).
+  const counts = reviewCounts(model);
+  const pct = counts.total ? Math.round((counts.decided / counts.total) * 100) : 100;
+  const kindCounts = countKinds(model.items);
   const lands = model.apply.landing.length;
   const why = model.ready
     ? undefined
@@ -385,7 +389,7 @@ function SummaryCard({
           </span>
         </div>
         <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>
-          {kindCountsLabel(counts)}
+          {kindCountsLabel(kindCounts)}
           {model.pairs.length > 0 && ` · ${plural(model.pairs.length, 'pair')} cancel out`}
         </span>
         <div className="drv-summary__actions">
@@ -445,10 +449,10 @@ function SummaryCard({
         color={tally.undecided > 0 ? 'amber' : 'emerald'}
         height={4}
         role="progressbar"
-        aria-label={`${tally.decided} of ${tally.total} decided`}
+        aria-label={`${counts.decided} of ${counts.total} decided`}
         aria-valuemin={0}
-        aria-valuemax={tally.total}
-        aria-valuenow={tally.decided}
+        aria-valuemax={counts.total}
+        aria-valuenow={counts.decided}
       />
       {local && (
         <p className="drv-note" style={{ margin: 0 }} data-testid="review-local-note">
@@ -511,6 +515,7 @@ export function ChangesetReviewPanel({
   const [groupBy, setGroupBy] = useState<GroupBy>('weight');
   const [result, setResult] = useState<ChangesetActionResult | null>(null);
   const [toast, setToast] = useState<ToastState>({ open: false, variant: 'success', title: '' });
+  const clearLocal = useLocalReviewStore((s) => s.clear);
 
   const groups = useMemo(
     () => (model ? groupReviewItems(model, groupBy, filter === 'since' ? 'all' : filter, LAYER_ORDER) : []),
@@ -534,6 +539,8 @@ export function ChangesetReviewPanel({
 
   const onResult = (r: ChangesetActionResult, title: string) => {
     setResult(r);
+    // The changeset is settled: verdicts kept in this browser have done their job.
+    clearLocal(detail.id);
     setToast({ open: true, variant: 'success', title });
   };
 

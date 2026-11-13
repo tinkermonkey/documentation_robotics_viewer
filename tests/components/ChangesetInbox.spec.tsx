@@ -6,7 +6,7 @@
  */
 
 import { beforeEach, describe, expect, it } from 'vitest';
-import { act, screen, within } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
 
@@ -21,7 +21,7 @@ function serveList(changesets: Record<string, object>) {
 }
 
 beforeEach(() => {
-  useLocalReviewStore.setState({ byChangeset: {}, unsupported: {} });
+  useLocalReviewStore.setState({ byChangeset: {}, unsupported: {}, blockersSeen: {} });
 });
 
 function renderInbox() {
@@ -54,9 +54,11 @@ describe('ChangesetInbox', () => {
     expect(article).toHaveTextContent('staged by DrBot · from chat');
     expect(article).toHaveTextContent('20 need a decision');
     expect(within(article).getByRole('progressbar', { name: 'pr-497: 10 of 30 decided' })).toBeInTheDocument();
-    expect(within(article).getByRole('button', { name: 'Continue review' })).toBeInTheDocument();
+    expect(within(article).getByRole('button', { name: 'Continue review of pr-497' })).toBeInTheDocument();
 
-    expect(within(screen.getByTestId('inbox-on-bot')).getByText('wire-orphans')).toBeInTheDocument();
+    const onBot = screen.getByTestId('inbox-on-bot');
+    expect(within(onBot).getByText('wire-orphans')).toBeInTheDocument();
+    expect(within(onBot).getByRole('button', { name: 'Open wire-orphans' })).toBeInTheDocument();
 
     const history = screen.getAllByTestId('inbox-history-row');
     expect(history.map((r) => r.textContent)).toEqual([
@@ -74,12 +76,17 @@ describe('ChangesetInbox', () => {
     expect(useUiStore.getState().changesetId).toBe('cs-a');
   });
 
-  it('counts verdicts kept in this browser for an older dr CLI', async () => {
-    serveList({ 'cs-a': { name: 'legacy', status: 'staged', created: '2026-11-13T10:00:00Z', changes_count: 3 } });
-    useLocalReviewStore.setState({ byChangeset: { 'cs-a': { '0': { verdict: 'keep' }, '1': { verdict: 'keep' } } } });
+  it('counts verdicts kept in this browser for an older dr CLI, by the shared definition', async () => {
+    // The detail (MSW's default: the fixture, 38 changes of which 8 cancel out) gives total 30;
+    // dropping RelationshipType (7) also leaves out its link (32), which counts as decided.
+    serveList({ 'cs-a': { name: 'legacy', status: 'staged', created: '2026-11-13T10:00:00Z', changes_count: 38 } });
+    useLocalReviewStore.setState({
+      byChangeset: { 'cs-a': { '0': { verdict: 'keep' }, '7': { verdict: 'drop' } } },
+    });
     renderInbox();
     const card = (await screen.findByText('legacy')).closest('article')!;
-    expect(card).toHaveTextContent('1 need a decision');
-    expect(within(card).getByRole('button', { name: 'Continue review' })).toBeInTheDocument();
+    await waitFor(() => expect(card).toHaveTextContent('27 need a decision'));
+    expect(within(card).getByRole('progressbar', { name: 'legacy: 3 of 30 decided' })).toBeInTheDocument();
+    expect(within(card).getByRole('button', { name: 'Continue review of legacy' })).toBeInTheDocument();
   });
 });

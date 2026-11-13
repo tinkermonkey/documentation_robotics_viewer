@@ -225,16 +225,20 @@ For local dev use `dr visualize --no-auth`.
   Ask DrBot — instead of one Apply for the lot (DrBot stages under `dr visualize --with-changesets`, never
   commits). `data/changesetReview.ts` is the pure model (see its header): review-weight groups (blocked
   deletes, routine updates with a bulk "Keep N routine", new elements, new links, removals), add-then-delete
-  "cancel out" pairs folded away, effective decisions (a decision on a change rewritten after it no longer
+  "cancel out" pairs folded away (never a delete with blockers: the server checks every staged delete), effective decisions (a decision on a change rewritten after it no longer
   counts), the server's drop cascade (dropping an add leaves out its links/updates), dropped link deletes a
   kept element delete contradicts (`conflicts`, Apply waits), the since-your-review diff (revised / new /
   withdrawn / carried over, from `revision`, `unstaged` tombstones and `review.lastReviewedRevision`) and the
-  apply plan. A summary card (headline, tally, pills, `ProgressBar`, Discard / Keep the other N / Apply) and
+  apply plan. `reviewCounts` is the decided / total / asked definition shared with the dr CLI's list (total =
+  staged minus pair members; a change cascaded from a dropped add counts as decided); the inbox works it out
+  from the detail + local verdicts for an older CLI. A kept delete that gains a blocker the reviewer hadn't
+  seen (`localReviewStore.blockersSeen`, recorded per keep) goes back to "needs decision". A summary card (headline, tally, pills, `ProgressBar`, Discard / Keep the other N / Apply) and
   Show (Since your review · Needs decision · Decided · All) / Group by (Review weight · Layer · Sequence)
   `SegmentedControl`s sit over the rows. A row selects `uiStore.changeSeq` (not persisted, cleared on a
   changeset switch), and the permanent inspector column becomes `ChangeInspector`: decision + note (Ask DrBot
-  with a note also posts it as an annotation on the element), a blocked delete's Resolve choices (Delete the
-  links too = keep, Keep the element = drop), before/after per changed field (field in amber), source, the
+  with a note also posts it as an annotation on the element — not for an element only this changeset adds), a
+  blocked delete's Resolve choices (Delete the links too = keep, Keep the element = drop; radios only pick,
+  Confirm records, Clear verdict clears), before/after per changed field (field in amber), source, the
   changeset's other changes on that element, the JSON diff and comments; with no change selected it shows the
   changeset overview (`BlastRadius`, StatTiles). Apply opens `ApplyConfirm` (what lands, what's left out
   incl. cascades, links deleted with their elements) and commits through the generated
@@ -242,8 +246,11 @@ For local dev use `dr visualize --no-auth`.
   server only applies reviewed-commit rules when the body names either); a committed changeset shows
   `AppliedResult` (landed by layer, what was left out). Refusals inline: 409 drift ("nothing was written, your
   decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
-  Verdicts: `useChangesetReview` → generated `usePutapichangesetschangesetIdreview` (optimistic write into the
-  cached detail, rolled back on refusal; invalidation mapped in `getInvalidationQueries`). **Older dr CLI**
+  Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
+  `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
+  `onError` (revert only that PUT's verdicts on the CURRENT cached detail — never a stale snapshot, which would
+  wipe a websocket refetch) and a mutation `scope` per changeset so PUTs run one at a time, in order; the
+  detail refetches when the last queued PUT settles. Apply / Discard clear the changeset's local verdicts. **Older dr CLI**
   (no `review` in the detail, or the PUT answers 404/405 without a JSON `{ error }`): verdicts live in
   localStorage (`stores/localReviewStore.ts`, key `dr-viewer-local-review`, by changeset id + sequence), Drop
   is hidden with an explanation, and Apply sends no body. The generated mutation hooks are typed without

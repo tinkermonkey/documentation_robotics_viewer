@@ -109,14 +109,41 @@ function DecisionButtons({
   const createAnnotation = useCreateAnnotation();
   const current = model.decisions.get(item.seq)?.verdict;
   const blocked = item.blockers.length > 0;
+  // Blocked deletes: arrowing through the radios only picks; Confirm records.
+  const [choice, setChoice] = useState<Verdict | null>(current ?? null);
+  useEffect(() => setChoice(current ?? null), [current]);
+  const [annotationError, setAnnotationError] = useState<string | null>(null);
+  const target = commentTarget(item);
+  const canComment = model.inModel(target);
 
-  const decide = (verdict: Verdict) => {
-    const next = current === verdict ? null : verdict;
+  const record = (next: Verdict | null) => {
+    setAnnotationError(null);
     review.decide([{ sequence: item.seq, verdict: next, ...(next && note.trim() ? { note: note.trim() } : {}) }]);
-    if (next === 'ask' && note.trim()) {
-      createAnnotation.mutate({ elementId: commentTarget(item), content: note.trim(), tags: ['changeset-review'] });
+    // Ask DrBot also posts the note as a comment, which DrBot reads; an element
+    // this changeset adds has no comments yet (the note still reaches DrBot
+    // through the changeset's review).
+    if (next === 'ask' && note.trim() && canComment) {
+      createAnnotation.mutate(
+        { elementId: target, content: note.trim(), tags: ['changeset-review'] },
+        { onError: (err) => setAnnotationError(err instanceof Error ? err.message : String(err)) },
+      );
     }
   };
+
+  const decide = (verdict: Verdict) => record(current === verdict ? null : verdict);
+
+  const askNote =
+    note.trim() && !canComment ? (
+      <span className="drv-muted" style={{ fontSize: 12 }} data-testid="ask-no-comment">
+        {item.link ? 'Its source element' : 'This element'} is new in this changeset, so the note isn&apos;t posted as a
+        comment; DrBot reads it from the review.
+      </span>
+    ) : null;
+  const annotationAlert = annotationError ? (
+    <div role="alert" className="drv-alert" data-testid="ask-comment-error">
+      The verdict is recorded, but the note couldn&apos;t be posted as a comment: {annotationError}
+    </div>
+  ) : null;
 
   if (blocked) {
     const into = item.blockers.filter((b) => b.direction === 'in').length;
@@ -148,12 +175,12 @@ function DecisionButtons({
         {options
           .filter((o) => !o.hidden)
           .map((o) => (
-            <label key={o.verdict} className={`drv-option${current === o.verdict ? ' drv-option--on' : ''}`}>
+            <label key={o.verdict} className={`drv-option${choice === o.verdict ? ' drv-option--on' : ''}`}>
               <input
                 type="radio"
                 name={`resolve-${item.seq}`}
-                checked={current === o.verdict}
-                onChange={() => decide(o.verdict)}
+                checked={choice === o.verdict}
+                onChange={() => setChoice(o.verdict)}
                 data-testid={`resolve-${o.verdict}`}
               />
               <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -164,6 +191,32 @@ function DecisionButtons({
               </span>
             </label>
           ))}
+        <div className="drv-decision">
+          <Button
+            variant="accent"
+            size="sm"
+            disabled={choice === null || choice === (current ?? null)}
+            onClick={() => record(choice)}
+            data-testid="resolve-confirm"
+          >
+            Confirm
+          </Button>
+          {current && (
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={() => {
+                setChoice(null);
+                record(null);
+              }}
+              data-testid="resolve-clear"
+            >
+              Clear verdict
+            </Button>
+          )}
+        </div>
+        {choice === 'ask' && askNote}
+        {annotationAlert}
       </fieldset>
     );
   }
@@ -199,6 +252,8 @@ function DecisionButtons({
       >
         Ask DrBot
       </Button>
+      {askNote}
+      {annotationAlert}
     </div>
   );
 }

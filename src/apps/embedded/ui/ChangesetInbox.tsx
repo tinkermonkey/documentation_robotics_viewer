@@ -12,7 +12,7 @@
 import { Button, Chip, ProgressBar } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { plural } from './reviewParts';
-import { useChangesets, type ChangesetSummary } from '../data/useChangesets';
+import { useChangesets, useLocalReviewCounts, type ChangesetSummary } from '../data/useChangesets';
 import { originLabel } from '../data/changesetReview';
 import { useLocalReviewStore } from '../stores/localReviewStore';
 
@@ -22,14 +22,13 @@ interface Progress {
   asked: number;
 }
 
-function progressOf(cs: ChangesetSummary, local: Record<string, Record<string, { verdict: string }>>): Progress {
-  if (cs.review) return cs.review;
-  const decisions = Object.values(local[cs.id] ?? {});
-  return {
-    decided: Math.min(decisions.length, cs.changesCount),
-    total: cs.changesCount,
-    asked: decisions.filter((d) => d.verdict === 'ask').length,
-  };
+/**
+ * The list's own counts (a dr CLI with review), else the same counts worked
+ * out here from the detail and this browser's verdicts (`reviewCounts`), else
+ * nothing decided yet while that detail loads.
+ */
+function progressOf(cs: ChangesetSummary, local: Record<string, Progress>): Progress {
+  return cs.review ?? local[cs.id] ?? { decided: 0, total: cs.changesCount, asked: 0 };
 }
 
 export function waitingOnDrBot(p: Progress): boolean {
@@ -62,7 +61,13 @@ function StagedCard({ cs, progress }: { cs: ChangesetSummary; progress: Progress
             .join(' · ')}
         </span>
         <span style={{ marginLeft: 'auto' }}>
-          <Button variant="accent" size="sm" onClick={() => selectChangeset(cs.id)} data-testid="inbox-open">
+          <Button
+            variant="accent"
+            size="sm"
+            onClick={() => selectChangeset(cs.id)}
+            aria-label={`${started ? 'Continue review of' : 'Review'} ${cs.name}`}
+            data-testid="inbox-open"
+          >
             {started ? 'Continue review' : 'Review'}
           </Button>
         </span>
@@ -98,7 +103,11 @@ export function ChangesetInbox() {
   const local = useLocalReviewStore((s) => s.byChangeset);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
 
-  const staged = derived.list.filter((c) => c.status === 'staged').map((cs) => ({ cs, p: progressOf(cs, local) }));
+  const legacyIds = derived.list.filter((c) => c.status === 'staged' && !c.review).map((c) => c.id);
+  const localCounts = useLocalReviewCounts(legacyIds, local);
+  const staged = derived.list
+    .filter((c) => c.status === 'staged')
+    .map((cs) => ({ cs, p: progressOf(cs, localCounts) }));
   const onYou = staged.filter((s) => !waitingOnDrBot(s.p));
   const onBot = staged.filter((s) => waitingOnDrBot(s.p));
   const history = derived.list.filter((c) => c.status !== 'staged');
@@ -141,7 +150,12 @@ export function ChangesetInbox() {
                   You asked about {plural(p.asked, 'change')} · DrBot restages them
                 </span>
                 <span style={{ marginLeft: 'auto' }}>
-                  <Button variant="secondary" size="sm" onClick={() => selectChangeset(cs.id)}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => selectChangeset(cs.id)}
+                    aria-label={`Open ${cs.name}`}
+                  >
                     Open
                   </Button>
                 </span>

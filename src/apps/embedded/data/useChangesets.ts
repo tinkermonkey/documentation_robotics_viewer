@@ -8,14 +8,21 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   ApiError,
+  getApiClient,
   useGetapichangesets,
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
 import { toChangeRows, type ChangeRecord, type ChangeRow } from './changesets';
-import type { ChangesetOrigin, ChangesetReview, UnstagedChange } from './changesetReview';
+import {
+  reviewCounts,
+  type ChangesetOrigin,
+  type ChangesetReview,
+  type ReviewCounts,
+  type UnstagedChange,
+} from './changesetReview';
 import { websocketClient } from '../services/websocketClient';
 
 /** Review progress the list reports per changeset (a dr CLI with changeset review). */
@@ -278,3 +285,34 @@ export function useLiveChangesetUpdates() {
 
 /** The server's changeset-change broadcast (see the CLI's `broadcastChangesetsUpdated`). */
 export const CHANGESETS_UPDATED_EVENT = 'changesets.updated';
+
+/**
+ * Review counts for staged changesets whose list entry has none (a dr CLI
+ * without review), worked out from each one's detail and the verdicts kept in
+ * this browser, by the same definition the CLI uses (`reviewCounts`). The
+ * details share the detail hook's cache. Keyed by changeset id; missing while
+ * a detail loads.
+ */
+export function useLocalReviewCounts(
+  changesetIds: string[],
+  localDecisions: Record<string, ChangesetReview['decisions']>,
+): Record<string, ReviewCounts> {
+  const results = useQueries({
+    queries: changesetIds.map((id) => ({
+      queryKey: ['getapichangesetschangesetId', id],
+      queryFn: () => getApiClient().getapichangesetschangesetId(id),
+    })),
+  });
+  // A few staged changesets at most: cheap enough to work out per render.
+  const out: Record<string, ReviewCounts> = {};
+  changesetIds.forEach((id, i) => {
+    const detail = results[i]?.data as ChangesetDetailPayload | undefined;
+    if (!detail) return;
+    out[id] = reviewCounts({
+      changes: detail.changes ?? [],
+      unstaged: detail.unstaged ?? [],
+      review: { decisions: localDecisions[id] ?? {} },
+    });
+  });
+  return out;
+}

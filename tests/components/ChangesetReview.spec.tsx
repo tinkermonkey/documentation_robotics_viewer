@@ -127,7 +127,7 @@ const row = (seq: number) =>
   screen.getAllByTestId('review-row').find((r) => r.getAttribute('data-seq') === String(seq))!;
 
 beforeEach(() => {
-  useLocalReviewStore.setState({ byChangeset: {}, unsupported: {} });
+  useLocalReviewStore.setState({ byChangeset: {}, unsupported: {}, blockersSeen: {} });
   localStorage.clear();
 });
 
@@ -333,8 +333,17 @@ describe('review — a delete still in use', () => {
     expect(await screen.findByTestId('change-blockers')).toHaveTextContent(/into ·\s*a · serves/);
     // Keep the other N leaves blocked deletes alone.
     expect(screen.getByTestId('review-keep-rest')).toBeDisabled();
+    // Picking (and arrowing between) options records nothing; Confirm does.
+    await user.click(screen.getByTestId('resolve-ask'));
     await user.click(screen.getByTestId('resolve-keep'));
+    expect(server.puts).toEqual([]);
+    await user.click(screen.getByTestId('resolve-confirm'));
     await waitFor(() => expect(server.puts).toEqual([[{ sequence: 3, verdict: 'keep' }]]));
+    // The links it was kept with are remembered, so a new one would re-open it.
+    expect(useLocalReviewStore.getState().blockersSeen[ID]['3']).toEqual([
+      'a::serves::application.applicationservice.data-loader',
+      'application.applicationservice.data-loader::uses::b',
+    ]);
 
     const apply = screen.getByTestId('changeset-apply-button');
     await waitFor(() => expect(apply).toBeEnabled());
@@ -344,6 +353,150 @@ describe('review — a delete still in use', () => {
     );
     await user.click(within(screen.getByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
     await waitFor(() => expect(server.commits).toEqual([{ drop: [], deleteBlockedLinks: [3] }]));
+  });
+});
+
+describe('review — a blocked delete: clearing, and a blocker that appears later', () => {
+  const blocked = (ids: string[]): ChangeRecord => ({
+    type: 'delete',
+    elementId: 'application.applicationservice.data-loader',
+    layerName: 'application',
+    sequenceNumber: 3,
+    before: { name: 'Data Loader', type: 'applicationservice' },
+    blockers: ids.map((relationshipId) => ({ relationshipId, direction: 'in' as const, otherElementId: 'a', predicate: 'serves' })),
+  });
+
+  it('clears a verdict with Clear verdict', async () => {
+    const server = serve({ changes: [blocked(['r1'])], revision: 4, review: { decisions: { '3': { verdict: 'drop', atRevision: 4 } } } });
+    const user = userEvent.setup();
+    renderReview(3);
+    await user.click(await screen.findByTestId('resolve-clear'));
+    await waitFor(() => expect(server.puts).toEqual([[{ sequence: 3, verdict: null }]]));
+  });
+
+  it('puts a kept delete back to "needs decision" when it gains a blocker', async () => {
+    useLocalReviewStore.setState({ blockersSeen: { [ID]: { '3': ['r1'] } } });
+    serve({ changes: [blocked(['r1', 'r2'])], revision: 4, review: { decisions: { '3': { verdict: 'keep', atRevision: 4 } } } });
+    renderReview();
+    expect(await screen.findByTestId('review-headline')).toHaveTextContent('1 of 1 need a decision');
+  });
+});
+
+describe('review — PUT ordering and rollback', () => {
+  it('serialises back-to-back PUTs in order and keeps both verdicts', async () => {
+    serve();
+    const arrived: number[] = [];
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    let review: ChangesetReview = { decisions: {} };
+    mswServer.use(
+      http.put('*/api/changesets/:id/review', async ({ request }) => {
+        const body = (await request.json()) as { decisions: DecisionInput[] };
+        arrived.push(body.decisions[0].sequence);
+        if (body.decisions[0].sequence === 13) await gate;
+        for (const d of body.decisions) {
+          review = {
+            decisions: { ...review.decisions, [String(d.sequence)]: { verdict: d.verdict!, atRevision: 38 } },
+            lastReviewedRevision: 38,
+          };
+        }
+        return HttpResponse.json(review);
+      }),
+      http.get('*/api/changesets/:id', ({ params }) =>
+        HttpResponse.json({ ...changesetDetail, id: params.id, status: 'staged', revision: 38, unstaged: [], review }),
+      ),
+    );
+    renderReview(13);
+    fireEvent.click(await screen.findByTestId('decide-keep'));
+    act(() => useUiStore.getState().selectChange(14));
+    fireEvent.click(await screen.findByTestId('decide-keep'));
+    // The second waits for the first.
+    await new Promise((r) => setTimeout(r, 50));
+    expect(arrived).toEqual([13]);
+    release();
+    await waitFor(() => expect(arrived).toEqual([13, 14]));
+    await waitFor(() => expect(screen.getByTestId('review-tally')).toHaveTextContent('2 kept'));
+  });
+
+  it('on a refused PUT restores only the verdict, keeping a refetch that landed meanwhile', async () => {
+    serve();
+    let release!: () => void;
+    const gate = new Promise<void>((r) => (release = r));
+    // Hold the refetch that follows the refusal, so we see what onError left.
+    let releaseRefetch!: () => void;
+    const refetchGate = new Promise<void>((r) => (releaseRefetch = r));
+    let putSettled = false;
+    mswServer.use(
+      http.put('*/api/changesets/:id/review', async () => {
+        await gate;
+        putSettled = true;
+        return HttpResponse.json({ error: 'not staged' }, { status: 409 });
+      }),
+      http.get('*/api/changesets/:id', async ({ params }) => {
+        if (putSettled) await refetchGate;
+        return HttpResponse.json({
+          ...changesetDetail, id: params.id, status: 'staged', revision: 38, unstaged: [], review: { decisions: {} },
+        });
+      }),
+    );
+    const { client } = renderReview(13);
+    fireEvent.click(await screen.findByTestId('decide-keep'));
+    await waitFor(() => expect(screen.getByTestId('review-tally')).toHaveTextContent('1 kept'));
+    // A websocket refetch lands while the PUT is in flight: DrBot restaged.
+    const key = ['getapichangesetschangesetId', ID];
+    act(() => {
+      const current = client.getQueryData<Record<string, unknown>>(key)!;
+      client.setQueryData(key, { ...current, revision: 40 });
+    });
+    release();
+    expect(await screen.findByTestId('review-decision-error')).toHaveTextContent('not staged');
+    const after = client.getQueryData<Record<string, unknown>>(key)!;
+    expect(after.revision).toBe(40);
+    expect((after.review as ChangesetReview).decisions['13']).toBeUndefined();
+    releaseRefetch();
+  });
+});
+
+describe('review — Ask DrBot', () => {
+  it("doesn't post a comment on an element this changeset adds, and says so", async () => {
+    const server = serve({
+      revision: 2,
+      changes: [
+        {
+          type: 'add',
+          elementId: 'application.applicationservice.brand-new-service',
+          layerName: 'application',
+          sequenceNumber: 1,
+          after: { name: 'Brand New Service', type: 'applicationservice', description: 'new' },
+        },
+      ],
+    });
+    let annotationPosts = 0;
+    mswServer.use(
+      http.post('*/api/annotations', () => {
+        annotationPosts++;
+        return HttpResponse.json({});
+      }),
+    );
+    const user = userEvent.setup();
+    // seq 1 adds an element the model doesn't have yet.
+    renderReview(1);
+    await user.type(await screen.findByTestId('decision-note'), 'why this name?');
+    expect(screen.getByTestId('ask-no-comment')).toBeInTheDocument();
+    await user.click(screen.getByTestId('decide-ask'));
+    await waitFor(() => expect(server.puts).toEqual([[{ sequence: 1, verdict: 'ask', note: 'why this name?' }]]));
+    expect(annotationPosts).toBe(0);
+  });
+
+  it('posts the note as a comment on a model element, and reports a failed post', async () => {
+    serve();
+    mswServer.use(http.post('*/api/annotations', () => HttpResponse.json({ error: 'nope' }, { status: 500 })));
+    const user = userEvent.setup();
+    // seq 14 updates Data Loader, which is in the model.
+    renderReview(14);
+    await user.type(await screen.findByTestId('decision-note'), 'which parsers?');
+    await user.click(screen.getByTestId('decide-ask'));
+    expect(await screen.findByTestId('ask-comment-error')).toHaveTextContent('verdict is recorded');
   });
 });
 
@@ -398,6 +551,8 @@ describe('review — an older dr CLI (no review API)', () => {
     await user.click(apply);
     await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
     await waitFor(() => expect(server.commits).toEqual([null]));
+    // Applied: the verdicts kept in this browser are cleared.
+    await waitFor(() => expect(useLocalReviewStore.getState().byChangeset[ID]).toBeUndefined());
   });
 
   it('falls back to this browser when PUT .../review is missing (404, no error body)', async () => {

@@ -16,12 +16,14 @@ import {
   landedByLayer,
   nameFromId,
   originLabel,
+  reviewCounts,
   reviewHeadline,
   toReviewItems,
   type ChangesetReview,
   type UnstagedChange,
 } from '@/apps/embedded/data/changesetReview';
 import { LAYER_ORDER } from '@/apps/embedded/ui/domain';
+import { revertDecisions } from '@/apps/embedded/data/useChangesetReview';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
 import changesetDetail from '../fixtures/changeset-detail.json';
 
@@ -68,10 +70,23 @@ describe('cancelPairs', () => {
     ]);
   });
 
-  it('folds an element add, its updates and its delete together', () => {
+  it('folds an element add and its delete; an update between stays a change to decide', () => {
     const changes = [el(0, 'add', A), el(1, 'update', A, { before: { name: 'x' }, after: { name: 'y' } }), el(2, 'delete', A)];
-    const [pair] = cancelPairs(changes);
-    expect(pair).toMatchObject({ addSeq: 0, deleteSeq: 2, betweenSeqs: [1], elementId: A });
+    const pairs = cancelPairs(changes);
+    expect(pairs).toEqual([expect.objectContaining({ addSeq: 0, deleteSeq: 2, elementId: A })]);
+    expect(toReviewItems(changes, pairs).map((i) => i.seq)).toEqual([1]);
+  });
+
+  it('never folds a delete that has blockers: it stays a blocked delete to resolve', () => {
+    const blockers = [{ relationshipId: `${A}::serves::${B}`, direction: 'out' as const, otherElementId: B, predicate: 'serves' }];
+    const changes = [el(1, 'add', A), rel(2, 'relationship-add', A, 'serves', B), el(3, 'delete', A, { blockers })];
+    expect(cancelPairs(changes)).toEqual([]);
+    const m = buildReviewModel({ changes });
+    expect(m.items.map((i) => [i.seq, i.weight])).toEqual([
+      [1, 'add'],
+      [2, 'link'],
+      [3, 'blocked'],
+    ]);
   });
 
   it('leaves a delete of a model element (no earlier add) alone', () => {
@@ -214,6 +229,44 @@ describe('buildReviewModel', () => {
     expect(both.ready).toBe(true);
   });
 
+  it('previews the cascade into a cancel-out pair member, as the server drops it', () => {
+    // Pair: link add 2 / link delete 3 of A→B; dropping add A (1) also leaves out link add 2.
+    const changes = [el(1, 'add', A), rel(2, 'relationship-add', A, 'serves', B), rel(3, 'relationship-delete', A, 'serves', B), el(4, 'add', C)];
+    const m = buildReviewModel({ changes, review: { decisions: { '1': { verdict: 'drop' }, '4': { verdict: 'keep' } } } });
+    expect(m.pairs.map((p) => [p.addSeq, p.deleteSeq])).toEqual([[2, 3]]);
+    expect(m.apply.dropped.map((d) => [d.item.seq, d.cascadedBy?.seq])).toEqual([
+      [1, undefined],
+      [2, 1],
+    ]);
+    // Pair members still aren't counted or decided.
+    expect(m.tally.total).toBe(2);
+  });
+
+  it('counts a link between two kept deletes once', () => {
+    const shared = { relationshipId: `${A}::serves::${B}`, predicate: 'serves' };
+    const m = buildReviewModel({
+      changes: [
+        el(1, 'delete', A, { blockers: [{ ...shared, direction: 'out', otherElementId: B }] }),
+        el(2, 'delete', B, { blockers: [{ ...shared, direction: 'in', otherElementId: A }] }),
+      ],
+      review: { decisions: { '1': { verdict: 'keep' }, '2': { verdict: 'keep' } } },
+    });
+    expect(m.apply.linksDeleted).toBe(1);
+  });
+
+  it('re-opens a kept delete that gained a blocker since it was kept here', () => {
+    const blockers = [
+      { relationshipId: 'x::serves::a', direction: 'in' as const, otherElementId: 'x', predicate: 'serves' },
+      { relationshipId: 'y::serves::a', direction: 'in' as const, otherElementId: 'y', predicate: 'serves' },
+    ];
+    const changes = [el(3, 'delete', A, { blockers })];
+    const review: ChangesetReview = { decisions: { '3': { verdict: 'keep' } } };
+    expect(buildReviewModel({ changes, review, acknowledgedBlockers: { '3': ['x::serves::a'] } }).stateOf(3)).toBe('undecided');
+    expect(buildReviewModel({ changes, review, acknowledgedBlockers: { '3': ['x::serves::a', 'y::serves::a'] } }).stateOf(3)).toBe('keep');
+    // Kept elsewhere (no record here): the keep counts.
+    expect(buildReviewModel({ changes, review, acknowledgedBlockers: {} }).stateOf(3)).toBe('keep');
+  });
+
   it('ignores a decision on a change revised after it', () => {
     const unstaged: UnstagedChange[] = [{ sequence: 0, removedAt: 12, rewritten: true, change: el(0, 'add', A) }];
     const review: ChangesetReview = { decisions: { '0': { verdict: 'keep', atRevision: 10 } }, lastReviewedRevision: 10 };
@@ -298,6 +351,40 @@ describe('groupReviewItems', () => {
   it('groups by layer in layer order', () => {
     const groups = groupReviewItems(m, 'layer', 'all', LAYER_ORDER);
     expect(groups.map((g) => g.layerId)).toEqual(['application', 'data-model', 'apm']);
+  });
+});
+
+describe('reviewCounts (the definition shared with the dr CLI list)', () => {
+  it('total excludes cancel-pair members; decided includes cascades; asked is a subset of decided', () => {
+    // 38 staged, 4 pairs → 30.
+    expect(reviewCounts({ changes: FIXTURE })).toEqual({ decided: 0, total: 30, asked: 0 });
+    const counts = reviewCounts({
+      changes: FIXTURE,
+      review: { decisions: { '7': { verdict: 'drop' }, '13': { verdict: 'ask' }, '0': { verdict: 'keep' } } },
+    });
+    // 7 dropped, 32 cascaded from it, 13 asked, 0 kept.
+    expect(counts).toEqual({ decided: 4, total: 30, asked: 1 });
+  });
+
+  it('counts a delete with blockers (not a pair member) in total', () => {
+    const blockers = [{ relationshipId: 'r', direction: 'in' as const, otherElementId: B, predicate: 'serves' }];
+    expect(reviewCounts({ changes: [el(1, 'add', A), el(3, 'delete', A, { blockers })] }).total).toBe(2);
+    expect(reviewCounts({ changes: [el(1, 'add', A), el(3, 'delete', A)] }).total).toBe(0);
+  });
+});
+
+describe('revertDecisions', () => {
+  it('undoes only the given verdicts, restoring what was there before', () => {
+    const previous: ChangesetReview = { decisions: { '1': { verdict: 'keep', atRevision: 3 } }, lastReviewedRevision: 3 };
+    const current: ChangesetReview = {
+      decisions: { '1': { verdict: 'drop', atRevision: 5 }, '2': { verdict: 'ask', atRevision: 5 }, '4': { verdict: 'keep', atRevision: 5 } },
+    };
+    expect(
+      revertDecisions(current, previous, [
+        { sequence: 1, verdict: 'drop' },
+        { sequence: 2, verdict: 'ask' },
+      ]),
+    ).toEqual({ decisions: { '1': { verdict: 'keep', atRevision: 3 }, '4': { verdict: 'keep', atRevision: 5 } }, lastReviewedRevision: 5 });
   });
 });
 

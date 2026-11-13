@@ -108,12 +108,13 @@ export interface ReviewItem {
   record: ChangeRecord;
 }
 
-/** An add and a later delete of the same element or link: nothing lands. */
+/**
+ * An add and a later delete of the same element or link, the delete with no
+ * blockers: nothing lands, so neither needs a decision.
+ */
 export interface CancelPair {
   addSeq: number;
   deleteSeq: number;
-  /** Updates of the element between the two, which cancel with them. */
-  betweenSeqs: number[];
   elementId: string;
   label: string;
 }
@@ -246,14 +247,17 @@ function linkOf(record: ChangeRecord): ReviewLink | undefined {
 }
 
 /**
- * The add-then-delete pairs in a changeset: an `add` (or `relationship-add`)
- * followed later by a `delete` (or `relationship-delete`) of the same id. The
- * element's updates between them cancel with them.
+ * The add-then-delete pairs in a changeset (the definition the dr CLI's review
+ * counts share): an `add` (or `relationship-add`) and a later `delete` (or
+ * `relationship-delete`) of the same elementId, both staged, where the delete
+ * has no blockers. A delete WITH blockers is never folded: the server checks
+ * every staged delete's blockers at a reviewed commit, so it must stay a
+ * change the reviewer can see and resolve. Updates in between are ordinary
+ * changes (they count, and are decided like any other).
  */
 export function cancelPairs(changes: ChangeRecord[], nameOf: NameOf = () => undefined): CancelPair[] {
   const sorted = [...changes].sort((a, b) => (a.sequenceNumber ?? 0) - (b.sequenceNumber ?? 0));
   const openAdds = new Map<string, number>();
-  const updates = new Map<string, number[]>();
   const pairs: CancelPair[] = [];
   for (const c of sorted) {
     const id = c.elementId;
@@ -262,21 +266,24 @@ export function cancelPairs(changes: ChangeRecord[], nameOf: NameOf = () => unde
     const kind = changeKind(c);
     if (kind === 'add' || kind === 'link-add') {
       openAdds.set(id, seq);
-      updates.set(id, []);
-    } else if (kind === 'update') {
-      if (openAdds.has(id)) updates.get(id)!.push(seq);
-    } else {
+    } else if (kind === 'delete' || kind === 'link-delete') {
       const addSeq = openAdds.get(id);
       if (addSeq === undefined) continue;
       openAdds.delete(id);
+      if (Array.isArray(c.blockers) && c.blockers.length > 0) continue;
       const link = kind === 'link-delete' ? linkOf(c) : undefined;
       const label = link
         ? `${nameOf(link.source) ?? nameFromId(link.source)} ${link.predicate} ${nameOf(link.target) ?? nameFromId(link.target)}`
         : (nameOf(id) ?? asString(c.before?.name) ?? nameFromId(id));
-      pairs.push({ addSeq, deleteSeq: seq, betweenSeqs: updates.get(id) ?? [], elementId: id, label });
+      pairs.push({ addSeq, deleteSeq: seq, elementId: id, label });
     }
   }
   return pairs;
+}
+
+/** The sequence numbers cancel-out pairs fold away. */
+export function pairMembers(pairs: CancelPair[]): Set<number> {
+  return new Set(pairs.flatMap((p) => [p.addSeq, p.deleteSeq]));
 }
 
 /**
@@ -289,7 +296,7 @@ export function toReviewItems(
   pairs: CancelPair[],
   nameOf: NameOf = () => undefined,
 ): ReviewItem[] {
-  const cancelled = new Set(pairs.flatMap((p) => [p.addSeq, p.deleteSeq, ...p.betweenSeqs]));
+  const cancelled = pairMembers(pairs);
   const addedIds = new Set(
     changes.filter((c) => changeKind(c) === 'add' && c.elementId).map((c) => c.elementId as string),
   );
@@ -644,6 +651,13 @@ export interface ReviewModelInput {
   unstaged?: UnstagedChange[];
   review?: ChangesetReview;
   nameOf?: NameOf;
+  /**
+   * Per delete sequence (as a string), the blocker relationship ids the delete
+   * had when this browser kept it ("Delete the links too" covers those). A kept
+   * delete with a blocker outside its list counts as undecided. No entry (kept
+   * elsewhere, or omitted): the keep counts.
+   */
+  acknowledgedBlockers?: Record<string, string[]>;
 }
 
 export interface ReviewModel {
@@ -663,6 +677,10 @@ export interface ReviewModel {
   stateOf: (seq: number) => ItemState;
   /** Element names: the model's, then the changeset's own adds. */
   nameOf: NameOf;
+  /** Whether the current model has the element (not only this changeset's add). */
+  inModel: (dottedId: string) => boolean;
+  /** A cancel-out pair member, as an item (for the cascade preview). */
+  pairItem: (seq: number) => ReviewItem | undefined;
 }
 
 const ZERO_KINDS = (): Record<ChangeKind, number> => ({
@@ -678,6 +696,7 @@ export function buildReviewModel({
   unstaged = [],
   review,
   nameOf: modelNameOf = () => undefined,
+  acknowledgedBlockers,
 }: ReviewModelInput): ReviewModel {
   // The changeset's own adds name elements the model doesn't have yet.
   const addedNames = new Map<string, string>();
@@ -690,15 +709,26 @@ export function buildReviewModel({
   const pairs = cancelPairs(changes, nameOf);
   const items = toReviewItems(changes, pairs, nameOf);
   const bySeq = new Map(items.map((i) => [i.seq, i]));
+  // Pair members aren't reviewed, but the server's drop cascade reaches them
+  // too (a link add to a dropped element is left out even when a later link
+  // delete would have cancelled it), so the preview includes them.
+  const members = pairMembers(pairs);
+  const pairItems = toReviewItems(changes, [], nameOf).filter((i) => members.has(i.seq));
   const revisedMap = revisions(unstaged);
 
   const decisions = new Map<number, ReviewDecision>();
   for (const item of items) {
     const d = effectiveDecision(item.seq, review, revisedMap);
-    if (d) decisions.set(item.seq, d);
+    if (!d) continue;
+    // "Delete the links too" covers the links the reviewer saw. A delete that
+    // has gained a blocker since (a refetch, a refused commit) needs deciding again.
+    const seen = acknowledgedBlockers?.[String(item.seq)];
+    if (d.verdict === 'keep' && seen && item.blockers.some((b) => !seen.includes(b.relationshipId))) continue;
+    decisions.set(item.seq, d);
   }
   const droppedSeqs = new Set([...decisions].filter(([, d]) => d.verdict === 'drop').map(([s]) => s));
-  const cascade = cascadeOfDrops(items, droppedSeqs);
+  const cascade = cascadeOfDrops([...items, ...pairItems], droppedSeqs);
+  const pairBySeq = new Map(pairItems.map((i) => [i.seq, i]));
   const conflicts = dropConflicts(items, droppedSeqs);
 
   const stateOf = (seq: number): ItemState => {
@@ -725,15 +755,17 @@ export function buildReviewModel({
   });
   const landingByKind = ZERO_KINDS();
   for (const i of landing) landingByKind[i.kind]++;
-  const dropped: DroppedEntry[] = items
+  const dropped: DroppedEntry[] = [...items, ...pairItems.filter((i) => cascade.has(i.seq))]
     .filter((i) => droppedSeqs.has(i.seq) || cascade.has(i.seq))
+    .sort((a, b) => a.seq - b.seq)
     .map((i) => {
       const c = cascade.get(i.seq);
       return c ? { item: i, cascadedBy: bySeq.get(c.bySeq) } : { item: i, note: decisions.get(i.seq)?.note };
     });
   const blockedKept = landing.filter((i) => i.blockers.length > 0 && stateOf(i.seq) === 'keep');
   const deleteBlockedLinks = blockedKept.map((i) => i.seq);
-  const linksDeleted = blockedKept.reduce((n, i) => n + i.blockers.length, 0);
+  // Distinct links: one between two kept deletes is deleted once.
+  const linksDeleted = new Set(blockedKept.flatMap((i) => i.blockers.map((b) => b.relationshipId))).size;
   const drop = [...droppedSeqs].sort((a, b) => a - b);
   // Always both lists: with a body the server enforces blockers (a delete still
   // in use and not in deleteBlockedLinks is refused) instead of silently
@@ -753,7 +785,32 @@ export function buildReviewModel({
     ready: tally.undecided === 0 && tally.asked === 0 && conflicts.length === 0 && landing.length > 0,
     stateOf,
     nameOf,
+    inModel: (id) => modelNameOf(id) !== undefined,
+    pairItem: (seq) => pairBySeq.get(seq),
   };
+}
+
+// ─── Counts shared with the dr CLI's list ─────────────────────────────────────
+
+/** `GET /api/changesets` → `review` for one changeset. */
+export interface ReviewCounts {
+  decided: number;
+  total: number;
+  asked: number;
+}
+
+/**
+ * The review counts by the definition the viewer and the dr CLI share:
+ * total = staged changes minus cancel-pair members (an add / relationship-add
+ * and a later delete / relationship-delete of the same elementId, the delete
+ * without blockers); decided = changes with a verdict that still counts, plus
+ * changes cascaded from a dropped add; asked = the decided ones whose verdict
+ * is ask.
+ */
+export function reviewCounts(input: ReviewModelInput | ReviewModel): ReviewCounts {
+  const model = 'tally' in input ? input : buildReviewModel(input);
+  const { decided, total, asked } = model.tally;
+  return { decided, total, asked };
 }
 
 // ─── Grouping + filtering ─────────────────────────────────────────────────────
