@@ -272,6 +272,11 @@ export function ChangeInspector({
       {staged && (
         <Section label="Decision" testId="change-decision">
           <DecisionButtons item={item} model={model} review={review} note={note} />
+          {review.error && (
+            <div role="alert" className="drv-alert" data-testid="review-decision-error">
+              Couldn&apos;t record the verdict: {review.error}
+            </div>
+          )}
           {!review.canDrop && (
             <span className="drv-muted" style={{ fontSize: 12 }} data-testid="drop-unavailable">
               Drop needs a newer dr CLI: this one applies every change in the changeset.

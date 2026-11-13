@@ -1,12 +1,12 @@
 // @vitest-environment happy-dom
 /**
- * ChangesetCanvas.spec.tsx — the changeset diff list + the inspector summary.
+ * ChangesetCanvas.spec.tsx — a committed changeset's page + the inspector summary.
  *
  * Renders the REAL ChangesetCanvas + ChangesetInspector with the REAL data
- * hooks against the MSW-served changeset-detail fixture. We assert op-coded
- * rows (add/update/delete labels + classes), the StatTiles (additions /
- * modifications / deletions), the status pill, and that a row expands into a
- * side-by-side diff.
+ * hooks against the MSW-served changeset-detail fixture (committed). We assert
+ * the read-only review list (weight groups, cancel-out pairs, the changed
+ * field), the applied result, the StatTiles, the status pill and the Impact
+ * tab. The staged review flows are in ChangesetReview.spec.tsx.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -48,53 +48,29 @@ describe('ChangesetCanvas — header + op rows', () => {
     expect(screen.getByTestId('page-header-actions')).toHaveTextContent('38 changes');
   });
 
-  it('renders op-coded rows with ADD / MOD / DEL labels and op classes', async () => {
+  it('lists the committed changeset read-only: 30 changes to review, 4 pairs that cancel out', async () => {
     renderCanvas();
 
-    // Wait for the detail to load and rows to render.
     await screen.findByTestId('changeset-list');
-    const rows = await screen.findAllByTestId('changeset-row');
-    expect(rows).toHaveLength(38);
-
-    // Op buckets fold relationship-add → add and relationship-delete → delete.
-    // The fixture has 12 add + 15 relationship-add = 27 add, 7 update, and
-    // 4 relationship-delete = 4 delete (no plain deletes) — reconciling with
-    // the stats {additions: 27, modifications: 7, deletions: 4}.
-    const byOp = (op: string) => rows.filter((r) => r.getAttribute('data-op') === op);
-    expect(byOp('add')).toHaveLength(27);
-    expect(byOp('update')).toHaveLength(7);
-    expect(byOp('delete')).toHaveLength(4);
-
-    // Each op carries its short badge label.
-    const addBadge = within(byOp('add')[0]).getByTestId('changeset-op-badge');
-    expect(addBadge).toHaveTextContent('ADD');
-    const updateBadge = within(byOp('update')[0]).getByTestId('changeset-op-badge');
-    expect(updateBadge).toHaveTextContent('MOD');
-    const deleteBadge = within(byOp('delete')[0]).getByTestId('changeset-op-badge');
-    expect(deleteBadge).toHaveTextContent('DEL');
+    const rows = await screen.findAllByTestId('review-row');
+    // 38 changes, of which 4 link adds are removed again later (8 changes cancel out).
+    expect(rows).toHaveLength(30);
+    expect(screen.getByTestId('review-cancel-out')).toHaveTextContent('4 pairs');
+    // Grouped by review weight: routine updates, new elements, new links.
+    const groups = screen.getAllByTestId('review-group').map((g) => g.getAttribute('data-group'));
+    expect(groups).toEqual(['routine', 'add', 'link']);
+    // A committed changeset shows what landed, and offers no decisions.
+    expect(screen.getByTestId('applied-result')).toHaveTextContent('30 changes in the model');
+    expect(screen.queryByTestId('review-summary')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('review-filter')).not.toBeInTheDocument();
   });
 
-  it('expands a row with before/after into a side-by-side diff', async () => {
-    const user = userEvent.setup();
+  it('marks the changed field of an update and its op', async () => {
     renderCanvas();
-
-    await screen.findByTestId('changeset-list');
-    const rows = await screen.findAllByTestId('changeset-row');
-
-    // An update row has both before + after, so it expands into a diff.
-    const updateRow = rows.find((r) => r.getAttribute('data-op') === 'update')!;
-    // The row is itself the expandable button (role="button").
-    const toggle = within(updateRow).getByRole('button');
-    expect(toggle).toBeInTheDocument();
-    await user.click(toggle);
-
-    // The expanded panel renders the Heimdall SideBySideDiff (role="table").
-    // (Its row list is virtualized — happy-dom reports 0 viewport height — so we
-    // assert the diff container mounts rather than counting rendered lines.)
-    await waitFor(() => {
-      const diff = updateRow.querySelector('.side-by-side-diff');
-      expect(diff).not.toBeNull();
-    });
+    const row = (await screen.findAllByTestId('review-row')).find((r) => r.getAttribute('data-seq') === '0')!;
+    expect(within(row).getByTestId('review-op-chip')).toHaveTextContent('update');
+    expect(row.querySelector('.drv-field')).toHaveTextContent('attributes.droppedAttributesCount');
+    expect(row).toHaveTextContent('type only');
   });
 });
 
@@ -152,6 +128,7 @@ describe('ChangesetCanvas — Impact tab', () => {
     expect(within(impact).getAllByRole('button', { name: /· added/ }).length).toBeGreaterThan(0);
     expect(within(impact).getAllByRole('button', { name: /· modified/ }).length).toBeGreaterThan(0);
 
+    // A committed changeset's first tab is "Changes" (a staged one's is "Review").
     await user.click(within(screen.getByTestId('changeset-tab-control')).getByRole('radio', { name: 'Changes' }));
     expect(await screen.findByTestId('changeset-list')).toBeInTheDocument();
   });
