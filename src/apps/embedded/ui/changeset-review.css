@@ -463,3 +463,20 @@
   font-size: 13px;
   color: rgb(var(--canvas-fg-1));
 }
+
+/*
+ * Heimdall's dark-canvas violet and neutral chips (status-violet on a 12%
+ * tint) and its link button (accent-primary-deep) fall below WCAG AA on the
+ * dark canvas; the review UI uses the semantic foregrounds instead.
+ */
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .chip--violet {
+  color: rgb(var(--semantic-violet-fg));
+}
+
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .chip--neutral {
+  color: rgb(var(--canvas-fg-2));
+}
+
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--link {
+  color: rgb(var(--accent-primary));
+}

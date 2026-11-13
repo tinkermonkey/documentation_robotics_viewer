@@ -243,7 +243,7 @@ export function ChangeInspector({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }} data-testid="change-inspector">
+    <div className="drv-ci" style={{ display: 'flex', flexDirection: 'column' }} data-testid="change-inspector">
       <div className="drv-ci-section">
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <Button variant="link" size="sm" onClick={() => selectChange(null)} data-testid="change-inspector-back">

@@ -43,6 +43,7 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
       onClose={onClose}
       title={`Apply ${name}?`}
       size="lg"
+      className="drv-review-modal"
       data-testid="apply-confirm"
       footer={
         <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
