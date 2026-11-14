@@ -93,12 +93,12 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} data-testid="apply-confirm-links">
             <span className="drv-eyebrow">Deleted with their elements</span>
             <span style={{ fontSize: 12.5, color: 'rgb(var(--canvas-fg-2))' }}>
-              {plural(plan.linksDeleted, 'link')} that still use{' '}
+              {plural(plan.linksDeleted, 'link')} that still {plan.linksDeleted === 1 ? 'uses' : 'use'}{' '}
               {plan.landing
                 .filter((i) => plan.deleteBlockedLinks.includes(i.seq))
                 .map((i) => i.name)
                 .join(', ')}{' '}
-              are deleted with {plan.deleteBlockedLinks.length === 1 ? 'it' : 'them'}.
+              {plan.linksDeleted === 1 ? 'is' : 'are'} deleted with {plan.deleteBlockedLinks.length === 1 ? 'it' : 'them'}.
             </span>
           </div>
         )}

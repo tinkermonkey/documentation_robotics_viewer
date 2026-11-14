@@ -11,11 +11,14 @@ import {
   cancelPairs,
   cascadeOfDrops,
   changedPaths,
+  conflictPartners,
   groupReviewItems,
   kindCountsLabel,
   landedByLayer,
   nameFromId,
+  netStats,
   originLabel,
+  passesFilter,
   reviewCounts,
   reviewHeadline,
   toReviewItems,
@@ -94,6 +97,23 @@ describe('cancelPairs', () => {
   });
 });
 
+describe('netStats', () => {
+  it('takes each cancel-out pair off additions and deletions, as the review counts do', () => {
+    // The dr CLI's stats for: add A, update B, add C, delete C (a pair).
+    const changes = [el(0, 'add', A), el(1, 'update', B), el(2, 'add', C), el(3, 'delete', C)];
+    expect(netStats({ additions: 2, modifications: 1, deletions: 1 }, changes)).toEqual({
+      additions: 1,
+      modifications: 1,
+      deletions: 0,
+    });
+  });
+
+  it('leaves the stats alone when nothing cancels out', () => {
+    const stats = { additions: 1, modifications: 0, deletions: 1 };
+    expect(netStats(stats, [el(0, 'add', A), el(1, 'delete', B)])).toEqual(stats);
+  });
+});
+
 describe('toReviewItems', () => {
   const pairs = cancelPairs(FIXTURE);
   const items = toReviewItems(FIXTURE, pairs);
@@ -136,7 +156,7 @@ describe('toReviewItems', () => {
     const blockers = [{ relationshipId: `${B}::serves::${A}`, direction: 'in' as const, otherElementId: B, predicate: 'serves' }];
     const out = toReviewItems([el(0, 'delete', A, { blockers }), el(1, 'delete', C)], []);
     expect(out.map((i) => i.weight)).toEqual(['blocked', 'removal']);
-    expect(out[0].chips).toContain('1 link still use it');
+    expect(out[0].chips).toContain('1 link still uses it');
   });
 
   it('keeps an identity-changing update out of the bulk keep', () => {
@@ -220,6 +240,12 @@ describe('buildReviewModel', () => {
     });
     expect(m.conflicts).toEqual([{ linkSeq: 3, deleteSeq: 1 }]);
     expect(m.ready).toBe(false);
+    // Both sides are decided, yet both stay under Needs decision, each naming the other.
+    expect(m.items.filter((i) => passesFilter(m, i, 'needs')).map((i) => i.seq)).toEqual([1, 3]);
+    expect([...conflictPartners(m.conflicts)]).toEqual([
+      [3, [1]],
+      [1, [3]],
+    ]);
     // Dropping the element delete too resolves it.
     const both = buildReviewModel({
       changes: [...changes, el(4, 'update', C, { before: { description: 'a' }, after: { description: 'b' } })],

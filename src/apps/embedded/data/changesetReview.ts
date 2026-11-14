@@ -281,6 +281,24 @@ export function cancelPairs(changes: ChangeRecord[], nameOf: NameOf = () => unde
   return pairs;
 }
 
+/**
+ * The changeset's add / modify / delete totals with cancel-out pairs taken
+ * out, so they agree with the review's own counts. The dr CLI's `stats` count
+ * both halves of a pair (one add-kind, one delete-kind), which then read as
+ * an addition and a deletion that never land.
+ */
+export function netStats(
+  stats: { additions: number; modifications: number; deletions: number },
+  changes: ChangeRecord[],
+): { additions: number; modifications: number; deletions: number } {
+  const n = cancelPairs(changes).length;
+  return {
+    additions: Math.max(0, stats.additions - n),
+    modifications: stats.modifications,
+    deletions: Math.max(0, stats.deletions - n),
+  };
+}
+
 /** The sequence numbers cancel-out pairs fold away. */
 export function pairMembers(pairs: CancelPair[]): Set<number> {
   return new Set(pairs.flatMap((p) => [p.addSeq, p.deleteSeq]));
@@ -380,7 +398,7 @@ export function toReviewItems(
         if (n > 0) chips.push(plural(n, 'link'));
         else chips.push('no links');
       }
-      if (blockers.length > 0) chips.push(`${plural(blockers.length, 'link')} still use it`);
+      if (blockers.length > 0) chips.push(`${plural(blockers.length, 'link')} still ${blockers.length === 1 ? 'uses' : 'use'} it`);
       return {
         seq,
         kind,
@@ -471,6 +489,20 @@ export function cascadeOfDrops(items: ReviewItem[], dropped: Set<number>): Map<n
 export interface DropConflict {
   linkSeq: number;
   deleteSeq: number;
+}
+
+/**
+ * For each change in a drop conflict, the other side of it: a dropped link
+ * delete maps to the element delete it blocks, and that delete to the link(s).
+ */
+export function conflictPartners(conflicts: DropConflict[]): Map<number, number[]> {
+  const out = new Map<number, number[]>();
+  const add = (seq: number, other: number) => out.set(seq, [...(out.get(seq) ?? []), other]);
+  for (const c of conflicts) {
+    add(c.linkSeq, c.deleteSeq);
+    add(c.deleteSeq, c.linkSeq);
+  }
+  return out;
 }
 
 export function dropConflicts(items: ReviewItem[], dropped: Set<number>): DropConflict[] {
@@ -840,7 +872,9 @@ const WEIGHT_GROUPS: { key: ReviewWeight; title: string; hint: string }[] = [
 /** Whether an item passes the Needs decision / Decided / All filter. */
 export function passesFilter(model: ReviewModel, item: ReviewItem, filter: ShowFilter): boolean {
   const s = model.stateOf(item.seq);
-  if (filter === 'needs') return s === 'undecided' || s === 'ask';
+  // A conflict holds Apply like an open decision, so both sides show here.
+  if (filter === 'needs')
+    return s === 'undecided' || s === 'ask' || model.conflicts.some((c) => c.linkSeq === item.seq || c.deleteSeq === item.seq);
   if (filter === 'decided') return s !== 'undecided';
   if (filter === 'since') {
     const d = model.diff;

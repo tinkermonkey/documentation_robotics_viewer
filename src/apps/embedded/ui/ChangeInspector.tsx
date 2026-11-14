@@ -169,7 +169,7 @@ function DecisionButtons({
     return (
       <fieldset style={{ margin: 0, border: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
         <legend className="drv-text-block" style={{ marginBottom: 8 }}>
-          {plural(item.blockers.length, 'link')} still use it: {into} into it, {out} out of it. Choose what happens to
+          {plural(item.blockers.length, 'link')} still {item.blockers.length === 1 ? 'uses' : 'use'} it: {into} into it, {out} out of it. Choose what happens to
           them; the delete applies only once you have.
         </legend>
         {options
