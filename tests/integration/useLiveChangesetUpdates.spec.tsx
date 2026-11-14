@@ -52,6 +52,7 @@ describe('useLiveChangesetUpdates', () => {
     expect(invalidate.mock.calls.map(([f]) => f?.queryKey)).toEqual([
       ['getapichangesets'],
       ['getapichangesetschangesetId'],
+      ['getapitier1'],
     ]);
 
     invalidate.mockClear();

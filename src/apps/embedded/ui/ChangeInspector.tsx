@@ -11,7 +11,8 @@
  *   links it would take listed.
  * - A dropped add warns which changes go with it; a change left out with a
  *   dropped add says by which.
- * - Then: before/after of each changed field, source reference, the other
+ * - Then: before/after of each changed field, who decided it (Tier 0 rule,
+ *   Tier 1 model with its probabilities, or the agent), source reference, the other
  *   changes in this changeset that touch the element (click to open), the
  *   full JSON diff on demand, and the element's comments.
  */
@@ -21,8 +22,9 @@ import { Button, Chip, SideBySideDiff, TextArea } from '@tinkermonkey/heimdall-u
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { AnnotationsSection } from './AnnotationsSection';
-import { LayerSwatch, OpChip, VerdictChip, plural } from './reviewParts';
+import { LayerSwatch, OpChip, OriginBadge, OriginDetails, VerdictChip, plural } from './reviewParts';
 import { buildDiffLines } from '../data/changesets';
+import { originOf, originTitle } from '../data/tier1';
 import { useCreateAnnotation } from '../data/useAnnotations';
 import type { ChangesetReviewState } from '../data/useChangesetReview';
 import {
@@ -290,6 +292,7 @@ export function ChangeInspector({
       ((i.link && (ends.has(i.link.source) || ends.has(i.link.target))) || (!i.link && ends.has(i.elementId))),
   );
   const source = sourceOf(item);
+  const origin = originOf(item.record);
   const diffLines = showJson ? buildDiffLines(item.record) : [];
 
   const saveNote = () => {
@@ -319,6 +322,7 @@ export function ChangeInspector({
         </span>
         <div className="drv-pills">
           <OpChip item={item} />
+          <OriginBadge origin={origin} />
           <VerdictChip state={state} />
           {revised && <Chip variant="violet">revised since your review</Chip>}
         </div>
@@ -394,6 +398,13 @@ export function ChangeInspector({
       <Section label={item.kind === 'update' ? 'What changes' : item.link ? 'Link' : 'Description'}>
         <WhatChanges item={item} />
       </Section>
+
+      {origin && (
+        <Section label="Decided by" testId="change-origin">
+          <span style={{ fontSize: 13, color: 'rgb(var(--canvas-fg-1))' }}>{originTitle(origin.by)}</span>
+          <OriginDetails origin={origin} />
+        </Section>
+      )}
 
       {source && (
         <Section label="Source">

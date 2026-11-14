@@ -49,6 +49,12 @@ export interface ChangeRecord {
   sequenceNumber?: number;
   /** `delete` changes only, from a dr CLI with changeset review. */
   blockers?: DeleteBlocker[];
+  /**
+   * Who decided the change (codebase_extract's Tier 0 / Tier 1 / the agent).
+   * Absent on hand-made changes and from an older dr CLI. Read it through
+   * `originOf` (data/tier1.ts), which checks the shape.
+   */
+  origin?: unknown;
   [key: string]: unknown;
 }
 

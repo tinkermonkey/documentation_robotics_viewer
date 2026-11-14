@@ -29,6 +29,7 @@ import {
 import { useUiStore } from './uiStore';
 import { layerColor, layerLabel } from './domain';
 import { ChangeInspector } from './ChangeInspector';
+import { ErrorBoundary } from './ErrorBoundary';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
@@ -209,13 +210,14 @@ export function ChangesetInspector() {
           aria-label="Selected change"
           style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}
         >
-          <ChangeInspector
-            key={`${detail.id}:${item.seq}`}
-            item={item}
-            model={review.model}
-            review={review}
-            staged={detail.status === 'staged'}
-          />
+          <ErrorBoundary key={`${detail.id}:${item.seq}`} what="this change">
+            <ChangeInspector
+              item={item}
+              model={review.model}
+              review={review}
+              staged={detail.status === 'staged'}
+            />
+          </ErrorBoundary>
         </div>
       ) : !changesetId || !detail ? (
         <div

@@ -79,6 +79,10 @@ export const handlers = [
     return HttpResponse.json({ ...changesetDetail, id: params.id });
   }),
 
+  // An older dr CLI has no /api/tier1: the Tier 1 panel stays hidden. Tests
+  // of the panel serve a body from fixtures/tier1.json instead.
+  http.get('*/api/tier1', () => new HttpResponse('404 Not Found', { status: 404 })),
+
   // ── Annotations: list (filtered by elementId) ─────────────────────────────
   http.get('*/api/annotations', ({ request }) => {
     const url = new URL(request.url);

@@ -34,3 +34,12 @@ curl -s "$BASE/api/changesets/$FIRST" | python3 -m json.tool > tests/fixtures/ch
 If counts change (nodes/links/changesets), update the corresponding assertions in
 `tests/unit/*.spec.ts` (they intentionally hard-assert the live numbers so a
 fixture drift or a transform regression is caught loudly).
+
+## Not captured
+
+`tier1.json` holds `GET /api/tier1` bodies keyed by state (`off`, `on`,
+`onNearCap`, `capped`, `noCredentials`, `misconfigured`). `off`, `onNearCap`,
+`capped` and `noCredentials` are the response examples in `docs/api-spec.yaml`
+(taken from dr PR #1134 at dca7bf0f); `on` and `misconfigured` are written to
+the same schema. Credentials name where
+a key comes from (an environment variable or `tier1.json`), never its value.

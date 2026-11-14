@@ -24,6 +24,7 @@
 
 import { layerLabel } from '../ui/domain';
 import { normalizeOp, type ChangeRecord, type DeleteBlocker } from './changesets';
+import { passesOriginFilter, type OriginFilter } from './tier1';
 
 // ─── Wire types (CONTRACT §1) ─────────────────────────────────────────────────
 
@@ -884,14 +885,18 @@ export function passesFilter(model: ReviewModel, item: ReviewItem, filter: ShowF
   return true;
 }
 
-/** The shown items in groups, empty groups left out. */
+/**
+ * The shown items in groups, empty groups left out. `origin` narrows them to
+ * one decider (data/tier1.ts); "Keep N routine" then keeps only those shown.
+ */
 export function groupReviewItems(
   model: ReviewModel,
   groupBy: GroupBy,
   filter: ShowFilter,
   layerOrder: readonly string[] = [],
+  origin: OriginFilter = 'all',
 ): ReviewGroup[] {
-  const shown = model.items.filter((i) => passesFilter(model, i, filter));
+  const shown = model.items.filter((i) => passesFilter(model, i, filter) && passesOriginFilter(i.record, origin));
   if (groupBy === 'sequence') {
     return shown.length ? [{ key: 'sequence', title: 'In staging order', items: shown }] : [];
   }
@@ -911,7 +916,13 @@ export function groupReviewItems(
     const group: ReviewGroup = { key: g.key, title: g.title, hint: g.hint, items: groupItems };
     if (g.key === 'routine') {
       const bulk = model.items
-        .filter((i) => i.weight === 'routine' && i.bulkEligible && model.stateOf(i.seq) === 'undecided')
+        .filter(
+          (i) =>
+            i.weight === 'routine' &&
+            i.bulkEligible &&
+            model.stateOf(i.seq) === 'undecided' &&
+            passesOriginFilter(i.record, origin),
+        )
         .map((i) => i.seq);
       if (bulk.length > 0) group.bulkSeqs = bulk;
     }
