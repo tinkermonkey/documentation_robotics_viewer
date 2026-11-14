@@ -44,6 +44,7 @@ src/
 │   │   ├── ChangesetInbox.tsx ChangesetReviewPanel.tsx ChangeInspector.tsx ApplyReview.tsx  # per-change review
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
+│   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
@@ -57,6 +58,7 @@ src/
 │   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   ├── changesetImpact.ts # changeset over the model → multi-origin reach subgraph + per-layer blast radius
 │   │   ├── changesetReview.ts useChangesetReview.ts  # pure review model + verdict hook (server or localStorage)
+│   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
 │   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
@@ -136,6 +138,9 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   `POST /api/changesets/:id/commit` (optional `{ drop, deleteBlockedLinks }` → `dropped`, `linksDeleted`) /
   `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
   validation or deletes still in use — body `{ error, blockers? }`)
+- `GET /api/tier1` → Tier 1 state + this month's spend (`Tier1Status`; read-only, never a credential value; an
+  older dr CLI answers 404). Each change in `GET /api/changesets/:id` (and `unstaged[].change`) may carry
+  `origin: { by: tier0|tier1|agent, rule?, provider?, model?, upstream?, p?: { layer, type }, confirmed? }`
 - Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
   `GET/POST /api/annotations/:id/replies`
 
@@ -260,6 +265,21 @@ For local dev use `dr visualize --no-auth`.
   `useLiveChangesetUpdates` (`data/useChangesets.ts`) refetches changesets on the server's
   `changesets.updated` broadcast (any write under `documentation-robotics/changesets/`, every verdict, Apply
   and Discard). Styles: `ui/changeset-review.css` (tokens + Heimdall `--semantic-*` chip colours only).
+- **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`
+  (Tier 0 rule / Tier 1 decision model / the agent). The wire types are the generated OpenAPI schemas, aliased
+  in `data/tier1.ts` (one place to adjust when the contract moves); read an origin through `originOf`, which
+  checks the shape. A review row shows an outlined badge under its op chip (`OriginBadge` in `reviewParts.tsx`:
+  Tier 0 neutral, Tier 1 cyan dashed, Agent violet), with rule / provider / model / upstream / probabilities /
+  confirmation in a `RichTooltip` on hover; the `ChangeInspector` repeats them in a "Decided by" section (the
+  keyboard path: the badge sits inside the row button). A "Decided by" `SegmentedControl` (All / Tier 0 /
+  Tier 1 / Agent / No origin, with counts) filters the rows and the since-your-review cards — offered only when
+  some change carries an origin; "Keep N routine" then keeps only the shown ones. `Tier1Panel` (in the inbox,
+  above the history) reads `GET /api/tier1` via `useTier1`: on / capped / no-credentials / misconfigured get a
+  card (state, provider + model, spend bar against the cap — amber with the 80% warning on `nearCap`, rose at
+  the cap — reset date, spend per source, where each credential comes from, cache, warnings, `reason`); off
+  is one folded line. It offers no action: the server's `note` names the `dr analyzer tier1` command. A 404
+  (older dr CLI), 405/501 or a non-Tier1Status body hides it (not retried); other errors show one muted line.
+  `useLiveChangesetUpdates` also refetches it.
 - **Changeset Impact tab** (heimdall-ui 0.11) — a Review (Changes once applied) / Impact `SegmentedControl` in
   `ChangesetCanvas`'s header swaps the review list for `ChangesetImpactView`: what the changeset reaches
   outside itself, before Apply. `data/changesetImpact.ts` lays the changeset over the model first (a STAGED

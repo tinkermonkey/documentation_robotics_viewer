@@ -268,7 +268,8 @@ export function changesetLoadErrorMessage(error: unknown): string {
  * activated or staged into from the CLI or by DrBot — and after a commit or
  * discard from the viewer. Without it the cached list would stay stale for its
  * 5-minute `staleTime`, so a changeset DrBot just made wouldn't show up for
- * review. A model change arrives through useLiveModelUpdates. Mount once
+ * review. It also refetches Tier 1's spend (useTier1), which an extraction
+ * moves. A model change arrives through useLiveModelUpdates. Mount once
  * (AppShell).
  */
 export function useLiveChangesetUpdates() {
@@ -277,6 +278,8 @@ export function useLiveChangesetUpdates() {
     const refetch = () => {
       queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
       queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
+      // An extraction stages a changeset as it spends: Tier 1's month moves with it.
+      queryClient.invalidateQueries({ queryKey: ['getapitier1'] });
     };
     websocketClient.on(CHANGESETS_UPDATED_EVENT, refetch);
     return () => websocketClient.off(CHANGESETS_UPDATED_EVENT, refetch);

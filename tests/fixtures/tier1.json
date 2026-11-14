@@ -1,0 +1,240 @@
+{
+  "off": {
+    "state": "off",
+    "reason": "no .dr/analyzers/cbm/tier1.json: Tier 1 is opt-in. Enable it with `dr analyzer tier1 enable --provider <name> --model <id>`.",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "credentials": {},
+    "month": {
+      "spentUsd": 0,
+      "capUsd": 20,
+      "remainingUsd": 20,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 0
+    },
+    "nearCap": false,
+    "bySource": {},
+    "cache": {
+      "entries": 0,
+      "bytes": 0,
+      "files": 0,
+      "lastCompaction": null
+    },
+    "dotDrIgnored": true,
+    "warnings": [],
+    "summary": "Tier 1 is off (no .dr/analyzers/cbm/tier1.json: Tier 1 is opt-in. Enable it with `dr analyzer tier1 enable --provider <name> --model <id>`.). This month: $0.00 of the $20.00 cap, $20.00 left (0 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "onNearCap": {
+    "state": "on",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "cloudflare-workers-ai",
+    "model": "clef",
+    "modelId": "@cf/cloudflare/clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "credentials": {
+      "accountId": {
+        "set": true,
+        "from": "CLOUDFLARE_ACCOUNT_ID"
+      },
+      "apiToken": {
+        "set": true,
+        "from": "CLOUDFLARE_API_TOKEN"
+      }
+    },
+    "month": {
+      "spentUsd": 16.42,
+      "capUsd": 20,
+      "remainingUsd": 3.58,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 11730
+    },
+    "nearCap": true,
+    "bySource": {
+      "extract": {
+        "cards": 9810,
+        "costUsd": 13.734,
+        "lastAt": "2026-11-14T09:12:40.118Z"
+      },
+      "probe": {
+        "cards": 1,
+        "costUsd": 0.0031,
+        "lastAt": "2026-11-02T15:01:07.552Z"
+      },
+      "classify": {
+        "cards": 1919,
+        "costUsd": 2.6829,
+        "lastAt": "2026-11-10T18:44:03.920Z"
+      }
+    },
+    "cache": {
+      "entries": 11402,
+      "bytes": 6815230,
+      "files": 2,
+      "lastCompaction": "2026-11-14T09:12:41.003Z"
+    },
+    "dotDrIgnored": true,
+    "warnings": [],
+    "summary": "Tier 1 is on. This month: $16.42 of the $20.00 cap, $3.58 left (11730 card(s)), resets 2026-12-01 (UTC). Tier 1 has used 82% of this checkout's monthly cap ($16.42 of $20.00). To raise it: `dr analyzer tier1 set monthly-cap 40`.",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "capped": {
+    "state": "capped",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "cloudflare-workers-ai",
+    "model": "clef",
+    "modelId": "@cf/cloudflare/clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "credentials": {
+      "accountId": {
+        "set": true,
+        "from": "tier1.json"
+      },
+      "apiToken": {
+        "set": true,
+        "from": "tier1.json"
+      }
+    },
+    "month": {
+      "spentUsd": 20.0012,
+      "capUsd": 20,
+      "remainingUsd": 0,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 14286
+    },
+    "nearCap": false,
+    "bySource": {
+      "extract": {
+        "cards": 14286,
+        "costUsd": 20.0012,
+        "lastAt": "2026-11-14T09:12:40.118Z"
+      }
+    },
+    "cache": {
+      "entries": 13950,
+      "bytes": 8290114,
+      "files": 2,
+      "lastCompaction": "2026-11-14T09:12:41.003Z"
+    },
+    "dotDrIgnored": true,
+    "warnings": [],
+    "summary": "Tier 1 is capped. This month: $20.00 of the $20.00 cap, $0.00 left (14286 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "noCredentials": {
+    "state": "no-credentials",
+    "reason": "cloudflare-workers-ai needs credentials.apiToken in tier1.json or CLOUDFLARE_API_TOKEN",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "cloudflare-workers-ai",
+    "model": "clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "credentials": {
+      "accountId": {
+        "set": true,
+        "from": "CLOUDFLARE_ACCOUNT_ID"
+      },
+      "apiToken": {
+        "set": false,
+        "from": null
+      }
+    },
+    "month": {
+      "spentUsd": 0,
+      "capUsd": 20,
+      "remainingUsd": 20,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 0
+    },
+    "nearCap": false,
+    "bySource": {},
+    "cache": {
+      "entries": 0,
+      "bytes": 0,
+      "files": 0,
+      "lastCompaction": null
+    },
+    "dotDrIgnored": true,
+    "warnings": [],
+    "summary": "Tier 1 is no-credentials (cloudflare-workers-ai needs credentials.apiToken in tier1.json or CLOUDFLARE_API_TOKEN). This month: $0.00 of the $20.00 cap, $20.00 left (0 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "misconfigured": {
+    "state": "misconfigured",
+    "reason": ".dr/analyzers/cbm/tier1.json is tracked by git: it may hold a key. Untrack it with `git rm --cached .dr/analyzers/cbm/tier1.json`.",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "credentials": {},
+    "month": {
+      "spentUsd": 0,
+      "capUsd": 20,
+      "remainingUsd": 20,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 0
+    },
+    "nearCap": false,
+    "bySource": {},
+    "cache": {
+      "entries": 0,
+      "bytes": 0,
+      "files": 0,
+      "lastCompaction": null
+    },
+    "dotDrIgnored": false,
+    "warnings": [
+      ".dr/ is not ignored by git: add it to .gitignore"
+    ],
+    "summary": "Tier 1 is misconfigured (.dr/analyzers/cbm/tier1.json is tracked by git). This month: $0.00 of the $20.00 cap, $20.00 left (0 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "on": {
+    "state": "on",
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "cloudflare-workers-ai",
+    "model": "clef",
+    "modelId": "@cf/cloudflare/clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "credentials": {
+      "accountId": {
+        "set": true,
+        "from": "CLOUDFLARE_ACCOUNT_ID"
+      },
+      "apiToken": {
+        "set": true,
+        "from": "CLOUDFLARE_API_TOKEN"
+      }
+    },
+    "month": {
+      "spentUsd": 4.2,
+      "capUsd": 20,
+      "remainingUsd": 15.8,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 3000
+    },
+    "nearCap": false,
+    "bySource": {
+      "extract": {
+        "cards": 3000,
+        "costUsd": 4.2,
+        "lastAt": "2026-11-14T09:12:40.118Z"
+      }
+    },
+    "cache": {
+      "entries": 11402,
+      "bytes": 6815230,
+      "files": 2,
+      "lastCompaction": "2026-11-14T09:12:41.003Z"
+    },
+    "dotDrIgnored": true,
+    "warnings": [],
+    "summary": "Tier 1 is on. This month: $4.20 of the $20.00 cap, $15.80 left (3000 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  }
+}

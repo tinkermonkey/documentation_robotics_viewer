@@ -98,6 +98,12 @@
   flex-wrap: wrap;
 }
 
+.drv-toolbar__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .drv-toolbar__label {
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -479,4 +485,149 @@ body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .chip-
 
 body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--link {
   color: rgb(var(--accent-primary));
+}
+
+/*
+ * Origin badge: who decided a change (codebase_extract). Outlined, never
+ * filled, so it doesn't read as another op or verdict chip: Tier 0 neutral,
+ * Tier 1 cyan dashed (a model's call), the agent violet (like DrBot).
+ */
+.drv-row__op {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.drv-origin {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+  padding: 0 5px;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-sm, 3px);
+  background: transparent;
+  color: rgb(var(--canvas-fg-2));
+  cursor: help;
+}
+
+.drv-origin--tier1 {
+  border-style: dashed;
+  border-color: rgb(var(--semantic-cyan-border));
+  color: rgb(var(--semantic-cyan-fg));
+}
+
+.drv-origin--agent {
+  border-color: rgb(var(--semantic-violet-border));
+  color: rgb(var(--semantic-violet-fg));
+}
+
+.drv-origin-details {
+  margin: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 3px 10px;
+  font-size: 12px;
+}
+
+.drv-origin-details__row {
+  display: contents;
+}
+
+.drv-origin-details dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-3));
+  align-self: center;
+}
+
+.drv-origin-details dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  color: rgb(var(--canvas-fg-1));
+  word-break: break-all;
+}
+
+.drv-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.drv-code {
+  font-family: var(--font-mono);
+  font-size: 0.92em;
+  padding: 0 4px;
+  border-radius: var(--radius-sm, 3px);
+  background: rgb(var(--canvas-surface));
+  border: 1px solid rgb(var(--canvas-border));
+  color: rgb(var(--canvas-fg-1));
+  word-break: break-word;
+}
+
+/* Tier 1 panel (Changesets inbox). */
+.drv-tier1 {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drv-tier1__spend {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-tier1__spend strong {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.drv-tier1__note {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-tier1-off > summary {
+  cursor: pointer;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-2));
+  padding: 9px 14px;
+}
+
+.drv-tier1-off > summary:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: -2px;
+}
+
+.drv-tier1-off .drv-tier1 {
+  border-top: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-warn {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgb(var(--semantic-amber-border));
+  background: rgb(var(--semantic-amber-bg));
+  color: rgb(var(--canvas-fg-1));
+  font-size: 12.5px;
+  line-height: 1.5;
 }
