@@ -7,6 +7,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-11-14
+
+Changesets get a review step: a verdict on each change instead of one Apply for the whole changeset. The full
+review needs a `dr` CLI with the review API (tinkermonkey/documentation_robotics#1130, in the CLI's next
+release). With an older CLI (0.4.0 and earlier) verdicts are kept in this browser, Drop is unavailable, and
+Apply commits the whole changeset as before.
+
+### Added
+- **Changesets inbox**: the Changesets view opens on Waiting on you / Waiting on DrBot / Applied and discarded,
+  with each changeset's progress, who staged it and its revision, instead of opening the first changeset.
+- **Per-change review** (#569): Keep / Drop / Ask DrBot on each change, with a note DrBot reads. A summary card
+  shows what still needs a decision. Changes are grouped by review weight (Routine field edits can be kept in
+  bulk; New elements; New links; Removals; Blocked deletes), by layer or by sequence. Add-then-delete pairs
+  fold into a Cancel out section. Dropping an added element drops the changes that need it.
+- **Change inspector**: the decision first, then before / after, source reference, related changes and
+  comments.
+- **Blocked deletes**: a delete whose element other elements still link to offers Delete the links too /
+  Keep the element / Ask DrBot.
+- **Since your review**: after the changeset is restaged, revised, new and withdrawn changes are shown;
+  decisions on unchanged changes carry over.
+- **Apply with drops**: the confirm dialog lists what lands, what is left out and links deleted with their
+  elements; afterwards the page shows what landed, by layer. Model drift (409), blockers (422) and other
+  refusals each get their own message, and nothing is written.
+
+### Fixed
+- Apply and Discard stay shut after they succeed until the changeset reads as committed or discarded; the card
+  briefly showed Apply live again while the CLI finished writing (#570).
+- A dropped link delete that conflicts with a kept element delete is marked on both rows and stays under
+  Needs decision (#570).
+- The changeset inspector's Added / Modified / Deleted tiles no longer count cancel-out pairs (#570).
+
 ## [0.10.0] - 2026-11-12
 
 `@tinkermonkey/heimdall-ui` bumped `0.10.0` → `0.12.0` (exact npm-registry version). No `dr` CLI change is
