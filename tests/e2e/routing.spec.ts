@@ -67,7 +67,7 @@ test.describe('URL routing — left-panel selections', () => {
     await gotoView(page, ROUTES.changesets);
     // The view opens on the inbox (no changeset); opening one puts it in the URL.
     await expect(page).not.toHaveURL(/[?&]changeset=/);
-    await page.getByTestId('nav-tree').getByRole('button').filter({ hasText: /\d+$/ }).last().click();
+    await page.getByRole('table').getByRole('button').first().click();
     await expect(page).toHaveURL(/[?&]changeset=[^&]+/);
   });
 
