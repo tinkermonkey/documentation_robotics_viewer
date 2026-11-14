@@ -482,6 +482,39 @@ export class ApiClient {
 
     return response.json();
   }
+
+  async getapitier1(query?: { analyzer?: string }): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api/tier1`;
+    
+    const queryString = new URLSearchParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryString.append(key, value);
+        }
+      });
+    }
+    const url = queryString.toString()
+      ? `${baseUrl}${pathStr}?${queryString.toString()}`
+      : `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('GET /api/tier1', response.status, await response.text());
+    }
+
+    return response.json();
+  }
 }
 
 /**
@@ -748,6 +781,18 @@ const apiClient = getApiClient();
       },
       ...options
     } as any);
+  }
+
+  /**
+   * React Query hook for getapitier1
+   * Auto-manages caching and invalidation
+   */
+  export function useGetapitier1(options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getapitier1'],
+      queryFn: () => apiClient.getapitier1(),
+      ...(options || {})
+    });
   }
 
 /**

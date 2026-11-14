@@ -1035,6 +1035,7 @@ export interface paths {
                                     timestamp?: string;
                                     before?: unknown;
                                     after?: unknown;
+                                    origin?: components["schemas"]["ChangeOrigin"];
                                 };
                             }[];
                             review: {
@@ -1066,6 +1067,7 @@ export interface paths {
                                 before?: unknown;
                                 /** @description New element state (for add/update operations) */
                                 after?: unknown;
+                                origin?: components["schemas"]["ChangeOrigin"];
                                 /** @description Delete changes of a staged changeset only: relationships in the projected model that still reference the deleted element and that the changeset does not delete */
                                 blockers?: {
                                     /** @description source::predicate::target (dotted ids) */
@@ -1440,10 +1442,174 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/tier1": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Tier 1 state and spend
+         * @description Whether Tier 1 (the decision model codebase_extract asks about the cards Tier 0 cannot decide) is on for the served project's checkout, and why not: state, provider and model, where each credential comes from (never its value), this calendar month's spend (UTC) against the monthly cap with the 80% warning state, spend by source, and the answer cache. The same body as the tier1_status MCP tool, without its probe: this endpoint never sends a request to a provider and never writes a file. Returns state "off" when the project has not opted in. Tier 1 is enabled and changed only with `dr analyzer tier1 ...`; nothing in this API changes it.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description The analyzer Tier 1 is configured for (default: the active analyzer, else cbm) */
+                    analyzer?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Tier 1's state and spend */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Tier1Status"];
+                    };
+                };
+                /** @description Invalid analyzer name */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description The status could not be read */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
+    schemas: {
+        /** @description Who decided this change (codebase_extract only); absent on changes staged otherwise and in older changesets */
+        ChangeOrigin: {
+            /**
+             * @description tier0: a Tier-0 rule or the node or edge mapping; tier1: a decision model (Tier 1); agent: the calling agent
+             * @enum {string}
+             */
+            by: "tier0" | "tier1" | "agent";
+            /** @description Tier 0: the rule (e.g. node-mapping:Route, or edge:CALLS for a relationship between elements the run did not add); Tier 1: tier1:<question set> (e.g. tier1:dr-qset-2) */
+            rule?: string;
+            /** @description Tier 1: the provider (e.g. cloudflare-workers-ai) */
+            provider?: string;
+            /** @description Tier 1: the model, as the provider's response named it when it did */
+            model?: string;
+            /** @description Tier 1 through OpenRouter: the upstream that served the request */
+            upstream?: string;
+            /** @description Tier 1: the probabilities of the chosen layer and type */
+            p?: {
+                /** @description Probability of the chosen layer */
+                layer: number;
+                /** @description Probability of the chosen element type; null when the type was not asked */
+                type: number | null;
+            };
+            /**
+             * @description Tier 1: auto (staged by stage mode) or agent (the agent accepted the band with acceptTier1)
+             * @enum {string}
+             */
+            confirmed?: "auto" | "agent";
+        };
+        Tier1Status: {
+            /**
+             * @description on: Tier 1 runs; capped: opted in and ready, but this month's spend reached the cap (cached answers are still used); off: no tier1.json (the default); misconfigured: tier1.json is unreadable, invalid, tracked by git, too open, or names an unknown provider or model; no-credentials: a key is missing
+             * @enum {string}
+             */
+            state: "off" | "misconfigured" | "no-credentials" | "on" | "capped";
+            /** @description Why Tier 1 is off, misconfigured or without credentials, for a person; absent when on or capped */
+            reason?: string;
+            /** @description The analyzer Tier 1 is configured for (the active one, else cbm) */
+            analyzer: string;
+            /** @description The opt-in file, relative to the project root (.dr/analyzers/<analyzer>/tier1.json) */
+            config: string;
+            /** @description The provider tier1.json names (on, capped, no-credentials) */
+            provider?: string;
+            /** @description The model tier1.json names (on, capped, no-credentials) */
+            model?: string;
+            /** @description The provider's model id, e.g. @cf/cloudflare/clef (on and capped only) */
+            modelId?: string;
+            /** @description The cap tier1.json sets, default filled in (on, capped, no-credentials); month.capUsd is always present */
+            monthlyCapUsd?: number;
+            /** @description Requests in flight at once (on, capped, no-credentials) */
+            concurrency?: number;
+            /** @description Per credential the provider needs: whether it is set and where from (never the value); empty when off or misconfigured */
+            credentials: {
+                [key: string]: {
+                    set: boolean;
+                    /** @description Where the value comes from: tier1.json or an environment variable's name; null when unset. Never the value */
+                    from: string | null;
+                };
+            };
+            month: {
+                /** @description Spent this calendar month (UTC), from the ledger */
+                spentUsd: number;
+                /** @description The monthly cap (monthlyCapUsd in tier1.json; $20 by default; 0 sends nothing) */
+                capUsd: number;
+                /** @description What is left of the cap this month (never below 0) */
+                remainingUsd: number;
+                /** @description When the window resets: the first of next month, 00:00 UTC (ISO 8601) */
+                resetsAt: string;
+                /** @description Cards asked this month */
+                cards: number;
+            };
+            /** @description True at 80% of the cap or more, before it is reached: the warning state (a cap of 0 never warns) */
+            nearCap: boolean;
+            /** @description This month's spend per source (extract, index, classify, probe); a source that spent nothing this month is absent */
+            bySource: {
+                [key: string]: {
+                    cards: number;
+                    costUsd: number;
+                    /** @description The last time this source spent (ISO 8601) */
+                    lastAt: string;
+                };
+            };
+            /** @description The Tier-1 answer cache */
+            cache: {
+                entries: number;
+                bytes: number;
+                files: number;
+                /** @description When the cache was last compacted (ISO 8601), or null */
+                lastCompaction: string | null;
+            };
+            /** @description Whether git ignores .dr/ (null outside a git work tree) */
+            dotDrIgnored: boolean | null;
+            warnings: string[];
+            /** @description One line for a person: the state, then this month's spend against the cap (and the 80% warning) */
+            summary: string;
+            /** @description How a person changes Tier 1 (dr analyzer tier1 ...; nothing over this API) and what the spend counts */
+            note: string;
+        };
+    };
     responses: never;
     parameters: never;
     requestBodies: never;
