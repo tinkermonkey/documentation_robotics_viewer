@@ -7,11 +7,14 @@
  * set and where from). Tier 1 is changed with `dr analyzer tier1 ...` alone.
  *
  * An older dr CLI has no such route: a 404 (or 405/501, or a body that isn't a
- * Tier1Status) reads as `unavailable`, and the panel stays hidden. Those are
- * not retried. Other failures (a refused token, a 500) are `error`, with the
- * server's message. The cache refetches on the server's `changesets.updated`
- * broadcast (an extraction stages a changeset as it spends), see
- * useLiveChangesetUpdates.
+ * Tier1Status) reads as `unavailable`, and the panel stays hidden. Such a
+ * failure isn't retried within the fetch (other failures — a refused token, a
+ * 500 — are retried once, then read as `error` with the server's message).
+ * The query is asked again whenever it's stale and wanted: the inbox
+ * mounting, the server's `changesets.updated` broadcast (an extraction stages
+ * a changeset as it spends; see useLiveChangesetUpdates) and the window
+ * regaining focus. That is what picks up a server upgraded to one with the
+ * route.
  */
 
 import { useMemo } from 'react';

@@ -203,16 +203,24 @@ function RevisionSection({ model, origin }: { model: ReviewModel; origin: Origin
   if (!diff) return null;
   const revised = diff.revised.filter((r) => passesOriginFilter(r.item.record, origin));
   const added = diff.added.filter((i) => passesOriginFilter(i.record, origin));
+  const withdrawn = diff.withdrawn.filter((w) => passesOriginFilter(w.tombstone.change, origin));
+  const carried = diff.carried.filter((i) => passesOriginFilter(i.record, origin));
+  const nothing = revised.length + added.length + withdrawn.length + carried.length === 0;
   const textOf = (item: ReviewItem) => describeChange(item.record, model.nameOf);
   return (
     <section className="drv-group" aria-label="Changed since your review" data-testid="review-since">
       <div className="drv-group__head">
         <h3 className="drv-group__title">Changed since your review</h3>
         <span className="drv-group__hint">
-          {diff.revised.length} revised · {diff.withdrawn.length} withdrawn · {diff.added.length} new ·{' '}
-          {diff.carried.length} carried over
+          {revised.length} revised · {withdrawn.length} withdrawn · {added.length} new · {carried.length} carried
+          over
         </span>
       </div>
+      {nothing && (
+        <p className="drv-muted" style={{ margin: 0, padding: '10px 14px', fontSize: 13 }} data-testid="review-since-empty">
+          Nothing changed since your review among the changes this filter shows.
+        </p>
+      )}
       {revised.map((r) => (
         <article className="drv-rev" key={`rev-${r.item.seq}`} data-testid="review-revised">
           <div className="drv-pills">
@@ -255,7 +263,7 @@ function RevisionSection({ model, origin }: { model: ReviewModel; origin: Origin
           </div>
         </article>
       ))}
-      {diff.withdrawn.map((w) => (
+      {withdrawn.map((w) => (
         <article className="drv-rev" key={`wd-${w.tombstone.sequence}`} data-testid="review-withdrawn">
           <div className="drv-pills">
             <Chip variant="neutral">withdrawn</Chip>
@@ -268,13 +276,13 @@ function RevisionSection({ model, origin }: { model: ReviewModel; origin: Origin
           </span>
         </article>
       ))}
-      {diff.carried.length > 0 && (
+      {carried.length > 0 && (
         <details className="drv-fold">
           <summary>
-            {diff.carried.length} unchanged since your review · decisions carried over
+            {carried.length} unchanged since your review · decisions carried over
           </summary>
           <div className="drv-fold__body">
-            {diff.carried.map((item) => (
+            {carried.map((item) => (
               <CarriedRow key={item.seq} item={item} model={model} />
             ))}
           </div>
@@ -603,13 +611,16 @@ export function ChangesetReviewPanel({
       {model.items.length > 0 && (
         <div className="drv-toolbar">
           {staged && (
-            <SegmentedControl
-              value={effectiveFilter}
-              onChange={(v) => setFilter(v as ShowFilter)}
-              options={filterOptions}
-              aria-label="Show changes"
-              data-testid="review-filter"
-            />
+            <span className="drv-toolbar__item">
+              <span className="drv-toolbar__label">SHOW</span>
+              <SegmentedControl
+                value={effectiveFilter}
+                onChange={(v) => setFilter(v as ShowFilter)}
+                options={filterOptions}
+                aria-label="Show changes"
+                data-testid="review-filter"
+              />
+            </span>
           )}
           {originOptions.length > 0 && (
             // Label and control wrap together, so a label never ends a line apart from its control.

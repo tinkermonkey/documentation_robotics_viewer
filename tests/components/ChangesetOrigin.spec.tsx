@@ -17,7 +17,7 @@ import { ChangesetCanvas } from '@/apps/embedded/ui/ChangesetCanvas';
 import { ChangesetInspector } from '@/apps/embedded/ui/ChangesetInspector';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { useLocalReviewStore } from '@/apps/embedded/stores/localReviewStore';
-import type { DecisionInput } from '@/apps/embedded/data/changesetReview';
+import type { ChangesetReview, DecisionInput } from '@/apps/embedded/data/changesetReview';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
@@ -43,13 +43,13 @@ const ORIGINS: Record<number, object> = {
   20: { by: 'agent' },
 };
 
-function withOrigins(origins: Record<number, object>): ChangeRecord[] {
+function withOrigins(origins: Record<number, unknown>): ChangeRecord[] {
   return (changesetDetail.changes as ChangeRecord[]).map((c) =>
     origins[c.sequenceNumber!] ? { ...c, origin: origins[c.sequenceNumber!] } : c,
   );
 }
 
-function serve(changes: ChangeRecord[]) {
+function serve(changes: ChangeRecord[], review: ChangesetReview = { decisions: {} }) {
   const puts: DecisionInput[][] = [];
   mswServer.use(
     http.get('*/api/changesets/:id', ({ params }) =>
@@ -60,7 +60,7 @@ function serve(changes: ChangeRecord[]) {
         changes,
         revision: 38,
         unstaged: [],
-        review: { decisions: {} },
+        review,
       }),
     ),
     http.put('*/api/changesets/:id/review', async ({ request }) => {
@@ -211,5 +211,88 @@ describe('origin filter', () => {
     await screen.findAllByTestId('review-row');
     expect(screen.queryByTestId('review-origin-filter')).not.toBeInTheDocument();
     expect(screen.queryAllByTestId('origin-badge')).toHaveLength(0);
+  });
+});
+
+describe('origin robustness', () => {
+  it('renders a hand-edited origin with fields of the wrong type, keeping only what is well-typed', async () => {
+    serve(
+      withOrigins({
+        1: { by: 'tier1', rule: { x: 1 }, model: ['m'], provider: 'p', p: { layer: 'high', type: {} }, confirmed: 7 },
+        2: { by: { nested: true } },
+        3: 'tier1',
+      }),
+    );
+    const user = userEvent.setup();
+    renderReview(1);
+    await screen.findAllByTestId('review-row');
+    expect(screen.queryByTestId('error-boundary')).not.toBeInTheDocument();
+    expect(within(row(1)!).getByTestId('origin-badge')).toHaveTextContent('Tier 1');
+    expect(within(row(2)!).queryByTestId('origin-badge')).toBeNull();
+    expect(within(row(3)!).queryByTestId('origin-badge')).toBeNull();
+    const section = screen.getByTestId('change-origin');
+    expect(section).toHaveTextContent('Providerp');
+    expect(section).not.toHaveTextContent(/Rule|Model|Layer|Confirmed/);
+
+    await user.hover(within(row(1)!).getByTestId('origin-badge'));
+    expect(await screen.findByTestId('origin-badge-tooltip-card')).toHaveTextContent('Providerp');
+  });
+
+  it('cuts a long unknown decider name short in the badge', async () => {
+    serve(withOrigins({ 4: { by: 'a-very-long-decider-name-from-the-future' } }));
+    renderReview();
+    await screen.findAllByTestId('review-row');
+    const badge = within(row(4)!).getByTestId('origin-badge');
+    expect(badge).toHaveClass('drv-origin--other');
+    expect(badge.querySelector('.drv-origin__label')).toHaveTextContent('a-very-long-decider-name-from-the-future');
+  });
+
+  it('a click in the tooltip card does not select or deselect the row', async () => {
+    serve(withOrigins(ORIGINS));
+    const user = userEvent.setup();
+    renderReview();
+    await screen.findAllByTestId('review-row');
+    await user.hover(within(row(1)!).getByTestId('origin-badge'));
+    const card = await screen.findByTestId('origin-badge-tooltip-card');
+
+    // One click at a time: two would toggle the row on and off again.
+    fireEvent.mouseDown(within(card).getByTestId('origin-details'));
+    fireEvent.click(within(card).getByTestId('origin-details'));
+    expect(useUiStore.getState().changeSeq).toBeNull();
+    fireEvent.click(card);
+    expect(useUiStore.getState().changeSeq).toBeNull();
+    expect(row(1)).toHaveAttribute('aria-pressed', 'false');
+
+    // The badge itself is part of the row: clicking it still opens the change.
+    fireEvent.click(within(row(1)!).getByTestId('origin-badge'));
+    expect(useUiStore.getState().changeSeq).toBe(1);
+  });
+});
+
+describe('origin filter and the since-your-review section', () => {
+  const reviewed: ChangesetReview = {
+    decisions: {
+      '0': { verdict: 'keep', atRevision: 19, decidedAt: 'x' },
+      '13': { verdict: 'keep', atRevision: 19, decidedAt: 'x' },
+    },
+    lastReviewedRevision: 19,
+  };
+
+  it('counts only the changes the filter shows, and says when none match', async () => {
+    serve(withOrigins(ORIGINS), reviewed);
+    const user = userEvent.setup();
+    renderReview();
+    const since = await screen.findByTestId('review-since');
+    expect(since).toHaveTextContent('0 revised · 0 withdrawn · 11 new · 2 carried over');
+
+    const filter = screen.getByTestId('review-origin-filter');
+    await user.click(within(filter).getByRole('radio', { name: /^Tier 0/ }));
+    expect(screen.getByTestId('review-since')).toHaveTextContent('0 revised · 0 withdrawn · 1 new · 1 carried over');
+    expect(screen.getAllByTestId('review-new')).toHaveLength(1);
+
+    await user.click(within(filter).getByRole('radio', { name: /^Tier 1/ }));
+    expect(screen.getByTestId('review-since')).toHaveTextContent('0 revised · 0 withdrawn · 0 new · 0 carried over');
+    expect(screen.getByTestId('review-since-empty')).toBeInTheDocument();
+    expect(screen.queryAllByTestId('review-new')).toHaveLength(0);
   });
 });

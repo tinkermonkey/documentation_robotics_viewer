@@ -501,6 +501,7 @@ body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--
 
 .drv-origin {
   display: inline-flex;
+  max-width: 100%;
   align-items: center;
   font-family: var(--font-mono);
   font-size: 10.5px;
@@ -512,6 +513,19 @@ body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--
   background: transparent;
   color: rgb(var(--canvas-fg-2));
   cursor: help;
+}
+
+.drv-origin-wrap {
+  display: inline-flex;
+  max-width: 100%;
+}
+
+/* An unknown decider's name can be long: cut it short (the tooltip names it in full). */
+.drv-origin__label {
+  display: block;
+  max-width: 8em;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .drv-origin--tier1 {

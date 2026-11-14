@@ -4,12 +4,14 @@
  * field" summary line.
  */
 
+import type { SyntheticEvent } from 'react';
 import { Chip } from '@tinkermonkey/heimdall-ui';
 import { layerColor } from './domain';
 import { RichTooltip } from './RichTooltip';
 import {
+  deciderLabel,
+  isKnownDecider,
   originDetails,
-  originLabel,
   originTitle,
   splitCode,
   type ChangeOrigin,
@@ -62,10 +64,20 @@ export function OriginDetails({ origin }: { origin: ChangeOrigin }) {
  * the focus target); the change inspector shows the same details for the
  * keyboard. Screen readers get "Decided by …" in the row's name instead of
  * the bare label.
+ *
+ * The tooltip card is portaled into <body>, but React still bubbles its
+ * events up the component tree, into the row's <button>: a click on the card
+ * would select (or deselect) the row. `keepCardEventsOut` stops events whose
+ * DOM target lies outside the badge itself, i.e. those from the card; a click
+ * on the badge still selects the row like any other part of it.
  */
+function keepCardEventsOut(e: SyntheticEvent<HTMLElement>) {
+  if (!e.currentTarget.contains(e.target as Node)) e.stopPropagation();
+}
+
 export function OriginBadge({ origin }: { origin: ChangeOrigin | undefined }) {
   if (!origin) return null;
-  const known = origin.by === 'tier0' || origin.by === 'tier1' || origin.by === 'agent';
+  const known = isKnownDecider(origin.by);
   const content = (
     <div className="rich-tooltip__body" data-testid="origin-tooltip-content">
       <div className="rich-tooltip__title">{originTitle(origin.by)}</div>
@@ -73,21 +85,25 @@ export function OriginBadge({ origin }: { origin: ChangeOrigin | undefined }) {
     </div>
   );
   return (
-    <RichTooltip content={content} placement="right" data-testid="origin-badge-tooltip">
-      <span
-        className={`drv-origin drv-origin--${known ? origin.by : 'other'}`}
-        data-testid="origin-badge"
-        data-origin={origin.by}
-      >
-        <span aria-hidden="true">{originLabel(origin.by)}</span>
-        <span className="drv-sr-only">{originTitle(origin.by)}</span>
-      </span>
-    </RichTooltip>
+    <span className="drv-origin-wrap" onClick={keepCardEventsOut} onMouseDown={keepCardEventsOut}>
+      <RichTooltip content={content} placement="right" data-testid="origin-badge-tooltip">
+        <span
+          className={`drv-origin drv-origin--${known ? origin.by : 'other'}`}
+          data-testid="origin-badge"
+          data-origin={origin.by}
+        >
+          <span className="drv-origin__label" aria-hidden="true">
+            {deciderLabel(origin.by)}
+          </span>
+          <span className="drv-sr-only">{originTitle(origin.by)}</span>
+        </span>
+      </RichTooltip>
+    </span>
   );
 }
 
-/** Text with `backtick` spans rendered as code (CLI commands the server quotes). */
-export function WithCode({ text }: { text: string }) {
+/** Text with `backtick` spans rendered as code (CLI commands the server quotes). Nothing for a non-string. */
+export function WithCode({ text }: { text: unknown }) {
   return (
     <>
       {splitCode(text).map((p, i) => (p.code ? <code key={i} className="drv-code">{p.text}</code> : <span key={i}>{p.text}</span>))}

@@ -267,19 +267,27 @@ For local dev use `dr visualize --no-auth`.
   and Discard). Styles: `ui/changeset-review.css` (tokens + Heimdall `--semantic-*` chip colours only).
 - **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`
   (Tier 0 rule / Tier 1 decision model / the agent). The wire types are the generated OpenAPI schemas, aliased
-  in `data/tier1.ts` (one place to adjust when the contract moves); read an origin through `originOf`, which
-  checks the shape. A review row shows an outlined badge under its op chip (`OriginBadge` in `reviewParts.tsx`:
-  Tier 0 neutral, Tier 1 cyan dashed, Agent violet), with rule / provider / model / upstream / probabilities /
-  confirmation in a `RichTooltip` on hover; the `ChangeInspector` repeats them in a "Decided by" section (the
-  keyboard path: the badge sits inside the row button). A "Decided by" `SegmentedControl` (All / Tier 0 /
-  Tier 1 / Agent / No origin, with counts) filters the rows and the since-your-review cards — offered only when
-  some change carries an origin; "Keep N routine" then keeps only the shown ones. `Tier1Panel` (in the inbox,
-  above the history) reads `GET /api/tier1` via `useTier1`: on / capped / no-credentials / misconfigured get a
-  card (state, provider + model, spend bar against the cap — amber with the 80% warning on `nearCap`, rose at
-  the cap — reset date, spend per source, where each credential comes from, cache, warnings, `reason`); off
-  is one folded line. It offers no action: the server's `note` names the `dr analyzer tier1` command. A 404
-  (older dr CLI), 405/501 or a non-Tier1Status body hides it (not retried); other errors show one muted line.
-  `useLiveChangesetUpdates` also refetches it.
+  in `data/tier1.ts` (one place to adjust when the contract moves). Nothing from the wire reaches React
+  unchecked: `originOf` keeps only string `by`/`rule`/`provider`/`model`/`upstream`, a known `confirmed` and
+  numeric probabilities (a hand-edited `changes.yaml` must not blank the viewer), and `toTier1Status` coerces
+  the status to renderable types (strings default to '', bad credential / per-source entries are dropped). A
+  review row shows an outlined badge under its op chip (`OriginBadge` in `reviewParts.tsx`: Tier 0 neutral,
+  Tier 1 cyan dashed, Agent violet, an unknown decider cut short), with rule / provider / model / upstream /
+  probabilities / confirmation in a `RichTooltip` on hover. The card is portaled but React bubbles its events
+  into the row `<button>`, so `keepCardEventsOut` stops those. The `ChangeInspector` repeats the details in a
+  "Decided by" section (the keyboard path). A "Decided by" `SegmentedControl` (keys `all` / `none` /
+  `by:<decider>`, with counts) filters the rows and the since-your-review section (its counts too) — offered
+  only when some change carries an origin; "Keep N routine" then keeps only the shown ones. `Tier1Panel` (in
+  the inbox, above the history) reads `GET /api/tier1` via `useTier1`: on / capped / no-credentials /
+  misconfigured get a card (state, provider + model, spend bar against the cap — `month.percentUsed` when sent,
+  else rounded down like the CLI; amber with the server's 80% warning (from `summary`) on `nearCap`, rose at the
+  cap — reset date, spend per source, where each credential comes from, cache, warnings, the server's
+  `reason`); a $0 cap says Tier 1 asks nothing (no bar, no reset date); off is one folded line. It offers no
+  action: the server's `note` names the `dr analyzer tier1` command. A 404 (older dr CLI), 405/501 or a
+  non-Tier1Status body hides it; that failure isn't retried within the fetch, but the query is asked again
+  when the inbox mounts, on `changesets.updated` and on window focus, which picks up an upgraded server. Other
+  errors (retried once) show one muted line. `ui/ErrorBoundary.tsx` wraps the review panel, the change
+  inspector and the Tier 1 panel so a bad payload degrades locally.
 - **Changeset Impact tab** (heimdall-ui 0.11) — a Review (Changes once applied) / Impact `SegmentedControl` in
   `ChangesetCanvas`'s header swaps the review list for `ChangesetImpactView`: what the changeset reaches
   outside itself, before Apply. `data/changesetImpact.ts` lays the changeset over the model first (a STAGED

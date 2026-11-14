@@ -19,6 +19,7 @@ import { useChangesets, useLocalReviewCounts, type ChangesetSummary } from '../d
 import { originLabel } from '../data/changesetReview';
 import { useLocalReviewStore } from '../stores/localReviewStore';
 import { Tier1Panel } from './Tier1Panel';
+import { ErrorBoundary } from './ErrorBoundary';
 
 interface Progress {
   decided: number;
@@ -170,7 +171,9 @@ export function ChangesetInbox() {
       )}
 
       {/* Tier 1's state and spend (hidden on a dr CLI without /api/tier1; one folded line when off). */}
-      <Tier1Panel />
+      <ErrorBoundary what="Tier 1's status">
+        <Tier1Panel />
+      </ErrorBoundary>
 
       {history.length > 0 && (
         <section className="drv-inbox__section" aria-labelledby="inbox-history" data-testid="inbox-history">
