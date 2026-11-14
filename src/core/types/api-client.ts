@@ -1546,7 +1546,7 @@ export interface components {
              * @enum {string}
              */
             state: "off" | "misconfigured" | "no-credentials" | "on" | "capped";
-            /** @description Why Tier 1 is off, misconfigured or without credentials, for a person; absent when on or capped */
+            /** @description Why Tier 1 is not on, for a person: set for every state but on (capped included: the cap, when it resets, how to raise it) */
             reason?: string;
             /** @description The analyzer Tier 1 is configured for (the active one, else cbm) */
             analyzer: string;
@@ -1581,6 +1581,8 @@ export interface components {
                 resetsAt: string;
                 /** @description Cards asked this month */
                 cards: number;
+                /** @description spentUsd as a percentage of capUsd, 0 to 100 (held at 100 past the cap), to one decimal; null when the cap is 0 */
+                percentUsed: number | null;
             };
             /** @description True at 80% of the cap or more, before it is reached: the warning state (a cap of 0 never warns) */
             nearCap: boolean;
@@ -1595,13 +1597,14 @@ export interface components {
             };
             /** @description The Tier-1 answer cache */
             cache: {
+                /** @description Lines in the cache files, one per cached answer, before compaction drops any (read without parsing; `dr analyzer tier1 cache status` has the exact count) */
                 entries: number;
                 bytes: number;
                 files: number;
                 /** @description When the cache was last compacted (ISO 8601), or null */
                 lastCompaction: string | null;
             };
-            /** @description Whether git ignores .dr/ (null outside a git work tree) */
+            /** @description Whether git ignores .dr/ (null when git cannot say: outside a git work tree, or git is unavailable) */
             dotDrIgnored: boolean | null;
             warnings: string[];
             /** @description One line for a person: the state, then this month's spend against the cap (and the 80% warning) */
