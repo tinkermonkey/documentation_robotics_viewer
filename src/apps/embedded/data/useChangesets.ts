@@ -8,14 +8,29 @@
  */
 
 import { useEffect, useMemo } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   ApiError,
+  getApiClient,
   useGetapichangesets,
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
 import { toChangeRows, type ChangeRecord, type ChangeRow } from './changesets';
+import {
+  reviewCounts,
+  type ChangesetOrigin,
+  type ChangesetReview,
+  type ReviewCounts,
+  type UnstagedChange,
+} from './changesetReview';
 import { websocketClient } from '../services/websocketClient';
+
+/** Review progress the list reports per changeset (a dr CLI with changeset review). */
+export interface ChangesetReviewProgress {
+  decided: number;
+  total: number;
+  asked: number;
+}
 
 export interface ChangesetSummary {
   id: string;
@@ -23,6 +38,11 @@ export interface ChangesetSummary {
   status: string;
   created: string;
   changesCount: number;
+  description?: string;
+  origin?: ChangesetOrigin;
+  revision?: number;
+  /** Absent from a dr CLI without changeset review. */
+  review?: ChangesetReviewProgress;
 }
 
 interface ChangesetEntry {
@@ -30,6 +50,10 @@ interface ChangesetEntry {
   status?: string;
   created?: string;
   changes_count?: number;
+  description?: string;
+  origin?: ChangesetOrigin;
+  revision?: number;
+  review?: ChangesetReviewProgress;
   [key: string]: unknown;
 }
 
@@ -59,6 +83,10 @@ export function useChangesets() {
       status: entry.status ?? 'unknown',
       created: entry.created ?? '',
       changesCount: entry.changes_count ?? 0,
+      description: entry.description,
+      origin: entry.origin,
+      revision: entry.revision,
+      review: entry.review,
     }));
 
     // Newest first by created timestamp (stable for equal/empty timestamps).
@@ -87,6 +115,11 @@ interface ChangesetDetailPayload {
   baseSnapshot?: string;
   stats?: Partial<ChangesetStats>;
   changes?: ChangeRecord[];
+  description?: string;
+  revision?: number;
+  origin?: ChangesetOrigin;
+  unstaged?: UnstagedChange[];
+  review?: ChangesetReview;
   [key: string]: unknown;
 }
 
@@ -102,6 +135,19 @@ export interface ChangesetDetail {
   rows: ChangeRow[];
   /** Total change count. */
   changesCount: number;
+  /** The raw change records (sequence order as served). */
+  changes: ChangeRecord[];
+  description?: string;
+  /** The changeset's nextSequenceNumber; raised when DrBot restages. */
+  revision?: number;
+  origin?: ChangesetOrigin;
+  /** Tombstones of unstaged / rewritten changes. */
+  unstaged: UnstagedChange[];
+  /**
+   * The server-kept review. Undefined when the dr CLI predates changeset
+   * review: verdicts then live in this browser (see useChangesetReview).
+   */
+  review?: ChangesetReview;
 }
 
 const EMPTY_STATS: ChangesetStats = { additions: 0, modifications: 0, deletions: 0 };
@@ -134,6 +180,12 @@ export function useChangeset(id: string | null) {
       },
       rows: toChangeRows(raw.changes),
       changesCount: raw.changes?.length ?? 0,
+      changes: raw.changes ?? [],
+      description: raw.description,
+      revision: raw.revision,
+      origin: raw.origin,
+      unstaged: raw.unstaged ?? [],
+      review: raw.review,
     };
   }, [raw, id]);
 
@@ -156,6 +208,31 @@ export interface ChangesetActionResult {
   committed?: number;
   skipped?: number;
   failed?: number;
+  /** Every sequence number left out, cascades included (a dr CLI with review). */
+  dropped?: number[];
+  /** Blocking links deleted with their elements. */
+  linksDeleted?: number;
+}
+
+/**
+ * A 422 commit refusal for deletes still in use: `{ error, blockers }`, keyed
+ * by the delete's sequence number. Null for any other error.
+ */
+export function commitBlockers(error: unknown): Record<string, unknown[]> | null {
+  if (!(error instanceof ApiError) || error.status !== 422) return null;
+  try {
+    const parsed = JSON.parse(error.body) as { blockers?: unknown };
+    const b = parsed.blockers;
+    return b && typeof b === 'object' && !Array.isArray(b) ? (b as Record<string, unknown[]>) : null;
+  } catch {
+    return null;
+  }
+}
+
+/** A 409 commit refusal whose message says the model drifted since staging. */
+export function isDriftError(error: unknown): boolean {
+  if (!(error instanceof ApiError) || error.status !== 409) return false;
+  return /drift|changed since/i.test(error.serverMessage ?? error.body);
 }
 
 /**
@@ -208,3 +285,34 @@ export function useLiveChangesetUpdates() {
 
 /** The server's changeset-change broadcast (see the CLI's `broadcastChangesetsUpdated`). */
 export const CHANGESETS_UPDATED_EVENT = 'changesets.updated';
+
+/**
+ * Review counts for staged changesets whose list entry has none (a dr CLI
+ * without review), worked out from each one's detail and the verdicts kept in
+ * this browser, by the same definition the CLI uses (`reviewCounts`). The
+ * details share the detail hook's cache. Keyed by changeset id; missing while
+ * a detail loads.
+ */
+export function useLocalReviewCounts(
+  changesetIds: string[],
+  localDecisions: Record<string, ChangesetReview['decisions']>,
+): Record<string, ReviewCounts> {
+  const results = useQueries({
+    queries: changesetIds.map((id) => ({
+      queryKey: ['getapichangesetschangesetId', id],
+      queryFn: () => getApiClient().getapichangesetschangesetId(id),
+    })),
+  });
+  // A few staged changesets at most: cheap enough to work out per render.
+  const out: Record<string, ReviewCounts> = {};
+  changesetIds.forEach((id, i) => {
+    const detail = results[i]?.data as ChangesetDetailPayload | undefined;
+    if (!detail) return;
+    out[id] = reviewCounts({
+      changes: detail.changes ?? [],
+      unstaged: detail.unstaged ?? [],
+      review: { decisions: localDecisions[id] ?? {} },
+    });
+  });
+  return out;
+}

@@ -29,7 +29,7 @@ import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
 import { useModel, useLiveModelUpdates } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
-import { useChangesets, useLiveChangesetUpdates } from '../data/useChangesets';
+import { useLiveChangesetUpdates } from '../data/useChangesets';
 import { useLiveAnnotationUpdates } from '../data/useAnnotations';
 import { firstNodeTypeId } from '../data/specGraph';
 import { useChatStore } from '../stores/chatStore';
@@ -70,27 +70,19 @@ function useSeedGreeting() {
  * Seed an initial selection once data loads, so the active view renders
  * populated content instead of an empty prompt. Prefers the design's default
  * layer, falling back to the first populated one. Runs for the Model view
- * (element selection), the Schema view (node-type selection), and the Changesets
- * view (first changeset by the registry's newest-first order).
+ * (element selection) and the Schema view (node-type selection). The
+ * Changesets view opens on its inbox, so it selects nothing.
  */
 function useDefaultSelection() {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
-  const changesetId = useUiStore((s) => s.changesetId);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
-  const selectChangeset = useUiStore((s) => s.selectChangeset);
   const { derived: model } = useModel();
   const { derived: spec, raw: specRaw } = useSpec();
-  const { derived: changesets } = useChangesets();
 
   useEffect(() => {
-    if (view === 'changesets') {
-      if (changesetId) return;
-      const first = changesets.list[0];
-      if (first) selectChangeset(first.id);
-      return;
-    }
+    if (view === 'changesets') return;
 
     if (layerId) return;
 
@@ -117,14 +109,11 @@ function useDefaultSelection() {
   }, [
     view,
     layerId,
-    changesetId,
     model,
     spec,
     specRaw,
-    changesets,
     navigateToElement,
     navigateToSpecNode,
-    selectChangeset,
   ]);
 }
 
@@ -133,6 +122,8 @@ export function AppShell() {
   // Model + Schema render the graph Canvas (Inspector drawer lives inside it);
   // Changesets renders the diff list + changeset detail.
   const isChangesets = view === 'changesets';
+  // No changeset open: the inbox takes the whole canvas.
+  const hasChangeset = useUiStore((s) => s.changesetId !== null);
 
   useDefaultSelection();
   useSeedGreeting();
@@ -166,7 +157,7 @@ export function AppShell() {
         <LeftRail />
         {/* Model + Schema: live graph (Inspector drawer inside it). Changesets: diff list + detail column. */}
         {isChangesets ? <ChangesetCanvas /> : <Canvas />}
-        {isChangesets && <ChangesetInspector />}
+        {isChangesets && hasChangeset && <ChangesetInspector />}
         {/* DrBot chat: persistent 4th column when wide, absolute overlay otherwise. */}
         <ChatDrawer />
       </div>

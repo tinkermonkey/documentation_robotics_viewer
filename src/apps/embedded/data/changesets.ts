@@ -23,6 +23,21 @@ import type { DiffLine } from '@tinkermonkey/heimdall-ui';
 /** The four op buckets the UI renders (badge color + 3-char label). */
 export type ChangeOp = 'add' | 'update' | 'delete';
 
+/**
+ * A relationship that still references an element a `delete` change removes
+ * (and that the changeset doesn't delete itself): the delete is refused at
+ * commit unless the reviewer chose to delete these links with it.
+ */
+export interface DeleteBlocker {
+  /** `source::predicate::target`. */
+  relationshipId: string;
+  /** `in`: the other element points at the deleted one; `out`: the reverse. */
+  direction: 'in' | 'out';
+  /** Dotted id of the element at the relationship's other end. */
+  otherElementId: string;
+  predicate: string;
+}
+
 /** A raw change record from `/api/changesets/:id`. */
 export interface ChangeRecord {
   type?: string;
@@ -32,6 +47,8 @@ export interface ChangeRecord {
   after?: Record<string, unknown> | null;
   timestamp?: string;
   sequenceNumber?: number;
+  /** `delete` changes only, from a dr CLI with changeset review. */
+  blockers?: DeleteBlocker[];
   [key: string]: unknown;
 }
 

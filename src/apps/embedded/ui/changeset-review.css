@@ -1,0 +1,482 @@
+/*
+ * Changeset review (Changesets view): summary card, grouped change rows,
+ * cancel-out fold, revision cards, inbox cards and the change inspector.
+ * Tokens only, so `body.dark-canvas` flips every colour; `--semantic-*` are
+ * Heimdall's chip colours, already contrast-tuned for each canvas.
+ */
+
+.drv-review {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1080px;
+}
+
+.drv-mono {
+  font-family: var(--font-mono);
+}
+
+.drv-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-muted {
+  color: rgb(var(--canvas-fg-3));
+}
+
+/* The changed field an update touches, and other amber marks. */
+.drv-field {
+  font-family: var(--font-mono);
+  color: rgb(var(--semantic-amber-fg));
+}
+
+.drv-card {
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg, 8px);
+  background: rgb(var(--canvas-card));
+}
+
+.drv-card--attention {
+  border-color: rgb(var(--semantic-amber-border));
+}
+
+.drv-card--ok {
+  border-color: rgb(var(--semantic-emerald-border));
+}
+
+.drv-card--violet {
+  border-color: rgb(var(--semantic-violet-border));
+}
+
+.drv-card--danger {
+  border-color: rgb(var(--semantic-rose-border));
+  background: rgb(var(--semantic-rose-bg));
+}
+
+.drv-summary {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drv-summary__top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.drv-summary__headline {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-summary__actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.drv-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.drv-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.drv-toolbar__label {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-group {
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+}
+
+.drv-group__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: rgb(var(--canvas-surface));
+  border-bottom: 1px solid rgb(var(--canvas-border));
+  flex-wrap: wrap;
+}
+
+.drv-group__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-group__hint {
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-group__bulk {
+  margin-left: auto;
+}
+
+/* A change row: a full-width button. */
+.drv-row {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 40px 70px minmax(0, 1.1fr) minmax(0, 1.4fr) 128px;
+  gap: 0 12px;
+  align-items: center;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+  color: rgb(var(--canvas-fg-1));
+  font-size: 13px;
+}
+
+.drv-row:last-child {
+  border-bottom: 0;
+}
+
+.drv-row:hover {
+  background: rgb(var(--canvas-surface));
+}
+
+.drv-row:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: -2px;
+}
+
+.drv-row[aria-pressed='true'] {
+  background: rgb(var(--accent-primary) / 0.09);
+  box-shadow: inset 2px 0 0 rgb(var(--accent-primary));
+}
+
+.drv-row--dropped .drv-row__element,
+.drv-row--dropped .drv-row__change {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+.drv-row__seq {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-row__element {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.drv-swatch {
+  width: 3px;
+  height: 26px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.drv-row__name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.drv-row__name > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drv-row__type {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-row__change {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.drv-row__change > .drv-row__summary {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drv-row__verdict {
+  justify-self: end;
+}
+
+@media (max-width: 900px) {
+  .drv-row {
+    grid-template-columns: 34px 64px minmax(0, 1fr) 110px;
+  }
+  .drv-row__change {
+    display: none;
+  }
+}
+
+/* Cancel-out fold + carried-over fold. */
+.drv-fold > summary {
+  cursor: pointer;
+  padding: 9px 14px;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-2));
+  background: rgb(var(--canvas-surface));
+}
+
+.drv-fold > summary:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: -2px;
+}
+
+.drv-fold__body {
+  padding: 8px 14px 12px;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr);
+  gap: 4px 12px;
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+/* Revision cards (since your review). */
+.drv-rev {
+  padding: 10px 14px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-rev:last-child {
+  border-bottom: 0;
+}
+
+.drv-rev__compare {
+  display: grid;
+  grid-template-columns: 70px minmax(0, 1fr);
+  gap: 3px 10px;
+  font-size: 12.5px;
+}
+
+.drv-rev__compare .drv-old {
+  color: rgb(var(--canvas-fg-3));
+  text-decoration: line-through;
+}
+
+/* Inbox. */
+.drv-inbox {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 1080px;
+}
+
+.drv-inbox__section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drv-inbox__card {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.drv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-table th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  color: rgb(var(--canvas-fg-3));
+  padding: 8px 14px;
+  background: rgb(var(--canvas-surface));
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.drv-linkbtn {
+  all: unset;
+  cursor: pointer;
+  color: rgb(var(--canvas-fg-1));
+  font-weight: 500;
+}
+
+.drv-linkbtn:hover {
+  text-decoration: underline;
+}
+
+.drv-linkbtn:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Change inspector. */
+.drv-ci-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-ci-section:last-child {
+  border-bottom: 0;
+}
+
+.drv-decision {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.drv-decision .btn[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px rgb(var(--accent-primary));
+}
+
+.drv-text-block {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgb(var(--canvas-fg-1));
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.drv-text-block--before {
+  color: rgb(var(--canvas-fg-3));
+  text-decoration: line-through;
+}
+
+.drv-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgb(var(--canvas-border));
+  cursor: pointer;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-option--on {
+  border-color: rgb(var(--accent-primary));
+  background: rgb(var(--accent-primary) / 0.07);
+}
+
+.drv-option input {
+  margin-top: 3px;
+  accent-color: rgb(var(--accent-primary));
+}
+
+.drv-links-list {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 4px 10px;
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.drv-note {
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgb(var(--canvas-border));
+  background: rgb(var(--canvas-surface));
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.drv-alert {
+  padding: 8px 10px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgb(var(--semantic-rose-border));
+  background: rgb(var(--semantic-rose-bg));
+  color: rgb(var(--canvas-fg-1));
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.drv-stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+}
+
+.drv-landed {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto auto;
+  gap: 8px 12px;
+  align-items: center;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: rgb(var(--canvas-fg-1));
+}
+
+/*
+ * Heimdall's dark-canvas violet and neutral chips (status-violet on a 12%
+ * tint) and its link button (accent-primary-deep) fall below WCAG AA on the
+ * dark canvas; the review UI uses the semantic foregrounds instead.
+ */
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .chip--violet {
+  color: rgb(var(--semantic-violet-fg));
+}
+
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .chip--neutral {
+  color: rgb(var(--canvas-fg-2));
+}
+
+body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--link {
+  color: rgb(var(--accent-primary));
+}

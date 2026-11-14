@@ -65,7 +65,9 @@ test.describe('URL routing — left-panel selections', () => {
 
   test('selecting a changeset updates the URL with ?changeset=', async ({ page }) => {
     await gotoView(page, ROUTES.changesets);
-    // The default-selection effect seeds the first changeset; the URL reflects it.
+    // The view opens on the inbox (no changeset); opening one puts it in the URL.
+    await expect(page).not.toHaveURL(/[?&]changeset=/);
+    await page.getByRole('table').getByRole('button').first().click();
     await expect(page).toHaveURL(/[?&]changeset=[^&]+/);
   });
 

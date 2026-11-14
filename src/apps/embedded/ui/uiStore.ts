@@ -58,6 +58,9 @@ interface UiState {
    *  purely a transient visual cue. */
   highlightedEdgeId: string | null;
   changesetId: string | null;
+  /** Changesets view: the change (sequence number) open in the review
+   *  inspector. Cleared with every changeset switch; not persisted. */
+  changeSeq: number | null;
   canvasDark: boolean;
   chatOpen: boolean;
   wide: boolean;
@@ -165,6 +168,8 @@ interface UiState {
    */
   navigateToSpecNode: (specNodeId: string, layerId: string) => void;
   selectChangeset: (changesetId: string | null) => void;
+  /** Open a change of the selected changeset in the review inspector (null: the changeset overview). */
+  selectChange: (seq: number | null) => void;
   /** Switch the main panel between the live graph and the page-view scaffold.
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
@@ -230,6 +235,7 @@ export const useUiStore = create<UiState>()(
       selectedEdgeId: null,
       highlightedEdgeId: null,
       changesetId: null,
+      changeSeq: null,
       // Dark by default (first visit, nothing persisted yet) — a later
       // explicit choice via toggleCanvasDark persists and overrides this.
       canvasDark: true,
@@ -349,12 +355,15 @@ export const useUiStore = create<UiState>()(
         }),
 
       selectChangeset: (changesetId) =>
-        set({
+        set((s) => ({
           view: 'changesets',
           changesetId,
+          changeSeq: s.changesetId === changesetId ? s.changeSeq : null,
           highlightedEdgeId: null,
           expandedSections: onlySection('changesets'),
-        }),
+        })),
+
+      selectChange: (changeSeq) => set({ changeSeq }),
 
       setMode: (mode) => set({ mode }),
 

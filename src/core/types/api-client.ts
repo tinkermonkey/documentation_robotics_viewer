@@ -924,10 +924,30 @@ export interface paths {
                             changesets: {
                                 [key: string]: {
                                     name: string;
+                                    description?: string;
                                     /** @enum {string} */
                                     status: "staged" | "committed" | "discarded";
                                     created: string;
                                     changes_count: number;
+                                    /** @description Where the changeset came from; absent on changesets made before it was recorded */
+                                    origin?: {
+                                        /**
+                                         * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), or `dr changeset create` (cli)
+                                         * @enum {string}
+                                         */
+                                        kind: "chat" | "plan" | "extract" | "cli";
+                                        detail?: string;
+                                    };
+                                    /** @description The changeset's nextSequenceNumber */
+                                    revision?: number;
+                                    review?: {
+                                        /** @description Decisions whose change is still staged and was not rewritten after the decision (any verdict, ask included) */
+                                        decided: number;
+                                        /** @description Staged changes */
+                                        total: number;
+                                        /** @description Of the decided, those with verdict ask */
+                                        asked: number;
+                                    };
                                 };
                             };
                         };
@@ -985,16 +1005,80 @@ export interface paths {
                                 modifications: number;
                                 deletions: number;
                             };
+                            /** @description The changeset's nextSequenceNumber: one past the highest sequence number used */
+                            revision: number;
+                            /** @description Where the changeset came from; absent on changesets made before it was recorded */
+                            origin?: {
+                                /**
+                                 * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), or `dr changeset create` (cli)
+                                 * @enum {string}
+                                 */
+                                kind: "chat" | "plan" | "extract" | "cli";
+                                detail?: string;
+                            };
+                            /** @description Unstaged and rewritten changes (tombstones), oldest first */
+                            unstaged: {
+                                /** @description The sequence number the change had */
+                                sequence: number;
+                                /** @description The revision the unstage or rewrite took */
+                                removedAt: number;
+                                /**
+                                 * @description The change was rewritten in place (still staged under the same sequence number); the tombstone holds its earlier version
+                                 * @enum {boolean}
+                                 */
+                                rewritten?: true;
+                                change: {
+                                    /** @enum {string} */
+                                    type: "add" | "update" | "delete" | "relationship-add" | "relationship-delete";
+                                    elementId: string;
+                                    layerName: string;
+                                    timestamp?: string;
+                                    before?: unknown;
+                                    after?: unknown;
+                                };
+                            }[];
+                            review: {
+                                /** @description Decisions keyed by the change's sequenceNumber, as a string */
+                                decisions: {
+                                    [key: string]: {
+                                        /** @enum {string} */
+                                        verdict: "keep" | "drop" | "ask";
+                                        note?: string;
+                                        /** @description The changeset revision (nextSequenceNumber) when the decision was made */
+                                        atRevision: number;
+                                        /** @description ISO timestamp of the decision */
+                                        decidedAt: string;
+                                    };
+                                };
+                                /** @description The highest atRevision among the decisions; absent when there are none */
+                                lastReviewedRevision?: number;
+                            };
                             changes: {
                                 /** @enum {string} */
-                                type: "add" | "update" | "delete";
+                                type: "add" | "update" | "delete" | "relationship-add" | "relationship-delete";
+                                /** @description For relationship changes: source::predicate::target */
                                 elementId: string;
                                 layerName: string;
+                                /** @description Stable identity of the change; never renumbered */
+                                sequenceNumber?: number;
                                 timestamp?: string;
                                 /** @description Previous element state (for update/delete operations) */
                                 before?: unknown;
                                 /** @description New element state (for add/update operations) */
                                 after?: unknown;
+                                /** @description Delete changes of a staged changeset only: relationships in the projected model that still reference the deleted element and that the changeset does not delete */
+                                blockers?: {
+                                    /** @description source::predicate::target (dotted ids) */
+                                    relationshipId: string;
+                                    /**
+                                     * @description out: the deleted element is the source; in: it is the target
+                                     * @enum {string}
+                                     */
+                                    direction: "in" | "out";
+                                    /** @description The element at the other end (dotted id) */
+                                    otherElementId: string;
+                                    predicate: string;
+                                }[];
                             }[];
                         };
                     };
@@ -1014,6 +1098,112 @@ export interface paths {
             };
         };
         put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/changesets/:changesetId/review": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Record review decisions
+         * @description Set or clear the reviewer's verdict on changes of a staged changeset, by sequence number. A null verdict clears the decision. The server stamps atRevision (the changeset's current revision) and decidedAt. Stored in review.yaml in the changeset's directory, under its file lock. Broadcasts changesets.updated.
+         */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    changesetId: string;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        decisions: {
+                            sequence: number;
+                            /**
+                             * @description null clears the decision
+                             * @enum {string|null}
+                             */
+                            verdict: "keep" | "drop" | "ask" | null;
+                            note?: string;
+                        }[];
+                    };
+                };
+            };
+            responses: {
+                /** @description The changeset's review after the update */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Decisions keyed by the change's sequenceNumber, as a string */
+                            decisions: {
+                                [key: string]: {
+                                    /** @enum {string} */
+                                    verdict: "keep" | "drop" | "ask";
+                                    note?: string;
+                                    /** @description The changeset revision (nextSequenceNumber) when the decision was made */
+                                    atRevision: number;
+                                    /** @description ISO timestamp of the decision */
+                                    decidedAt: string;
+                                };
+                            };
+                            /** @description The highest atRevision among the decisions; absent when there are none */
+                            lastReviewedRevision?: number;
+                        };
+                    };
+                };
+                /** @description Changeset not found */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description Changeset is not staged */
+                409: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+                /** @description A sequence number names no staged change (or, to clear, no decision) */
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
+                        };
+                    };
+                };
+            };
+        };
         post?: never;
         delete?: never;
         options?: never;
@@ -1043,7 +1233,16 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        /** @description Sequence numbers to leave out. Changes that depend on an element a dropped add creates (relationship-adds with it at either end, updates of it) are left out too. All are unstaged (tombstoned) before the commit. */
+                        drop?: number[];
+                        /** @description Sequence numbers of delete changes whose blockers may be deleted with the element. With either field present, any other delete with blockers is refused (422). */
+                        deleteBlockedLinks?: number[];
+                    };
+                };
+            };
             responses: {
                 /** @description Action completed */
                 200: {
@@ -1062,6 +1261,27 @@ export interface paths {
                             skipped?: number;
                             /** @description Changes that failed to apply (commit only) */
                             failed?: number;
+                            /** @description Validation errors the base model already had (commit only) */
+                            preExistingErrors?: number;
+                            /** @description The changeset was active and was deactivated (commit only) */
+                            deactivated?: boolean;
+                            deactivationError?: string;
+                            /** @description Commit with a body only: every sequence number left out, cascaded ones included */
+                            dropped?: number[];
+                            /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
+                            linksDeleted?: number;
+                        };
+                    };
+                };
+                /** @description The body is not JSON, or does not match the schema (an empty body is the plain commit) */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @description Error message */
+                            error: string;
                         };
                     };
                 };
@@ -1089,15 +1309,29 @@ export interface paths {
                         };
                     };
                 };
-                /** @description The changeset failed validation; nothing was applied */
+                /** @description The changeset failed validation; nothing was applied. Or (body given) a sequence number names no staged change, a delete has blockers and is not in deleteBlockedLinks (blockers lists them), or a staged relationship-add names an element the changeset deletes */
                 422: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            /** @description Error message */
                             error: string;
+                            /** @description When deletes have blockers and are not in deleteBlockedLinks: their blockers, keyed by sequence number */
+                            blockers?: {
+                                [key: string]: {
+                                    /** @description source::predicate::target (dotted ids) */
+                                    relationshipId: string;
+                                    /**
+                                     * @description out: the deleted element is the source; in: it is the target
+                                     * @enum {string}
+                                     */
+                                    direction: "in" | "out";
+                                    /** @description The element at the other end (dotted id) */
+                                    otherElementId: string;
+                                    predicate: string;
+                                }[];
+                            };
                         };
                     };
                 };
@@ -1150,6 +1384,15 @@ export interface paths {
                             skipped?: number;
                             /** @description Changes that failed to apply (commit only) */
                             failed?: number;
+                            /** @description Validation errors the base model already had (commit only) */
+                            preExistingErrors?: number;
+                            /** @description The changeset was active and was deactivated (commit only) */
+                            deactivated?: boolean;
+                            deactivationError?: string;
+                            /** @description Commit with a body only: every sequence number left out, cascaded ones included */
+                            dropped?: number[];
+                            /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
+                            linksDeleted?: number;
                         };
                     };
                 };

@@ -38,6 +38,7 @@ export function resetUiStore(): void {
     layerId: null,
     selectedId: null,
     changesetId: null,
+    changeSeq: null,
     canvasDark: false,
     chatOpen: false,
     wide: false,

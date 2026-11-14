@@ -204,6 +204,13 @@ function getInvalidationQueries(operationId, pathParams) {
     }
   }
 
+  // Recording review verdicts changes the changeset's detail (its `review`) and
+  // the list's per-changeset review progress.
+  if (operationId === 'putapichangesetschangesetIdreview') {
+    invalidations.push(`{ queryKey: ['getapichangesets'] }`);
+    invalidations.push(`{ queryKey: ['getapichangesetschangesetId', changesetId] }`);
+  }
+
   // If no specific invalidations found, emit a build-time warning
   if (invalidations.length === 0) {
     console.warn(`⚠️  No invalidation mapping found for operation: ${operationId}. Add explicit mapping to getInvalidationQueries().`);
@@ -300,7 +307,7 @@ function generateApiClient(spec, endpoints) {
 
   const code = `/**
  * Auto-generated API Client with React Query Hooks
- * Generated from: ${specPath}
+ * Generated from: ${path.relative(process.cwd(), specPath)}
  * API Version: ${spec.info?.version || 'unknown'}
  *
  * IMPORTANT: This file is auto-generated. Do not edit directly.
