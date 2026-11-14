@@ -43,7 +43,8 @@ describe('Tier1Panel', () => {
     expect(within(panel).getByTestId('tier1-spend')).toHaveTextContent('$16.42of the $20.00 monthly cap');
     expect(within(panel).getByTestId('tier1-spend')).toHaveTextContent('$3.58 left · 11,730 cards · resets Dec 1');
     const bar = within(panel).getByRole('progressbar', { name: 'Tier 1 spend this month: $16.42 of $20.00' });
-    expect(bar).toHaveAttribute('aria-valuenow', '82');
+    // The server's percentUsed (82.1), not a rounding of its own.
+    expect(bar).toHaveAttribute('aria-valuenow', '82.1');
     // The server's own warning, with its "to raise it" command as code.
     const warning = within(panel).getByTestId('tier1-near-cap');
     expect(warning).toHaveTextContent("Tier 1 has used 82% of this checkout's monthly cap ($16.42 of $20.00).");
@@ -54,7 +55,7 @@ describe('Tier1Panel', () => {
     expect(rows[0]).toHaveTextContent('extract9,810$13.73');
     expect(rows[2]).toHaveTextContent('probe1<$0.01');
 
-    expect(within(panel).getByTestId('tier1-cache')).toHaveTextContent('11,402 entries');
+    expect(within(panel).getByTestId('tier1-cache')).toHaveTextContent('Answer cache: 11,402 lines · 6.5 MB');
     // The note names the CLI command; nothing here changes Tier 1.
     expect(within(panel).getByTestId('tier1-note').querySelector('code')).toHaveTextContent(
       'dr analyzer tier1 enable|set|disable',
@@ -82,13 +83,16 @@ describe('Tier1Panel', () => {
     expect(within(panel).queryByTestId('tier1-reason')).not.toBeInTheDocument();
   });
 
-  it('says the cap is reached when capped', async () => {
+  it("gives the server's reason when capped", async () => {
     serve('capped');
     renderWithProviders(<Tier1Panel />);
     const panel = await screen.findByTestId('tier1-panel');
     expect(panel).toHaveAttribute('data-state', 'capped');
     expect(within(panel).getByTestId('tier1-state')).toHaveTextContent('capped');
-    expect(within(panel).getByTestId('tier1-capped')).toHaveTextContent("cap is reached");
+    const reason = within(panel).getByTestId('tier1-reason');
+    expect(reason).toHaveTextContent('The $20.00 monthly cap is reached; cached answers are still used until 1 Dec 2026');
+    expect(reason.querySelector('code')).toHaveTextContent('dr analyzer tier1 set monthly-cap <dollars>');
+    expect(within(panel).queryByTestId('tier1-capped')).not.toBeInTheDocument();
     expect(within(panel).getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
     expect(within(panel).getByTestId('tier1-credentials')).toHaveTextContent('set from tier1.json');
   });
@@ -209,6 +213,14 @@ describe('Tier1Panel', () => {
 describe('Tier1Panel — cap edge cases', () => {
   const base = tier1.on;
 
+  it('says the cap is reached in its own words for a CLI that sends no reason when capped', async () => {
+    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.capped, reason: undefined })));
+    renderWithProviders(<Tier1Panel />);
+    expect(await screen.findByTestId('tier1-capped')).toHaveTextContent("This month's cap is reached");
+    expect(screen.queryByTestId('tier1-reason')).not.toBeInTheDocument();
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '100');
+  });
+
   it("shows the server's reason when capped, not its own words", async () => {
     mswServer.use(
       http.get('*/api/tier1', () =>
@@ -269,7 +281,11 @@ describe('Tier1Panel — cap edge cases', () => {
   it('rounds down like the CLI without percentUsed', async () => {
     mswServer.use(
       http.get('*/api/tier1', () =>
-        HttpResponse.json({ ...tier1.onNearCap, summary: '', month: { ...tier1.onNearCap.month, spentUsd: 16.99 } }),
+        HttpResponse.json({
+          ...tier1.onNearCap,
+          summary: '',
+          month: { ...tier1.onNearCap.month, spentUsd: 16.99, percentUsed: undefined },
+        }),
       ),
     );
     renderWithProviders(<Tier1Panel />);

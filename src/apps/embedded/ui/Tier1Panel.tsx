@@ -237,9 +237,10 @@ function Tier1Card({ status }: { status: Tier1Status }) {
         </ul>
       )}
 
+      {/* cache.entries counts lines in the cache files (one per answer, before compaction drops any). */}
       {status.cache.entries > 0 && (
         <span className="drv-mono drv-muted" style={{ fontSize: 12 }} data-testid="tier1-cache">
-          Answer cache: {formatCount(status.cache.entries)} entries · {formatBytes(status.cache.bytes)}
+          Answer cache: {formatCount(status.cache.entries)} lines · {formatBytes(status.cache.bytes)}
         </span>
       )}
       {status.note && (

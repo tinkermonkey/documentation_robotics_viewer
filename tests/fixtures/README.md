@@ -39,6 +39,7 @@ fixture drift or a transform regression is caught loudly).
 
 `tier1.json` holds `GET /api/tier1` bodies keyed by state (`off`, `on`,
 `onNearCap`, `capped`, `noCredentials`, `misconfigured`). `off`, `onNearCap`,
-`capped` and `noCredentials` are the response examples in `docs/api-spec.yaml`;
-`on` and `misconfigured` are written to the same schema. Credentials name where
+`capped` and `noCredentials` are the response examples in `docs/api-spec.yaml`
+(taken from dr PR #1134 at dca7bf0f); `on` and `misconfigured` are written to
+the same schema. Credentials name where
 a key comes from (an environment variable or `tier1.json`), never its value.
