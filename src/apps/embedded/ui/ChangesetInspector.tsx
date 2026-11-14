@@ -32,6 +32,7 @@ import { ChangeInspector } from './ChangeInspector';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
+import { netStats } from '../data/changesetReview';
 import {
   changesetLoadErrorMessage,
   useChangeset,
@@ -182,6 +183,9 @@ export function ChangesetInspector() {
   const changeSeq = useUiStore((s) => s.changeSeq);
   const { detail, error } = useChangeset(changesetId);
   const review = useChangesetReview(detail);
+  const stats = detail
+    ? netStats(detail.stats, detail.changes ?? [])
+    : { additions: 0, modifications: 0, deletions: 0 };
   const item = changeSeq !== null ? review.model?.bySeq.get(changeSeq) : undefined;
 
   return (
@@ -319,19 +323,19 @@ export function ChangesetInspector() {
             <div style={{ display: 'flex', gap: 8 }}>
               <StatTile
                 label="Added"
-                value={detail.stats.additions}
+                value={stats.additions}
                 color="emerald"
                 style={{ flex: 1, padding: 11 }}
               />
               <StatTile
                 label="Modified"
-                value={detail.stats.modifications}
+                value={stats.modifications}
                 color="cyan"
                 style={{ flex: 1, padding: 11 }}
               />
               <StatTile
                 label="Deleted"
-                value={detail.stats.deletions}
+                value={stats.deletions}
                 color="rose"
                 style={{ flex: 1, padding: 11 }}
               />

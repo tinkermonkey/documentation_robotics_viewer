@@ -48,7 +48,7 @@ export function ChangeSummary({ item }: { item: ReviewItem }) {
 
 /** Chip tone for the descriptive chips a row carries. */
 export function chipTone(label: string): 'amber' | 'violet' | 'neutral' | 'rose' {
-  if (label.includes('still use it')) return 'amber';
+  if (/still uses? it/.test(label)) return 'amber';
   if (label === 'renamed' || label === 'type changes') return 'amber';
   if (label === 'no links') return 'amber';
   return 'neutral';

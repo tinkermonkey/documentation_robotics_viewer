@@ -46,6 +46,7 @@ import {
 import { mutateWithBody, type ChangesetReviewState } from '../data/useChangesetReview';
 import { useLocalReviewStore } from '../stores/localReviewStore';
 import {
+  conflictPartners,
   countKinds,
   describeChange,
   groupReviewItems,
@@ -68,6 +69,7 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
   const state = model.stateOf(item.seq);
   const selected = changeSeq === item.seq;
   const dropped = state === 'drop' || state === 'cascaded';
+  const conflictsWith = conflictPartners(model.conflicts).get(item.seq);
   return (
     <button
       type="button"
@@ -91,13 +93,18 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
       </span>
       <span className="drv-row__change">
         <ChangeSummary item={item} />
-        {item.chips.length > 0 && (
+        {(item.chips.length > 0 || conflictsWith) && (
           <span className="drv-pills">
             {item.chips.map((c) => (
               <Chip key={c} variant={chipTone(c)}>
                 {c}
               </Chip>
             ))}
+            {conflictsWith && (
+              <Chip variant="rose" data-testid="review-conflict-chip">
+                conflicts with {conflictsWith.join(', ')}
+              </Chip>
+            )}
           </span>
         )}
       </span>
@@ -305,8 +312,15 @@ function SummaryCard({
   const discard = usePostapichangesetschangesetIddiscard(detail.id);
   const [confirming, setConfirming] = useState<Confirming>(null);
   const [error, setError] = useState<string | null>(null);
+  // Set once Apply or Discard succeeds. The refetch that turns this card into
+  // the result lands a beat later (the dr CLI writes and broadcasts as it
+  // goes, so a refetch mid-commit can even show the drops already gone);
+  // until it does, keep both actions shut so the stale card can't be
+  // applied twice. The card unmounts when the status changes.
+  const [settled, setSettled] = useState<'apply' | 'discard' | null>(null);
   const { tally } = model;
-  const busy = commit.isPending || discard.isPending;
+  const busy = commit.isPending || discard.isPending || settled !== null;
+  const applying = commit.isPending || settled === 'apply';
   const local = review.mode === 'local';
 
   // "Keep the other N": undecided changes, except blocked deletes (keeping
@@ -334,6 +348,7 @@ function SummaryCard({
     mutateWithBody(commit.mutate)(local ? undefined : model.apply.body, {
       onSuccess: (data) => {
         const result = data as ChangesetActionResult;
+        setSettled('apply');
         onResult(result, `Applied ${plural(result.committed ?? lands, 'change')} to the model`);
       },
       onError: (err) => {
@@ -369,7 +384,10 @@ function SummaryCard({
     setConfirming(null);
     setError(null);
     mutateWithBody(discard.mutate)(undefined, {
-      onSuccess: (data) => onResult(data as ChangesetActionResult, `Discarded ${detail.name}`),
+      onSuccess: (data) => {
+        setSettled('discard');
+        onResult(data as ChangesetActionResult, `Discarded ${detail.name}`);
+      },
       onError: (err) => setError(changesetActionErrorMessage(err)),
     });
   };
@@ -400,7 +418,7 @@ function SummaryCard({
             onClick={() => setConfirming('discard')}
             data-testid="changeset-discard-button"
           >
-            {discard.isPending ? 'Discarding…' : 'Discard changeset'}
+            {discard.isPending || settled === 'discard' ? 'Discarding…' : 'Discard changeset'}
           </Button>
           <Button
             variant="secondary"
@@ -419,7 +437,7 @@ function SummaryCard({
             onClick={() => setConfirming('apply')}
             data-testid="changeset-apply-button"
           >
-            {commit.isPending
+            {applying
               ? 'Applying…'
               : model.ready
                 ? `Apply ${lands} kept${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''}`
@@ -527,7 +545,8 @@ export function ChangesetReviewPanel({
   const diff = model.diff;
   const showSince = staged && diff !== null && diff.changedCount > 0;
   const effectiveFilter: ShowFilter = filter === 'since' && !showSince ? 'needs' : filter;
-  const needs = model.tally.undecided + model.tally.asked;
+  // Changes in a drop conflict are decided, but Apply waits on them too.
+  const needs = model.tally.undecided + model.tally.asked + conflictPartners(model.conflicts).size;
   const filterOptions = [
     ...(showSince ? [{ value: 'since', label: `Since your review · ${diff!.changedCount}` }] : []),
     { value: 'needs', label: `Needs decision · ${needs}` },
@@ -613,7 +632,7 @@ export function ChangesetReviewPanel({
         ))
       ) : (
         <p className="drv-muted" style={{ margin: 0, fontSize: 13 }} data-testid="review-empty-filter">
-          {effectiveFilter === 'needs' ? 'Every change has a decision.' : 'No changes to show.'}
+          {staged && effectiveFilter === 'needs' ? 'Every change has a decision.' : 'No changes to show.'}
         </p>
       )}
 

@@ -78,12 +78,14 @@ describe('ChangesetInspector — stat tiles + status pill', () => {
   it('shows additions / modifications / deletions StatTiles from the fixture', async () => {
     renderInspector();
 
-    // StatTile exposes its value via aria-label "{label}: {value}".
+    // StatTile exposes its value via aria-label "{label}: {value}". The
+    // fixture's stats are 27 / 7 / 4, but its 4 link deletes each remove a link
+    // the same changeset added (cancel-out pairs), so the tiles net them out.
     await waitFor(() =>
-      expect(screen.getByLabelText('Added: 27')).toBeInTheDocument(),
+      expect(screen.getByLabelText('Added: 23')).toBeInTheDocument(),
     );
     expect(screen.getByLabelText('Modified: 7')).toBeInTheDocument();
-    expect(screen.getByLabelText('Deleted: 4')).toBeInTheDocument();
+    expect(screen.getByLabelText('Deleted: 0')).toBeInTheDocument();
   });
 
   it('shows the committed status label', async () => {

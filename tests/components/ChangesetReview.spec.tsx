@@ -40,6 +40,8 @@ interface ServeOptions {
   unstaged?: UnstagedChange[];
   revision?: number;
   commitError?: { status: number; body: unknown };
+  /** GET keeps answering `staged` after a commit (the refetch hasn't caught up). */
+  staleAfterCommit?: boolean;
   /** PUT .../review answers 404 with no JSON body (route missing). */
   reviewMissing?: boolean;
 }
@@ -67,7 +69,7 @@ function serve(opts: ServeOptions = {}): Server {
       HttpResponse.json({
         ...changesetDetail,
         id: params.id,
-        status,
+        status: opts.staleAfterCommit ? 'staged' : status,
         changes: opts.changes ?? FIXTURE,
         ...(opts.legacy ? {} : { revision, unstaged: opts.unstaged ?? [], review }),
       }),
@@ -228,6 +230,25 @@ describe('review — Apply', () => {
     expect(await screen.findByText('Applied 28 changes to the model')).toBeInTheDocument();
     expect(screen.queryByTestId('review-summary')).not.toBeInTheDocument();
     expect(screen.getByTestId('applied-left-out')).toHaveTextContent('2 left out');
+  });
+
+  it('keeps Apply shut after it succeeds until the changeset reads as committed', async () => {
+    const server = serve({ review: keepAll(), staleAfterCommit: true });
+    const user = userEvent.setup();
+    renderReview();
+
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    await user.click(apply);
+    await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
+
+    await waitFor(() => expect(server.commits).toHaveLength(1));
+    await screen.findByText('Applied 30 changes to the model');
+    // The detail still says staged: the card stays, but can't be applied again.
+    const stale = screen.getByTestId('changeset-apply-button');
+    expect(stale).toBeDisabled();
+    expect(stale).toHaveTextContent('Applying…');
+    expect(screen.getByTestId('changeset-discard-button')).toBeDisabled();
   });
 
   it('waits on DrBot while a change is asked about', async () => {
