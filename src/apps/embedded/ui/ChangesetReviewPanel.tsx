@@ -8,6 +8,9 @@
  * - A Show filter (Since your review · Needs decision · Decided · All) and a
  *   Group by (Review weight · Layer · Sequence) over the change rows. A row
  *   opens the change in the inspector column (`uiStore.changeSeq`).
+ * - Who decided each change (codebase_extract's `origin`): a badge under the
+ *   op chip (Tier 0 / Tier 1 / Agent, details on hover) and a Decided by
+ *   filter, offered only when some change carries an origin.
  * - "Since your review" (when DrBot restaged after your last decision): the
  *   revised changes (earlier vs now), new ones, withdrawn ones and a fold of
  *   the decisions that carry over.
@@ -31,7 +34,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
 import { ApplyConfirm, AppliedResult } from './ApplyReview';
-import { ChangeSummary, LayerSwatch, OpChip, VerdictChip, chipTone, plural } from './reviewParts';
+import { ChangeSummary, LayerSwatch, OpChip, OriginBadge, VerdictChip, chipTone, plural } from './reviewParts';
 import {
   usePostapichangesetschangesetIdcommit,
   usePostapichangesetschangesetIddiscard,
@@ -60,6 +63,7 @@ import {
   type ReviewModel,
   type ShowFilter,
 } from '../data/changesetReview';
+import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
 
 // ─── Rows ─────────────────────────────────────────────────────────────────────
 
@@ -81,8 +85,9 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
       data-state={state}
     >
       <span className="drv-row__seq">{item.seq}</span>
-      <span>
+      <span className="drv-row__op">
         <OpChip item={item} />
+        <OriginBadge origin={originOf(item.record)} />
       </span>
       <span className="drv-row__element">
         <LayerSwatch layerId={item.layerId} />
@@ -192,25 +197,36 @@ function PairRow({ from, to, label }: { from: number; to: number; label: string 
 
 // ─── Since your review ────────────────────────────────────────────────────────
 
-function RevisionSection({ model }: { model: ReviewModel }) {
+function RevisionSection({ model, origin }: { model: ReviewModel; origin: OriginFilter }) {
   const selectChange = useUiStore((s) => s.selectChange);
   const diff = model.diff;
   if (!diff) return null;
+  const revised = diff.revised.filter((r) => passesOriginFilter(r.item.record, origin));
+  const added = diff.added.filter((i) => passesOriginFilter(i.record, origin));
+  const withdrawn = diff.withdrawn.filter((w) => passesOriginFilter(w.tombstone.change, origin));
+  const carried = diff.carried.filter((i) => passesOriginFilter(i.record, origin));
+  const nothing = revised.length + added.length + withdrawn.length + carried.length === 0;
   const textOf = (item: ReviewItem) => describeChange(item.record, model.nameOf);
   return (
     <section className="drv-group" aria-label="Changed since your review" data-testid="review-since">
       <div className="drv-group__head">
         <h3 className="drv-group__title">Changed since your review</h3>
         <span className="drv-group__hint">
-          {diff.revised.length} revised · {diff.withdrawn.length} withdrawn · {diff.added.length} new ·{' '}
-          {diff.carried.length} carried over
+          {revised.length} revised · {withdrawn.length} withdrawn · {added.length} new · {carried.length} carried
+          over
         </span>
       </div>
-      {diff.revised.map((r) => (
+      {nothing && (
+        <p className="drv-muted" style={{ margin: 0, padding: '10px 14px', fontSize: 13 }} data-testid="review-since-empty">
+          Nothing changed since your review among the changes this filter shows.
+        </p>
+      )}
+      {revised.map((r) => (
         <article className="drv-rev" key={`rev-${r.item.seq}`} data-testid="review-revised">
           <div className="drv-pills">
             <Chip variant="violet">revised</Chip>
             <OpChip item={r.item} />
+            <OriginBadge origin={originOf(r.item.record)} />
             <button type="button" className="drv-linkbtn" onClick={() => selectChange(r.item.seq)}>
               {textOf(r.item)}
             </button>
@@ -232,11 +248,12 @@ function RevisionSection({ model }: { model: ReviewModel }) {
           )}
         </article>
       ))}
-      {diff.added.map((item) => (
+      {added.map((item) => (
         <article className="drv-rev" key={`new-${item.seq}`} data-testid="review-new">
           <div className="drv-pills">
             <Chip variant="cyan">new</Chip>
             <OpChip item={item} />
+            <OriginBadge origin={originOf(item.record)} />
             <button type="button" className="drv-linkbtn" onClick={() => selectChange(item.seq)}>
               {textOf(item)}
             </button>
@@ -246,7 +263,7 @@ function RevisionSection({ model }: { model: ReviewModel }) {
           </div>
         </article>
       ))}
-      {diff.withdrawn.map((w) => (
+      {withdrawn.map((w) => (
         <article className="drv-rev" key={`wd-${w.tombstone.sequence}`} data-testid="review-withdrawn">
           <div className="drv-pills">
             <Chip variant="neutral">withdrawn</Chip>
@@ -259,13 +276,13 @@ function RevisionSection({ model }: { model: ReviewModel }) {
           </span>
         </article>
       ))}
-      {diff.carried.length > 0 && (
+      {carried.length > 0 && (
         <details className="drv-fold">
           <summary>
-            {diff.carried.length} unchanged since your review · decisions carried over
+            {carried.length} unchanged since your review · decisions carried over
           </summary>
           <div className="drv-fold__body">
-            {diff.carried.map((item) => (
+            {carried.map((item) => (
               <CarriedRow key={item.seq} item={item} model={model} />
             ))}
           </div>
@@ -531,13 +548,19 @@ export function ChangesetReviewPanel({
   const staged = detail.status === 'staged';
   const [filter, setFilter] = useState<ShowFilter>(() => (model ? defaultFilter(model, staged) : 'all'));
   const [groupBy, setGroupBy] = useState<GroupBy>('weight');
+  const [originFilter, setOriginFilter] = useState<OriginFilter>('all');
   const [result, setResult] = useState<ChangesetActionResult | null>(null);
   const [toast, setToast] = useState<ToastState>({ open: false, variant: 'success', title: '' });
   const clearLocal = useLocalReviewStore((s) => s.clear);
 
+  // Who decided the changes (codebase_extract): empty when none says, and then no filter is offered.
+  const originOptions = useMemo(() => (model ? originFilterOptions(model.items.map((i) => i.record)) : []), [model]);
+  // A decider no change has any more (DrBot restaged) falls back to All.
+  const origin: OriginFilter = originOptions.some((o) => o.value === originFilter) ? originFilter : 'all';
+
   const groups = useMemo(
-    () => (model ? groupReviewItems(model, groupBy, filter === 'since' ? 'all' : filter, LAYER_ORDER) : []),
-    [model, groupBy, filter],
+    () => (model ? groupReviewItems(model, groupBy, filter === 'since' ? 'all' : filter, LAYER_ORDER, origin) : []),
+    [model, groupBy, filter, origin],
   );
 
   if (!model) return null;
@@ -554,7 +577,7 @@ export function ChangesetReviewPanel({
     { value: 'all', label: `All · ${model.tally.total}` },
   ];
   const shownGroups =
-    effectiveFilter === filter ? groups : groupReviewItems(model, groupBy, effectiveFilter, LAYER_ORDER);
+    effectiveFilter === filter ? groups : groupReviewItems(model, groupBy, effectiveFilter, LAYER_ORDER, origin);
 
   const onResult = (r: ChangesetActionResult, title: string) => {
     setResult(r);
@@ -588,26 +611,44 @@ export function ChangesetReviewPanel({
       {model.items.length > 0 && (
         <div className="drv-toolbar">
           {staged && (
-            <SegmentedControl
-              value={effectiveFilter}
-              onChange={(v) => setFilter(v as ShowFilter)}
-              options={filterOptions}
-              aria-label="Show changes"
-              data-testid="review-filter"
-            />
+            <span className="drv-toolbar__item">
+              <span className="drv-toolbar__label">SHOW</span>
+              <SegmentedControl
+                value={effectiveFilter}
+                onChange={(v) => setFilter(v as ShowFilter)}
+                options={filterOptions}
+                aria-label="Show changes"
+                data-testid="review-filter"
+              />
+            </span>
           )}
-          <span className="drv-toolbar__label">GROUP BY</span>
-          <SegmentedControl
-            value={groupBy}
-            onChange={(v) => setGroupBy(v as GroupBy)}
-            options={[
-              { value: 'weight', label: 'Review weight' },
-              { value: 'layer', label: 'Layer' },
-              { value: 'sequence', label: 'Sequence' },
-            ]}
-            aria-label="Group changes by"
-            data-testid="review-group-by"
-          />
+          {originOptions.length > 0 && (
+            // Label and control wrap together, so a label never ends a line apart from its control.
+            <span className="drv-toolbar__item">
+              <span className="drv-toolbar__label">DECIDED BY</span>
+              <SegmentedControl
+                value={origin}
+                onChange={(v) => setOriginFilter(v as OriginFilter)}
+                options={originOptions.map((o) => ({ value: o.value, label: `${o.label} · ${o.count}` }))}
+                aria-label="Show changes decided by"
+                data-testid="review-origin-filter"
+              />
+            </span>
+          )}
+          <span className="drv-toolbar__item">
+            <span className="drv-toolbar__label">GROUP BY</span>
+            <SegmentedControl
+              value={groupBy}
+              onChange={(v) => setGroupBy(v as GroupBy)}
+              options={[
+                { value: 'weight', label: 'Review weight' },
+                { value: 'layer', label: 'Layer' },
+                { value: 'sequence', label: 'Sequence' },
+              ]}
+              aria-label="Group changes by"
+              data-testid="review-group-by"
+            />
+          </span>
         </div>
       )}
 
@@ -619,7 +660,7 @@ export function ChangesetReviewPanel({
       )}
 
       {effectiveFilter === 'since' ? (
-        <RevisionSection model={model} />
+        <RevisionSection model={model} origin={origin} />
       ) : shownGroups.length > 0 ? (
         shownGroups.map((g) => (
           <GroupSection
@@ -632,7 +673,9 @@ export function ChangesetReviewPanel({
         ))
       ) : (
         <p className="drv-muted" style={{ margin: 0, fontSize: 13 }} data-testid="review-empty-filter">
-          {staged && effectiveFilter === 'needs' ? 'Every change has a decision.' : 'No changes to show.'}
+          {staged && effectiveFilter === 'needs' && origin === 'all'
+            ? 'Every change has a decision.'
+            : 'No changes to show.'}
         </p>
       )}
 

@@ -24,6 +24,7 @@ import { originLabel } from '../data/changesetReview';
 import { ChangesetImpactView } from './ChangesetImpactView';
 import { ChangesetReviewPanel } from './ChangesetReviewPanel';
 import { ChangesetInbox } from './ChangesetInbox';
+import { ErrorBoundary } from './ErrorBoundary';
 
 /** Status → swatch color (committed/discarded = emerald, staged = amber). */
 function statusColor(status: string): string {
@@ -183,8 +184,10 @@ export function ChangesetCanvas() {
                 {detail.description}
               </p>
             )}
-            {/* Remount per changeset so filters start from that changeset's state. */}
-            <ChangesetReviewPanel key={detail.id} detail={detail} review={review} />
+            {/* Remount per changeset so filters start from that changeset's state (and a failed render gets a fresh try). */}
+            <ErrorBoundary key={detail.id} what="this changeset's review">
+              <ChangesetReviewPanel detail={detail} review={review} />
+            </ErrorBoundary>
           </div>
         )}
       </div>
