@@ -377,3 +377,309 @@ application.applicationservice.layer-domain-palette:
     created_at: 2026-11-17T22:03:59.328Z
     updated_at: 2026-11-17T22:03:59.328Z
     version: 1
+application.applicationservice.use-model:
+  id: c35606fe-4f9a-4b97-b3ed-62744f154a90
+  path: application.applicationservice.use-model
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useModel
+  description: React Query hook over GET /api/model, deriving the model graph
+    index; useLiveModelUpdates refetches model and changesets on the server's
+    model.updated broadcast.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useModel.ts
+        symbol: useModel
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-spec:
+  id: d2bd9d4e-7ee4-41b6-b36e-f5aa1c0882f3
+  path: application.applicationservice.use-spec
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useSpec
+  description: "React Query hook over GET /api/spec: per-layer node schemas and
+    relationship schemas, with the layer order derived from them."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useSpec.ts
+        symbol: useSpec
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-changesets:
+  id: cf6d77ed-cd1b-4d0a-9cb5-ab22b9f0a202
+  path: application.applicationservice.use-changesets
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useChangesets
+  description: React Query hooks over GET /api/changesets and /api/changesets/:id,
+    Apply (commit) and Discard with their refusal messages;
+    useLiveChangesetUpdates refetches on changesets.updated.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useChangesets.ts
+        symbol: useChangesets
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-annotations:
+  id: 9d24bc44-7e59-4618-a195-a452c5a8d1fa
+  path: application.applicationservice.use-annotations
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useAnnotations
+  description: React Query hooks for annotation CRUD and replies;
+    useLiveAnnotationUpdates invalidates on the server's annotation broadcasts
+    so comments written elsewhere appear without a reload.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useAnnotations.ts
+        symbol: useAnnotations
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-changeset-review:
+  id: d5bdde8b-4797-44cd-b7e1-3019ee0efd28
+  path: application.applicationservice.use-changeset-review
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useChangesetReview
+  description: Per-change verdicts (keep, drop, ask) through PUT
+    /api/changesets/:id/review, optimistic and queued per changeset; falls back
+    to the local review store on an older dr CLI.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useChangesetReview.ts
+        symbol: useChangesetReview
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-tier1:
+  id: 932fd07a-7c0c-43ab-a75b-bc2f42af6c13
+  path: application.applicationservice.use-tier1
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useTier1
+  description: React Query hook over GET /api/tier1; treats 404/405/501 or a
+    non-Tier1Status body as unavailable and asks again on inbox mount,
+    changesets.updated and window focus.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useTier1.ts
+        symbol: useTier1
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.change-origin-helpers:
+  id: 87ba9153-add1-464a-93f0-af21f90f0423
+  path: application.applicationservice.change-origin-helpers
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Change Origin Helpers
+  description: Tier 1 wire types aliased from the generated client, and the checks
+    that keep a change's origin and the Tier 1 status renderable (originOf,
+    toTier1Status), with decider labels and spend formatting.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/tier1.ts
+        symbol: originOf
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.changeset-op-rows:
+  id: 27e22d18-53e6-4b66-82ec-37a846cadc75
+  path: application.applicationservice.changeset-op-rows
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Op Rows
+  description: Folds a changeset's change records into op rows (add, update,
+    delete) with their changed fields, detail line and JSON diff lines.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesets.ts
+        symbol: toChangeRows
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.structural-predicate-classifier:
+  id: f4d47b79-6a49-4278-9722-05ebdbf72200
+  path: application.applicationservice.structural-predicate-classifier
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Structural Predicate Classifier
+  description: Hardcoded DR predicate category classification (isStructuralEdge)
+    behind the Relations control's structural-only filter; not exposed by
+    /api/model or /api/spec.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/predicates.ts
+        symbol: isStructuralEdge
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.predicate-definitions:
+  id: a244c820-034f-49fd-8679-1687f89c2bc1
+  path: application.applicationservice.predicate-definitions
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Predicate Definitions
+  description: Plain-language definitions of DR relationship predicates, shown by
+    the predicate tooltip.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/predicateDefinitions.ts
+        symbol: predicateDefinition
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.chat-adapter:
+  id: cc6d2e34-7094-40a5-934f-5df012295c85
+  path: application.applicationservice.chat-adapter
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Adapter
+  description: Maps the chat store's message parts onto Heimdall's chat message,
+    tool and thinking blocks.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/chatAdapter.ts
+        symbol: toHeimdallMessages
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-viewport-history:
+  id: 7105a2b2-4cd3-4ea5-81c6-6e0555b9ba17
+  path: application.applicationservice.use-viewport-history
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useViewportHistory
+  description: Records the graph viewport on dwell and navigate, and restores it
+    from ?vp= (reload, deep link) or silently on back/forward.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/useViewportHistory.ts
+        symbol: useViewportHistory
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.graph-viewport-key:
+  id: 9d940b03-0844-40c9-9630-0790585c0f0b
+  path: application.applicationservice.graph-viewport-key
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Graph Viewport Key
+  description: The GraphCanvas key and its scope tag, and the ?vp= format and
+    parse, so a saved viewport only applies to the layout it was taken on.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/graphViewport.ts
+        symbol: graphCanvasKey
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-edge-interaction:
+  id: 64ea79cb-835d-46e4-bb14-85a81ec78227
+  path: application.applicationservice.use-edge-interaction
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useEdgeInteraction
+  description: Edge hover and selection state local to the canvas, kept out of the
+    store and the edges memo so hovering never re-runs the layout.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/useEdgeInteraction.ts
+        symbol: useEdgeInteraction
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-hover-dwell:
+  id: 8942e6d9-63ae-47c0-b8b1-739a493cb112
+  path: application.applicationservice.use-hover-dwell
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useHoverDwell
+  description: Fires after the pointer dwells on a target (3s for edge predicate tooltips).
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/useHoverDwell.ts
+        symbol: useHoverDwell
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1

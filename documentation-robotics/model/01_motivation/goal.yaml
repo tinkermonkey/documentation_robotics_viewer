@@ -5,8 +5,9 @@ motivation.goal.visualize-multi-layer-architecture-models:
   type: goal
   layer_id: motivation
   name: Visualize Multi-Layer Architecture Models
-  description: Provide interactive, navigable visualization of 12-layer
-    architecture models using React Flow graph rendering
+  description: Provide interactive, navigable visualization of the DR spec's
+    multi-layer architecture models (13 layers as of spec 0.12, Product
+    included), rendered with the Heimdall design system's graph canvas
   attributes:
     priority: critical
   source_reference:

@@ -28,6 +28,11 @@ ux.subview.changeset-review-list:
     decision pills and link chains."
   attributes:
     title: Review
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+        symbol: ChangesetReviewPanel
   metadata:
     created_at: 2026-11-17T22:03:39.531Z
     updated_at: 2026-11-17T22:03:39.531Z
@@ -44,7 +49,72 @@ ux.subview.change-inspector-panel:
     direction, source reference."
   attributes:
     title: Change
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangeInspector.tsx
+        symbol: ChangeInspector
   metadata:
     created_at: 2026-11-17T22:03:39.536Z
     updated_at: 2026-11-17T22:03:39.536Z
+    version: 1
+ux.subview.changeset-inbox:
+  id: abdbb642-4f0d-4f9e-a97f-02c6465ec7ab
+  path: ux.subview.changeset-inbox
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Changeset Inbox
+  description: "The Changesets view with no changeset open: staged changesets
+    waiting on you or on DrBot, then the history."
+  attributes:
+    title: Inbox
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangesetInbox.tsx
+        symbol: ChangesetInbox
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+ux.subview.tier1-panel:
+  id: 3983a04a-5230-4657-b188-c07d44b297f1
+  path: ux.subview.tier1-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Tier1 Panel
+  description: Tier 1 state and this month's spend, above the inbox history.
+  attributes:
+    title: Tier 1
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Tier1Panel.tsx
+        symbol: Tier1Panel
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+ux.subview.page-view:
+  id: 95a478b2-a1c5-4c95-abaf-a0d7d44b3954
+  path: ux.subview.page-view
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Page View
+  description: "The page mode of the Model and Schema views (#/model/page): a
+    layer, node type or element as a detail page with tables and a neighbourhood
+    graph."
+  attributes:
+    title: Page
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/PageView.tsx
+        symbol: PageView
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
     version: 1

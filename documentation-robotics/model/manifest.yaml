@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
 cli_version: 0.5.0
-spec_version: 0.12.0
+spec_version: 0.13.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-18T14:48:34.533Z
+updated: 2026-11-18T16:40:30.685Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -38,6 +38,12 @@ layers:
     name: Product
     path: documentation-robotics/model/03_product/
     enabled: true
+    elements:
+      persona: 2
+      softwarecapability: 5
+      feature: 11
+      userworkflow: 1
+      workflowstep: 4
   security:
     order: 4
     name: Security
@@ -59,21 +65,21 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 16
-      applicationfunction: 10
+      applicationcomponent: 32
+      applicationfunction: 11
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 18
+      applicationservice: 33
   technology:
     order: 6
     name: Technology
     path: documentation-robotics/model/06_technology/
     enabled: true
     elements:
-      artifact: 3
+      artifact: 4
       node: 2
       path: 2
-      systemsoftware: 10
+      systemsoftware: 14
       technologyinterface: 2
       technologyprocess: 3
       technologyservice: 2
@@ -85,8 +91,8 @@ layers:
     elements:
       info: 1
       openapidocument: 1
-      operation: 17
-      pathitem: 12
+      operation: 19
+      pathitem: 14
       securityscheme: 2
   data-model:
     order: 8
@@ -94,7 +100,7 @@ layers:
     path: documentation-robotics/model/08_data-model/
     enabled: true
     elements:
-      objectschema: 20
+      objectschema: 25
       schemadefinition: 3
   data-store:
     order: 9
@@ -102,7 +108,7 @@ layers:
     path: documentation-robotics/model/09_data-store/
     enabled: true
     elements:
-      collection: 4
+      collection: 6
       database: 2
   ux:
     order: 10
@@ -111,7 +117,7 @@ layers:
     enabled: true
     elements:
       statepattern: 2
-      subview: 3
+      subview: 6
       uxapplication: 1
       uxspec: 2
       view: 6
@@ -150,6 +156,7 @@ layers:
       coveragesummary: 1
       testcoveragemodel: 1
       testcoveragetarget: 2
+      testcasesketch: 758
 changeset_history:
   - name: sync-pre-merge-fixes
     committed_at: 2026-11-12T16:19:59.958Z
@@ -157,3 +164,11 @@ changeset_history:
   - name: changeset-review-clarity
     committed_at: 2026-11-18T14:48:34.532Z
     action: committed
+  - name: model-sync-2026-11-18
+    committed_at: 2026-11-18T16:40:30.591Z
+    action: committed
+reconciled:
+  changeset: model-sync-2026-11-18
+  changeset_id: changeset-1795018963218-tdesyocye
+  landed_at: 2026-11-18T16:40:30.591Z
+  code_commit: ac20e00c83884c7a6542d7ffe052cb254290f237

@@ -16,16 +16,16 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 14    |
-| Intra-Layer Relationships | 11    |
-| Inter-Layer Relationships | 20    |
+| Elements                  | 17    |
+| Intra-Layer Relationships | 15    |
+| Inter-Layer Relationships | 27    |
 | Inbound Relationships     | 3     |
-| Outbound Relationships    | 17    |
+| Outbound Relationships    | 24    |
 
 **Cross-Layer References**:
 
 - **Upstream layers**: [Navigation](./11-navigation-layer-report.md)
-- **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Technology](./06-technology-layer-report.md)
+- **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Product](./03-product-layer-report.md), [Technology](./06-technology-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -36,7 +36,10 @@ flowchart LR
     ux_statepattern_data_loading_pattern["Data Loading Pattern"]
     ux_subview_change_inspector_panel["Change Inspector Panel"]
     ux_subview_changeset_impact_tab["Changeset Impact Tab"]
+    ux_subview_changeset_inbox["Changeset Inbox"]
     ux_subview_changeset_review_list["Changeset Review List"]
+    ux_subview_page_view["Page View"]
+    ux_subview_tier1_panel["Tier1 Panel"]
     ux_uxapplication_embedded_architecture_viewer["Embedded Architecture Viewer"]
     ux_uxspec_architecture_exploration_spec["Architecture Exploration Spec"]
     ux_uxspec_authentication_spec["Authentication Spec"]
@@ -56,7 +59,11 @@ flowchart LR
     ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
     ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
+    ux_view_changesets_view -->|composes| ux_subview_changeset_inbox
     ux_view_changesets_view -->|composes| ux_subview_changeset_review_list
+    ux_view_changesets_view -->|composes| ux_subview_tier1_panel
+    ux_view_model_view -->|composes| ux_subview_page_view
+    ux_view_schema_view -->|composes| ux_subview_page_view
   end
 ```
 
@@ -81,6 +88,7 @@ flowchart TB
   navigation --> ux
   ux --> business
   ux --> motivation
+  ux --> product
   ux --> technology
   class ux current
 ```
@@ -95,18 +103,25 @@ flowchart TB
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`      | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                      | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                      | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.dr-bot-chat-drawer`                   | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                   | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                     | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                           | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.model-view`                           | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.model-view`                           | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                           | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`         | `ux.view.model-view`                           | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`             | `ux.view.model-view`                           | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.schema-view`                          | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.schema-view`                          | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                          | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 
@@ -186,6 +201,26 @@ The Changesets view's Impact tab: layer lanes of what the changed elements reach
 | ----------- | ------------------------- | ---------- | --------- |
 | intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
 
+### Changeset Inbox {#changeset-inbox}
+
+**ID**: `ux.subview.changeset-inbox`
+
+**Type**: `subview`
+
+The Changesets view with no changeset open: staged changesets waiting on you or on DrBot, then the history.
+
+#### Attributes
+
+| Name  | Value |
+| ----- | ----- |
+| title | Inbox |
+
+#### Relationships
+
+| Type        | Related Element           | Predicate  | Direction |
+| ----------- | ------------------------- | ---------- | --------- |
+| intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
+
 ### Changeset Review List {#changeset-review-list}
 
 **ID**: `ux.subview.changeset-review-list`
@@ -199,6 +234,47 @@ The Changesets view's Review tab: labelled columns, change chips, decision pills
 | Name  | Value  |
 | ----- | ------ |
 | title | Review |
+
+#### Relationships
+
+| Type        | Related Element           | Predicate  | Direction |
+| ----------- | ------------------------- | ---------- | --------- |
+| intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
+
+### Page View {#page-view}
+
+**ID**: `ux.subview.page-view`
+
+**Type**: `subview`
+
+The page mode of the Model and Schema views (#/model/page): a layer, node type or element as a detail page with tables and a neighbourhood graph.
+
+#### Attributes
+
+| Name  | Value |
+| ----- | ----- |
+| title | Page  |
+
+#### Relationships
+
+| Type        | Related Element       | Predicate  | Direction |
+| ----------- | --------------------- | ---------- | --------- |
+| intra-layer | `ux.view.model-view`  | `composes` | inbound   |
+| intra-layer | `ux.view.schema-view` | `composes` | inbound   |
+
+### Tier1 Panel {#tier1-panel}
+
+**ID**: `ux.subview.tier1-panel`
+
+**Type**: `subview`
+
+Tier 1 state and this month's spend, above the inbox history.
+
+#### Attributes
+
+| Name  | Value  |
+| ----- | ------ |
+| title | Tier 1 |
 
 #### Relationships
 
@@ -309,6 +385,8 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 | ----------- | ------------------------------------------------------------ | ------------ | --------- |
 | inter-layer | `navigation.route.app-shell-sectionview-route`               | `maps-to`    | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                      | `depends-on` | outbound  |
+| inter-layer | `product.feature.changeset-inbox`                            | `realizes`   | outbound  |
+| inter-layer | `product.feature.per-change-review`                          | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.changeset`                          | `references` | outbound  |
 | inter-layer | `motivation.requirement.each-review-change-reads-on-its-own` | `satisfies`  | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`               | `satisfies`  | outbound  |
@@ -317,7 +395,9 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 | intra-layer | `ux.uxspec.architecture-exploration-spec`                    | `aggregates` | inbound   |
 | intra-layer | `ux.subview.change-inspector-panel`                          | `composes`   | outbound  |
 | intra-layer | `ux.subview.changeset-impact-tab`                            | `composes`   | outbound  |
+| intra-layer | `ux.subview.changeset-inbox`                                 | `composes`   | outbound  |
 | intra-layer | `ux.subview.changeset-review-list`                           | `composes`   | outbound  |
+| intra-layer | `ux.subview.tier1-panel`                                     | `composes`   | outbound  |
 
 ### DrBot Chat Drawer {#drbot-chat-drawer}
 
@@ -338,6 +418,7 @@ The DrBot assistant, scoped to the current selection: persistent at 1300px and w
 
 | Type        | Related Element                           | Predicate    | Direction |
 | ----------- | ----------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.dr-bot-chat-drawer`      | `realizes`   | outbound  |
 | inter-layer | `business.businessrole.model-author`      | `serves`     | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec` | `aggregates` | inbound   |
 
@@ -360,6 +441,8 @@ Selection details floating over the graph; auto-hides when nothing is selected.
 
 | Type        | Related Element                           | Predicate    | Direction |
 | ----------- | ----------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.cross-layer-follow`      | `realizes`   | outbound  |
+| inter-layer | `product.feature.element-annotations`     | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.annotation`      | `references` | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec` | `aggregates` | inbound   |
 
@@ -385,11 +468,13 @@ A layer of the model as a graph of its elements (with inter-layer neighbours), o
 | ----------- | ----------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `navigation.route.app-shell-sectionview-route`              | `maps-to`    | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                     | `depends-on` | outbound  |
+| inter-layer | `product.feature.model-graph-view`                          | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.architecture-model`                | `references` | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`              | `satisfies`  | outbound  |
 | inter-layer | `business.businessrole.architecture-reviewer`               | `serves`     | outbound  |
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `supports`   | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec`                   | `aggregates` | inbound   |
+| intra-layer | `ux.subview.page-view`                                      | `composes`   | outbound  |
 
 ### Schema View {#schema-view}
 
@@ -412,10 +497,12 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 | Type        | Related Element                                | Predicate    | Direction |
 | ----------- | ---------------------------------------------- | ------------ | --------- |
 | inter-layer | `navigation.route.app-shell-sectionview-route` | `maps-to`    | inbound   |
+| inter-layer | `product.feature.schema-graph-view`            | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.architecture-model`   | `references` | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance` | `satisfies`  | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec`      | `aggregates` | inbound   |
+| intra-layer | `ux.subview.page-view`                         | `composes`   | outbound  |
 
 ---
 
-Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0
+Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0

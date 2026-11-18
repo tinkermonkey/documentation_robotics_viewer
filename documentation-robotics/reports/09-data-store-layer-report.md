@@ -16,14 +16,15 @@ Databases, data stores, and persistence mechanisms.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 6     |
-| Intra-Layer Relationships | 6     |
-| Inter-Layer Relationships | 2     |
-| Inbound Relationships     | 0     |
+| Elements                  | 8     |
+| Intra-Layer Relationships | 8     |
+| Inter-Layer Relationships | 4     |
+| Inbound Relationships     | 2     |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
 
+- **Upstream layers**: [Application](./05-application-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -34,12 +35,16 @@ flowchart LR
     data_store_collection_auth_token_entry["Auth Token Entry"]
     data_store_collection_changeset_files["Changeset Files"]
     data_store_collection_layer_yaml_files["Layer YAML Files"]
+    data_store_collection_local_review_verdicts["Local Review Verdicts"]
     data_store_collection_model_manifest["Model Manifest"]
+    data_store_collection_ui_preferences["UI Preferences"]
     data_store_database_browser_local_storage["Browser localStorage"]
     data_store_database_dr_model_yaml_store["DR Model YAML Store"]
     data_store_collection_changeset_files -->|references| data_store_collection_layer_yaml_files
     data_store_collection_layer_yaml_files -->|references| data_store_collection_model_manifest
     data_store_database_browser_local_storage -->|composes| data_store_collection_auth_token_entry
+    data_store_database_browser_local_storage -->|composes| data_store_collection_local_review_verdicts
+    data_store_database_browser_local_storage -->|composes| data_store_collection_ui_preferences
     data_store_database_dr_model_yaml_store -->|composes| data_store_collection_changeset_files
     data_store_database_dr_model_yaml_store -->|composes| data_store_collection_layer_yaml_files
     data_store_database_dr_model_yaml_store -->|composes| data_store_collection_model_manifest
@@ -64,16 +69,19 @@ flowchart TB
   navigation["Navigation"]
   apm["APM"]
   testing["Testing"]
+  application --> data_store
   data_store --> business
   class data_store current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                          | Source Node                             | Dest Node                                    | Dest Layer | Predicate  | Cardinality  | Strength |
-| -------------------------------------------------------- | --------------------------------------- | -------------------------------------------- | ---------- | ---------- | ------------ | -------- |
-| `data-store.collection.realizes.business.businessobject` | `data-store.collection.changeset-files` | `business.businessobject.changeset`          | `business` | `realizes` | many-to-many | medium   |
-| `data-store.collection.realizes.business.businessobject` | `data-store.collection.model-manifest`  | `business.businessobject.architecture-model` | `business` | `realizes` | many-to-many | medium   |
+| Relationship ID                                                  | Source Node                                          | Dest Node                                     | Dest Layer   | Predicate  | Cardinality  | Strength |
+| ---------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- | ------------ | ---------- | ------------ | -------- |
+| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.local-review-store` | `data-store.collection.local-review-verdicts` | `data-store` | `accesses` | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.ui-store`           | `data-store.collection.ui-preferences`        | `data-store` | `accesses` | many-to-many | medium   |
+| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.changeset-files`              | `business.businessobject.changeset`           | `business`   | `realizes` | many-to-many | medium   |
+| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.model-manifest`               | `business.businessobject.architecture-model`  | `business`   | `realizes` | many-to-many | medium   |
 
 ## Element Reference
 
@@ -141,6 +149,27 @@ Per-layer YAML files (e.g., 05_technology/systemsoftware.yaml) containing elemen
 | intra-layer | `data-store.collection.model-manifest`    | `references` | outbound  |
 | intra-layer | `data-store.database.dr-model-yaml-store` | `composes`   | inbound   |
 
+### Local Review Verdicts {#local-review-verdicts}
+
+**ID**: `data-store.collection.local-review-verdicts`
+
+**Type**: `collection`
+
+localStorage entry dr-viewer-local-review: review verdicts by changeset id and sequence, kept in the browser when the dr CLI can't store them.
+
+#### Attributes
+
+| Name           | Value      |
+| -------------- | ---------- |
+| collectionType | COLLECTION |
+
+#### Relationships
+
+| Type        | Related Element                                      | Predicate  | Direction |
+| ----------- | ---------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationfunction.local-review-store` | `accesses` | inbound   |
+| intra-layer | `data-store.database.browser-local-storage`          | `composes` | inbound   |
+
 ### Model Manifest {#model-manifest}
 
 **ID**: `data-store.collection.model-manifest`
@@ -163,6 +192,27 @@ Single manifest.yaml file at the model root; contains model version, project inf
 | intra-layer | `data-store.collection.layer-yaml-files`     | `references` | inbound   |
 | intra-layer | `data-store.database.dr-model-yaml-store`    | `composes`   | inbound   |
 
+### UI Preferences {#ui-preferences}
+
+**ID**: `data-store.collection.ui-preferences`
+
+**Type**: `collection`
+
+localStorage entry dr-viewer-ui-preferences: the persisted part of the UI store (canvas theme, DrBot open, graph layout and display settings, inspector follow depth). Navigation state is left to the URL.
+
+#### Attributes
+
+| Name           | Value      |
+| -------------- | ---------- |
+| collectionType | COLLECTION |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate  | Direction |
+| ----------- | ------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store`  | `accesses` | inbound   |
+| intra-layer | `data-store.database.browser-local-storage` | `composes` | inbound   |
+
 ### Browser localStorage {#browser-localstorage}
 
 **ID**: `data-store.database.browser-local-storage`
@@ -181,9 +231,11 @@ Browser Web Storage API used for client-side persistence of auth tokens, layout 
 
 #### Relationships
 
-| Type        | Related Element                          | Predicate  | Direction |
-| ----------- | ---------------------------------------- | ---------- | --------- |
-| intra-layer | `data-store.collection.auth-token-entry` | `composes` | outbound  |
+| Type        | Related Element                               | Predicate  | Direction |
+| ----------- | --------------------------------------------- | ---------- | --------- |
+| intra-layer | `data-store.collection.auth-token-entry`      | `composes` | outbound  |
+| intra-layer | `data-store.collection.local-review-verdicts` | `composes` | outbound  |
+| intra-layer | `data-store.collection.ui-preferences`        | `composes` | outbound  |
 
 ### DR Model YAML Store {#dr-model-yaml-store}
 
@@ -211,4 +263,4 @@ File-based document store holding the architecture model as YAML files under doc
 
 ---
 
-Generated: 2026-09-19T15:37:38.405Z | Model Version: 0.1.0
+Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0

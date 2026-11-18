@@ -54,10 +54,10 @@ application.applicationcomponent.nav-tree:
   layer_id: application
   name: Nav Tree
   description: "Sidebar navigation: an accordion of Model / Schema / Changesets
-    sections, each with its 12 layers and their elements or node types (or the
-    changesets). Reveals the current selection, scrolling it into view after any
-    navigation, including a deep link whose element rows only appear once the
-    model or changesets load."
+    sections, each with the spec's layers (in the order the spec gives) and
+    their elements or node types (or the changesets). Reveals the current
+    selection, scrolling it into view after any navigation, including a deep
+    link whose element rows only appear once the model or changesets load."
   attributes:
     type: internal
   source_reference:
@@ -356,4 +356,334 @@ application.applicationcomponent.apply-review:
   metadata:
     created_at: 2026-11-17T22:03:39.530Z
     updated_at: 2026-11-17T22:03:39.530Z
+    version: 1
+application.applicationcomponent.changeset-inbox:
+  id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
+  path: application.applicationcomponent.changeset-inbox
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Changeset Inbox
+  description: "The Changesets view's landing page when no changeset is open:
+    staged changesets waiting on you and waiting on DrBot, each with review
+    progress, then applied and discarded ones. Hosts the Tier 1 panel above the
+    history."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangesetInbox.tsx
+        symbol: ChangesetInbox
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.tier1-panel:
+  id: c492d976-bc91-4c03-99d6-88f378e1721d
+  path: application.applicationcomponent.tier1-panel
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Tier1 Panel
+  description: Read-only card in the changeset inbox showing Tier 1's state (on,
+    capped, no credentials, misconfigured, off), provider and model, and this
+    month's spend against the cap, from GET /api/tier1. Hidden on an older dr
+    CLI (404).
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Tier1Panel.tsx
+        symbol: Tier1Panel
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.chat-drawer:
+  id: 021621e1-587f-497e-9410-f0e9ba08871b
+  path: application.applicationcomponent.chat-drawer
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Chat Drawer
+  description: The 372px DrBot drawer frame (persistent at 1300px and wider, an
+    overlay below) that hosts the chat panel.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChatDrawer.tsx
+        symbol: ChatDrawer
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.edge-inspector:
+  id: ad11f27a-fa73-429d-a653-7ca2cedd8615
+  path: application.applicationcomponent.edge-inspector
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Edge Inspector
+  description: "Inspector content for a selected relationship edge: its predicate
+    (with the predicate tooltip), source and target, and their layers."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/EdgeInspector.tsx
+        symbol: EdgeInspector
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.error-boundary:
+  id: db1f4063-d643-4f3f-b314-1c9196b47161
+  path: application.applicationcomponent.error-boundary
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Error Boundary
+  description: React error boundary that wraps the changeset review panel, the
+    change inspector and the Tier 1 panel so a bad payload degrades locally
+    instead of blanking the viewer.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ErrorBoundary.tsx
+        symbol: ErrorBoundary
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.left-rail:
+  id: e4572ee6-8861-4136-a1e0-0ec53f935887
+  path: application.applicationcomponent.left-rail
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Left Rail
+  description: "The shell's left navigation column: the view switch (Model,
+    Schema, Changesets) above the 3-level nav tree."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/LeftRail.tsx
+        symbol: LeftRail
+  metadata:
+    created_at: 2026-11-18T16:26:33.166Z
+    updated_at: 2026-11-18T16:26:33.166Z
+    version: 1
+application.applicationcomponent.topbar:
+  id: 07b53e9c-ba44-46ec-8204-6a3010dcfa6d
+  path: application.applicationcomponent.topbar
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Topbar
+  description: "The shell's top bar: title, connection state, light/dark canvas
+    toggle and the DrBot drawer toggle."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/Topbar.tsx
+        symbol: Topbar
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.status-bar:
+  id: 40ca94e2-6c6a-42e3-a5ad-56ea61db31de
+  path: application.applicationcomponent.status-bar
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Status Bar
+  description: "The shell's bottom status bar (Heimdall Statusbar): connection,
+    model and selection status."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/StatusBar.tsx
+        symbol: StatusBar
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.model-card-node:
+  id: cb62b639-44a7-41fe-8499-7ecc176194fe
+  path: application.applicationcomponent.model-card-node
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Model Card Node
+  description: Card presentation of a model element on the graph canvas (the
+    default Display), with domain swatch and type; selects through
+    selectFromCanvas.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ModelCardNode.tsx
+        symbol: ModelCardNode
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.pill-node:
+  id: 8e4da667-8170-463f-bd16-c77d88002082
+  path: application.applicationcomponent.pill-node
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Pill Node
+  description: "Compact pill presentation of a graph node: the Pill display mode
+    and inter-layer (foreign) neighbours, which navigate to their home layer on
+    click."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/PillNode.tsx
+        symbol: PillNode
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.neighborhood-graph-view:
+  id: d19d9957-0d80-4fe4-96ec-981f8a4ed042
+  path: application.applicationcomponent.neighborhood-graph-view
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Neighborhood Graph View
+  description: Small graph of an element's or node type's direct neighbourhood on
+    the page view.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/NeighborhoodGraphView.tsx
+        symbol: NeighborhoodGraphView
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.relationships-with-tooltips:
+  id: 77ed4879-07ab-4b99-bbb9-a117b6759a06
+  path: application.applicationcomponent.relationships-with-tooltips
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Relationships With Tooltips
+  description: The inspector's Outgoing / Incoming relationship rows and the
+    Followed across layers section (Follow control, reach strip, followed rows
+    with hop badges), with predicate tooltips and click-to-navigate.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/RelationshipsWithTooltips.tsx
+        symbol: RelationshipsWithTooltips
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.predicate-tooltip:
+  id: df6fe9b1-2174-4a0c-9790-3872f7b42875
+  path: application.applicationcomponent.predicate-tooltip
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Predicate Tooltip
+  description: Explains a relationship predicate on hover after a 3s dwell
+    (immediately on keyboard focus), in the inspector, page tables and edge
+    inspector.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/PredicateTooltip.tsx
+        symbol: PredicateTooltip
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.rich-tooltip:
+  id: aeb5bc56-8c17-4f29-9922-4d0ba2e4585a
+  path: application.applicationcomponent.rich-tooltip
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Rich Tooltip
+  description: "The viewer's own positioned tooltip card (TooltipCard): tries all
+    four sides, tracks its anchor through pan and zoom, and stops swallowing
+    clicks when it has to overlap its trigger."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/RichTooltip.tsx
+        symbol: RichTooltip
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.node-type-tooltip:
+  id: 33bf2ecd-9861-4ecc-adb6-2c8ad72a5c35
+  path: application.applicationcomponent.node-type-tooltip
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Node Type Tooltip
+  description: "Hover card for a node type: its definition and the connections the
+    spec allows."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/NodeTypeTooltip.tsx
+        symbol: NodeTypeTooltip
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.node-type-badge:
+  id: e1ccb621-9da8-4103-be03-f67fc70af7a3
+  path: application.applicationcomponent.node-type-badge
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Node Type Badge
+  description: Small badge naming an element's node type, used in inspector and
+    page headers.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/NodeTypeBadge.tsx
+        symbol: NodeTypeBadge
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
     version: 1

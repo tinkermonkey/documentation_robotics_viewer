@@ -80,3 +80,45 @@ data-store.collection.auth-token-entry:
     created_at: 2026-03-20T13:07:04.127Z
     updated_at: 2026-03-20T13:07:04.127Z
     version: 1
+data-store.collection.local-review-verdicts:
+  id: 508763b6-75f2-4416-a709-df4c6a63e901
+  path: data-store.collection.local-review-verdicts
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: Local Review Verdicts
+  description: "localStorage entry dr-viewer-local-review: review verdicts by
+    changeset id and sequence, kept in the browser when the dr CLI can't store
+    them."
+  attributes:
+    collectionType: COLLECTION
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/localReviewStore.ts
+        symbol: LOCAL_REVIEW_KEY
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+data-store.collection.ui-preferences:
+  id: f0e71b79-41d3-4f85-ae6c-121d9e7e529d
+  path: data-store.collection.ui-preferences
+  spec_node_id: data-store.collection
+  type: collection
+  layer_id: data-store
+  name: UI Preferences
+  description: "localStorage entry dr-viewer-ui-preferences: the persisted part of
+    the UI store (canvas theme, DrBot open, graph layout and display settings,
+    inspector follow depth). Navigation state is left to the URL."
+  attributes:
+    collectionType: COLLECTION
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/uiStore.ts
+        symbol: PERSIST_KEY
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1

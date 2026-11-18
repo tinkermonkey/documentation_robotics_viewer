@@ -207,3 +207,81 @@ technology.systemsoftware.tan-stack-react-query:
     created_at: 2026-09-19T15:17:04.250Z
     updated_at: 2026-09-19T15:17:04.250Z
     version: 1
+technology.systemsoftware.vitest:
+  id: 894197c8-b0ee-4058-a7ec-a76e9cc13288
+  path: technology.systemsoftware.vitest
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Vitest
+  description: Unit, integration and component test runner (npm test).
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.vitest
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+technology.systemsoftware.happy-dom:
+  id: 7d7dbe47-7bb6-4203-ac25-3082df03ed8f
+  path: technology.systemsoftware.happy-dom
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Happy DOM
+  description: DOM implementation for Vitest component tests.
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.happy-dom
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+technology.systemsoftware.msw:
+  id: 713e32ef-b74d-4620-8b86-c81b35478db8
+  path: technology.systemsoftware.msw
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: MSW
+  description: "Mock Service Worker: mocks the DR CLI REST API in integration and
+    component tests."
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.msw
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+technology.systemsoftware.axe-core-playwright:
+  id: bbfc8855-8634-4498-9b5c-fc8b6390013b
+  path: technology.systemsoftware.axe-core-playwright
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: Axe Core Playwright
+  description: axe-core accessibility checks (WCAG 2.1 AA) run by the Playwright
+    E2E suite on every view, light and dark.
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: devDependencies.@axe-core/playwright
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1

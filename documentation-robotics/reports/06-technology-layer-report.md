@@ -16,8 +16,8 @@ Infrastructure, platforms, systems, and technology components.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 24    |
-| Intra-Layer Relationships | 21    |
+| Elements                  | 29    |
+| Intra-Layer Relationships | 25    |
 | Inter-Layer Relationships | 14    |
 | Inbound Relationships     | 2     |
 | Outbound Relationships    | 12    |
@@ -35,11 +35,15 @@ flowchart LR
     technology_artifact_docker_agent_image["Docker Agent Image"]
     technology_artifact_embedded_app_bundle["Embedded App Bundle"]
     technology_artifact_open_api_specification["OpenAPI Specification"]
+    technology_artifact_switchyard_orchestrator["switchyard-orchestrator"]
     technology_node_docker_agent_container["Docker Agent Container"]
     technology_node_vite_dev_server["Vite Dev Server"]
     technology_path_app_to_dr_cli_https_path["App to DR CLI HTTPS Path"]
     technology_path_app_to_dr_cli_web_socket_path["App to DR CLI WebSocket Path"]
+    technology_systemsoftware_axe_core_playwright["Axe Core Playwright"]
+    technology_systemsoftware_happy_dom["Happy DOM"]
     technology_systemsoftware_heimdall_ui["Heimdall UI"]
+    technology_systemsoftware_msw["MSW"]
     technology_systemsoftware_nodejs["Node.js"]
     technology_systemsoftware_playwright["Playwright"]
     technology_systemsoftware_react_19["React 19"]
@@ -48,6 +52,7 @@ flowchart LR
     technology_systemsoftware_tan_stack_router["TanStack Router"]
     technology_systemsoftware_type_script_59["TypeScript 5.9"]
     technology_systemsoftware_vite_6["Vite 6"]
+    technology_systemsoftware_vitest["Vitest"]
     technology_systemsoftware_zustand_5["Zustand 5"]
     technology_technologyinterface_rest_https_interface["REST HTTPS Interface"]
     technology_technologyinterface_web_socket_interface["WebSocket Interface"]
@@ -56,6 +61,7 @@ flowchart LR
     technology_technologyprocess_vite_build_pipeline["Vite Build Pipeline"]
     technology_technologyservice_dr_cli_rest_server["DR CLI REST Server"]
     technology_technologyservice_web_socket_model_service["WebSocket Model Service"]
+    technology_artifact_docker_agent_image -->|depends-on| technology_artifact_switchyard_orchestrator
     technology_artifact_docker_agent_image -->|realizes| technology_systemsoftware_nodejs
     technology_artifact_embedded_app_bundle -->|realizes| technology_systemsoftware_vite_6
     technology_node_docker_agent_container -->|composes| technology_systemsoftware_playwright
@@ -63,11 +69,14 @@ flowchart LR
     technology_node_docker_agent_container -->|composes| technology_technologyinterface_web_socket_interface
     technology_path_app_to_dr_cli_https_path -->|connects| technology_node_docker_agent_container
     technology_path_app_to_dr_cli_web_socket_path -->|connects| technology_node_docker_agent_container
+    technology_systemsoftware_axe_core_playwright -->|depends-on| technology_systemsoftware_playwright
     technology_systemsoftware_playwright -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_react_19 -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_tan_stack_router -->|depends-on| technology_systemsoftware_react_19
     technology_systemsoftware_type_script_59 -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_vite_6 -->|depends-on| technology_systemsoftware_nodejs
+    technology_systemsoftware_vitest -->|depends-on| technology_systemsoftware_happy_dom
+    technology_systemsoftware_vitest -->|depends-on| technology_systemsoftware_msw
     technology_systemsoftware_zustand_5 -->|depends-on| technology_systemsoftware_react_19
     technology_technologyinterface_rest_https_interface -->|assigned-to| technology_technologyservice_dr_cli_rest_server
     technology_technologyinterface_rest_https_interface -->|serves| technology_technologyprocess_open_api_type_generation
@@ -141,9 +150,10 @@ Docker container image for the Claude Code agent runtime, defined in Dockerfile.
 
 #### Relationships
 
-| Type        | Related Element                    | Predicate  | Direction |
-| ----------- | ---------------------------------- | ---------- | --------- |
-| intra-layer | `technology.systemsoftware.nodejs` | `realizes` | outbound  |
+| Type        | Related Element                               | Predicate    | Direction |
+| ----------- | --------------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.artifact.switchyard-orchestrator` | `depends-on` | outbound  |
+| intra-layer | `technology.systemsoftware.nodejs`            | `realizes`   | outbound  |
 
 ### Embedded App Bundle {#embedded-app-bundle}
 
@@ -185,6 +195,24 @@ OpenAPI 3.0 REST API contract (docs/api-spec.yaml) describing the DR CLI server 
 | Type        | Related Element                                         | Predicate  | Direction |
 | ----------- | ------------------------------------------------------- | ---------- | --------- |
 | intra-layer | `technology.technologyprocess.open-api-type-generation` | `accesses` | inbound   |
+
+### switchyard-orchestrator {#switchyard-orchestrator}
+
+**ID**: `technology.artifact.switchyard-orchestrator`
+
+**Type**: `artifact`
+
+#### Attributes
+
+| Name         | Value           |
+| ------------ | --------------- |
+| artifactType | container-image |
+
+#### Relationships
+
+| Type        | Related Element                          | Predicate    | Direction |
+| ----------- | ---------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.artifact.docker-agent-image` | `depends-on` | inbound   |
 
 ### Docker Agent Container {#docker-agent-container}
 
@@ -272,6 +300,46 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 | ----------- | ---------------------------------------- | ---------- | --------- |
 | intra-layer | `technology.node.docker-agent-container` | `connects` | outbound  |
 
+### Axe Core Playwright {#axe-core-playwright}
+
+**ID**: `technology.systemsoftware.axe-core-playwright`
+
+**Type**: `systemsoftware`
+
+axe-core accessibility checks (WCAG 2.1 AA) run by the Playwright E2E suite on every view, light and dark.
+
+#### Attributes
+
+| Name         | Value      |
+| ------------ | ---------- |
+| softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                        | Predicate    | Direction |
+| ----------- | -------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.systemsoftware.playwright` | `depends-on` | outbound  |
+
+### Happy DOM {#happy-dom}
+
+**ID**: `technology.systemsoftware.happy-dom`
+
+**Type**: `systemsoftware`
+
+DOM implementation for Vitest component tests.
+
+#### Attributes
+
+| Name         | Value      |
+| ------------ | ---------- |
+| softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                    | Predicate    | Direction |
+| ----------- | ---------------------------------- | ------------ | --------- |
+| intra-layer | `technology.systemsoftware.vitest` | `depends-on` | inbound   |
+
 ### Heimdall UI {#heimdall-ui}
 
 **ID**: `technology.systemsoftware.heimdall-ui`
@@ -300,6 +368,26 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 | inter-layer | `application.applicationcomponent.review-parts`           | `serves`     | outbound  |
 | inter-layer | `ux.view.changesets-view`                                 | `depends-on` | inbound   |
 | inter-layer | `ux.view.model-view`                                      | `depends-on` | inbound   |
+
+### MSW {#msw}
+
+**ID**: `technology.systemsoftware.msw`
+
+**Type**: `systemsoftware`
+
+Mock Service Worker: mocks the DR CLI REST API in integration and component tests.
+
+#### Attributes
+
+| Name         | Value      |
+| ------------ | ---------- |
+| softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                    | Predicate    | Direction |
+| ----------- | ---------------------------------- | ------------ | --------- |
+| intra-layer | `technology.systemsoftware.vitest` | `depends-on` | inbound   |
 
 ### Node.js {#node-js}
 
@@ -341,10 +429,11 @@ JavaScript runtime environment powering the build toolchain, dev server, and tes
 
 #### Relationships
 
-| Type        | Related Element                          | Predicate    | Direction |
-| ----------- | ---------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.node.docker-agent-container` | `composes`   | inbound   |
-| intra-layer | `technology.systemsoftware.nodejs`       | `depends-on` | outbound  |
+| Type        | Related Element                                 | Predicate    | Direction |
+| ----------- | ----------------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.node.docker-agent-container`        | `composes`   | inbound   |
+| intra-layer | `technology.systemsoftware.axe-core-playwright` | `depends-on` | inbound   |
+| intra-layer | `technology.systemsoftware.nodejs`              | `depends-on` | outbound  |
 
 ### React 19 {#react-19}
 
@@ -468,6 +557,27 @@ Next-generation build toolchain and HMR dev server for the React application; ha
 | ----------- | ----------------------------------------- | ------------ | --------- |
 | intra-layer | `technology.artifact.embedded-app-bundle` | `realizes`   | inbound   |
 | intra-layer | `technology.systemsoftware.nodejs`        | `depends-on` | outbound  |
+
+### Vitest {#vitest}
+
+**ID**: `technology.systemsoftware.vitest`
+
+**Type**: `systemsoftware`
+
+Unit, integration and component test runner (npm test).
+
+#### Attributes
+
+| Name         | Value      |
+| ------------ | ---------- |
+| softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                       | Predicate    | Direction |
+| ----------- | ------------------------------------- | ------------ | --------- |
+| intra-layer | `technology.systemsoftware.happy-dom` | `depends-on` | outbound  |
+| intra-layer | `technology.systemsoftware.msw`       | `depends-on` | outbound  |
 
 ### Zustand 5 {#zustand-5}
 
@@ -623,4 +733,4 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 ---
 
-Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0
+Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0

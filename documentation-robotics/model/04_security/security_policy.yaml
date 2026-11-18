@@ -5,9 +5,9 @@ security.securitypolicy.bearer-token-policy:
   type: securitypolicy
   layer_id: security
   name: Bearer Token Policy
-  description: "All REST requests inject Authorization: Bearer header via global
-    fetch interceptor; WebSocket uses ?token= query param; token persisted in
-    localStorage"
+  description: "All REST requests inject Authorization: Bearer via the global
+    fetch interceptor; the WebSocket passes the token in the
+    Sec-WebSocket-Protocol header; the token is persisted in localStorage"
   attributes:
     priority: 1
     target: endpoint

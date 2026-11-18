@@ -227,3 +227,41 @@ api.pathitem.changeset-discard-path:
     created_at: 2026-11-12T13:42:29.416Z
     updated_at: 2026-11-12T13:42:29.416Z
     version: 1
+api.pathitem.tier1-path:
+  id: aafab90c-2087-4301-bee1-c2ecb410d15c
+  path: api.pathitem.tier1-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Tier1 Path
+  description: Tier 1 state and spend; read-only.
+  attributes:
+    summary: /api/tier1 endpoint
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: paths./api/tier1
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+api.pathitem.changeset-review-path:
+  id: 44253ac6-6ed8-4da8-8ed8-aee487cd6587
+  path: api.pathitem.changeset-review-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changeset Review Path
+  description: A staged changeset's review verdicts.
+  attributes:
+    summary: /api/changesets/:changesetId/review endpoint
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: paths./api/changesets/:changesetId/review
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1

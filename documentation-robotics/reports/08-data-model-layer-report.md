@@ -16,11 +16,11 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 23    |
+| Elements                  | 28    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 17    |
-| Inbound Relationships     | 7     |
-| Outbound Relationships    | 10    |
+| Inter-Layer Relationships | 25    |
+| Inbound Relationships     | 14    |
+| Outbound Relationships    | 11    |
 
 **Cross-Layer References**:
 
@@ -34,8 +34,11 @@ flowchart LR
   subgraph data_model
     data_model_objectschema_annotation["Annotation"]
     data_model_objectschema_annotation_create["AnnotationCreate"]
+    data_model_objectschema_change_origin["ChangeOrigin"]
+    data_model_objectschema_changeset_detail["ChangesetDetail"]
     data_model_objectschema_chat_conversation["ChatConversation"]
     data_model_objectschema_chat_message["ChatMessage"]
+    data_model_objectschema_delete_blocker["DeleteBlocker"]
     data_model_objectschema_extracted_reference["ExtractedReference"]
     data_model_objectschema_json_rpc_request["JsonRpcRequest"]
     data_model_objectschema_layer["Layer"]
@@ -46,9 +49,11 @@ flowchart LR
     data_model_objectschema_reference["Reference"]
     data_model_objectschema_relationship["Relationship"]
     data_model_objectschema_relationship_type["RelationshipType"]
+    data_model_objectschema_review_decision["ReviewDecision"]
     data_model_objectschema_source_reference["SourceReference"]
     data_model_objectschema_spec_layer_data["SpecLayerData"]
     data_model_objectschema_spec_node_relationship["SpecNodeRelationship"]
+    data_model_objectschema_tier1status["Tier1Status"]
     data_model_objectschema_tool_invocation_content["ToolInvocationContent"]
     data_model_objectschema_web_socket_event_map["WebSocketEventMap"]
     data_model_objectschema_web_socket_message["WebSocketMessage"]
@@ -99,25 +104,33 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                        | Source Node                                     | Dest Node                                         | Dest Layer   | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
-| `582fd707-9e0d-4a98-9b47-b3cda7b26c3d-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d`          | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
-| `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`          | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`            | `security`   | `references` | unknown      | unknown  |
-| `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`          | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`    | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`    | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.element-store` | `data-model.objectschema.model-element`           | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`   | `data-model.objectschema.layer`                   | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`   | `data-model.objectschema.model-element`           | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`   | `data-model.objectschema.predicate-definition`    | `data-model` | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`   | `data-model.objectschema.spec-layer-data`         | `data-model` | `accesses`   | many-to-many | medium   |
-| `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`          | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
-| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.extracted-reference`   | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
-| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.model-metadata`        | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
-| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.reference`             | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.annotation-id`     | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.changeset-id`      | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.element-id`        | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
+| Relationship ID                                                                        | Source Node                                               | Dest Node                                         | Dest Layer   | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
+| `582fd707-9e0d-4a98-9b47-b3cda7b26c3d-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d`                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
+| `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                    | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`            | `security`   | `references` | unknown      | unknown  |
+| `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`       | `data-model.objectschema.delete-blocker`          | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`       | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel` | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel` | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`           | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.tier1-panel`            | `data-model.objectschema.tier1status`             | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.element-store`           | `data-model.objectschema.model-element`           | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`             | `data-model.objectschema.layer`                   | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`             | `data-model.objectschema.model-element`           | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`             | `data-model.objectschema.predicate-definition`    | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`             | `data-model.objectschema.spec-layer-data`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-detail`                | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.extracted-reference`             | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.model-metadata`                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.reference`                       | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.annotation-id`               | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.changeset-id`                | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.element-id`                  | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
 
 ## Element Reference
 
@@ -161,6 +174,48 @@ Request payload for creating a new annotation; requires target elementId and con
 | ----------- | ------------------------------------ | ------------- | --------- |
 | intra-layer | `data-model.objectschema.annotation` | `specializes` | outbound  |
 
+### ChangeOrigin {#changeorigin}
+
+**ID**: `data-model.objectschema.change-origin`
+
+**Type**: `objectschema`
+
+Who decided a staged change: by (tier0, tier1, agent) with rule, provider, model, upstream, probabilities and confirmation.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate  | Direction |
+| ----------- | ----------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.review-parts` | `accesses` | inbound   |
+
+### ChangesetDetail {#changesetdetail}
+
+**ID**: `data-model.objectschema.changeset-detail`
+
+**Type**: `objectschema`
+
+GET /api/changesets/:id's body: the changeset with its changes, revision, unstaged tombstones, review and delete blockers.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-canvas`       | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
+| inter-layer | `business.businessobject.changeset`                       | `realizes` | outbound  |
+
 ### ChatConversation {#chatconversation}
 
 **ID**: `data-model.objectschema.chat-conversation`
@@ -202,6 +257,26 @@ Multi-part chat conversation message; contains a role (user/assistant/system), o
 | inter-layer | `application.applicationfunction.chat-store`      | `accesses`    | inbound   |
 | intra-layer | `data-model.objectschema.chat-conversation`       | `specializes` | inbound   |
 | intra-layer | `data-model.objectschema.tool-invocation-content` | `specializes` | inbound   |
+
+### DeleteBlocker {#deleteblocker}
+
+**ID**: `data-model.objectschema.delete-blocker`
+
+**Type**: `objectschema`
+
+A relationship that still uses an element a staged delete removes; the server refuses Apply unless the links are deleted too.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate  | Direction |
+| ----------- | --------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.change-inspector` | `accesses` | inbound   |
 
 ### ExtractedReference {#extractedreference}
 
@@ -410,6 +485,27 @@ TypeScript enum providing dot-notation access to the full v0.8.3 predicate catal
 | ----------- | -------------------------------------- | ------------- | --------- |
 | intra-layer | `data-model.objectschema.relationship` | `specializes` | outbound  |
 
+### ReviewDecision {#reviewdecision}
+
+**ID**: `data-model.objectschema.review-decision`
+
+**Type**: `objectschema`
+
+A reviewer's verdict on one change (keep, drop, ask) by sequence, with note, the revision it was given at and when.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
+| inter-layer | `application.applicationfunction.local-review-store`      | `accesses` | inbound   |
+
 ### SourceReference {#sourcereference}
 
 **ID**: `data-model.objectschema.source-reference`
@@ -470,6 +566,26 @@ Valid relationship definition between two spec node types; specifies source and 
 | Type        | Related Element                           | Predicate     | Direction |
 | ----------- | ----------------------------------------- | ------------- | --------- |
 | intra-layer | `data-model.objectschema.spec-layer-data` | `specializes` | inbound   |
+
+### Tier1Status {#tier1status}
+
+**ID**: `data-model.objectschema.tier1status`
+
+**Type**: `objectschema`
+
+GET /api/tier1's body: Tier 1 state, provider and model, credential sources (never values), this month's spend against the cap, per-source spend, cache, warnings and reason.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.tier1-panel` | `accesses` | inbound   |
 
 ### ToolInvocationContent {#toolinvocationcontent}
 
@@ -604,4 +720,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
