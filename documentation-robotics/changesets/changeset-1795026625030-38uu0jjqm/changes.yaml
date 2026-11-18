@@ -59,7 +59,7 @@
     name: toTier1Status > keeps a well-formed warming object and drops a malformed
       one
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
       description: The spec's warming example keeps jobId, startedAt, cards, costUsd
         and etaSeconds; cards null stays null; a warming without jobId or with
@@ -68,7 +68,13 @@
       created_at: 2026-11-18T18:31:44.021Z
       updated_at: 2026-11-18T18:31:44.021Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/tier1.spec.ts
+          symbol: toTier1Status > keeps a well-formed warming object and drops a malformed
+            one
+  timestamp: 2026-11-18T18:48:38.976Z
   sequenceNumber: 2
 - type: add
   elementId: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams
@@ -82,7 +88,7 @@
     name: toTier1Status > keeps mode only as suggest or stage, and routing's string
       upstreams
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
       description: mode other than suggest/stage is dropped (modeReason kept only as a
         string); routing keeps only string upstreams, and is dropped without
@@ -91,7 +97,13 @@
       created_at: 2026-11-18T18:31:44.048Z
       updated_at: 2026-11-18T18:31:44.048Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/tier1.spec.ts
+          symbol: toTier1Status > keeps mode only as suggest or stage, and routing's
+            string upstreams
+  timestamp: 2026-11-18T18:48:39.252Z
   sequenceNumber: 3
 - type: add
   elementId: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
@@ -104,7 +116,7 @@
     layer_id: testing
     name: Tier1Panel — warming > shows the fill's progress, time left and cost so far
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
       description: "With the spec's warming example: a progress bar at 1,388 of 4,071
         cards, about 8 min left, and $1.94 so far."
@@ -112,7 +124,13 @@
       created_at: 2026-11-18T18:31:44.060Z
       updated_at: 2026-11-18T18:31:44.060Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — warming > shows the fill's progress, time left and cost so
+            far
+  timestamp: 2026-11-18T18:48:39.591Z
   sequenceNumber: 4
 - type: add
   elementId: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
@@ -126,13 +144,19 @@
     name: Tier1Panel — warming > says the cards are still being built while cards is
       null
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T18:31:44.060Z
       updated_at: 2026-11-18T18:31:44.060Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — warming > says the cards are still being built while cards
+            is null
+  timestamp: 2026-11-18T18:48:39.970Z
   sequenceNumber: 5
 - type: add
   elementId: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on
@@ -145,7 +169,7 @@
     layer_id: testing
     name: Tier1Panel — warming > refetches while warming and stops once Tier 1 is on
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
       description: useTier1 polls GET /api/tier1 only while the state is warming; once
         the body reads on, no further requests are made.
@@ -153,7 +177,13 @@
       created_at: 2026-11-18T18:31:44.060Z
       updated_at: 2026-11-18T18:31:44.060Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — warming > refetches while warming and stops once Tier 1 is
+            on
+  timestamp: 2026-11-18T18:48:40.600Z
   sequenceNumber: 6
 - type: add
   elementId: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
@@ -167,13 +197,19 @@
     name: Tier1Panel — mode and routing > says whether Tier 1 stages without the
       agent, and why
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T18:31:44.062Z
       updated_at: 2026-11-18T18:31:44.062Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — mode and routing > says whether Tier 1 stages without the
+            agent, and why
+  timestamp: 2026-11-18T18:48:41.079Z
   sequenceNumber: 7
 - type: add
   elementId: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
@@ -187,7 +223,7 @@
     name: Tier1Panel — mode and routing > lists OpenRouter's allowed upstreams, no
       fallbacks and no data collection
     attributes:
-      status: draft
+      status: automated
       implementationFormat: automated
       description: "With the spec's openRouter example: a cloudflare chip, 'no
         fallbacks · no data collection', and 'zero data retention' only when zdr
@@ -196,7 +232,13 @@
       created_at: 2026-11-18T18:31:44.063Z
       updated_at: 2026-11-18T18:31:44.063Z
       version: 1
-  timestamp: 2026-11-18T18:31:45.303Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — mode and routing > lists OpenRouter's allowed upstreams, no
+            fallbacks and no data collection
+  timestamp: 2026-11-18T18:48:41.974Z
   sequenceNumber: 8
 - type: relationship-add
   elementId: product.feature.tier1-warming-progress::realizes::product.softwarecapability.changeset-review
@@ -663,3 +705,149 @@
     category: structural
   timestamp: 2026-11-18T18:32:36.518Z
   sequenceNumber: 36
+- type: add
+  elementId: testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed
+  layerName: testing
+  after:
+    id: 950347a8-f52d-45b5-98c1-0f54c09e47a1
+    path: testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — warming > gives the server's reason when the warming object
+      is malformed
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — warming > gives the server's reason when the warming object
+            is malformed
+    metadata:
+      created_at: 2026-11-18T18:48:50.736Z
+      updated_at: 2026-11-18T18:48:50.736Z
+      version: 1
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 44
+- type: add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers
+  layerName: testing
+  after:
+    id: a27b5863-0dab-41ec-8431-40521bde62e3
+    path: testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — mode and routing > shows no routing row for other providers
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/Tier1Panel.spec.tsx
+          symbol: Tier1Panel — mode and routing > shows no routing row for other providers
+    metadata:
+      created_at: 2026-11-18T18:48:50.736Z
+      updated_at: 2026-11-18T18:48:50.736Z
+      version: 1
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 45
+- type: add
+  elementId: testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done
+  layerName: testing
+  after:
+    id: a8969644-237c-4bce-b196-0d2ff02b09d6
+    path: testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: warming > words a duration and the share of cards done
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/tier1.spec.ts
+          symbol: warming > words a duration and the share of cards done
+    metadata:
+      created_at: 2026-11-18T18:48:50.736Z
+      updated_at: 2026-11-18T18:48:50.736Z
+      version: 1
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 46
+- type: add
+  elementId: testing.testcasesketch.warming-polls-only-while-warming
+  layerName: testing
+  after:
+    id: 78fab573-cabf-41d6-ad66-06ca4cde30d5
+    path: testing.testcasesketch.warming-polls-only-while-warming
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: warming > polls only while warming
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/tier1.spec.ts
+          symbol: warming > polls only while warming
+    metadata:
+      created_at: 2026-11-18T18:48:50.737Z
+      updated_at: 2026-11-18T18:48:50.737Z
+      version: 1
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 50
+- type: relationship-add
+  elementId: testing.testcasesketch.warming-polls-only-while-warming::tests::application.applicationservice.use-tier1
+  layerName: testing
+  after:
+    source: testing.testcasesketch.warming-polls-only-while-warming
+    target: application.applicationservice.use-tier1
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:48:50.757Z
+  sequenceNumber: 51
