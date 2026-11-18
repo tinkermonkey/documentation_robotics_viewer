@@ -1,0 +1,62 @@
+product.workflowstep.pick-a-changeset-to-review:
+  id: ba8199a8-2cb7-4fe8-aac1-a01ecc5bc44a
+  path: product.workflowstep.pick-a-changeset-to-review
+  spec_node_id: product.workflowstep
+  type: workflowstep
+  layer_id: product
+  name: Pick a Changeset to Review
+  description: The reviewer sees which staged changesets wait on them and opens one.
+  attributes:
+    sequence: 1
+    action: Open a changeset waiting on you from the inbox
+  metadata:
+    created_at: 2026-11-18T16:29:24.512Z
+    updated_at: 2026-11-18T16:29:24.512Z
+    version: 1
+product.workflowstep.decide-each-change:
+  id: 030e8f9f-f136-4133-b9f1-12e662176648
+  path: product.workflowstep.decide-each-change
+  spec_node_id: product.workflowstep
+  type: workflowstep
+  layer_id: product
+  name: Decide Each Change
+  description: The reviewer keeps, drops or asks about each change, reading its
+    before and after and its links.
+  attributes:
+    sequence: 2
+    action: Give every change a verdict
+  metadata:
+    created_at: 2026-11-18T16:29:24.512Z
+    updated_at: 2026-11-18T16:29:24.512Z
+    version: 1
+product.workflowstep.check-the-reach:
+  id: e66356b8-9ff1-4d2e-8dec-79d49af0ac9f
+  path: product.workflowstep.check-the-reach
+  spec_node_id: product.workflowstep
+  type: workflowstep
+  layer_id: product
+  name: Check the Reach
+  description: The reviewer sees which existing elements the change reaches in other layers.
+  attributes:
+    sequence: 3
+    action: Look at the changeset's impact before applying
+  metadata:
+    created_at: 2026-11-18T16:29:24.512Z
+    updated_at: 2026-11-18T16:29:24.512Z
+    version: 1
+product.workflowstep.apply-the-kept-changes:
+  id: 8564a3bc-9d1e-43a9-8d87-cb3e6091f540
+  path: product.workflowstep.apply-the-kept-changes
+  spec_node_id: product.workflowstep
+  type: workflowstep
+  layer_id: product
+  name: Apply the Kept Changes
+  description: The reviewer confirms what lands and what is left out, and the kept
+    changes are written to the model.
+  attributes:
+    sequence: 4
+    action: Apply the changeset
+  metadata:
+    created_at: 2026-11-18T16:29:24.512Z
+    updated_at: 2026-11-18T16:29:24.512Z
+    version: 1

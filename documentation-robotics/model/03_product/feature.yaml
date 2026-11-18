@@ -1,0 +1,174 @@
+product.feature.model-graph-view:
+  id: 3ddd01fd-d265-41a6-8672-363fa316f4c2
+  path: product.feature.model-graph-view
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Model Graph View
+  description: Per-layer instance graph with Clustered, Organic and Orthogonal
+    layouts, card or pill nodes and the inspector drawer.
+  attributes:
+    priority: critical
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.509Z
+    updated_at: 2026-11-18T16:29:24.509Z
+    version: 1
+product.feature.schema-graph-view:
+  id: df81a8f4-3324-4055-be8b-1a8ecc5058ab
+  path: product.feature.schema-graph-view
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Schema Graph View
+  description: Per-layer node-type graph with predicates and cardinality.
+  attributes:
+    priority: medium
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.page-view:
+  id: 4eea0eef-95a7-40bc-9634-bce281809412
+  path: product.feature.page-view
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Page View
+  description: Layer, node type and element detail pages with tables and a
+    neighbourhood graph.
+  attributes:
+    priority: medium
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.cross-layer-follow:
+  id: 00c9c0f0-1027-47e7-95d5-a02e64fcde8d
+  path: product.feature.cross-layer-follow
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Cross-Layer Follow
+  description: "The inspector's Followed across layers section: the selection's
+    reach past its direct links, by layer."
+  attributes:
+    priority: medium
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.changeset-inbox:
+  id: d391b8e6-5e96-4eef-bc0f-d4a01c051c12
+  path: product.feature.changeset-inbox
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Changeset Inbox
+  description: Staged changesets waiting on you or on DrBot, with review progress,
+    then the history.
+  attributes:
+    priority: high
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.per-change-review:
+  id: cb6feaad-f0cc-43ab-b1ba-87c6ba870172
+  path: product.feature.per-change-review
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Per-Change Review
+  description: Keep, Drop or Ask DrBot on each change, grouped by review weight,
+    with the change inspector and Apply of the kept ones.
+  attributes:
+    priority: critical
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.changeset-impact-tab:
+  id: ea5850b1-fccd-42ce-882e-56b8642e56ec
+  path: product.feature.changeset-impact-tab
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Changeset Impact Tab
+  description: What a changeset reaches outside itself, as layer lanes, before Apply.
+  attributes:
+    priority: high
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.change-origin-badges:
+  id: de78f87f-f41d-4857-8e70-660fe3c909d6
+  path: product.feature.change-origin-badges
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Change Origin Badges
+  description: Who decided each staged change (Tier 0 rule, Tier 1 model, agent),
+    with a Decided by filter.
+  attributes:
+    priority: medium
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.tier1-spend-panel:
+  id: 8f3a8d0b-4a78-415c-9800-67269aeec3d0
+  path: product.feature.tier1-spend-panel
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Tier1 Spend Panel
+  description: Tier 1's state and this month's spend against the cap, in the
+    changeset inbox.
+  attributes:
+    priority: low
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.dr-bot-chat-drawer:
+  id: 458f50bb-0a12-4ae8-9c5f-395172589e17
+  path: product.feature.dr-bot-chat-drawer
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: DrBot Chat Drawer
+  description: Streaming chat with DrBot that carries the current view and
+    selection as context.
+  attributes:
+    priority: high
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.element-annotations:
+  id: 56bf068f-87df-41c6-8ed5-aa79dfd08486
+  path: product.feature.element-annotations
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Element Annotations
+  description: Comments and replies on model elements in the inspector, resolved
+    or edited in place.
+  attributes:
+    priority: medium
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1

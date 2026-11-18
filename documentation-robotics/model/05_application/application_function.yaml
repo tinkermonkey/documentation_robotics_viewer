@@ -178,3 +178,22 @@ application.applicationfunction.ui-store:
     created_at: 2026-11-12T13:44:46.094Z
     updated_at: 2026-11-12T13:44:46.094Z
     version: 1
+application.applicationfunction.local-review-store:
+  id: 8abcba72-82b5-4207-bbb7-22d38e424419
+  path: application.applicationfunction.local-review-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Local Review Store
+  description: Zustand store (persisted to localStorage as dr-viewer-local-review)
+    holding verdicts by changeset and sequence when the dr CLI can't store them,
+    and the blockers seen per kept delete.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/localReviewStore.ts
+        symbol: useLocalReviewStore
+  metadata:
+    created_at: 2026-11-18T16:26:33.167Z
+    updated_at: 2026-11-18T16:26:33.167Z
+    version: 1

@@ -6,9 +6,9 @@ business.businessfunction.cross-layer-reference-resolution:
   layer_id: business
   name: Cross-Layer Reference Resolution
   description: Resolution of cross-layer relationship links between model elements
-    across all 12 architecture layers; links in the /api/model payload reference
-    endpoints by canonical dotted id (layer.type.slug) or raw UUID, resolved via
-    a dual-index (data/modelGraph.ts) so relationship swatches and
+    across every layer the spec defines; links in the /api/model payload
+    reference endpoints by canonical dotted id (layer.type.slug) or raw UUID,
+    resolved via a dual-index (data/modelGraph.ts) so relationship swatches and
     click-to-navigate work across layers. Reimplemented client-side in the June
     2026 Heimdall UX rebuild, replacing the old
     crossLayerReferenceExtractor.ts/crossLayerProcessor.ts/crossLayerLinksExtractor.ts

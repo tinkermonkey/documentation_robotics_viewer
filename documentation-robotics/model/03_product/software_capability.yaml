@@ -1,0 +1,72 @@
+product.softwarecapability.model-visualization:
+  id: c1599737-4a4e-478b-8b73-c91333612112
+  path: product.softwarecapability.model-visualization
+  spec_node_id: product.softwarecapability
+  type: softwarecapability
+  layer_id: product
+  name: Model Visualization
+  description: Render a DR model layer by layer as a navigable graph or as pages,
+    with relationships followed across layers.
+  attributes:
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.508Z
+    updated_at: 2026-11-18T16:29:24.508Z
+    version: 1
+product.softwarecapability.schema-exploration:
+  id: 1240a313-2474-48c4-979e-4a0485d245ce
+  path: product.softwarecapability.schema-exploration
+  spec_node_id: product.softwarecapability
+  type: softwarecapability
+  layer_id: product
+  name: Schema Exploration
+  description: Show the DR spec's node types and allowed relationships per layer.
+  attributes:
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.509Z
+    updated_at: 2026-11-18T16:29:24.509Z
+    version: 1
+product.softwarecapability.changeset-review:
+  id: e316d867-2bcd-4837-b6a9-80240075e41a
+  path: product.softwarecapability.changeset-review
+  spec_node_id: product.softwarecapability
+  type: softwarecapability
+  layer_id: product
+  name: Changeset Review
+  description: Review a staged changeset change by change, see what it reaches,
+    and apply or discard it.
+  attributes:
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.509Z
+    updated_at: 2026-11-18T16:29:24.509Z
+    version: 1
+product.softwarecapability.model-annotation:
+  id: f1029037-b242-4c05-9a71-d49371b583ff
+  path: product.softwarecapability.model-annotation
+  spec_node_id: product.softwarecapability
+  type: softwarecapability
+  layer_id: product
+  name: Model Annotation
+  description: Comment on model elements, with replies, live across viewers and agents.
+  attributes:
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.509Z
+    updated_at: 2026-11-18T16:29:24.509Z
+    version: 1
+product.softwarecapability.model-chat:
+  id: 81e499a9-72b9-4ec3-8b23-4052f2f51a75
+  path: product.softwarecapability.model-chat
+  spec_node_id: product.softwarecapability
+  type: softwarecapability
+  layer_id: product
+  name: Model Chat
+  description: Ask DrBot about the model, scoped to what is on screen.
+  attributes:
+    status: delivered
+  metadata:
+    created_at: 2026-11-18T16:29:24.509Z
+    updated_at: 2026-11-18T16:29:24.509Z
+    version: 1

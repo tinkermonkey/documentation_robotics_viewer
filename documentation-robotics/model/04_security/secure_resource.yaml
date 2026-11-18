@@ -5,8 +5,9 @@ security.secureresource.model-rest-api:
   type: secureresource
   layer_id: security
   name: Model REST API
-  description: DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.)
-    protected by bearer token
+  description: DR CLI REST API endpoints (/api/model, /api/spec,
+    /api/layers/:name, /api/changesets, /api/annotations, /api/tier1) protected
+    by a bearer token; /health is open
   attributes:
     resource: model-rest-api
     type: api
@@ -25,16 +26,18 @@ security.secureresource.web-socket-json-rpc-channel:
   type: secureresource
   layer_id: security
   name: WebSocket JSON-RPC Channel
-  description: WebSocket connection to DR CLI server protected by ?token= query
-    parameter (custom headers not supported in WebSocket)
+  description: WebSocket JSON-RPC connection to the DR CLI server (/ws),
+    authenticated by passing the token in the Sec-WebSocket-Protocol header (new
+    WebSocket(url, ['token', TOKEN])), since browsers can't set custom headers
+    on a WebSocket
   attributes:
     resource: web-socket-json-rpc-channel
     type: stream
   source_reference:
     provenance: extracted
     locations:
-      - file: src/apps/embedded/stores/authStore.ts
-        symbol: getAuthQueryParams
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: getAuthProtocols
   metadata:
     created_at: 2026-03-20T13:39:55.532Z
     updated_at: 2026-03-20T13:39:55.532Z

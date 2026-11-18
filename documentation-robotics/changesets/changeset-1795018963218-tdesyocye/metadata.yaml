@@ -1,0 +1,297 @@
+id: changeset-1795018963218-tdesyocye
+name: model-sync-2026-11-18
+description: As-built extraction of the code at ac20e00. Staged by codebase_extract.
+created: 2026-11-18T16:22:43.219Z
+modified: 2026-11-18T16:40:30.337Z
+status: committed
+baseSnapshot: sha256:849505f210a2a96a20ce37afc608e208519daa1c69788474a6fc26b19db7d290
+origin:
+  kind: extract
+stats:
+  additions: 1831
+  modifications: 9
+  deletions: 0
+lastSequence: 1862
+unstaged:
+  - sequence: 1
+    removedAt: 1137
+    change:
+      type: add
+      elementId: api.operation.get-api-tier1
+      layerName: api
+      after:
+        id: f25b30d2-39a2-4359-a276-1870dd6b14af
+        path: api.operation.get-api-tier1
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/tier1
+        attributes:
+          operationId: get-api-tier1
+          summary: GET /api/tier1
+          tags: api
+          http_method: GET
+          http_path: /api/tier1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/tier1
+        metadata:
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+      timestamp: 2026-11-18T16:22:43.223Z
+      origin:
+        by: tier0
+        rule: node-mapping:Route
+    rewritten: true
+  - sequence: 2
+    removedAt: 1138
+    change:
+      type: add
+      elementId: api.operation.put-api-changesets-changeset-id-review
+      layerName: api
+      after:
+        id: 20ee09e3-7cc8-410a-a47c-5b95c20ff4a9
+        path: api.operation.put-api-changesets-changeset-id-review
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: PUT /api/changesets/{changesetId}/review
+        attributes:
+          operationId: put-api-changesets-changeset-id-review
+          summary: PUT /api/changesets/{changesetId}/review
+          tags: api
+          http_method: PUT
+          http_path: /api/changesets/{changesetId}/review
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: PUT /api/changesets/{changesetId}/review
+        metadata:
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+      timestamp: 2026-11-18T16:22:43.223Z
+      origin:
+        by: tier0
+        rule: node-mapping:Route
+    rewritten: true
+  - sequence: 1230
+    removedAt: 1323
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.app-shell::uses::application.applicationcomponent.chat-drawer
+      layerName: application
+      after:
+        source: application.applicationcomponent.app-shell
+        target: application.applicationcomponent.chat-drawer
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1231
+    removedAt: 1324
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.app-shell::uses::application.applicationcomponent.left-rail
+      layerName: application
+      after:
+        source: application.applicationcomponent.app-shell
+        target: application.applicationcomponent.left-rail
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1232
+    removedAt: 1325
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.app-shell::uses::application.applicationcomponent.status-bar
+      layerName: application
+      after:
+        source: application.applicationcomponent.app-shell
+        target: application.applicationcomponent.status-bar
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1233
+    removedAt: 1326
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.app-shell::uses::application.applicationcomponent.topbar
+      layerName: application
+      after:
+        source: application.applicationcomponent.app-shell
+        target: application.applicationcomponent.topbar
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1234
+    removedAt: 1327
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.changeset-inbox::uses::application.applicationcomponent.tier1-panel
+      layerName: application
+      after:
+        source: application.applicationcomponent.changeset-inbox
+        target: application.applicationcomponent.tier1-panel
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1241
+    removedAt: 1328
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.left-rail::uses::application.applicationcomponent.nav-tree
+      layerName: application
+      after:
+        source: application.applicationcomponent.left-rail
+        target: application.applicationcomponent.nav-tree
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1238
+    removedAt: 1329
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.inspector-drawer::uses::application.applicationcomponent.edge-inspector
+      layerName: application
+      after:
+        source: application.applicationcomponent.inspector-drawer
+        target: application.applicationcomponent.edge-inspector
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1240
+    removedAt: 1330
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.inspector-drawer::uses::application.applicationcomponent.relationships-with-tooltips
+      layerName: application
+      after:
+        source: application.applicationcomponent.inspector-drawer
+        target: application.applicationcomponent.relationships-with-tooltips
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1245
+    removedAt: 1331
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.page-view::uses::application.applicationcomponent.neighborhood-graph-view
+      layerName: application
+      after:
+        source: application.applicationcomponent.page-view
+        target: application.applicationcomponent.neighborhood-graph-view
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T16:29:36.257Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 1
+    removedAt: 1351
+    change:
+      type: add
+      elementId: api.operation.get-api-tier1
+      layerName: api
+      after:
+        id: f25b30d2-39a2-4359-a276-1870dd6b14af
+        path: api.operation.get-api-tier1
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: GET /api/tier1
+        attributes:
+          operationId: getTier1
+          summary: Get Tier 1 state and spend
+          tags: Extraction
+          http_method: GET
+          http_path: /api/tier1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: GET /api/tier1
+        metadata:
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+        description: Tier 1's state for the served checkout, provider and model,
+          credential sources (never values) and this month's spend against the
+          cap. Read-only; an older dr CLI answers 404.
+      timestamp: 2026-11-18T16:28:33.778Z
+      origin:
+        by: tier0
+        rule: node-mapping:Route
+    rewritten: true
+  - sequence: 2
+    removedAt: 1352
+    change:
+      type: add
+      elementId: api.operation.put-api-changesets-changeset-id-review
+      layerName: api
+      after:
+        id: 20ee09e3-7cc8-410a-a47c-5b95c20ff4a9
+        path: api.operation.put-api-changesets-changeset-id-review
+        spec_node_id: api.operation
+        type: operation
+        layer_id: api
+        name: PUT /api/changesets/{changesetId}/review
+        attributes:
+          operationId: putChangesetReview
+          summary: Record review decisions
+          tags: Changesets
+          http_method: PUT
+          http_path: /api/changesets/{changesetId}/review
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: docs/api-spec.yaml
+              symbol: PUT /api/changesets/{changesetId}/review
+        metadata:
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+        description: Set or clear the reviewer's verdict on changes of a staged
+          changeset by sequence; the server stamps atRevision and decidedAt,
+          stores review.yaml and broadcasts changesets.updated.
+      timestamp: 2026-11-18T16:28:35.420Z
+      origin:
+        by: tier0
+        rule: node-mapping:Route
+    rewritten: true

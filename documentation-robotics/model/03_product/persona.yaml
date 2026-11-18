@@ -1,0 +1,33 @@
+product.persona.architecture-reviewer:
+  id: f4f0ed1e-1aa8-461f-a612-ed3d0c0fc946
+  path: product.persona.architecture-reviewer
+  spec_node_id: product.persona
+  type: persona
+  layer_id: product
+  name: Architecture Reviewer
+  description: Reads a DR model and the changesets proposed against it, decides
+    each change, and leaves comments; usually an architect or engineer reviewing
+    an agent's or a colleague's plan.
+  attributes:
+    category: primary
+    proficiency: intermediate
+  metadata:
+    created_at: 2026-11-18T16:29:24.504Z
+    updated_at: 2026-11-18T16:29:24.504Z
+    version: 1
+product.persona.model-author:
+  id: 340fc0c2-4daf-43e3-8e37-f5033295877e
+  path: product.persona.model-author
+  spec_node_id: product.persona
+  type: persona
+  layer_id: product
+  name: Model Author
+  description: Builds and evolves the DR model with the dr CLI and its agents;
+    uses the viewer to see the result, explore the schema and ask DrBot.
+  attributes:
+    category: primary
+    proficiency: advanced
+  metadata:
+    created_at: 2026-11-18T16:29:24.508Z
+    updated_at: 2026-11-18T16:29:24.508Z
+    version: 1

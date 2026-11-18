@@ -418,3 +418,104 @@ data-model.objectschema.spec-node-relationship:
     created_at: 2026-03-23T23:51:44.246Z
     updated_at: 2026-03-23T23:51:44.246Z
     version: 1
+data-model.objectschema.tier1status:
+  id: da2ed198-289d-45dc-8df2-d1ad98caa916
+  path: data-model.objectschema.tier1status
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Tier1Status
+  description: "GET /api/tier1's body: Tier 1 state, provider and model,
+    credential sources (never values), this month's spend against the cap,
+    per-source spend, cache, warnings and reason."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/tier1.ts
+        symbol: Tier1Status
+  metadata:
+    created_at: 2026-11-18T16:27:42.056Z
+    updated_at: 2026-11-18T16:27:42.056Z
+    version: 1
+data-model.objectschema.change-origin:
+  id: 8069f1b3-da13-4dcf-b39d-3b3b7a188912
+  path: data-model.objectschema.change-origin
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChangeOrigin
+  description: "Who decided a staged change: by (tier0, tier1, agent) with rule,
+    provider, model, upstream, probabilities and confirmation."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/tier1.ts
+        symbol: ChangeOrigin
+  metadata:
+    created_at: 2026-11-18T16:27:42.056Z
+    updated_at: 2026-11-18T16:27:42.056Z
+    version: 1
+data-model.objectschema.changeset-detail:
+  id: dd4dcaa6-6174-4072-bcc9-b8a67fa4618e
+  path: data-model.objectschema.changeset-detail
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChangesetDetail
+  description: "GET /api/changesets/:id's body: the changeset with its changes,
+    revision, unstaged tombstones, review and delete blockers."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useChangesets.ts
+        symbol: ChangesetDetail
+  metadata:
+    created_at: 2026-11-18T16:27:42.056Z
+    updated_at: 2026-11-18T16:27:42.056Z
+    version: 1
+data-model.objectschema.review-decision:
+  id: 68e9f1c3-1960-4669-b97b-397161756b18
+  path: data-model.objectschema.review-decision
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ReviewDecision
+  description: A reviewer's verdict on one change (keep, drop, ask) by sequence,
+    with note, the revision it was given at and when.
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesetReview.ts
+        symbol: ReviewDecision
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1
+data-model.objectschema.delete-blocker:
+  id: b1e7a571-b569-496a-9070-27b30fc7312b
+  path: data-model.objectschema.delete-blocker
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: DeleteBlocker
+  description: A relationship that still uses an element a staged delete removes;
+    the server refuses Apply unless the links are deleted too.
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesets.ts
+        symbol: DeleteBlocker
+  metadata:
+    created_at: 2026-11-18T16:27:42.057Z
+    updated_at: 2026-11-18T16:27:42.057Z
+    version: 1

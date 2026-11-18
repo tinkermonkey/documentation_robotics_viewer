@@ -394,3 +394,72 @@ api.operation.discard-changeset:
     created_at: 2026-11-12T13:42:29.415Z
     updated_at: 2026-11-12T13:42:29.415Z
     version: 1
+api.operation.get-api-tier1:
+  id: f25b30d2-39a2-4359-a276-1870dd6b14af
+  path: api.operation.get-api-tier1
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: GET /api/tier1
+  description: Tier 1's state for the served checkout, provider and model,
+    credential sources (never values) and this month's spend against the cap.
+    Read-only; an older dr CLI answers 404.
+  attributes:
+    operationId: getTier1
+    summary: Get Tier 1 state and spend
+    tags: Extraction
+    http_method: GET
+    http_path: /api/tier1
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: GET /api/tier1
+  accepted_gaps:
+    - direction: outgoing
+      predicate: realizes
+      other_spec_node_id: application.applicationfunction
+      reason: Read through the useTier1 React Query hook (an application service it
+        references); no Zustand store function holds Tier 1 state.
+      decided_by: agent
+      decided_at: 2026-11-18T16:31:25.309Z
+      changeset: changeset-1795018963218-tdesyocye
+  metadata:
+    created_at: 2026-11-18T16:22:43.196Z
+    updated_at: 2026-11-18T16:22:43.196Z
+    version: 1
+api.operation.put-api-changesets-changeset-id-review:
+  id: 20ee09e3-7cc8-410a-a47c-5b95c20ff4a9
+  path: api.operation.put-api-changesets-changeset-id-review
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: PUT /api/changesets/{changesetId}/review
+  description: Set or clear the reviewer's verdict on changes of a staged
+    changeset by sequence; the server stamps atRevision and decidedAt, stores
+    review.yaml and broadcasts changesets.updated.
+  attributes:
+    operationId: putChangesetReview
+    summary: Record review decisions
+    tags: Changesets
+    http_method: PUT
+    http_path: /api/changesets/{changesetId}/review
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: docs/api-spec.yaml
+        symbol: PUT /api/changesets/{changesetId}/review
+  accepted_gaps:
+    - direction: outgoing
+      predicate: realizes
+      other_spec_node_id: application.applicationfunction
+      reason: Written through the useChangesetReview mutation (an application service
+        it references); the local review store is only the fallback when this
+        route is missing, not what it realizes.
+      decided_by: agent
+      decided_at: 2026-11-18T16:31:27.641Z
+      changeset: changeset-1795018963218-tdesyocye
+  metadata:
+    created_at: 2026-11-18T16:22:43.196Z
+    updated_at: 2026-11-18T16:22:43.196Z
+    version: 1

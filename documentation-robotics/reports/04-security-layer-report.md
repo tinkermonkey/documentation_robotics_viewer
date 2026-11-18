@@ -18,13 +18,13 @@ Authentication, authorization, security threats, and controls.
 | ------------------------- | ----- |
 | Elements                  | 12    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 20    |
-| Inbound Relationships     | 18    |
+| Inter-Layer Relationships | 24    |
+| Inbound Relationships     | 22    |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Navigation](./11-navigation-layer-report.md)
+- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -86,33 +86,38 @@ flowchart TB
   data_model --> security
   navigation --> security
   security --> business
+  testing --> security
   class security current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                        | Source Node                                           | Dest Node                                     | Dest Layer | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------------------------- | ----------------------------------------------------- | --------------------------------------------- | ---------- | ------------ | ------------ | -------- |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
-| `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`        | `security` | `references` | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
-| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`   | unknown      | unknown  |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                      | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`               | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                     | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                        | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                             | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`               | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                    | `security.securitypolicy.bearer-token-policy` | `security` | `requires`   | many-to-many | medium   |
-| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`               | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
-| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
-| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                | `a47870bf-898b-425f-9f73-92663193355a`        | `security` | `requires`   | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`        | `security` | `requires`   | unknown      | unknown  |
-| `navigation.navigationguard.realizes.security.securitypolicy`                          | `navigation.navigationguard.authentication-guard`     | `security.securitypolicy.bearer-token-policy` | `security` | `realizes`   | many-to-many | medium   |
-| `navigation.navigationguard.requires.security.role`                                    | `navigation.navigationguard.authentication-guard`     | `security.role.authenticated-viewer`          | `security` | `requires`   | many-to-many | medium   |
-| `security.secureresource.references.business.businessobject`                           | `security.secureresource.model-rest-api`              | `business.businessobject.architecture-model`  | `business` | `references` | many-to-many | medium   |
-| `security.secureresource.references.business.businessobject`                           | `security.secureresource.web-socket-json-rpc-channel` | `business.businessobject.architecture-model`  | `business` | `references` | many-to-many | medium   |
+| Relationship ID                                                                        | Source Node                                                                                                                     | Dest Node                                             | Dest Layer | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------- | ------------ | ------------ | -------- |
+| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
+| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
+| `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                                                                                          | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`                | `security` | `references` | unknown      | unknown  |
+| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
+| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                          | `a47870bf-898b-425f-9f73-92663193355a`                | `security` | `requires`   | unknown      | unknown  |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                                                                                                | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                                                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                                                                                                  | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                                                                                                   | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                                                                                                       | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-changesets-changeset-id-review`                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                                                                                              | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
+| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                          | `a47870bf-898b-425f-9f73-92663193355a`                | `security` | `requires`   | unknown      | unknown  |
+| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
+| `navigation.navigationguard.realizes.security.securitypolicy`                          | `navigation.navigationguard.authentication-guard`                                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
+| `navigation.navigationguard.requires.security.role`                                    | `navigation.navigationguard.authentication-guard`                                                                               | `security.role.authenticated-viewer`                  | `security` | `requires`   | many-to-many | medium   |
+| `security.secureresource.references.business.businessobject`                           | `security.secureresource.model-rest-api`                                                                                        | `business.businessobject.architecture-model`          | `business` | `references` | many-to-many | medium   |
+| `security.secureresource.references.business.businessobject`                           | `security.secureresource.web-socket-json-rpc-channel`                                                                           | `business.businessobject.architecture-model`          | `business` | `references` | many-to-many | medium   |
+| `testing.testcasesketch.tests.security.secureresource`                                 | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-no-subprotocol-when-no-token-is-set`           | `security.secureresource.web-socket-json-rpc-channel` | `security` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.security.secureresource`                                 | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-token-actual-token-as-the-web-socket-08da44fa` | `security.secureresource.web-socket-json-rpc-channel` | `security` | `tests`      | many-to-many | medium   |
 
 ## Element Reference
 
@@ -273,7 +278,7 @@ Role granted to users who possess a valid bearer token; can read model data and 
 
 **Type**: `secureresource`
 
-DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.) protected by bearer token
+DR CLI REST API endpoints (/api/model, /api/spec, /api/layers/:name, /api/changesets, /api/annotations, /api/tier1) protected by a bearer token; /health is open
 
 #### Attributes
 
@@ -299,7 +304,7 @@ DR CLI REST API endpoints (/api/v1/model, /api/v1/elements, etc.) protected by b
 
 **Type**: `secureresource`
 
-WebSocket connection to DR CLI server protected by ?token= query parameter (custom headers not supported in WebSocket)
+WebSocket JSON-RPC connection to the DR CLI server (/ws), authenticated by passing the token in the Sec-WebSocket-Protocol header (new WebSocket(url, \['token', TOKEN\])), since browsers can't set custom headers on a WebSocket
 
 #### Attributes
 
@@ -310,9 +315,11 @@ WebSocket connection to DR CLI server protected by ?token= query parameter (cust
 
 #### Relationships
 
-| Type        | Related Element                              | Predicate    | Direction |
-| ----------- | -------------------------------------------- | ------------ | --------- |
-| inter-layer | `business.businessobject.architecture-model` | `references` | outbound  |
+| Type        | Related Element                                                                                                                 | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `business.businessobject.architecture-model`                                                                                    | `references` | outbound  |
+| inter-layer | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-no-subprotocol-when-no-token-is-set`           | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-token-actual-token-as-the-web-socket-08da44fa` | `tests`      | inbound   |
 
 ### Documentation Robotics Viewer Security Model {#documentation-robotics-viewer-security-model}
 
@@ -345,7 +352,7 @@ Security model for the documentation_robotics_viewer browser application
 
 **Type**: `securitypolicy`
 
-All REST requests inject Authorization: Bearer header via global fetch interceptor; WebSocket uses ?token= query param; token persisted in localStorage
+All REST requests inject Authorization: Bearer via the global fetch interceptor; the WebSocket passes the token in the Sec-WebSocket-Protocol header; the token is persisted in localStorage
 
 #### Attributes
 
@@ -362,8 +369,10 @@ All REST requests inject Authorization: Bearer header via global fetch intercept
 | inter-layer | `api.operation.create-annotation-reply`                               | `requires`       | inbound   |
 | inter-layer | `api.operation.discard-changeset`                                     | `requires`       | inbound   |
 | inter-layer | `api.operation.get-annotation`                                        | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-tier1`                                         | `requires`       | inbound   |
 | inter-layer | `api.operation.get-layer`                                             | `requires`       | inbound   |
 | inter-layer | `api.operation.list-annotation-replies`                               | `requires`       | inbound   |
+| inter-layer | `api.operation.put-api-changesets-changeset-id-review`                | `requires`       | inbound   |
 | inter-layer | `api.operation.replace-annotation`                                    | `requires`       | inbound   |
 | inter-layer | `api.securityscheme.bearer-auth-scheme`                               | `realizes`       | inbound   |
 | inter-layer | `api.securityscheme.query-auth-scheme`                                | `realizes`       | inbound   |
@@ -398,4 +407,4 @@ Risk that an unauthenticated user accesses model data if bearer token is absent 
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T17:34:55.286Z | Model Version: 0.1.0

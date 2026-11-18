@@ -18,12 +18,13 @@ Application routing, navigation flows, and page structures.
 | ------------------------- | ----- |
 | Elements                  | 10    |
 | Intra-Layer Relationships | 9     |
-| Inter-Layer Relationships | 7     |
-| Inbound Relationships     | 0     |
+| Inter-Layer Relationships | 26    |
+| Inbound Relationships     | 19    |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
 
+- **Upstream layers**: [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Application](./05-application-layer-report.md), [Security](./04-security-layer-report.md), [UX](./10-ux-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -74,20 +75,40 @@ flowchart TB
   navigation --> application
   navigation --> security
   navigation --> ux
+  testing --> navigation
   class navigation current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                     | Source Node                                              | Dest Node                                     | Dest Layer    | Predicate    | Cardinality  | Strength |
-| ------------------------------------------------------------------- | -------------------------------------------------------- | --------------------------------------------- | ------------- | ------------ | ------------ | -------- |
-| `navigation.navigationflow.realizes.application.applicationprocess` | `navigation.navigationflow.authentication-to-model-flow` | `application.applicationprocess.auth-route`   | `application` | `realizes`   | many-to-many | medium   |
-| `navigation.navigationguard.realizes.security.securitypolicy`       | `navigation.navigationguard.authentication-guard`        | `security.securitypolicy.bearer-token-policy` | `security`    | `realizes`   | many-to-many | medium   |
-| `navigation.navigationguard.requires.security.role`                 | `navigation.navigationguard.authentication-guard`        | `security.role.authenticated-viewer`          | `security`    | `requires`   | many-to-many | medium   |
-| `navigation.route.depends-on.application.applicationcomponent`      | `navigation.route.app-shell-sectionview-route`           | `application.applicationcomponent.app-shell`  | `application` | `depends-on` | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.changesets-view`                     | `ux`          | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.model-view`                          | `ux`          | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`           | `ux.view.schema-view`                         | `ux`          | `maps-to`    | many-to-many | medium   |
+| Relationship ID                                                     | Source Node                                                                                                                           | Dest Node                                                    | Dest Layer    | Predicate    | Cardinality  | Strength |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------- | ------------ | ------------ | -------- |
+| `navigation.navigationflow.realizes.application.applicationprocess` | `navigation.navigationflow.authentication-to-model-flow`                                                                              | `application.applicationprocess.auth-route`                  | `application` | `realizes`   | many-to-many | medium   |
+| `navigation.navigationguard.realizes.security.securitypolicy`       | `navigation.navigationguard.authentication-guard`                                                                                     | `security.securitypolicy.bearer-token-policy`                | `security`    | `realizes`   | many-to-many | medium   |
+| `navigation.navigationguard.requires.security.role`                 | `navigation.navigationguard.authentication-guard`                                                                                     | `security.role.authenticated-viewer`                         | `security`    | `requires`   | many-to-many | medium   |
+| `navigation.route.depends-on.application.applicationcomponent`      | `navigation.route.app-shell-sectionview-route`                                                                                        | `application.applicationcomponent.app-shell`                 | `application` | `depends-on` | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.changesets-view`                                    | `ux`          | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.model-view`                                         | `ux`          | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.schema-view`                                        | `ux`          | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-graph-page-mode-is-in-the-url-and-in-history`                      | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-switching-layers-pushes-history-back-returns-to-the-80219442`      | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-a-settled-zoom-writes-vp-without-pushing-and-a-reload-restores-aff5cf38`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-back-after-a-same-layer-navigation-restores-the-earlier-viewport-b6941f6f` | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-a-previous-layer-restores-the-viewport-it-was-left-at`             | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-an-entry-recorded-under-another-layout-drops-its-vp-d41cbb9f`      | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-drops-vp-the-coordinates-belong-to-the-old-68d1d4ed`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-graph-viewport-history-clicking-a-node-in-the-graph-selects-it-without-re-centering-the-197e4f4e` | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layeredge-url-restores-that-edge-selection`         | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layernode-url-restores-that-selection`              | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-changeset-updates-the-url-with-changeset`                       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-layer-in-the-nav-tree-updates-the-url-with-layer`               | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-node-after-an-edge-clears-edge-from-the-url-mutually-ff344372`  | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-node-in-the-nav-tree-updates-the-url-with-layernode-a360c923`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-selecting-an-edge-on-the-model-graph-updates-the-url-with-edge-16ac9848`    | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-left-panel-selections-switching-views-pushes-history-selecting-within-a-view-replaces-it`         | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 
 ## Element Reference
 
@@ -235,9 +256,28 @@ Deep links into a layer, element or changeset: the router two-way syncs ?layer= 
 
 #### Relationships
 
-| Type        | Related Element                                | Predicate      | Direction |
-| ----------- | ---------------------------------------------- | -------------- | --------- |
-| intra-layer | `navigation.route.app-shell-sectionview-route` | `navigates-to` | outbound  |
+| Type        | Related Element                                                                                                                       | Predicate      | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-graph-page-mode-is-in-the-url-and-in-history`                      | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-switching-layers-pushes-history-back-returns-to-the-80219442`      | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-a-settled-zoom-writes-vp-without-pushing-and-a-reload-restores-aff5cf38`   | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-after-a-same-layer-navigation-restores-the-earlier-viewport-b6941f6f` | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-a-previous-layer-restores-the-viewport-it-was-left-at`             | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-an-entry-recorded-under-another-layout-drops-its-vp-d41cbb9f`      | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-drops-vp-the-coordinates-belong-to-the-old-68d1d4ed`   | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-clicking-a-node-in-the-graph-selects-it-without-re-centering-the-197e4f4e` | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layeredge-url-restores-that-edge-selection`         | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layernode-url-restores-that-selection`              | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-changeset-updates-the-url-with-changeset`                       | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-layer-in-the-nav-tree-updates-the-url-with-layer`               | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-node-after-an-edge-clears-edge-from-the-url-mutually-ff344372`  | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-a-node-in-the-nav-tree-updates-the-url-with-layernode-a360c923`   | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-an-edge-on-the-model-graph-updates-the-url-with-edge-16ac9848`    | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-switching-views-pushes-history-selecting-within-a-view-replaces-it`         | `tests`        | inbound   |
+| intra-layer | `navigation.route.app-shell-sectionview-route`                                                                                        | `navigates-to` | outbound  |
 
 ### Tab Navigation Transition {#tab-navigation-transition}
 
@@ -312,4 +352,4 @@ Landing route at path /#/; accepts optional ?token= search parameter; renders Au
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0

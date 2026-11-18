@@ -1,0 +1,15 @@
+product.userworkflow.review-a-staged-changeset:
+  id: fbddfdbd-8282-4a2f-8b11-f310276ab206
+  path: product.userworkflow.review-a-staged-changeset
+  spec_node_id: product.userworkflow
+  type: userworkflow
+  layer_id: product
+  name: Review a Staged Changeset
+  description: "From the inbox to an applied changeset: open it, decide each
+    change, check its reach, apply what was kept."
+  attributes:
+    complexity: moderate
+  metadata:
+    created_at: 2026-11-18T16:29:24.511Z
+    updated_at: 2026-11-18T16:29:24.511Z
+    version: 1

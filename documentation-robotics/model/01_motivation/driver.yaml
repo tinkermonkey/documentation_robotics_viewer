@@ -5,8 +5,9 @@ motivation.driver.architecture-documentation-complexity:
   type: driver
   layer_id: motivation
   name: Architecture Documentation Complexity
-  description: 12-layer architecture model spanning motivation through testing is
-    too complex to communicate via static diagrams; interactive tooling needed
+  description: A 13-layer architecture model spanning motivation through testing
+    is too complex to communicate via static diagrams; interactive tooling
+    needed
   attributes:
     category: operational
   source_reference:
