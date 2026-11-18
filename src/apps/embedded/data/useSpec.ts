@@ -7,7 +7,8 @@
  * entries (analyzers, manifest, base) are not layer schemas and are ignored.
  *
  * Derives per-layer node-type counts + node-type titles + standard label + the
- * spec version the shell footer / status bar need. Counts come from
+ * spec version the rail footer shows (`specVersionOf`: the manifest schema's
+ * `specVersion`, not the payload's own `version`). Counts come from
  * `Object.keys(nodeSchemas)` — `layer.node_types` can be empty even when the
  * layer has node-types (e.g. data-model), so it must NOT be used for counts.
  *
@@ -20,6 +21,7 @@ import { useMemo } from 'react';
 import { useGetapispec } from '../../../core/services/generatedApiClient';
 import { layerStandard } from '../ui/domain';
 import type { SpecPayload } from './specGraph';
+import { specVersionOf } from './serverVersions';
 
 interface SpecLayerBlock {
   id?: string;
@@ -54,6 +56,7 @@ export interface SpecLayerInfo {
 }
 
 export interface SpecDerived {
+  /** The spec version (e.g. 0.13.0), or '' when the server sends none. */
   version: string;
   /** Per-layer schema info keyed by layer slug. */
   byLayer: Record<string, SpecLayerInfo>;
@@ -87,7 +90,8 @@ export function useSpec() {
     }
 
     return {
-      version: raw.version ?? '',
+      // The spec's version, from its manifest — not the response's `version` (the API's own).
+      version: specVersionOf(raw) ?? '',
       byLayer,
     };
   }, [raw]);

@@ -18,6 +18,10 @@
  *   - `diff`: what changed since the reviewer's last review (revised / new /
  *     withdrawn / carried over);
  *   - `apply`: what Apply lands, what it leaves out, and the commit body.
+ *     Apply needs a decision only where one is required (#573): undecided
+ *     changes land as kept (`apply.undecided`), except a delete still in use,
+ *     which never lands undecided (`canApply` waits on it). `ready` still means
+ *     every change has a verdict.
  *
  * Stateless and JSX-free; `useChangesetReview` wires it to the API.
  */
@@ -684,6 +688,12 @@ export interface DroppedEntry {
 export interface ApplyPlan {
   landing: ReviewItem[];
   landingByKind: Record<ChangeKind, number>;
+  /**
+   * Landing changes nobody decided: Apply lands them as kept. They are in
+   * neither list of the body (the server lands everything it isn't told to
+   * drop), and never include a delete still in use (Apply waits on those).
+   */
+  undecided: ReviewItem[];
   dropped: DroppedEntry[];
   /** Kept deletes whose blocking links are deleted with them. */
   deleteBlockedLinks: number[];
@@ -727,6 +737,13 @@ export interface ReviewModel {
   apply: ApplyPlan;
   /** Every change decided, none waiting on DrBot, and something lands. */
   ready: boolean;
+  /**
+   * Apply may run: something lands, nothing waits on DrBot, no drop conflicts,
+   * and no delete still in use is undecided. Other undecided changes land as kept.
+   */
+  canApply: boolean;
+  /** Undecided deletes still in use: Apply waits on a decision for each. */
+  blockedUndecided: ReviewItem[];
   stateOf: (seq: number) => ItemState;
   /** Element names: the model's, then the changeset's own adds. */
   nameOf: NameOf;
@@ -815,6 +832,8 @@ export function buildReviewModel({
       const c = cascade.get(i.seq);
       return c ? { item: i, cascadedBy: bySeq.get(c.bySeq) } : { item: i, note: decisions.get(i.seq)?.note };
     });
+  const undecided = landing.filter((i) => stateOf(i.seq) === 'undecided');
+  const blockedUndecided = undecided.filter((i) => i.blockers.length > 0);
   const blockedKept = landing.filter((i) => i.blockers.length > 0 && stateOf(i.seq) === 'keep');
   const deleteBlockedLinks = blockedKept.map((i) => i.seq);
   // Distinct links: one between two kept deletes is deleted once.
@@ -834,8 +853,10 @@ export function buildReviewModel({
     conflicts,
     tally,
     diff: revisionDiff(items, review, unstaged, nameOf),
-    apply: { landing, landingByKind, dropped, deleteBlockedLinks, linksDeleted, body },
+    apply: { landing, landingByKind, undecided, dropped, deleteBlockedLinks, linksDeleted, body },
     ready: tally.undecided === 0 && tally.asked === 0 && conflicts.length === 0 && landing.length > 0,
+    canApply: blockedUndecided.length === 0 && tally.asked === 0 && conflicts.length === 0 && landing.length > 0,
+    blockedUndecided,
     stateOf,
     nameOf,
     inModel: (id) => modelNameOf(id) !== undefined,

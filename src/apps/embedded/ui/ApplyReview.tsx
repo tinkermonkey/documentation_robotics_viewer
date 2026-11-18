@@ -1,7 +1,7 @@
 /**
  * Apply, reviewed: the confirm dialog that lists what lands and what is left
  * out (drops and the changes cascaded with them, blocked deletes taking their
- * links), and the results card a committed changeset shows afterwards (landed
+ * links, how many undecided changes land as kept), and the results card a committed changeset shows afterwards (landed
  * by layer, what was left out).
  */
 
@@ -10,6 +10,7 @@ import { layerLabel } from './domain';
 import { useUiStore } from './uiStore';
 import { LayerSwatch, plural } from './reviewParts';
 import {
+  countKinds,
   kindCountsLabel,
   landedByLayer,
   type ApplyPlan,
@@ -37,6 +38,7 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
   const dropped = plan.dropped.length;
   const k = plan.landingByKind;
   const deletes = k.delete + k['link-delete'];
+  const undecided = plan.undecided.length;
   return (
     <Modal
       isOpen={isOpen}
@@ -70,6 +72,16 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
           {deletes > 0 && <StatTile label="Delete" value={deletes} color="rose" />}
           {!local && <StatTile label="Left out" value={dropped} color="rose" />}
         </div>
+        {undecided > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} data-testid="apply-confirm-undecided">
+            <span className="drv-eyebrow">Undecided, landing as kept</span>
+            <span style={{ fontSize: 12.5, color: 'rgb(var(--canvas-fg-2))' }}>
+              {undecided === lands ? `All ${lands}` : `${undecided} of the ${lands}`} have no decision (
+              {kindCountsLabel(countKinds(plan.undecided))}). Apply lands them as kept; go back to drop or ask about
+              any you want held back.
+            </span>
+          </div>
+        )}
         {dropped > 0 && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }} data-testid="apply-confirm-dropped">
             <span className="drv-eyebrow">Left out</span>
@@ -127,10 +139,12 @@ export interface AppliedResultProps {
   /** Labels of what was left out, if known. */
   leftOut: { seq: number; label: string }[];
   linksDeleted?: number;
+  /** How many landed with no per-change decision; undefined when that isn't known (verdicts kept in a browser). */
+  undecidedLanded?: number;
 }
 
 /** The changeset page once applied: what is in the model, by layer. */
-export function AppliedResult({ landed, leftOut, linksDeleted }: AppliedResultProps) {
+export function AppliedResult({ landed, leftOut, linksDeleted, undecidedLanded }: AppliedResultProps) {
   const setView = useUiStore((s) => s.setView);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const byLayer = landedByLayer(landed);
@@ -146,6 +160,12 @@ export function AppliedResult({ landed, leftOut, linksDeleted }: AppliedResultPr
           files in git.
           {linksDeleted ? ` ${plural(linksDeleted, 'link')} that still used deleted elements went with them.` : ''}
         </p>
+        {undecidedLanded ? (
+          <span className="drv-muted" style={{ fontSize: 12.5 }} data-testid="applied-undecided">
+            {undecidedLanded === landed.length ? `All ${undecidedLanded}` : `${undecidedLanded} of ${landed.length}`}{' '}
+            landed without a per-change decision.
+          </span>
+        ) : null}
       </div>
       {byLayer.length > 0 && (
         <section className="drv-group" aria-label="Landed by layer">

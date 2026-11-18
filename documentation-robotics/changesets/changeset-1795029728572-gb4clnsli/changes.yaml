@@ -1,0 +1,894 @@
+- type: update
+  elementId: application.applicationservice.changeset-review-model
+  layerName: application
+  before:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, layer and whether this changeset adds it (replacing the 'new
+      source' / 'new target' / 'both ends new' chips); an element item counts
+      its new links out and in."
+    attributes: &a1
+      serviceType: synchronous
+    source_reference: &a2
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/changesetReview.ts
+          symbol: buildReviewModel
+    metadata: &a3
+      created_at: 2026-11-17T22:03:59.328Z
+      updated_at: 2026-11-17T22:03:59.328Z
+      version: 1
+  after:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, layer and whether this changeset adds it (replacing the 'new
+      source' / 'new target' / 'both ends new' chips); an element item counts
+      its new links out and in. Apply needs a decision only where one is
+      required (#573): canApply holds while a blocked delete is undecided, a
+      change waits on DrBot or a drop conflicts, and otherwise undecided changes
+      land as kept (apply.undecided lists them); ready still means every change
+      has a verdict. The commit body is unchanged: drop names only dropped
+      changes, deleteBlockedLinks only kept blocked deletes."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-18T19:23:14.309Z
+  sequenceNumber: 0
+- type: update
+  elementId: application.applicationcomponent.changeset-review-panel
+  layerName: application
+  before:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset
+      adds."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+          symbol: ChangesetReviewPanel
+    metadata: &a6
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  after:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      The summary card's Apply is enabled with changes still undecided (it reads
+      \"Apply N, M undecided as kept\" and says so under the card); it waits
+      only on an undecided blocked delete, an ask or a drop conflict, and Keep
+      the other N stays for recording verdicts."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-18T19:23:14.526Z
+  sequenceNumber: 1
+- type: update
+  elementId: application.applicationcomponent.apply-review
+  layerName: application
+  before:
+    id: 2a10e552-278c-4119-a2b1-c8f47e40baf7
+    path: application.applicationcomponent.apply-review
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Apply Review
+    description: Apply confirmation (what lands, what's left out, links deleted with
+      their elements) and the applied result, landed by layer. A landed-by-layer
+      row keeps the layer name and its counts apart at any inspector width.
+    attributes: &a7
+      type: internal
+    source_reference: &a8
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ApplyReview.tsx
+          symbol: ApplyConfirm
+    metadata: &a9
+      created_at: 2026-11-17T22:03:39.530Z
+      updated_at: 2026-11-17T22:03:39.530Z
+      version: 1
+  after:
+    id: 2a10e552-278c-4119-a2b1-c8f47e40baf7
+    path: application.applicationcomponent.apply-review
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Apply Review
+    description: Apply confirmation (what lands, what's left out, links deleted with
+      their elements, and how many undecided changes land as kept) and the
+      applied result, landed by layer, with how many changes landed without a
+      per-change decision. A landed-by-layer row keeps the layer name and its
+      counts apart at any inspector width.
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-18T19:23:14.881Z
+  sequenceNumber: 2
+- type: update
+  elementId: application.applicationservice.use-spec
+  layerName: application
+  before:
+    id: d2bd9d4e-7ee4-41b6-b36e-f5aa1c0882f3
+    path: application.applicationservice.use-spec
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useSpec
+    description: "React Query hook over GET /api/spec: per-layer node schemas and
+      relationship schemas, with the layer order derived from them."
+    attributes: &a10
+      serviceType: synchronous
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useSpec.ts
+          symbol: useSpec
+    metadata: &a12
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: d2bd9d4e-7ee4-41b6-b36e-f5aa1c0882f3
+    path: application.applicationservice.use-spec
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useSpec
+    description: "React Query hook over GET /api/spec: per-layer node schemas and
+      relationship schemas, with the layer order derived from them. Its version
+      is the spec version from the manifest schema's specVersion (a layer
+      schema's as fallback), not the response's own version field (the API's
+      0.1.0); empty when the server sends none."
+    attributes: *a10
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-11-18T19:23:15.142Z
+  sequenceNumber: 3
+- type: update
+  elementId: application.applicationcomponent.status-bar
+  layerName: application
+  before:
+    id: 40ca94e2-6c6a-42e3-a5ad-56ea61db31de
+    path: application.applicationcomponent.status-bar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Status Bar
+    description: "The shell's bottom status bar (Heimdall Statusbar): connection,
+      model and selection status."
+    attributes: &a13
+      type: internal
+    source_reference: &a14
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/StatusBar.tsx
+          symbol: StatusBar
+    metadata: &a15
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 40ca94e2-6c6a-42e3-a5ad-56ea61db31de
+    path: application.applicationcomponent.status-bar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Status Bar
+    description: "The shell's bottom status bar (Heimdall Statusbar): connection,
+      model and selection status. Its right side reads cli {version}, the
+      version GET /health reports as cliVersion, or — when the server doesn't
+      send one (never /health's API version)."
+    attributes: *a13
+    source_reference: *a14
+    metadata: *a15
+  timestamp: 2026-11-18T19:23:15.322Z
+  sequenceNumber: 4
+- type: update
+  elementId: application.applicationcomponent.left-rail
+  layerName: application
+  before:
+    id: e4572ee6-8861-4136-a1e0-0ec53f935887
+    path: application.applicationcomponent.left-rail
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Left Rail
+    description: "The shell's left navigation column: the view switch (Model,
+      Schema, Changesets) above the 3-level nav tree."
+    attributes: &a16
+      type: internal
+    source_reference: &a17
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/LeftRail.tsx
+          symbol: LeftRail
+    metadata: &a18
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: e4572ee6-8861-4136-a1e0-0ec53f935887
+    path: application.applicationcomponent.left-rail
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Left Rail
+    description: "The shell's left navigation column: the view switch (Model,
+      Schema, Changesets) above the 3-level nav tree. Its footer reads SPEC
+      {version} from the spec manifest (useSpec), or — when the server sends
+      none."
+    attributes: *a16
+    source_reference: *a17
+    metadata: *a18
+  timestamp: 2026-11-18T19:23:15.512Z
+  sequenceNumber: 5
+- type: add
+  elementId: application.applicationservice.use-cli-version
+  layerName: application
+  after:
+    id: dee6f57a-624a-4375-8ff2-5f156c5bc374
+    path: application.applicationservice.use-cli-version
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useCliVersion
+    description: "React Query hook over GET /health: the dr CLI version serving the
+      viewer when /health sends one as cliVersion, else undefined so the status
+      bar shows —. Never /health's version, which is the API's own (0.1.0). Pure
+      helpers specVersionOf (spec manifest) and cliVersionOf live beside it in
+      data/serverVersions.ts."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/serverVersions.ts
+          symbol: useCliVersion
+  timestamp: 2026-11-18T19:29:08.987Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+  layerName: testing
+  after:
+    id: 0c0ad04f-ef81-4b2b-8c20-c63f296cc91a
+    path: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: buildReviewModel > lets Apply land undecided changes as kept; the body
+      drops and deletes only what was decided
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: buildReviewModel > lets Apply land undecided changes as kept; the body
+            drops and deletes only what was decided
+  timestamp: 2026-11-18T19:29:35.888Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+  layerName: testing
+  after:
+    id: 2ce7263a-76be-4d0b-b1a4-90acb327f754
+    path: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: buildReviewModel > holds Apply while a blocked delete is undecided
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: buildReviewModel > holds Apply while a blocked delete is undecided
+  timestamp: 2026-11-18T19:29:36.173Z
+  sequenceNumber: 8
+- type: add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+  layerName: testing
+  after:
+    id: 941be69c-5fa0-4a75-b3ef-c8a55967f6f4
+    path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: review — deciding changes (dr CLI with review) > summarises what needs a
+      decision and offers Apply with the undecided landing as kept
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — deciding changes (dr CLI with review) > summarises what needs a
+            decision and offers Apply with the undecided landing as kept
+  timestamp: 2026-11-18T19:29:36.437Z
+  sequenceNumber: 9
+- type: add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+  layerName: testing
+  after:
+    id: b32bc3cb-4318-4e74-ba0d-1e2f61e714e6
+    path: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: review — Apply > applies with changes undecided, says how many land as
+      kept, and drops nothing it wasn't told to
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — Apply > applies with changes undecided, says how many land as
+            kept, and drops nothing it wasn't told to
+  timestamp: 2026-11-18T19:29:36.785Z
+  sequenceNumber: 10
+- type: add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+  layerName: testing
+  after:
+    id: 59856441-8399-4fc8-b7ab-94d6bd8a5330
+    path: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: review — a delete still in use > holds Apply while the blocked delete is
+      undecided
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — a delete still in use > holds Apply while the blocked delete is
+            undecided
+  timestamp: 2026-11-18T19:29:37.088Z
+  sequenceNumber: 11
+- type: add
+  elementId: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+  layerName: testing
+  after:
+    id: 0dbf92be-9726-417e-88f1-9ab241c122e7
+    path: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: serverVersions > reads the spec version from the spec manifest, not the
+      response's version
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/serverVersions.spec.ts
+          symbol: serverVersions > reads the spec version from the spec manifest, not the
+            response's version
+  timestamp: 2026-11-18T19:29:37.364Z
+  sequenceNumber: 12
+- type: add
+  elementId: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+  layerName: testing
+  after:
+    id: efb93b88-bf0d-4e5e-bf42-78e3e8a82c23
+    path: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: serverVersions > never takes /health's API version for the CLI's
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/serverVersions.spec.ts
+          symbol: serverVersions > never takes /health's API version for the CLI's
+  timestamp: 2026-11-18T19:29:37.635Z
+  sequenceNumber: 13
+- type: add
+  elementId: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+  layerName: testing
+  after:
+    id: 4e860192-e800-47d0-9e47-383fc9add229
+    path: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell footer > shows the spec manifest's version and the CLI version
+      /health reports
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ShellFooter.spec.tsx
+          symbol: shell footer > shows the spec manifest's version and the CLI version
+            /health reports
+  timestamp: 2026-11-18T19:29:37.901Z
+  sequenceNumber: 14
+- type: add
+  elementId: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+  layerName: testing
+  after:
+    id: 4a4b3fd0-a2b8-46c8-b7ec-6b722c585494
+    path: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell footer > shows — when the server sends no spec or CLI version
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ShellFooter.spec.tsx
+          symbol: shell footer > shows — when the server sends no spec or CLI version
+  timestamp: 2026-11-18T19:29:38.222Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.use-cli-version::serves::application.applicationcomponent.status-bar
+  layerName: application
+  after:
+    source: application.applicationservice.use-cli-version
+    target: application.applicationcomponent.status-bar
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:31.225Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.use-cli-version::depends-on::application.applicationservice.generated-api-client
+  layerName: application
+  after:
+    source: application.applicationservice.use-cli-version
+    target: application.applicationservice.generated-api-client
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:31.225Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided::tests::application.applicationservice.changeset-review-model
+  layerName: testing
+  after:
+    source: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+    target: application.applicationservice.changeset-review-model
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:31.225Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided::tests::application.applicationservice.changeset-review-model
+  layerName: testing
+  after:
+    source: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+    target: application.applicationservice.changeset-review-model
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:31.225Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::application.applicationcomponent.apply-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: application.applicationcomponent.apply-review
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version::tests::application.applicationservice.use-spec
+  layerName: testing
+  after:
+    source: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+    target: application.applicationservice.use-spec
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis::tests::application.applicationservice.use-cli-version
+  layerName: testing
+  after:
+    source: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+    target: application.applicationservice.use-cli-version
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports::tests::application.applicationcomponent.status-bar
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+    target: application.applicationcomponent.status-bar
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports::tests::application.applicationcomponent.left-rail
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+    target: application.applicationcomponent.left-rail
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version::tests::application.applicationcomponent.status-bar
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+    target: application.applicationcomponent.status-bar
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version::tests::application.applicationcomponent.left-rail
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+    target: application.applicationcomponent.left-rail
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:23:40.355Z
+  sequenceNumber: 29
+- type: delete
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb
+  layerName: testing
+  before:
+    id: 193da10c-fadb-45c8-9dcf-751c8ca7b629
+    path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: review — deciding changes (dr CLI with review) > summarises what needs a
+      decision and holds Apply until every change has one
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — deciding changes (dr CLI with review) > summarises what needs a
+            decision and holds Apply until every change has one
+    metadata:
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  timestamp: 2026-11-18T19:23:45.308Z
+  sequenceNumber: 30
+- type: relationship-delete
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  before:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+  timestamp: 2026-11-18T19:23:45.318Z
+  sequenceNumber: 31
+- type: relationship-delete
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb::tests::business.businessservice.changeset-review
+  layerName: testing
+  before:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+  timestamp: 2026-11-18T19:23:45.330Z
+  sequenceNumber: 32
+- type: relationship-delete
+  elementId: application.applicationservice.use-spec::serves::application.applicationcomponent.status-bar
+  layerName: application
+  before:
+    source: application.applicationservice.use-spec
+    target: application.applicationcomponent.status-bar
+    predicate: serves
+    layer: application
+  timestamp: 2026-11-18T19:27:36.397Z
+  sequenceNumber: 33
+- type: delete
+  elementId: testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count
+  layerName: testing
+  before:
+    id: 68769c31-dc31-4085-b929-474688b5d576
+    path: testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell > statusbar shows the spec version and the rel count
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/shell.spec.ts
+          symbol: shell > statusbar shows the spec version and the rel count
+    metadata:
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  timestamp: 2026-11-18T19:27:42.042Z
+  sequenceNumber: 34
+- type: relationship-delete
+  elementId: testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count::tests::application.applicationcomponent.app-shell
+  layerName: testing
+  before:
+    source: testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count
+    target: application.applicationcomponent.app-shell
+    predicate: tests
+    layer: testing
+    targetLayer: application
+  timestamp: 2026-11-18T19:27:42.056Z
+  sequenceNumber: 35
+- type: add
+  elementId: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+  layerName: testing
+  after:
+    id: 39ab5520-cbaa-42ba-9708-fff9e8a8f5c5
+    path: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell > statusbar shows the rel count and the CLI version; the rail the
+      spec version
+    attributes:
+      status: automated
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T19:27:42.248Z
+      updated_at: 2026-11-18T19:27:42.248Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/shell.spec.ts
+          symbol: shell > statusbar shows the rel count and the CLI version; the rail the
+            spec version
+  timestamp: 2026-11-18T19:29:38.504Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version::tests::application.applicationcomponent.app-shell
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+    target: application.applicationcomponent.app-shell
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:27:42.263Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version::tests::application.applicationcomponent.status-bar
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+    target: application.applicationcomponent.status-bar
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:27:42.263Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 45

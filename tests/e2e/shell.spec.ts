@@ -2,7 +2,8 @@
  * shell.spec.ts — the 4-pane IDE shell: topbar / nav rail / statusbar.
  *
  * Asserts the chrome dimensions (54 / 244 / 28), the nav rail's 3 sections and
- * 12 layers with counts equal to the live API, the statusbar's spec version +
+ * 12 layers with counts equal to the live API, the rail's spec version, the
+ * statusbar's CLI version +
  * rel count, the light/dark canvas SegmentedControl toggle (sets
  * `body.dark-canvas` and flips a canvas color), and the connection dot.
  */
@@ -91,7 +92,7 @@ test.describe('shell', () => {
     ).toBeVisible();
   });
 
-  test('statusbar shows the spec version and the rel count', async ({ page, request }) => {
+  test('statusbar shows the rel count and the CLI version; the rail the spec version', async ({ page, request }) => {
     await gotoView(page, ROUTES.model);
 
     const model = await (await request.get('http://localhost:8099/api/model')).json();
@@ -102,8 +103,12 @@ test.describe('shell', () => {
     // "{rels} refs indexed · 0 unresolved"
     await expect(statusbar).toContainText(`${relCount} refs indexed`);
     await expect(statusbar).toContainText('0 unresolved');
-    // "cli {version} · refs ok"
-    await expect(statusbar).toContainText(`cli ${spec.version}`);
+    // "cli {version} · refs ok": /health's cliVersion, or "—" — never the API's own version (#573).
+    const health = await (await request.get('http://localhost:8099/health')).json();
+    await expect(statusbar).toContainText(`cli ${health.cliVersion ?? '—'} · refs ok`);
+    // "SPEC {version}": the spec manifest's specVersion, not the payload's version.
+    const specVersion = spec.schemas['manifest.json']?.specVersion;
+    if (specVersion) await expect(page.getByTestId('rail-spec-version')).toHaveText(`SPEC ${specVersion}`);
   });
 
   test('the light/dark SegmentedControl toggles body.dark-canvas and flips a canvas color', async ({
