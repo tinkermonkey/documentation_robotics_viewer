@@ -3,13 +3,254 @@ name: changeset-purposes-and-actions
 description: Treat changesets by purpose and render their allowed actions from
   the server, so verification records aren't offered as plans to apply (#575)
 created: 2026-11-18T19:24:05.068Z
-modified: 2026-11-18T19:25:24.493Z
+modified: 2026-11-18T19:33:45.070Z
 status: staged
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
 stats:
-  additions: 35
+  additions: 47
   modifications: 9
   deletions: 0
-lastSequence: 43
+lastSequence: 66
+unstaged:
+  - sequence: 10
+    removedAt: 44
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read
+      layerName: testing
+      after:
+        id: 92a2dbd4-19f6-4816-9fc5-3e665b3dfcfd
+        path: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetCanvas — purpose > leads a verification record with the plan it
+          verifies and what extraction read
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 11
+    removedAt: 45
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it
+      layerName: testing
+      after:
+        id: 535f58fa-0b69-4805-9525-04e54f402d0c
+        path: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetCanvas — purpose > says a changeset is gone when the server no
+          longer has it
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 5
+    removedAt: 46
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan
+      layerName: testing
+      after:
+        id: 243c6adc-b3f7-4372-8213-e4e7d8750698
+        path: testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetInbox > keeps a verification record out of Waiting on you and
+          pairs it with its plan
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 6
+    removedAt: 47
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history
+      layerName: testing
+      after:
+        id: 0a313a16-c716-46f3-9c4b-508657eb35c1
+        path: testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetInbox > shows each changeset's purpose in the history
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 2
+    removedAt: 48
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli
+      layerName: testing
+      after:
+        id: a4d19a8a-5e42-45f0-8658-bd268d21de29
+        path: testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetPurpose > keeps known actions, drops unknown ones, and reads no
+          array as an older dr CLI
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.393Z
+          updated_at: 2026-11-18T19:24:40.393Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 3
+    removedAt: 49
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli
+      layerName: testing
+      after:
+        id: 6a94387c-c3af-4d38-8f05-2afb60cf02ea
+        path: testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetPurpose > offers Apply and Discard from the server's actions, or
+          from a staged status on an older dr CLI
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.393Z
+          updated_at: 2026-11-18T19:24:40.393Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 1
+    removedAt: 50
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one
+      layerName: testing
+      after:
+        id: 4a6f3711-bd74-4b95-8205-77a8388a554e
+        path: testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetPurpose > reads a known purpose and ignores an unknown one
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.393Z
+          updated_at: 2026-11-18T19:24:40.393Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 4
+    removedAt: 51
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan
+      layerName: testing
+      after:
+        id: d2c0983b-4626-4685-a9b5-e1da06120a67
+        path: testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetPurpose > sorts the inbox by purpose and pairs each verification
+          record with its plan
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.393Z
+          updated_at: 2026-11-18T19:24:40.393Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 8
+    removedAt: 52
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+      layerName: testing
+      after:
+        id: 2ec29bba-7021-41b1-b297-fbf290c0e9c1
+        path: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — purpose and actions > explains a refused commit of a verification
+          record inline, not as drift
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 9
+    removedAt: 53
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+      layerName: testing
+      after:
+        id: f61e1651-d917-4cb5-93e8-af8801d314e3
+        path: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — purpose and actions > keeps Apply and Discard on an older dr CLI
+          that sends no actions
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
+  - sequence: 7
+    removedAt: 54
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+      layerName: testing
+      after:
+        id: b6388d96-162d-429f-b42d-cbd478a3bf74
+        path: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — purpose and actions > offers a verification record Discard but no
+          Apply
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T19:24:40.394Z
+          updated_at: 2026-11-18T19:24:40.394Z
+          version: 1
+      timestamp: 2026-11-18T19:24:40.406Z
+    rewritten: true
