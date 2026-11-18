@@ -8,7 +8,7 @@ description: "Make each change in a changeset review legible on its own: label
   when a reviewer can judge any change without reading its raw id. Design:
   https://claude.ai/artifact/DC38TetJbk1npbASw4tJXQ"
 created: 2026-11-17T22:02:58.050Z
-modified: 2026-11-18T02:31:28.623Z
+modified: 2026-11-18T10:51:04.280Z
 status: staged
 baseSnapshot: sha256:0e8ef2b3f96b9c44d692cee309442eaad89347198c52f81fedb3d9c8e0180654
 origin:
@@ -17,7 +17,7 @@ stats:
   additions: 50
   modifications: 4
   deletions: 0
-lastSequence: 54
+lastSequence: 58
 unstaged:
   - sequence: 6
     removedAt: 54
@@ -43,4 +43,120 @@ unstaged:
           updated_at: 2026-11-17T22:03:39.530Z
           version: 1
       timestamp: 2026-11-17T22:03:39.547Z
+    rewritten: true
+  - sequence: 7
+    removedAt: 55
+    change:
+      type: add
+      elementId: application.applicationcomponent.apply-review
+      layerName: application
+      after:
+        id: 2a10e552-278c-4119-a2b1-c8f47e40baf7
+        path: application.applicationcomponent.apply-review
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Apply Review
+        description: Apply confirmation (what lands, what's left out, links deleted with
+          their elements) and the applied result, landed by layer. A
+          landed-by-layer row keeps the layer name and its counts apart at any
+          inspector width.
+        attributes:
+          type: internal
+        source_reference:
+          provenance: manual
+          locations:
+            - file: src/apps/embedded/ui/ApplyReview.tsx
+        metadata:
+          created_at: 2026-11-17T22:03:39.530Z
+          updated_at: 2026-11-17T22:03:39.530Z
+          version: 1
+      timestamp: 2026-11-17T22:03:39.547Z
+    rewritten: true
+  - sequence: 5
+    removedAt: 56
+    change:
+      type: add
+      elementId: application.applicationcomponent.change-link-card
+      layerName: application
+      after:
+        id: ba386ee3-a6da-42a8-9e40-eed0694a0cf5
+        path: application.applicationcomponent.change-link-card
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Change Link Card
+        description: "A link change in the inspector as source card → predicate → target
+          card, after the Model view's EdgeInspector (Heimdall
+          GraphEdgeInspector): each card shows layer swatch, type, name,
+          description and NEW or 'in the model'; the predicate shows its meaning
+          (PredicateTooltip). The raw source::predicate::target id folds under
+          Identifier."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-17T22:03:39.530Z
+          updated_at: 2026-11-17T22:03:39.530Z
+          version: 1
+      timestamp: 2026-11-17T22:03:39.547Z
+    rewritten: true
+  - sequence: 6
+    removedAt: 57
+    change:
+      type: add
+      elementId: application.applicationcomponent.change-neighbourhood
+      layerName: application
+      after:
+        id: add22404-7633-4319-93e1-e7aac7c0cbdf
+        path: application.applicationcomponent.change-neighbourhood
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Change Neighbourhood
+        description: "Compact layer lanes in the change inspector: the selected element
+          (or both ends of a link) and its reach at the inspector's Follow
+          depth, each lane's elements wrapping (a GraphCanvas lanes graph is one
+          row per layer and unreadable at inspector width). The focused element
+          is amber, elements this changeset adds are dashed, other changed ones
+          carry the Impact op outline, elements past the direct links are faded;
+          an element with a change opens it, and Open in Impact focuses the same
+          element there."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-17T22:03:39.530Z
+          updated_at: 2026-11-17T22:03:39.530Z
+          version: 1
+      timestamp: 2026-11-18T02:31:28.613Z
+    rewritten: true
+  - sequence: 28
+    removedAt: 58
+    change:
+      type: add
+      elementId: application.applicationservice.changeset-review-model
+      layerName: application
+      after:
+        id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+        path: application.applicationservice.changeset-review-model
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Changeset Review Model
+        description: "Pure review model over a changeset: review items, groups,
+          cancel-out pairs, effective decisions, drop cascade, conflicts,
+          since-your-review diff and the apply plan. A link item carries each
+          end's name, type, layer and whether this changeset adds it (replacing
+          the 'new source' / 'new target' / 'both ends new' chips); an element
+          item counts its new links out and in."
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: manual
+          locations:
+            - file: src/apps/embedded/data/changesetReview.ts
+        metadata:
+          created_at: 2026-11-17T22:03:59.328Z
+          updated_at: 2026-11-17T22:03:59.328Z
+          version: 1
+      timestamp: 2026-11-17T22:03:59.341Z
     rewritten: true

@@ -159,7 +159,12 @@
       created_at: 2026-11-17T22:03:39.530Z
       updated_at: 2026-11-17T22:03:39.530Z
       version: 1
-  timestamp: 2026-11-17T22:03:39.547Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangeLinkCard.tsx
+          symbol: ChangeLinkCard
+  timestamp: 2026-11-18T10:51:04.275Z
   sequenceNumber: 5
 - type: add
   elementId: application.applicationcomponent.change-neighbourhood
@@ -185,7 +190,12 @@
       created_at: 2026-11-17T22:03:39.530Z
       updated_at: 2026-11-17T22:03:39.530Z
       version: 1
-  timestamp: 2026-11-18T02:31:28.613Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangeNeighbourhood.tsx
+          symbol: ChangeNeighbourhood
+  timestamp: 2026-11-18T10:51:04.275Z
   sequenceNumber: 6
 - type: add
   elementId: application.applicationcomponent.apply-review
@@ -206,11 +216,12 @@
       provenance: manual
       locations:
         - file: src/apps/embedded/ui/ApplyReview.tsx
+          symbol: ApplyConfirm
     metadata:
       created_at: 2026-11-17T22:03:39.530Z
       updated_at: 2026-11-17T22:03:39.530Z
       version: 1
-  timestamp: 2026-11-17T22:03:39.547Z
+  timestamp: 2026-11-18T10:51:04.275Z
   sequenceNumber: 7
 - type: add
   elementId: ux.subview.changeset-review-list
@@ -477,11 +488,12 @@
       provenance: manual
       locations:
         - file: src/apps/embedded/data/changesetReview.ts
+          symbol: buildReviewModel
     metadata:
       created_at: 2026-11-17T22:03:59.328Z
       updated_at: 2026-11-17T22:03:59.328Z
       version: 1
-  timestamp: 2026-11-17T22:03:59.341Z
+  timestamp: 2026-11-18T10:51:04.275Z
   sequenceNumber: 28
 - type: add
   elementId: application.applicationservice.layer-domain-palette
