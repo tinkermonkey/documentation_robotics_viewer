@@ -938,6 +938,15 @@ export interface paths {
                                         kind: "chat" | "plan" | "extract" | "cli";
                                         detail?: string;
                                     };
+                                    /**
+                                     * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded)
+                                     * @enum {string}
+                                     */
+                                    purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat";
+                                    /** @description For a verification record: the id of the plan changeset it verifies */
+                                    verifies?: string;
+                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
+                                    actions: ("commit" | "discard")[];
                                     /** @description The changeset's nextSequenceNumber */
                                     revision?: number;
                                     review?: {
@@ -1016,6 +1025,22 @@ export interface paths {
                                 kind: "chat" | "plan" | "extract" | "cli";
                                 detail?: string;
                             };
+                            /**
+                             * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded)
+                             * @enum {string}
+                             */
+                            purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat";
+                            /** @description For a verification record: the id of the plan changeset it verifies */
+                            verifies?: string;
+                            /** @description For a verification record: what its extraction read */
+                            scope?: {
+                                /** @description The git ref extraction read the changes since */
+                                since: string;
+                                /** @description The commit extraction read the code at */
+                                codeCommit?: string;
+                            };
+                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
+                            actions: ("commit" | "discard")[];
                             /** @description Unstaged and rewritten changes (tombstones), oldest first */
                             unstaged: {
                                 /** @description The sequence number the change had */
@@ -1224,7 +1249,7 @@ export interface paths {
         put?: never;
         /**
          * Commit changeset
-         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Refused when the model changed since the changeset was created (use the CLI with --force).
+         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Refused (409) when what the changeset was staged against changed in the base since it was created; this route has no force, so such a changeset lands only through changeset_commit with force. A base that only gained other elements (another changeset landing) is not drift. Refused (409) too for a verification record (purpose verification, whose actions do not include commit): it is never landed.
          */
         post: {
             parameters: {
@@ -1299,7 +1324,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, or the model drifted since it was created */
+                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record, which is never landed */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1356,7 +1381,7 @@ export interface paths {
         put?: never;
         /**
          * Discard changeset
-         * @description Throw away a staged changeset's changes (same as `dr changeset discard`): clears them, marks it discarded, and deactivates it if it was active. The model is not touched.
+         * @description Throw away a staged changeset (same as `dr changeset discard`): deletes it with its changes and its folder under documentation-robotics/changesets/, and deactivates it if it was active. No record is kept, so it no longer appears in GET /api/changesets. The model is not touched.
          */
         post: {
             parameters: {
@@ -1410,7 +1435,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, or the model drifted since it was created */
+                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record, which is never landed */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1563,11 +1588,11 @@ export interface components {
             /** @description Requests in flight at once (on, capped, no-credentials) */
             concurrency?: number;
             /**
-             * @description stage: codebase_extract stages the accept band (origin confirmed auto) and hides the not-element band without the agent, because the model's default thresholds are verified on held-out labels and tier1.json leaves mode at auto; suggest: nothing is staged or hidden without the agent. Set when tier1.json names a known model
+             * @description stage: codebase_extract stages the accept band (origin confirmed auto) and hides the not-element band without the agent, because both bands of the model's default thresholds are verified on held-out labels and tier1.json leaves mode at auto; hide: only the not-element band is verified, so it is hidden and the accept band stays a suggestion; suggest: nothing is staged or hidden without the agent. Set when tier1.json names a known model
              * @enum {string}
              */
-            mode?: "suggest" | "stage";
-            /** @description Why mode: held-out verified defaults, in-sample ones, overridden thresholds, or "mode": "suggest" in tier1.json */
+            mode?: "suggest" | "hide" | "stage";
+            /** @description Why mode: held-out verified defaults (both bands, or the not-element band alone), in-sample ones, overridden thresholds, or "mode": "suggest" in tier1.json */
             modeReason?: string;
             /** @description OpenRouter only: the routing every request carries (on, capped, no-credentials). OpenRouter's Decisions API is in alpha and may change */
             routing?: {
