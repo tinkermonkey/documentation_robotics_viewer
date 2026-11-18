@@ -236,6 +236,7 @@ const OVERLAP_REASON: Record<string, string> = {
   'already-removed': 'the base already removed it',
   'changed-in-base': 'the base changed it',
   'removed-in-base': 'the base removed it',
+  'linked-in-base': 'the base linked it since, and deleting it would remove that link',
   'endpoint-changed-in-base': 'the base changed an end',
   'endpoint-removed-in-base': 'the base removed an end',
 };

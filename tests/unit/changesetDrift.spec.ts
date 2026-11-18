@@ -78,6 +78,7 @@ describe('changesetDrift', () => {
       ],
     });
     expect(overlapReasonLabel('removed-in-base')).toBe('the base removed it');
+    expect(overlapReasonLabel('linked-in-base')).toMatch(/linked it since/);
     expect(overlapReasonLabel('endpoint-changed-in-base')).toBe('the base changed an end');
     expect(overlapReasonLabel('made-up')).toBe('made-up');
     expect(overlapReasonLabel('toString')).toBe('toString');
