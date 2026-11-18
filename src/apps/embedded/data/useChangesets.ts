@@ -31,6 +31,7 @@ import {
   type ChangesetPurpose,
   type ChangesetScope,
 } from './changesetPurpose';
+import { toDrift, toDriftSummary, type ChangesetDrift, type ChangesetDriftSummary } from './changesetDrift';
 
 /** Review progress the list reports per changeset (a dr CLI with changeset review). */
 export interface ChangesetReviewProgress {
@@ -56,6 +57,8 @@ export interface ChangesetSummary {
   actions?: ChangesetMove[];
   /** A verification record: the id of the plan it verifies. */
   verifies?: string;
+  /** Base drift (a dr CLI that reports it; validated). Absent: the commit's 409 is the only signal. */
+  drift?: ChangesetDriftSummary;
 }
 
 interface ChangesetEntry {
@@ -70,6 +73,7 @@ interface ChangesetEntry {
   purpose?: unknown;
   actions?: unknown;
   verifies?: unknown;
+  drift?: unknown;
   [key: string]: unknown;
 }
 
@@ -104,6 +108,7 @@ export function useChangesets() {
       revision: entry.revision,
       review: entry.review,
       ...purposeFields(entry),
+      ...withDrift(toDriftSummary(entry.drift)),
     }));
 
     // Newest first by created timestamp (stable for equal/empty timestamps).
@@ -141,6 +146,7 @@ interface ChangesetDetailPayload {
   actions?: unknown;
   verifies?: unknown;
   scope?: unknown;
+  drift?: unknown;
   [key: string]: unknown;
 }
 
@@ -177,6 +183,13 @@ export interface ChangesetDetail {
   verifies?: string;
   /** A verification record: what its extraction read. */
   scope?: ChangesetScope;
+  /** Base drift with what changed in the base (a dr CLI that reports it; validated). */
+  drift?: ChangesetDrift;
+}
+
+/** Spreads `drift` only when the server sent a usable one. */
+function withDrift<T>(drift: T | undefined): { drift?: T } {
+  return drift ? { drift } : {};
 }
 
 const EMPTY_STATS: ChangesetStats = { additions: 0, modifications: 0, deletions: 0 };
@@ -218,6 +231,7 @@ export function useChangeset(id: string | null) {
       review: raw.review,
       ...purposeFields(raw),
       ...(scope ? { scope } : {}),
+      ...withDrift(toDrift(raw.drift)),
     };
   }, [raw, id]);
 

@@ -1,0 +1,15 @@
+id: changeset-1795032966043-gpobr3pum
+name: drift-before-apply
+description: Show a changeset's base drift before review and before Apply, from
+  the server's drift report (#576)
+created: 2026-11-18T20:16:06.055Z
+modified: 2026-11-18T20:18:29.304Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 45
+  modifications: 9
+  deletions: 0
+lastSequence: 53

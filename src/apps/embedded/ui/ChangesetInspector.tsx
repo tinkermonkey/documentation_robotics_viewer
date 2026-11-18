@@ -15,6 +15,12 @@
  * DrBot decision, before/after, source, related links and comments. Apply
  * and Discard live on the review's summary card (`ChangesetReviewPanel`).
  *
+ * Under the status, the base drift (`DriftSection`): for a plan the server
+ * would refuse to apply, the badge, its message, which of its changes the base
+ * also touched and what changed in the base per layer; content-free drift as a
+ * quiet line; "couldn't be checked" said plainly; a verification record's
+ * message as information.
+ *
  * Above them, a blast-radius summary (`BlastRadius`): how many elements outside
  * the changeset its changes reach, per layer, at the inspector's follow depth
  * — the same reach the canvas's Impact tab draws as lanes.
@@ -30,6 +36,7 @@ import { useUiStore } from './uiStore';
 import { layerColor, layerLabel } from './domain';
 import { ChangeInspector } from './ChangeInspector';
 import { ErrorBoundary } from './ErrorBoundary';
+import { DriftSection } from './DriftNotice';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
@@ -314,6 +321,8 @@ export function ChangesetInspector() {
                 {statusBadge(detail.status).label}
               </span>
             </div>
+
+            <DriftSection drift={detail.drift} isRecord={detail.purpose === 'verification'} />
 
             <BlastRadius detail={detail} />
 

@@ -145,6 +145,12 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   detail adds `scope: { since, codeCommit? }`. Commit refuses a record with a 409 naming the plan (its text
   mentions drift: `isVerificationRecordRefusal` is checked before `isDriftError`). Discard DELETES the
   changeset (GET answers 404, it leaves the list), so a new server has no `discarded` history.
+- Changeset drift (dr CLI with documentation_robotics#1191): list and detail carry a required `drift`
+  `{ state: none|content-free|drifted|not-applicable|unknown, blocksCommit, message }` (`blocksCommit` true only
+  for `drifted`, exactly when commit would 409 for drift; a record or settled changeset is `not-applicable`).
+  The detail adds, when the base's hash changed, `warnings`, `baseIndex`, `overlapping { elements,
+  relationships }` and `baseChanges` (exact `counts` and `layers`, lists cut at 50 with `truncated`). The commit
+  route takes NO force. The server sends `changesets.updated` after a model reload, so drift stays current.
 - `GET /api/tier1` → Tier 1 state + this month's spend (`Tier1Status`; read-only, never a credential value; an
   older dr CLI answers 404). Each change in `GET /api/changesets/:id` (and `unstaged[].change`) may carry
   `origin: { by: tier0|tier1|agent, rule?, provider?, model?, upstream?, p?: { layer, type }, confirmed? }`
@@ -295,6 +301,15 @@ For local dev use `dr visualize --no-auth`.
   purpose, `PurposeNote` gives its lifecycle (a record leads with its plan and what extraction read), NavTree
   puts the purpose in the row's title / accessible name. A 404 detail shows `ChangesetGone`; a discard on a
   server that sends `actions` returns to the inbox with a toast (`ChangesetReviewPanel`'s `onGone`).
+- **Drift before Apply** (#576) — `data/changesetDrift.ts` validates `drift` (as `tier1.ts` does; malformed
+  dropped, none from an older dr CLI) and `driftTone` reads it: `blocks` (server's `blocksCommit`), `quiet`
+  (content-free), `unchecked` (unknown), `settled` (not-applicable). `ui/DriftNotice.tsx`: `DriftBadge` ("Base
+  changed since this was staged", the message as its title) only on `blocks`, on the inbox card, canvas header
+  and inspector; `DriftApplyNote` on the summary card holds Apply (disabled, before its confirm dialog) and
+  says the way forward (ask DrBot to restage; no "land anyway": the REST commit has no force), or says plainly
+  that drift couldn't be checked without holding Apply; `DriftSection` in the inspector overview lists the
+  overlaps and base changes per layer (a cut list said as cut), content-free as a quiet line, a record's
+  message as information. With no `drift` the 409 after confirm is the only signal, as before (the backstop).
 - **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`
   (Tier 0 rule / Tier 1 decision model / the agent). The wire types are the generated OpenAPI schemas, aliased
   in `data/tier1.ts` (one place to adjust when the contract moves). Nothing from the wire reaches React

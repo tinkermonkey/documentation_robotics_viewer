@@ -15,6 +15,11 @@
  * - The history: what landed (and, from an older dr CLI, what was discarded:
  *   a current one deletes a discarded changeset), with each one's purpose.
  *
+ * A plan whose base drifted under it (the server would refuse to apply it)
+ * carries a "Base changed since this was staged" badge with the server's
+ * message, before anyone starts its review (`DriftNotice`). Content-free
+ * drift and verification records are never badged.
+ *
  * Above the history, the Tier 1 panel (`Tier1Panel`): the decision model's
  * state and this month's spend, read-only.
  */
@@ -28,6 +33,8 @@ import { inboxGroups, purposeLabel, recordsOf } from '../data/changesetPurpose';
 import { useLocalReviewStore } from '../stores/localReviewStore';
 import { Tier1Panel } from './Tier1Panel';
 import { ErrorBoundary } from './ErrorBoundary';
+import { DriftBadge } from './DriftNotice';
+import { driftTone } from '../data/changesetDrift';
 
 interface Progress {
   decided: number;
@@ -104,6 +111,7 @@ function StagedCard({
         <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>
           {plural(cs.changesCount, 'change')}
         </span>
+        <DriftBadge drift={cs.drift} />
         {undecided > 0 && <Chip variant="amber">{undecided} need a decision</Chip>}
         {progress.asked > 0 && <Chip variant="violet">{progress.asked} asked DrBot</Chip>}
         {records.map((r) => (
@@ -119,6 +127,11 @@ function StagedCard({
           </button>
         ))}
       </div>
+      {driftTone(cs.drift) === 'blocks' && (
+        <p className="drv-muted" style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5 }} data-testid="inbox-drift-message">
+          {cs.drift!.message} Ask DrBot to restage it before you review.
+        </p>
+      )}
       <ProgressBar
         percent={pct}
         color="amber"
