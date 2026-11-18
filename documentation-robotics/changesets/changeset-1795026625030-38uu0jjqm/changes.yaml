@@ -1,0 +1,665 @@
+- type: add
+  elementId: product.feature.tier1-warming-progress
+  layerName: product
+  after:
+    id: 629d530a-f2bc-49b4-90a1-a40bf1f2a3d8
+    path: product.feature.tier1-warming-progress
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Tier1 Warming Progress
+    description: While Tier 1 warms up (a codebase_index job filling the answer
+      cache), the Tier 1 panel shows how many cards are done out of the total
+      (or that the cards are still being built), when the fill started, about
+      how long it has left and what it has cost so far, and refreshes until the
+      fill ends.
+    attributes:
+      priority: low
+      status: planned
+      size: s
+    metadata:
+      created_at: 2026-11-18T18:31:42.918Z
+      updated_at: 2026-11-18T18:31:42.918Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 0
+- type: add
+  elementId: product.feature.tier1-mode-and-routing
+  layerName: product
+  after:
+    id: e75f1d19-423e-4a1a-9070-a1d04d1f73cc
+    path: product.feature.tier1-mode-and-routing
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Tier1 Mode And Routing
+    description: The Tier 1 panel says whether Tier 1 stages changes without the
+      agent or only suggests them (with the server's reason), and, for
+      OpenRouter, which upstreams may receive card text, with no fallbacks, no
+      data collection and zero data retention when set.
+    attributes:
+      priority: low
+      status: planned
+      size: s
+    metadata:
+      created_at: 2026-11-18T18:31:43.980Z
+      updated_at: 2026-11-18T18:31:43.980Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 1
+- type: add
+  elementId: testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one
+  layerName: testing
+  after:
+    id: fad63660-348f-4a31-bc61-503901bbe4c5
+    path: testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: toTier1Status > keeps a well-formed warming object and drops a malformed
+      one
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: The spec's warming example keeps jobId, startedAt, cards, costUsd
+        and etaSeconds; cards null stays null; a warming without jobId or with
+        done above total is dropped, and the rest of the status still reads.
+    metadata:
+      created_at: 2026-11-18T18:31:44.021Z
+      updated_at: 2026-11-18T18:31:44.021Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams
+  layerName: testing
+  after:
+    id: 898eccea-7b09-4606-9bd8-d139a2adab98
+    path: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: toTier1Status > keeps mode only as suggest or stage, and routing's string
+      upstreams
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: mode other than suggest/stage is dropped (modeReason kept only as a
+        string); routing keeps only string upstreams, and is dropped without
+        any.
+    metadata:
+      created_at: 2026-11-18T18:31:44.048Z
+      updated_at: 2026-11-18T18:31:44.048Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 3
+- type: add
+  elementId: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
+  layerName: testing
+  after:
+    id: 137ce243-e4bf-4c6c-9b02-442a7c577d5a
+    path: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — warming > shows the fill's progress, time left and cost so far
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "With the spec's warming example: a progress bar at 1,388 of 4,071
+        cards, about 8 min left, and $1.94 so far."
+    metadata:
+      created_at: 2026-11-18T18:31:44.060Z
+      updated_at: 2026-11-18T18:31:44.060Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 4
+- type: add
+  elementId: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
+  layerName: testing
+  after:
+    id: 1bb263af-1fc3-40be-9223-b0f0c90a4a1c
+    path: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — warming > says the cards are still being built while cards is
+      null
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T18:31:44.060Z
+      updated_at: 2026-11-18T18:31:44.060Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 5
+- type: add
+  elementId: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on
+  layerName: testing
+  after:
+    id: af502a14-fb97-4bfe-bf4e-81dcd51b9f86
+    path: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — warming > refetches while warming and stops once Tier 1 is on
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: useTier1 polls GET /api/tier1 only while the state is warming; once
+        the body reads on, no further requests are made.
+    metadata:
+      created_at: 2026-11-18T18:31:44.060Z
+      updated_at: 2026-11-18T18:31:44.060Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
+  layerName: testing
+  after:
+    id: a0ac831b-b793-4c07-b2c4-e03c509a6106
+    path: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — mode and routing > says whether Tier 1 stages without the
+      agent, and why
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-18T18:31:44.062Z
+      updated_at: 2026-11-18T18:31:44.062Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
+  layerName: testing
+  after:
+    id: af556d24-69f3-4aa7-80d5-2100a397d274
+    path: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Tier1Panel — mode and routing > lists OpenRouter's allowed upstreams, no
+      fallbacks and no data collection
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "With the spec's openRouter example: a cloudflare chip, 'no
+        fallbacks · no data collection', and 'zero data retention' only when zdr
+        is set."
+    metadata:
+      created_at: 2026-11-18T18:31:44.063Z
+      updated_at: 2026-11-18T18:31:44.063Z
+      version: 1
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: product.feature.tier1-warming-progress::realizes::product.softwarecapability.changeset-review
+  layerName: product
+  after:
+    source: product.feature.tier1-warming-progress
+    target: product.softwarecapability.changeset-review
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: product.feature.tier1-warming-progress::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.tier1-warming-progress
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: product.feature.tier1-warming-progress::depends-on::product.feature.tier1-spend-panel
+  layerName: product
+  after:
+    source: product.feature.tier1-warming-progress
+    target: product.feature.tier1-spend-panel
+    predicate: depends-on
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: product.feature.tier1-mode-and-routing::realizes::product.softwarecapability.changeset-review
+  layerName: product
+  after:
+    source: product.feature.tier1-mode-and-routing
+    target: product.softwarecapability.changeset-review
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: product.feature.tier1-mode-and-routing::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.tier1-mode-and-routing
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: product.feature.tier1-mode-and-routing::depends-on::product.feature.tier1-spend-panel
+  layerName: product
+  after:
+    source: product.feature.tier1-mode-and-routing
+    target: product.feature.tier1-spend-panel
+    predicate: depends-on
+    layer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationservice.use-tier1::realizes::product.feature.tier1-warming-progress
+  layerName: application
+  after:
+    source: application.applicationservice.use-tier1
+    target: product.feature.tier1-warming-progress
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.use-tier1::realizes::product.feature.tier1-mode-and-routing
+  layerName: application
+  after:
+    source: application.applicationservice.use-tier1
+    target: product.feature.tier1-mode-and-routing
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: api.operation.get-api-tier1::exposes::product.feature.tier1-warming-progress
+  layerName: api
+  after:
+    source: api.operation.get-api-tier1
+    target: product.feature.tier1-warming-progress
+    predicate: exposes
+    layer: api
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: api.operation.get-api-tier1::exposes::product.feature.tier1-mode-and-routing
+  layerName: api
+  after:
+    source: api.operation.get-api-tier1
+    target: product.feature.tier1-mode-and-routing
+    predicate: exposes
+    layer: api
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one::tests::data-model.objectschema.tier1status
+  layerName: testing
+  after:
+    source: testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one
+    target: data-model.objectschema.tier1status
+    predicate: tests
+    layer: testing
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams::tests::data-model.objectschema.tier1status
+  layerName: testing
+  after:
+    source: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams
+    target: data-model.objectschema.tier1status
+    predicate: tests
+    layer: testing
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far::tests::product.feature.tier1-warming-progress
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
+    target: product.feature.tier1-warming-progress
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on::tests::application.applicationservice.use-tier1
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on
+    target: application.applicationservice.use-tier1
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why::tests::product.feature.tier1-mode-and-routing
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
+    target: product.feature.tier1-mode-and-routing
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection::tests::application.applicationcomponent.tier1-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
+    target: application.applicationcomponent.tier1-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T18:31:45.303Z
+  sequenceNumber: 27
+- type: update
+  elementId: application.applicationcomponent.tier1-panel
+  layerName: application
+  before:
+    id: c492d976-bc91-4c03-99d6-88f378e1721d
+    path: application.applicationcomponent.tier1-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Tier1 Panel
+    description: Read-only card in the changeset inbox showing Tier 1's state (on,
+      capped, no credentials, misconfigured, off), provider and model, and this
+      month's spend against the cap, from GET /api/tier1. Hidden on an older dr
+      CLI (404).
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Tier1Panel.tsx
+          symbol: Tier1Panel
+    metadata: &a3
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: c492d976-bc91-4c03-99d6-88f378e1721d
+    path: application.applicationcomponent.tier1-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Tier1 Panel
+    description: Read-only card in the changeset inbox showing Tier 1's state (on,
+      warming, capped, no credentials, misconfigured, off), provider and model,
+      this month's spend against the cap, the warming fill's progress (cards
+      done of total, time left, cost so far), whether Tier 1 stages without the
+      agent or only suggests (with the server's reason), and OpenRouter's
+      routing (allowed upstreams, no fallbacks, no data collection, zero data
+      retention), from GET /api/tier1. Hidden on an older dr CLI (404).
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-18T18:32:03.482Z
+  sequenceNumber: 28
+- type: update
+  elementId: application.applicationservice.use-tier1
+  layerName: application
+  before:
+    id: 932fd07a-7c0c-43ab-a75b-bc2f42af6c13
+    path: application.applicationservice.use-tier1
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useTier1
+    description: React Query hook over GET /api/tier1; treats 404/405/501 or a
+      non-Tier1Status body as unavailable and asks again on inbox mount,
+      changesets.updated and window focus.
+    attributes: &a4
+      serviceType: synchronous
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useTier1.ts
+          symbol: useTier1
+    metadata: &a6
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 932fd07a-7c0c-43ab-a75b-bc2f42af6c13
+    path: application.applicationservice.use-tier1
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useTier1
+    description: React Query hook over GET /api/tier1; treats 404/405/501 or a
+      non-Tier1Status body as unavailable and asks again on inbox mount,
+      changesets.updated and window focus, and every few seconds while Tier 1 is
+      warming so the fill's progress moves without a reload.
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-18T18:32:08.459Z
+  sequenceNumber: 29
+- type: update
+  elementId: data-model.objectschema.tier1status
+  layerName: data-model
+  before:
+    id: da2ed198-289d-45dc-8df2-d1ad98caa916
+    path: data-model.objectschema.tier1status
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Tier1Status
+    description: "GET /api/tier1's body: Tier 1 state, provider and model,
+      credential sources (never values), this month's spend against the cap,
+      per-source spend, cache, warnings and reason."
+    attributes: &a7
+      type: object
+    source_reference: &a8
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/tier1.ts
+          symbol: Tier1Status
+    metadata: &a9
+      created_at: 2026-11-18T16:27:42.056Z
+      updated_at: 2026-11-18T16:27:42.056Z
+      version: 1
+  after:
+    id: da2ed198-289d-45dc-8df2-d1ad98caa916
+    path: data-model.objectschema.tier1status
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Tier1Status
+    description: "GET /api/tier1's body: Tier 1 state, provider and model,
+      credential sources (never values), this month's spend against the cap,
+      per-source spend, cache, warnings and reason; the warming fill's progress
+      (state warming), mode and modeReason (stage or suggest), and OpenRouter's
+      routing. toTier1Status keeps each field only in its documented type."
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-18T18:32:14.088Z
+  sequenceNumber: 30
+- type: update
+  elementId: ux.subview.tier1-panel
+  layerName: ux
+  before:
+    id: 3983a04a-5230-4657-b188-c07d44b297f1
+    path: ux.subview.tier1-panel
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Tier1 Panel
+    description: Tier 1 state and this month's spend, above the inbox history.
+    attributes: &a10
+      title: Tier 1
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Tier1Panel.tsx
+          symbol: Tier1Panel
+    metadata: &a12
+      created_at: 2026-11-18T16:27:42.057Z
+      updated_at: 2026-11-18T16:27:42.057Z
+      version: 1
+  after:
+    id: 3983a04a-5230-4657-b188-c07d44b297f1
+    path: ux.subview.tier1-panel
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Tier1 Panel
+    description: Tier 1 state and this month's spend, above the inbox history; while
+      warming, the fill's progress; the mode (stages without the agent /
+      suggests only) and, for OpenRouter, where card text may go.
+    attributes: *a10
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-11-18T18:32:20.518Z
+  sequenceNumber: 31
+- type: update
+  elementId: product.feature.tier1-spend-panel
+  layerName: product
+  before:
+    id: 8f3a8d0b-4a78-415c-9800-67269aeec3d0
+    path: product.feature.tier1-spend-panel
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Tier1 Spend Panel
+    description: Tier 1's state and this month's spend against the cap, in the
+      changeset inbox.
+    attributes: &a13
+      priority: low
+      status: delivered
+    metadata: &a14
+      created_at: 2026-11-18T16:29:24.511Z
+      updated_at: 2026-11-18T16:29:24.511Z
+      version: 1
+  after:
+    id: 8f3a8d0b-4a78-415c-9800-67269aeec3d0
+    path: product.feature.tier1-spend-panel
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Tier1 Spend Panel
+    description: Tier 1's state and this month's spend against the cap, in the
+      changeset inbox. The warming progress and the mode and routing rows build
+      on it.
+    attributes: *a13
+    metadata: *a14
+  timestamp: 2026-11-18T18:32:24.224Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: ux.view.changesets-view::realizes::product.feature.tier1-warming-progress
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: product.feature.tier1-warming-progress
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:32:36.518Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: ux.view.changesets-view::realizes::product.feature.tier1-mode-and-routing
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: product.feature.tier1-mode-and-routing
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:32:36.518Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null::tests::product.feature.tier1-warming-progress
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
+    target: product.feature.tier1-warming-progress
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:32:36.518Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection::tests::product.feature.tier1-mode-and-routing
+  layerName: testing
+  after:
+    source: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
+    target: product.feature.tier1-mode-and-routing
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-18T18:32:36.518Z
+  sequenceNumber: 36

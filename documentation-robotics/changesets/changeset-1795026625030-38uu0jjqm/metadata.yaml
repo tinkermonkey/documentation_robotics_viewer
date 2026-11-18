@@ -1,0 +1,17 @@
+id: changeset-1795026625030-38uu0jjqm
+name: tier1-panel-warming-mode-routing
+description: "Show in the inbox's Tier 1 panel how far the answer-cache fill has
+  got while Tier 1 is warming up, whether Tier 1 stages changes without the
+  agent or only suggests them, and, for OpenRouter, which upstreams may receive
+  card text. Closes #578 and #579."
+created: 2026-11-18T18:30:25.461Z
+modified: 2026-11-18T18:32:36.582Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 32
+  modifications: 5
+  deletions: 0
+lastSequence: 36

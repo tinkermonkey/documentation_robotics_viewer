@@ -51,6 +51,12 @@ export type Tier1Status = Omit<WireStatus, 'month'> & { month: Tier1Month };
 export type Tier1State = Tier1Status['state'];
 export type Tier1SourceSpend = Tier1Status['bySource'][string];
 export type Tier1Credential = Tier1Status['credentials'][string];
+/** State warming only: how far the codebase_index job's cache fill has got. */
+export type Tier1Warming = NonNullable<WireStatus['warming']>;
+/** OpenRouter only: where card text may go. */
+export type Tier1Routing = NonNullable<WireStatus['routing']>;
+/** stage: Tier 1 stages and hides without the agent; suggest: it only suggests. */
+export type Tier1Mode = NonNullable<WireStatus['mode']>;
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === 'object' && v !== null && !Array.isArray(v);
@@ -233,7 +239,8 @@ const TIER1_STATES: readonly string[] = ['off', 'misconfigured', 'no-credentials
  * default to '' (or are absent when optional), counts to 0, `remainingUsd` to
  * what the cap leaves; credential entries that aren't `{ set, from }` and
  * per-source entries without numeric cards and cost are dropped; only string
- * warnings are kept.
+ * warnings are kept. `warming`, `mode` and `routing` are kept whole or not at
+ * all (see `warmingOf` / `routingOf`); `mode` only as suggest or stage.
  */
 export function toTier1Status(raw: unknown): Tier1Status | null {
   if (!isRecord(raw) || typeof raw.state !== 'string' || !TIER1_STATES.includes(raw.state)) return null;
@@ -306,7 +313,86 @@ export function toTier1Status(raw: unknown): Tier1Status | null {
   if (modelId) out.modelId = modelId;
   if (monthlyCapUsd !== undefined) out.monthlyCapUsd = monthlyCapUsd;
   if (concurrency !== undefined) out.concurrency = concurrency;
+  if (raw.mode === 'stage' || raw.mode === 'suggest') {
+    out.mode = raw.mode;
+    const modeReason = str(raw.modeReason);
+    if (modeReason) out.modeReason = modeReason;
+  }
+  const routing = routingOf(raw.routing);
+  if (routing) out.routing = routing;
+  const warming = warmingOf(raw.warming);
+  if (warming) out.warming = warming;
   return out;
+}
+
+function count(v: unknown): number | undefined {
+  const n = num(v);
+  return n !== undefined && Number.isInteger(n) && n >= 0 ? n : undefined;
+}
+
+/**
+ * The warming progress, or undefined when it's malformed: a string jobId and
+ * startedAt and a numeric cost are required; `cards` is null (still being
+ * built) or whole counts with done ≤ total; `etaSeconds` is kept only as a
+ * number of seconds ≥ 0.
+ */
+export function warmingOf(raw: unknown): Tier1Warming | undefined {
+  if (!isRecord(raw)) return undefined;
+  const jobId = str(raw.jobId);
+  const startedAt = str(raw.startedAt);
+  const costUsd = num(raw.costUsd);
+  if (!jobId || !startedAt || costUsd === undefined) return undefined;
+  let cards: Tier1Warming['cards'] = null;
+  if (raw.cards !== null) {
+    if (!isRecord(raw.cards)) return undefined;
+    const done = count(raw.cards.done);
+    const total = count(raw.cards.total);
+    if (done === undefined || total === undefined || done > total) return undefined;
+    cards = { done, total };
+  }
+  const out: Tier1Warming = { jobId, startedAt, cards, costUsd };
+  const eta = num(raw.etaSeconds);
+  if (eta !== undefined && eta >= 0) out.etaSeconds = Math.round(eta);
+  return out;
+}
+
+/**
+ * OpenRouter's routing, or undefined when it's malformed. The upstreams keep
+ * only non-empty strings, and there must be one. The panel states "no
+ * fallbacks · no data collection", so the routing is kept only when the wire
+ * says exactly that (`allowFallbacks: false`, `dataCollection: "deny"`):
+ * the viewer never claims a privacy setting the server didn't send.
+ */
+export function routingOf(raw: unknown): Tier1Routing | undefined {
+  if (!isRecord(raw) || !Array.isArray(raw.only)) return undefined;
+  if (raw.allowFallbacks !== false || raw.dataCollection !== 'deny') return undefined;
+  const only = raw.only.filter((u): u is string => typeof u === 'string' && u.length > 0);
+  if (only.length === 0) return undefined;
+  const out: Tier1Routing = { only, allowFallbacks: false, dataCollection: 'deny' };
+  if (raw.zdr === true) out.zdr = true;
+  return out;
+}
+
+export const TIER1_MODE_LABEL: Record<Tier1Mode, string> = {
+  stage: 'Stages without the agent',
+  suggest: 'Suggests only',
+};
+
+/** "under a minute", "about 8 min", "about 1 h 5 min". */
+export function formatDuration(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return '—';
+  if (seconds < 60) return 'under a minute';
+  const minutes = Math.round(seconds / 60);
+  if (minutes < 60) return `about ${minutes} min`;
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `about ${h} h${m ? ` ${m} min` : ''}`;
+}
+
+/** Share of the cards done, 0–100 (one decimal); 0 when there are none yet. */
+export function warmingPercent(cards: Tier1Warming['cards']): number {
+  if (!cards || cards.total === 0) return 0;
+  return Math.round((1000 * cards.done) / cards.total) / 10;
 }
 
 export const TIER1_STATE_LABEL: Record<Tier1State, string> = {

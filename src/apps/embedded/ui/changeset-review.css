@@ -612,6 +612,12 @@ body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--
   font-weight: 600;
 }
 
+.drv-tier1__warming {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .drv-tier1__note {
   margin: 0;
   font-size: 12.5px;

@@ -5,7 +5,7 @@
  * state, and against an older dr CLI without the route.
  */
 
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
@@ -13,6 +13,7 @@ import { http, HttpResponse } from 'msw';
 import { Tier1Panel } from '@/apps/embedded/ui/Tier1Panel';
 import { ChangesetCanvas } from '@/apps/embedded/ui/ChangesetCanvas';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
+import { WARMING_POLL_MS } from '@/apps/embedded/data/useTier1';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
 import tier1 from '../fixtures/tier1.json';
@@ -207,6 +208,125 @@ describe('Tier1Panel', () => {
     await screen.findByTestId('tier1-panel');
     expect(requests.map((r) => r.method)).toEqual(['GET']);
     expect(new URL(requests[0].url).search).toBe('');
+  });
+});
+
+describe('Tier1Panel — warming', () => {
+  // The spec's example started the fill at 10:17:02Z; read it 4 minutes in.
+  const startedAt = Date.parse(tier1.warming.warming.startedAt);
+  afterEach(() => vi.useRealTimers());
+
+  it("shows the fill's progress, time left and cost so far", async () => {
+    vi.useFakeTimers({ toFake: ['Date'], now: startedAt + 4 * 60_000 });
+    serve('warming');
+    renderWithProviders(<Tier1Panel />);
+
+    const panel = await screen.findByTestId('tier1-panel');
+    expect(panel).toHaveAttribute('data-state', 'warming');
+    expect(within(panel).getByTestId('tier1-state')).toHaveTextContent('warming up');
+    expect(within(panel).getByTestId('tier1-warming-cards')).toHaveTextContent('1,388 of 4,071 cards');
+    const bar = within(panel).getByRole('progressbar', { name: 'Answer cache fill: 1,388 of 4,071 cards' });
+    expect(bar).toHaveAttribute('aria-valuenow', '34.1');
+    expect(within(panel).getByTestId('tier1-warming-facts')).toHaveTextContent(
+      'about 8 min left · running 4 min · $1.94 so far',
+    );
+    // The progress replaces the server's reason, which says the same in words.
+    expect(within(panel).queryByTestId('tier1-reason')).not.toBeInTheDocument();
+    // The month's spend still shows, the fill's cost counted in it.
+    expect(within(panel).getByTestId('tier1-spend')).toHaveTextContent('$1.94of the $20.00 monthly cap');
+  });
+
+  it('says the cards are still being built while cards is null', async () => {
+    mswServer.use(
+      http.get('*/api/tier1', () =>
+        HttpResponse.json({ ...tier1.warming, warming: { ...tier1.warming.warming, cards: null, etaSeconds: undefined } }),
+      ),
+    );
+    renderWithProviders(<Tier1Panel />);
+    const warming = await screen.findByTestId('tier1-warming');
+    expect(within(warming).getByTestId('tier1-warming-cards')).toHaveTextContent('Building the cards…');
+    expect(within(warming).queryByRole('progressbar')).not.toBeInTheDocument();
+    expect(within(warming).getByTestId('tier1-warming-facts')).not.toHaveTextContent('left');
+  });
+
+  it("gives the server's reason when the warming object is malformed", async () => {
+    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.warming, warming: { jobId: 3 } })));
+    renderWithProviders(<Tier1Panel />);
+    expect(await screen.findByTestId('tier1-reason')).toHaveTextContent('1,388 of 4,071 cards, about 8 min left');
+    expect(screen.queryByTestId('tier1-warming')).not.toBeInTheDocument();
+  });
+
+  it('refetches while warming and stops once Tier 1 is on', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true });
+    const bodies = [tier1.warming, { ...tier1.warming, warming: { ...tier1.warming.warming, cards: { done: 4000, total: 4071 } } }, tier1.on];
+    let calls = 0;
+    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json(bodies[Math.min(calls++, bodies.length - 1)])));
+    renderWithProviders(<Tier1Panel />);
+
+    expect(await screen.findByTestId('tier1-warming-cards')).toHaveTextContent('1,388 of 4,071 cards');
+    await act(() => vi.advanceTimersByTimeAsync(WARMING_POLL_MS));
+    await waitFor(() => expect(screen.getByTestId('tier1-warming-cards')).toHaveTextContent('4,000 of 4,071 cards'));
+    await act(() => vi.advanceTimersByTimeAsync(WARMING_POLL_MS));
+    await waitFor(() => expect(screen.getByTestId('tier1-panel')).toHaveAttribute('data-state', 'on'));
+    expect(calls).toBe(3);
+    // On: no more polling.
+    await act(() => vi.advanceTimersByTimeAsync(WARMING_POLL_MS * 3));
+    expect(calls).toBe(3);
+  });
+});
+
+describe('Tier1Panel — mode and routing', () => {
+  it('says whether Tier 1 stages without the agent, and why', async () => {
+    mswServer.use(
+      http.get('*/api/tier1', () =>
+        HttpResponse.json({ ...tier1.on, mode: 'stage', modeReason: 'Defaults verified on held-out labels; `"mode": "auto"` in tier1.json' }),
+      ),
+    );
+    renderWithProviders(<Tier1Panel />);
+    const mode = await screen.findByTestId('tier1-mode');
+    expect(mode).toHaveAttribute('data-mode', 'stage');
+    expect(mode).toHaveTextContent('Stages without the agent');
+    const reason = within(mode).getByTestId('tier1-mode-reason');
+    expect(reason).toHaveTextContent('Defaults verified on held-out labels');
+    expect(reason.querySelector('code')).toHaveTextContent('"mode": "auto"');
+    // Read-only: the note names the command, the panel offers none.
+    expect(within(screen.getByTestId('tier1-panel')).queryAllByRole('button')).toHaveLength(0);
+
+    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'suggest' })));
+    renderWithProviders(<Tier1Panel />);
+    await waitFor(() => expect(screen.getAllByTestId('tier1-mode')).toHaveLength(2));
+    expect(screen.getAllByTestId('tier1-mode')[1]).toHaveTextContent('Suggests only');
+  });
+
+  it("lists OpenRouter's allowed upstreams, no fallbacks and no data collection", async () => {
+    serve('openRouter');
+    renderWithProviders(<Tier1Panel />);
+    const routing = await screen.findByTestId('tier1-routing');
+    expect(within(routing).getAllByTestId('tier1-upstream').map((c) => c.textContent)).toEqual(['cloudflare']);
+    expect(within(routing).getByTestId('tier1-routing-terms')).toHaveTextContent(
+      'only these · no fallbacks · no data collection',
+    );
+    expect(routing).not.toHaveTextContent('zero data retention');
+    // No mode sent: no mode row.
+    expect(screen.queryByTestId('tier1-mode')).not.toBeInTheDocument();
+
+    mswServer.use(
+      http.get('*/api/tier1', () =>
+        HttpResponse.json({ ...tier1.openRouter, routing: { ...tier1.openRouter.routing, only: ['cloudflare', 'deepinfra/fp8'], zdr: true } }),
+      ),
+    );
+    renderWithProviders(<Tier1Panel />);
+    await waitFor(() => expect(screen.getAllByTestId('tier1-routing')).toHaveLength(2));
+    const zdr = screen.getAllByTestId('tier1-routing')[1];
+    expect(within(zdr).getAllByTestId('tier1-upstream')).toHaveLength(2);
+    expect(within(zdr).getByTestId('tier1-routing-terms')).toHaveTextContent('· zero data retention');
+  });
+
+  it('shows no routing row for other providers', async () => {
+    serve('on');
+    renderWithProviders(<Tier1Panel />);
+    await screen.findByTestId('tier1-panel');
+    expect(screen.queryByTestId('tier1-settings')).not.toBeInTheDocument();
   });
 });
 
