@@ -29,14 +29,16 @@ function layerOrderFromSpec(): string[] {
 }
 
 describe('LAYER_ORDER', () => {
-  it('has exactly 12 layers', () => {
-    expect(LAYER_ORDER).toHaveLength(12);
+  it('has the 13 spec layers, Product third', () => {
+    expect(LAYER_ORDER).toHaveLength(13);
+    expect(LAYER_ORDER.indexOf('product')).toBe(2);
   });
   it('matches the spec manifest order derived from the /api/spec fixture', () => {
     const expected = layerOrderFromSpec();
-    // sanity: the fixture really yields 12 distinctly-numbered layers
+    // The fixture was captured from spec 0.11 (12 layers); spec 0.12 put
+    // Product third. Every other layer keeps the fixture's order.
     expect(expected).toHaveLength(12);
-    expect(LAYER_ORDER).toEqual(expected);
+    expect(LAYER_ORDER.filter((l) => l !== 'product')).toEqual(expected);
   });
   it('has no duplicates', () => {
     expect(new Set(LAYER_ORDER).size).toBe(LAYER_ORDER.length);
@@ -44,10 +46,10 @@ describe('LAYER_ORDER', () => {
 });
 
 describe('layerColor', () => {
-  it('returns a distinct hex color for every one of the 12 slugs', () => {
+  it('returns a distinct hex color for every one of the 13 slugs', () => {
     const colors = LAYER_ORDER.map((slug) => layerColor(slug));
     for (const c of colors) expect(c).toMatch(/^#[0-9A-F]{6}$/i);
-    expect(new Set(colors).size).toBe(12); // all distinct
+    expect(new Set(colors).size).toBe(13); // all distinct
   });
 
   it.each(LAYER_ORDER)('layerColor(%s) === DOMAIN_COLORS[%s]', (slug) => {

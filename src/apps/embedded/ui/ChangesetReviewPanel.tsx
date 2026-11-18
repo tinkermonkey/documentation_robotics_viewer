@@ -34,7 +34,18 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
 import { ApplyConfirm, AppliedResult } from './ApplyReview';
-import { ChangeSummary, LayerSwatch, OpChip, OriginBadge, VerdictChip, chipTone, plural } from './reviewParts';
+import {
+  ChangeSummary,
+  LayerSwatch,
+  LinkChain,
+  LinkEndChip,
+  OpChip,
+  OriginBadge,
+  VerdictChip,
+  chipTone,
+  linkEndsLabel,
+  plural,
+} from './reviewParts';
 import {
   usePostapichangesetschangesetIdcommit,
   usePostapichangesetschangesetIddiscard,
@@ -90,14 +101,24 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
         <OriginBadge origin={originOf(item.record)} />
       </span>
       <span className="drv-row__element">
-        <LayerSwatch layerId={item.layerId} />
-        <span className="drv-row__name">
-          <span style={{ fontWeight: 500 }}>{item.name}</span>
-          <span className="drv-row__type">{item.typeLabel}</span>
-        </span>
+        {item.ends && item.link ? (
+          <LinkChain ends={item.ends} predicate={item.link.predicate} />
+        ) : (
+          <>
+            <LayerSwatch layerId={item.layerId} />
+            <span className="drv-row__name">
+              <span style={{ fontWeight: 500 }}>{item.name}</span>
+              <span className="drv-row__type">{item.typeLabel}</span>
+            </span>
+          </>
+        )}
       </span>
       <span className="drv-row__change">
-        <ChangeSummary item={item} />
+        {item.ends ? (
+          <span className="drv-row__summary drv-row__type">{linkEndsLabel(item.ends)}</span>
+        ) : (
+          <ChangeSummary item={item} />
+        )}
         {(item.chips.length > 0 || conflictsWith) && (
           <span className="drv-pills">
             {item.chips.map((c) => (
@@ -117,6 +138,38 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
         <VerdictChip state={state} />
       </span>
     </button>
+  );
+}
+
+/** What the two chip shapes mean: the change (filled) and your decision (outlined). */
+function ReviewLegend() {
+  return (
+    <div className="drv-legend" data-testid="review-legend">
+      <span className="drv-legend__item">
+        <span className="drv-toolbar__label">CHANGE</span>
+        <OpChip item={{ kind: 'add' }} />
+        <OpChip item={{ kind: 'link-add' }} />
+        <OpChip item={{ kind: 'update' }} />
+        <OpChip item={{ kind: 'delete' }} />
+        what the changeset does
+      </span>
+      <span className="drv-legend__item">
+        <span className="drv-toolbar__label">YOUR DECISION</span>
+        <VerdictChip state="keep" />
+        <VerdictChip state="drop" />
+        <VerdictChip state="ask" />
+        <VerdictChip state="undecided" />
+        what lands on Apply
+      </span>
+      <span className="drv-legend__item">
+        <span className="drv-toolbar__label">LINK ENDS</span>
+        <LinkEndChip end={{ id: '', name: 'added here', layerId: '', type: '', isNew: true }} />
+        <LinkEndChip end={{ id: '', name: 'in the model', layerId: '', type: '', isNew: false }} />
+      </span>
+      <span className="drv-legend__item">
+        <span className="drv-field">amber</span> marks the field an update changes
+      </span>
+    </div>
   );
 }
 
@@ -155,6 +208,13 @@ function GroupSection({
             </Button>
           </span>
         )}
+      </div>
+      <div className="drv-row drv-row--head" aria-hidden="true">
+        <span>#</span>
+        <span>Change</span>
+        <span>{group.items.every((i) => i.ends) ? 'Link: source → target' : 'Element'}</span>
+        <span>What it says</span>
+        <span style={{ justifySelf: 'end' }}>Your decision</span>
       </div>
       <div role="list" aria-label={group.title}>
         {group.items.map((item) => (
@@ -652,12 +712,7 @@ export function ChangesetReviewPanel({
         </div>
       )}
 
-      {staged && (
-        <p className="drv-muted" style={{ margin: 0, fontSize: 12.5 }}>
-          Amber marks the field an update changes. Select a change for its fields, links and comments; Impact shows
-          what the whole changeset reaches.
-        </p>
-      )}
+      {model.items.length > 0 && <ReviewLegend />}
 
       {effectiveFilter === 'since' ? (
         <RevisionSection model={model} origin={origin} />

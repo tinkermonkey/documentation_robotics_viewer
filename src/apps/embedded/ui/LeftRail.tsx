@@ -1,13 +1,14 @@
 /**
  * LeftRail — 244px dark nav rail: header eyebrow + 3-level NavTree + footer.
  *
- * Footer shows `SPEC {version}` (from /api/spec) and `12 layers · {N} rels`
- * (from /api/model links length).
+ * Footer shows `SPEC {version}` (from /api/spec) and `{L} layers · {N} rels`
+ * (L from /api/spec's layers, N from /api/model links length).
  */
 
 import { NavTree } from './NavTree';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
+import { LAYER_ORDER } from './domain';
 
 export function LeftRail() {
   const { derived: model } = useModel();
@@ -15,6 +16,7 @@ export function LeftRail() {
 
   const relCount = model.relCount;
   const specVersion = spec.version || '—';
+  const layerCount = Object.keys(spec.byLayer).length || LAYER_ORDER.length;
 
   return (
     <div
@@ -93,7 +95,7 @@ export function LeftRail() {
             color: 'rgb(var(--shell-fg-4))',
           }}
         >
-          12 layers · {relCount} rels
+          {layerCount} layers · {relCount} rels
         </span>
       </div>
     </div>

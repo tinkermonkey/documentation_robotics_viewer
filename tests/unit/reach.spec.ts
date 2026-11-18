@@ -43,9 +43,11 @@ function directLinks(uuid: string) {
 const BEARER = byName('Bearer Token Policy');
 
 describe('buildModelLayeredIndex', () => {
-  it('indexes every element, in the 12 DR layers in spec order', () => {
+  it('indexes every element, in the DR layers in spec order', () => {
     expect(layered.nodes).toHaveLength(raw.nodes.length);
-    expect(layered.layers.map((l) => l.id)).toEqual(LAYER_ORDER);
+    // The fixture model has no Product elements, and an empty layer gets no lane.
+    const present = new Set(raw.nodes.map((n) => n.layer_id));
+    expect(layered.layers.map((l) => l.id)).toEqual(LAYER_ORDER.filter((l) => present.has(l)));
   });
 
   it('resolves every link endpoint (UUID or dotted id) — no dangling edges', () => {

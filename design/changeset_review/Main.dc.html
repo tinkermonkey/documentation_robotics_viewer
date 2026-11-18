@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Review list, clarified</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/heimdall/colors_and_type.css">
+<link rel="stylesheet" href="review.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.rows{display:grid;grid-template-columns:40px 112px minmax(0,1.55fr) minmax(0,1fr) 128px;column-gap:14px;align-items:center}
+.hd{padding:8px 18px;border-bottom:1px solid var(--canvas-border);background:var(--canvas-bg-2)}
+.r{padding:10px 18px;border-bottom:1px solid var(--canvas-border)}
+.r.sel{background:rgba(251,191,36,0.07);box-shadow:inset 3px 0 0 var(--accent-primary)}
+.grp{display:flex;align-items:center;justify-content:space-between;padding:12px 18px 8px;border-bottom:1px solid var(--canvas-border)}
+.el{display:flex;gap:9px;min-width:0}
+.el .t{display:flex;flex-direction:column;min-width:0}
+.el .nm{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sum{font-size:12px;color:var(--canvas-fg-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.anno{position:relative}
+.pin{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:999px;background:var(--accent-primary);color:#1A1306;font-size:10.5px;font-weight:700;font-family:var(--font-mono);flex:none}
+</style>
+</helmet>
+<div class="dk" style="width: 1000px; height: 940px; display: flex; flex-direction: column;">
+  <div style="padding: 18px 18px 14px; display: flex; flex-direction: column; gap: 12px; border-bottom: 1px solid var(--canvas-border);">
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; flex-direction: column; gap: 2px;">
+        <span class="eb">Changeset · staged</span>
+        <span style="font-size: 20px; font-weight: 700; letter-spacing: -0.02em;">mcp-gateway-use-cases</span>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <span class="faint mono" style="font-size: 11.5px;">293 changes · 2 layers</span>
+        <div class="seg"><button class="on" type="button">Review</button><button type="button">Impact</button></div>
+      </div>
+    </div>
+    <div style="display: flex; gap: 18px; align-items: center; flex-wrap: wrap;">
+      <div style="display: flex; gap: 8px; align-items: center;"><span class="eb">Show</span><div class="seg"><button type="button">Since your review</button><button class="on" type="button">Needs decision</button><button type="button">Decided</button><button type="button">All</button></div></div>
+      <div style="display: flex; gap: 8px; align-items: center;"><span class="eb">Group by</span><div class="seg"><button class="on" type="button">Review weight</button><button type="button">Layer</button><button type="button">Sequence</button></div></div>
+      <div style="display: flex; gap: 8px; align-items: center;"><span class="eb">Layer</span>
+        <button class="facet on" type="button"><span class="dot" style="background: var(--l-product);"></span>Product <span class="n">276</span></button>
+        <button class="facet on" type="button"><span class="dot" style="background: var(--l-motivation);"></span>Motivation <span class="n">17</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="rows hd">
+    <span class="eb">#</span>
+    <span class="eb">Change</span>
+    <span class="eb">Element · or link: source → target</span>
+    <span class="eb">What it says</span>
+    <span class="eb" style="text-align: right;">Your decision</span>
+  </div>
+
+  <div class="grp"><span style="font-weight: 600;">New elements <span class="faint mono" style="font-weight: 400; font-size: 11.5px;">70</span></span><span class="faint" style="font-size: 11.5px;">each adds one element to a layer</span></div>
+
+  <div class="rows r">
+    <span class="mono faint">2</span>
+    <span><span class="op op-add">+ element</span></span>
+    <div class="el"><span class="sw" style="background: var(--l-motivation);"></span><div class="t"><span class="nm">Every MVP project has an as-built model</span><span class="typ">motivation · outcome</span></div></div>
+    <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;"><span class="sum">Each project in the MVP has a model that describes what it is…</span><span style="display: flex; gap: 6px;"><span class="tag">4 new links · 1 out · 3 in</span></span></div>
+    <span style="text-align: right;"><span class="dec dec-none">• Needs decision</span></span>
+  </div>
+
+  <div class="rows r sel">
+    <span class="mono faint">15</span>
+    <span><span class="op op-add">+ element</span></span>
+    <div class="el"><span class="sw" style="background: var(--l-product);"></span><div class="t"><span class="nm">Project status</span><span class="typ">product · feature</span></div></div>
+    <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0;"><span class="sum">MCP: project_status. Where this repo stands with DR…</span><span style="display: flex; gap: 6px;"><span class="tag">9 new links · 5 out · 4 in</span><span class="tag">no source ref</span></span></div>
+    <span style="text-align: right;"><span class="dec dec-keep">✓ Keep</span></span>
+  </div>
+
+  <div class="grp"><span style="font-weight: 600;">New links <span class="faint mono" style="font-weight: 400; font-size: 11.5px;">214</span></span><span class="faint" style="font-size: 11.5px;">dashed end = an element this changeset adds</span></div>
+
+  <div class="rows r">
+    <span class="mono faint">1</span>
+    <span><span class="op op-link">+ link</span></span>
+    <div class="chain">
+      <span class="chip-node is-new"><span class="dot" style="background: var(--l-motivation);"></span><span class="nm">The MCP server is the gateway…</span></span>
+      <span class="pred">influence<svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M0 5h13M10 1.5L14 5l-4 3.5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+      <span class="chip-node"><span class="dot" style="background: var(--l-motivation);"></span><span class="nm">DR is the spec for software changes</span></span>
+    </div>
+    <span class="sum"><span class="typ">principle → goal</span> · within Motivation</span>
+    <span style="text-align: right;"><span class="dec dec-keep">✓ Keep</span></span>
+  </div>
+
+  <div class="rows r">
+    <span class="mono faint">16</span>
+    <span><span class="op op-link">+ link</span></span>
+    <div class="chain">
+      <span class="chip-node is-new"><span class="dot" style="background: var(--l-product);"></span><span class="nm">Project status</span></span>
+      <span class="pred">realizes<svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M0 5h13M10 1.5L14 5l-4 3.5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+      <span class="chip-node"><span class="dot" style="background: var(--l-product);"></span><span class="nm">Project setup</span></span>
+    </div>
+    <span class="sum"><span class="typ">feature → software capability</span></span>
+    <span style="text-align: right;"><span class="dec dec-ask">? Ask DrBot</span></span>
+  </div>
+
+  <div class="rows r">
+    <span class="mono faint">19</span>
+    <span><span class="op op-link">+ link</span></span>
+    <div class="chain">
+      <span class="chip-node is-new"><span class="dot" style="background: var(--l-product);"></span><span class="nm">Project status</span></span>
+      <span class="pred">satisfies<svg width="16" height="10" viewBox="0 0 16 10" aria-hidden="true"><path d="M0 5h13M10 1.5L14 5l-4 3.5" stroke="currentColor" stroke-width="1.4" fill="none"/></svg></span>
+      <span class="chip-node is-new"><span class="dot" style="background: var(--l-motivation);"></span><span class="nm">Developer stays in the conversation</span></span>
+    </div>
+    <span class="sum"><span class="typ">feature → requirement</span> · Product → Motivation</span>
+    <span style="text-align: right;"><span class="dec dec-drop">✕ Drop</span></span>
+  </div>
+
+  <div class="grp"><span style="font-weight: 600;">Routine updates <span class="faint mono" style="font-weight: 400; font-size: 11.5px;">9</span></span><button class="btn" type="button" style="height: 26px; font-size: 12px;">Keep 9 routine</button></div>
+
+  <div class="rows r">
+    <span class="mono faint">44</span>
+    <span><span class="op op-upd">~ update</span></span>
+    <div class="el"><span class="sw" style="background: var(--l-product);"></span><div class="t"><span class="nm">Model init</span><span class="typ">product · feature</span></div></div>
+    <span class="sum"><span style="color: #FCD34D;">description</span> rewritten · +1 more</span>
+    <span style="text-align: right;"><span class="dec dec-none">• Needs decision</span></span>
+  </div>
+
+  <div style="margin-top: auto; padding: 14px 18px; border-top: 1px solid var(--canvas-border); display: flex; gap: 28px; background: var(--canvas-bg-2);">
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="eb">Change · what the changeset does</span>
+      <div style="display: flex; gap: 6px;"><span class="op op-add">+ element</span><span class="op op-link">+ link</span><span class="op op-upd">~ update</span><span class="op op-del">− delete</span><span class="op op-del">− link</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="eb">Your decision · what lands on Apply</span>
+      <div style="display: flex; gap: 6px;"><span class="dec dec-keep">✓ Keep</span><span class="dec dec-drop">✕ Drop</span><span class="dec dec-ask">? Ask DrBot</span><span class="dec dec-none">• Needs decision</span></div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 6px;">
+      <span class="eb">Link ends</span>
+      <div style="display: flex; gap: 6px; align-items: center;"><span class="chip-node is-new"><span class="nm">added here</span></span><span class="chip-node"><span class="nm">in the model</span></span></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1000,"height":940}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

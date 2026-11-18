@@ -141,15 +141,32 @@ describe('toReviewItems', () => {
     expect(seq13.summary).toBe('rewritten');
   });
 
-  it('marks link ends new to the changeset', () => {
-    expect(items.find((i) => i.seq === 19)!.chips).toEqual(['both ends new']);
-    expect(items.find((i) => i.seq === 20)!.chips).toEqual(['new target']);
-    expect(items.find((i) => i.seq === 27)!.chips).toEqual(['new source']);
+  it('marks link ends new to the changeset on the ends, not as chips', () => {
+    const isNew = (seq: number) => {
+      const i = items.find((x) => x.seq === seq)!;
+      expect(i.chips).toEqual([]);
+      return [i.ends!.source.isNew, i.ends!.target.isNew];
+    };
+    expect(isNew(19)).toEqual([true, true]);
+    expect(isNew(20)).toEqual([false, true]);
+    expect(isNew(27)).toEqual([true, false]);
   });
 
-  it('counts the links each new element gets (cancelled ones excluded)', () => {
-    expect(items.find((i) => i.seq === 1)!.chips).toEqual(['2 links']);
-    expect(items.find((i) => i.seq === 12)!.chips).toEqual(['1 link']);
+  it("gives each link end its name, layer and type from the dotted id", () => {
+    const { source, target } = items.find((i) => i.seq === 19)!.ends!;
+    for (const end of [source, target]) {
+      expect(end.id.split('.').slice(0, 2)).toEqual([end.layerId, end.type]);
+      expect(end.name).not.toBe('');
+    }
+  });
+
+  it('counts the links each new element gets, out and in (cancelled ones excluded)', () => {
+    const one = items.find((i) => i.seq === 1)!;
+    expect(one.chips).toEqual([`2 new links · ${one.linksOut} out · ${one.linksIn} in`]);
+    expect(one.linksOut! + one.linksIn!).toBe(2);
+    const twelve = items.find((i) => i.seq === 12)!;
+    expect(twelve.linksOut! + twelve.linksIn!).toBe(1);
+    expect(twelve.chips[0]).toMatch(/^1 new link · \d out · \d in$/);
   });
 
   it('puts a delete with blockers in Blocked deletes, one without in Removals', () => {

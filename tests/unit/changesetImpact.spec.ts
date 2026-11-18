@@ -7,7 +7,17 @@
  * relationship deletes — every element it names is in the model fixture).
  */
 import { describe, it, expect } from 'vitest';
-import { changesetImpact, EMPTY_IMPACT, netOp } from '@/apps/embedded/data/changesetImpact';
+import {
+  changesetImpact,
+  EMPTY_IMPACT,
+  filterImpact,
+  GROUP_PREFIX,
+  groupLargeLanes,
+  impactFacets,
+  netOp,
+  NO_IMPACT_FILTER,
+  searchImpact,
+} from '@/apps/embedded/data/changesetImpact';
 import { buildModelIndex } from '@/apps/embedded/data/modelGraph';
 import { LAYER_ORDER } from '@/apps/embedded/ui/domain';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
@@ -174,5 +184,96 @@ describe('changesetImpact — reach and blast radius', () => {
       expect(['structural', 'relational']).toContain(e.attributes?.category);
     }
     expect(impact.nodes.length).toBeLessThan(raw.nodes.length);
+  });
+});
+
+describe('changesetImpact — focus', () => {
+  it('reaches from the focused element only, and still marks every change', () => {
+    const all = changesetImpact(model, changes, 1);
+    const id = 'application.applicationservice.relationships-yaml-parser';
+    const focused = changesetImpact(model, changes, 1, [id]);
+    expect(focused.originIds).toEqual([uuidOf(id)]);
+    expect(focused.hopOf.get(uuidOf(id))).toBe(0);
+    expect(focused.nodes.length).toBeLessThan(all.nodes.length);
+    expect(focused.opOf).toEqual(all.opOf);
+  });
+
+  it('finds no origin for an element the model and the changeset lack', () => {
+    expect(changesetImpact(model, changes, 1, ['application.nothing.here']).originIds).toEqual([]);
+  });
+
+  it('records which changes touch each element', () => {
+    const impact = changesetImpact(model, changes, 1);
+    const id = uuidOf('application.applicationservice.relationships-yaml-parser');
+    const seqs = impact.changesOf.get(id)!;
+    expect(seqs.length).toBeGreaterThan(0);
+    for (const seq of seqs) expect(changes.some((c) => c.sequenceNumber === seq)).toBe(true);
+  });
+});
+
+describe('impact filters, search and grouped lanes', () => {
+  const impact = changesetImpact(model, changes, 2);
+
+  it('counts each facet over the whole impact', () => {
+    const f = impactFacets(impact);
+    expect(f.ops.find((o) => o.value === 'add')!.count).toBe(12);
+    expect(f.layers.reduce((n, l) => n + l.count, 0)).toBe(impact.nodes.length);
+    expect(f.types.reduce((n, t) => n + t.count, 0)).toBe(impact.nodes.length);
+    expect(f.categories.reduce((n, c) => n + c.count, 0)).toBe(impact.edges.length);
+    expect(f.layers.map((l) => l.value)).toEqual(LAYER_ORDER.filter((l) => f.layers.some((x) => x.value === l)));
+  });
+
+  it('shows everything with no filter, and only changes with changesOnly', () => {
+    expect(filterImpact(impact, NO_IMPACT_FILTER).nodes).toHaveLength(impact.nodes.length);
+    const changed = filterImpact(impact, { ...NO_IMPACT_FILTER, changesOnly: true });
+    expect(changed.nodes.every((n) => impact.opOf.has(n.id))).toBe(true);
+    expect(changed.originIds).toEqual(impact.originIds);
+  });
+
+  it('drops a hidden op, layer or type with its links', () => {
+    const noAdds = filterImpact(impact, { ...NO_IMPACT_FILTER, ops: new Set(['add']) });
+    expect(noAdds.originIds.some((id) => impact.opOf.get(id) === 'add')).toBe(false);
+    const layer = impact.nodes[0].domainColor!;
+    const noLayer = filterImpact(impact, { ...NO_IMPACT_FILTER, layers: new Set([layer]) });
+    expect(noLayer.nodes.some((n) => n.domainColor === layer)).toBe(false);
+    const ids = new Set(noLayer.nodes.map((n) => n.id));
+    for (const e of noLayer.edges) expect(ids.has(e.sourceId) && ids.has(e.targetId)).toBe(true);
+  });
+
+  it('finds elements by name, changed ones first', () => {
+    const name = impact.nodes.find((n) => impact.opOf.has(n.id))!.label;
+    const found = searchImpact(impact, name.slice(0, 5).toUpperCase());
+    expect(found.length).toBeGreaterThan(0);
+    expect(found.every((m) => m.label.toLowerCase().includes(name.slice(0, 5).toLowerCase()))).toBe(true);
+    const firstUnchanged = found.findIndex((m) => !m.op);
+    if (firstUnchanged >= 0) expect(found.slice(firstUnchanged).every((m) => !m.op)).toBe(true);
+    expect(searchImpact(impact, '  ')).toEqual([]);
+  });
+
+  it('folds a large lane by type, keeping what it is told to and merging links', () => {
+    const keep = impact.originIds[0];
+    const g = groupLargeLanes(impact, { threshold: 3, keep: new Set([keep]) });
+    expect(g.groups.size).toBeGreaterThan(0);
+    expect(g.impact.nodes.some((n) => n.id === keep)).toBe(true);
+    for (const [gid, members] of g.groups) {
+      expect(gid.startsWith(GROUP_PREFIX)).toBe(true);
+      expect(members.length).toBeGreaterThanOrEqual(2);
+      expect(members).not.toContain(keep);
+      expect(g.impact.nodes.find((n) => n.id === gid)!.label).toMatch(new RegExp(`^${members.length} `));
+    }
+    const ids = new Set(g.impact.nodes.map((n) => n.id));
+    for (const e of g.impact.edges) {
+      expect(ids.has(e.sourceId) && ids.has(e.targetId)).toBe(true);
+      expect(e.sourceId).not.toBe(e.targetId);
+    }
+    for (const [, c] of g.laneCounts) expect(c.shown).toBeLessThanOrEqual(c.total);
+  });
+
+  it('leaves small lanes and opened groups alone', () => {
+    expect(groupLargeLanes(impact, { threshold: Infinity }).groups.size).toBe(0);
+    const g = groupLargeLanes(impact, { threshold: 3 });
+    const [first] = g.groups.keys();
+    const opened = groupLargeLanes(impact, { threshold: 3, expanded: new Set([first.slice(GROUP_PREFIX.length)]) });
+    expect(opened.groups.has(first)).toBe(false);
   });
 });

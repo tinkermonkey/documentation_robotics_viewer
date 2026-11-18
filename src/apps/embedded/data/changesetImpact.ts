@@ -60,6 +60,8 @@ export interface ChangesetImpact {
   byLayer: ImpactLayer[];
   /** Changes whose element (or a relationship end) isn't in the model, so they're left out. */
   unresolved: number;
+  /** Element id → the sequence numbers of the changes that touch it (its own, and links at its ends). */
+  changesOf: Map<string, number[]>;
 }
 
 export const EMPTY_IMPACT: ChangesetImpact = {
@@ -71,6 +73,7 @@ export const EMPTY_IMPACT: ChangesetImpact = {
   outsideCount: 0,
   byLayer: [],
   unresolved: 0,
+  changesOf: new Map(),
 };
 
 /** Layers in spec order with labels and lane colors; shared by the index and the lanes view. */
@@ -109,6 +112,13 @@ export function changesetImpact(
   model: ModelDerived,
   changes: readonly ChangeRecord[] | undefined,
   follow: FollowDepth,
+  /**
+   * Reach from these elements only (dotted ids or UUIDs; an element the
+   * changeset adds by its dotted id) instead of every changed element: one
+   * element's neighbourhood, or the Impact tab's focus. Ops still mark every
+   * changed element.
+   */
+  focus?: readonly string[],
 ): ChangesetImpact {
   if (!changes || changes.length === 0 || model.nodes.length === 0) return EMPTY_IMPACT;
 
@@ -135,6 +145,12 @@ export function changesetImpact(
   });
 
   let unresolved = 0;
+  const changesOf = new Map<string, number[]>();
+  const touch = (id: string, change: ChangeRecord) => {
+    if (change.sequenceNumber === undefined) return;
+    const list = changesOf.get(id) ?? changesOf.set(id, []).get(id)!;
+    if (!list.includes(change.sequenceNumber)) list.push(change.sequenceNumber);
+  };
   /** Net element op so far, in change order (see `netOp`). */
   const elementOp = new Map<string, ImpactOp>();
   const order: string[] = [];
@@ -166,6 +182,7 @@ export function changesetImpact(
       unresolved++;
       continue;
     }
+    touch(id, change);
     if (op !== 'delete' && change.after) {
       const name = str((change.after as Record<string, unknown>).name);
       const node = nodes.get(id);
@@ -196,6 +213,8 @@ export function changesetImpact(
       unresolved++;
       return;
     }
+    touch(src, change);
+    touch(tgt, change);
     const key = `${src}|${predicate}|${tgt}`;
     const op = normalizeOp(change.type) === 'add' ? 'add' : 'delete';
     const prev = relNet.get(key);
@@ -216,8 +235,10 @@ export function changesetImpact(
   }
 
   const layered = buildLayeredIndex([...nodes.values()], edges, IMPACT_LAYERING);
-  const originIds = order.filter((id) => layered.nodeById.has(id));
-  if (originIds.length === 0) return { ...EMPTY_IMPACT, unresolved };
+  const originIds = (
+    focus ? [...new Set(focus.map((ref) => resolve(ref) ?? (nodes.has(ref) ? ref : undefined)))] : order
+  ).filter((id): id is string => !!id && layered.nodeById.has(id));
+  if (originIds.length === 0) return { ...EMPTY_IMPACT, unresolved, changesOf };
   const reach = computeReach(layered, originIds, { follow });
 
   const hopOf = new Map<string, number>();
@@ -261,6 +282,7 @@ export function changesetImpact(
     outsideCount: byLayer.reduce((sum, l) => sum + l.count, 0),
     byLayer,
     unresolved,
+    changesOf,
   };
 }
 
@@ -269,9 +291,214 @@ export function useChangesetImpact(
   model: ModelDerived,
   detail: ChangesetDetail | null,
   follow: FollowDepth,
+  focus?: readonly string[] | null,
 ): ChangesetImpact {
+  const focusKey = focus ? focus.join('\n') : null;
   return useMemo(
-    () => (detail ? changesetImpact(model, detail.rows.map((r) => r.raw), follow) : EMPTY_IMPACT),
-    [model, detail, follow],
+    () =>
+      detail
+        ? changesetImpact(model, detail.rows.map((r) => r.raw), follow, focusKey === null ? undefined : focusKey.split('\n'))
+        : EMPTY_IMPACT,
+    [model, detail, follow, focusKey],
   );
+}
+
+// ─── Narrowing the impact: filters, search, grouped lanes ───────────────────
+
+/** Facet values the Impact tab leaves out (empty sets: everything shows). */
+export interface ImpactFilter {
+  /** Only the changed elements, without what they reach. */
+  changesOnly: boolean;
+  ops: ReadonlySet<ImpactOp>;
+  layers: ReadonlySet<string>;
+  types: ReadonlySet<string>;
+  categories: ReadonlySet<string>;
+}
+
+export const NO_IMPACT_FILTER: ImpactFilter = {
+  changesOnly: false,
+  ops: new Set(),
+  layers: new Set(),
+  types: new Set(),
+  categories: new Set(),
+};
+
+export interface ImpactFacet {
+  value: string;
+  count: number;
+}
+
+export interface ImpactFacets {
+  /** Changed elements per op. */
+  ops: ImpactFacet[];
+  /** Elements per layer, in layer order. */
+  layers: ImpactFacet[];
+  /** Elements per type, most first. */
+  types: ImpactFacet[];
+  /** Links per category. */
+  categories: ImpactFacet[];
+}
+
+function tally(values: Iterable<string>): Map<string, number> {
+  const out = new Map<string, number>();
+  for (const v of values) out.set(v, (out.get(v) ?? 0) + 1);
+  return out;
+}
+
+/** Counts for each filter facet, over the whole (unfiltered) impact. */
+export function impactFacets(impact: ChangesetImpact): ImpactFacets {
+  const ops = tally(impact.originIds.map((id) => impact.opOf.get(id)).filter((o): o is ImpactOp => !!o));
+  const layers = tally(impact.nodes.map((n) => n.domainColor ?? ''));
+  const types = tally(impact.nodes.map((n) => n.kind ?? 'element'));
+  const categories = tally(impact.edges.map((e) => String(e.attributes?.category ?? 'relational')));
+  const opOrder: ImpactOp[] = ['add', 'update', 'delete', 'relink'];
+  const layerOrder = [...LAYER_ORDER, ...[...layers.keys()].filter((l) => !LAYER_ORDER.includes(l as never))];
+  return {
+    ops: opOrder.filter((o) => ops.has(o)).map((value) => ({ value, count: ops.get(value)! })),
+    layers: layerOrder.filter((l) => layers.has(l)).map((value) => ({ value, count: layers.get(value)! })),
+    types: [...types].map(([value, count]) => ({ value, count })).sort((a, b) => b.count - a.count || a.value.localeCompare(b.value)),
+    categories: [...categories].map(([value, count]) => ({ value, count })).sort((a, b) => a.value.localeCompare(b.value)),
+  };
+}
+
+/** The impact narrowed to a filter: elements outside it and links to them go. */
+export function filterImpact(impact: ChangesetImpact, filter: ImpactFilter): ChangesetImpact {
+  const keep = new Set<string>();
+  for (const n of impact.nodes) {
+    const op = impact.opOf.get(n.id);
+    if (filter.changesOnly && !op) continue;
+    if (op && filter.ops.has(op)) continue;
+    if (filter.layers.has(n.domainColor ?? '')) continue;
+    if (filter.types.has(n.kind ?? 'element')) continue;
+    keep.add(n.id);
+  }
+  return {
+    ...impact,
+    nodes: impact.nodes.filter((n) => keep.has(n.id)),
+    edges: impact.edges.filter(
+      (e) =>
+        keep.has(e.sourceId) &&
+        keep.has(e.targetId) &&
+        !filter.categories.has(String(e.attributes?.category ?? 'relational')),
+    ),
+    originIds: impact.originIds.filter((id) => keep.has(id)),
+  };
+}
+
+export interface ImpactMatch {
+  id: string;
+  label: string;
+  kind: string;
+  layerId: string;
+  op?: ImpactOp;
+  hop: number;
+}
+
+/** Elements whose name contains `query` (any case): changed ones first, then nearest. */
+export function searchImpact(impact: ChangesetImpact, query: string): ImpactMatch[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return impact.nodes
+    .filter((n) => n.label.toLowerCase().includes(q))
+    .map((n) => ({
+      id: n.id,
+      label: n.label,
+      kind: n.kind ?? 'element',
+      layerId: n.domainColor ?? '',
+      op: impact.opOf.get(n.id),
+      hop: impact.hopOf.get(n.id) ?? 0,
+    }))
+    .sort((a, b) => Number(!!b.op) - Number(!!a.op) || a.hop - b.hop || a.label.localeCompare(b.label));
+}
+
+export const GROUP_PREFIX = 'group:';
+
+export interface GroupedImpact {
+  impact: ChangesetImpact;
+  /** Group node id → the element ids it stands for. */
+  groups: Map<string, string[]>;
+  /** Per layer: elements shown (a group counts once) and elements in all. */
+  laneCounts: Map<string, { shown: number; total: number }>;
+}
+
+/** "workflow step" → "workflow steps" (the group's label). */
+function pluralType(n: number, type: string): string {
+  return `${n} ${type}${type.endsWith('s') ? 'es' : 's'}`;
+}
+
+/**
+ * Large lanes grouped by type: in a layer with more than `threshold`
+ * elements, every type with two or more elements (other than those in
+ * `keep`, and types in `expanded` as `layer|type`) becomes one group node,
+ * its links merged. A group whose members share an op carries it.
+ */
+export function groupLargeLanes(
+  impact: ChangesetImpact,
+  options: { threshold: number; keep?: ReadonlySet<string>; expanded?: ReadonlySet<string> },
+): GroupedImpact {
+  const keep = options.keep ?? new Set<string>();
+  const expanded = options.expanded ?? new Set<string>();
+  const byLayer = new Map<string, GraphNodeData[]>();
+  for (const n of impact.nodes) {
+    const l = n.domainColor ?? '';
+    (byLayer.get(l) ?? byLayer.set(l, []).get(l)!).push(n);
+  }
+  const groupOf = new Map<string, string>();
+  const groups = new Map<string, string[]>();
+  const groupNodes: GraphNodeData[] = [];
+  const laneCounts = new Map<string, { shown: number; total: number }>();
+  for (const [layer, list] of byLayer) {
+    let shown = list.length;
+    if (list.length > options.threshold) {
+      const byType = new Map<string, GraphNodeData[]>();
+      for (const n of list) {
+        const type = n.kind ?? 'element';
+        if (keep.has(n.id) || expanded.has(`${layer}|${type}`)) continue;
+        (byType.get(type) ?? byType.set(type, []).get(type)!).push(n);
+      }
+      for (const [type, members] of byType) {
+        if (members.length < 2) continue;
+        const id = `${GROUP_PREFIX}${layer}|${type}`;
+        groups.set(id, members.map((m) => m.id));
+        for (const m of members) groupOf.set(m.id, id);
+        groupNodes.push({ id, label: pluralType(members.length, type), kind: type, domainColor: layer });
+        shown -= members.length - 1;
+      }
+    }
+    laneCounts.set(layer, { shown, total: list.length });
+  }
+  if (groups.size === 0) return { impact, groups, laneCounts };
+
+  const at = (id: string) => groupOf.get(id) ?? id;
+  const opOf = new Map(impact.opOf);
+  const hopOf = new Map(impact.hopOf);
+  for (const [gid, members] of groups) {
+    const ops = new Set(members.map((m) => impact.opOf.get(m)));
+    const [only] = [...ops];
+    if (ops.size === 1 && only) opOf.set(gid, only);
+    hopOf.set(gid, Math.min(...members.map((m) => impact.hopOf.get(m) ?? Infinity)));
+  }
+  const seen = new Set<string>();
+  const edges: GraphEdgeData[] = [];
+  for (const e of impact.edges) {
+    const sourceId = at(e.sourceId);
+    const targetId = at(e.targetId);
+    if (sourceId === targetId) continue;
+    const key = `${sourceId}|${e.label}|${targetId}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    edges.push(sourceId === e.sourceId && targetId === e.targetId ? e : { ...e, id: `${e.id}@${key}`, sourceId, targetId });
+  }
+  return {
+    impact: {
+      ...impact,
+      nodes: [...impact.nodes.filter((n) => !groupOf.has(n.id)), ...groupNodes],
+      edges,
+      opOf,
+      hopOf,
+      originIds: [...new Set(impact.originIds.map(at))],
+    },
+    groups,
+    laneCounts,
+  };
 }

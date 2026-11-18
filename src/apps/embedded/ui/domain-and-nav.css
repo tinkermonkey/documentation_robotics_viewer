@@ -37,6 +37,7 @@ body.dark-canvas {
 /* ---- 12-layer domain palette — graph node swatches ---------------------- */
 .graph-node[data-domain='motivation'] .graph-node__swatch { background: #8b5cf6; }
 .graph-node[data-domain='business'] .graph-node__swatch { background: #f59e0b; }
+.graph-node[data-domain='product'] .graph-node__swatch { background: #a3e635; }
 .graph-node[data-domain='security'] .graph-node__swatch { background: #f43f5e; }
 .graph-node[data-domain='application'] .graph-node__swatch { background: #818cf8; }
 .graph-node[data-domain='technology'] .graph-node__swatch { background: #22d3ee; }
@@ -51,6 +52,7 @@ body.dark-canvas {
 /* ---- inspector relationship swatches per layer -------------------------- */
 .graph-inspector__rel-target[data-domain='motivation'] .graph-inspector__rel-swatch { background: #8b5cf6; }
 .graph-inspector__rel-target[data-domain='business'] .graph-inspector__rel-swatch { background: #f59e0b; }
+.graph-inspector__rel-target[data-domain='product'] .graph-inspector__rel-swatch { background: #a3e635; }
 .graph-inspector__rel-target[data-domain='security'] .graph-inspector__rel-swatch { background: #f43f5e; }
 .graph-inspector__rel-target[data-domain='application'] .graph-inspector__rel-swatch { background: #818cf8; }
 .graph-inspector__rel-target[data-domain='technology'] .graph-inspector__rel-swatch { background: #22d3ee; }
@@ -590,4 +592,131 @@ body.dark-canvas {
 
 .drv-impact__reset:hover {
   background: rgb(var(--canvas-bg-2, var(--canvas-surface)));
+}
+
+/* Impact tab: controls (find, show/follow/grouping, facets), breadcrumb, side panel. */
+.drv-impact__controls {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 22px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+.drv-impact__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+}
+.drv-impact__ctl {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.drv-impact__find {
+  flex: 1;
+  min-width: 260px;
+}
+.drv-facets {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.drv-facet {
+  font: inherit;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--canvas-border));
+  background: transparent;
+  color: rgb(var(--canvas-fg-3));
+  cursor: pointer;
+  text-decoration: line-through;
+}
+.drv-facet[aria-pressed='true'] {
+  border-color: rgb(var(--accent-primary));
+  background: rgb(var(--accent-primary) / 0.1);
+  color: rgb(var(--canvas-fg-1));
+  text-decoration: none;
+}
+.drv-facet--more {
+  text-decoration: none;
+}
+.drv-facet:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 1px;
+}
+.drv-facet__n {
+  font-family: var(--font-mono, monospace);
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-3));
+}
+.drv-impact__crumbs {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 22px;
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-impact__side {
+  width: 280px;
+  flex: none;
+  border-left: 1px solid rgb(var(--canvas-border));
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.drv-impact__side-head {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 14px;
+}
+.drv-impact__matches {
+  list-style: none;
+  margin: 0;
+  padding: 0 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.drv-impact__match {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 7px 9px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid transparent;
+}
+[aria-selected='true'] > .drv-impact__match {
+  border-color: rgb(var(--accent-primary));
+  background: rgb(var(--accent-primary) / 0.07);
+}
+.drv-impact__match:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+}
+.drv-impact__match-name {
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-impact__match-op {
+  color: rgb(var(--semantic-emerald-fg));
+}
+@media (max-width: 1100px) {
+  .drv-impact__side {
+    display: none;
+  }
 }

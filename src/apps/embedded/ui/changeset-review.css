@@ -150,7 +150,7 @@
   width: 100%;
   cursor: pointer;
   display: grid;
-  grid-template-columns: 40px 70px minmax(0, 1.1fr) minmax(0, 1.4fr) 128px;
+  grid-template-columns: 40px 82px minmax(0, 1.6fr) minmax(0, 1fr) 128px;
   gap: 0 12px;
   align-items: center;
   padding: 8px 14px;
@@ -462,7 +462,7 @@
 
 .drv-landed {
   display: grid;
-  grid-template-columns: 10px minmax(0, 1fr) auto auto;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
   gap: 8px 12px;
   align-items: center;
   padding: 12px 14px;
@@ -644,4 +644,351 @@ body.dark-canvas :is(.drv-review, .drv-inbox, .drv-ci, .drv-review-modal) .btn--
   color: rgb(var(--canvas-fg-1));
   font-size: 12.5px;
   line-height: 1.5;
+}
+
+/*
+ * Decision pill (Your decision column): outlined and round, with a glyph, so
+ * it never reads as a change chip (those are filled). Needs decision is dashed.
+ */
+.drv-verdict {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-size: 11.5px;
+  font-weight: 500;
+  line-height: 1.5;
+  padding: 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--canvas-border));
+  background: transparent;
+  color: rgb(var(--canvas-fg-2));
+}
+.drv-verdict--emerald { border-color: rgb(var(--semantic-emerald-border)); color: rgb(var(--semantic-emerald-fg)); }
+.drv-verdict--rose { border-color: rgb(var(--semantic-rose-border)); color: rgb(var(--semantic-rose-fg)); }
+.drv-verdict--violet { border-color: rgb(var(--semantic-violet-border)); color: rgb(var(--semantic-violet-fg)); }
+.drv-verdict--amber { border-color: rgb(var(--semantic-amber-border)); color: rgb(var(--semantic-amber-fg)); }
+.drv-verdict--neutral { border-color: rgb(var(--semantic-neutral-border)); color: rgb(var(--semantic-neutral-fg)); }
+.drv-verdict--open { border-style: dashed; }
+
+/* Column headings over the change rows (same grid as .drv-row). */
+.drv-row--head {
+  cursor: default;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  background: rgb(var(--canvas-surface));
+}
+.drv-row--head:hover { background: rgb(var(--canvas-surface)); }
+.drv-row--head > span {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-3));
+}
+
+/* A link: [source] —predicate→ [target]; an end this changeset adds is dashed. */
+.drv-chain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.drv-end {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 0 1 auto;
+  padding: 2px 8px 2px 6px;
+  border-radius: var(--radius-md, 6px);
+  border: 1px solid rgb(var(--canvas-border));
+  background: rgb(var(--canvas-surface));
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-end--new {
+  border-style: dashed;
+  border-color: rgb(var(--semantic-emerald-fg) / 0.7);
+}
+.drv-end__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none;
+}
+.drv-end__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drv-chain__pred {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  flex: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgb(var(--semantic-amber-fg));
+}
+
+/* Legend: what the two chip shapes mean. */
+.drv-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  font-size: 12px;
+  color: rgb(var(--canvas-fg-3));
+}
+.drv-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.drv-landed__layer {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Change inspector: labelled change / decision rows. */
+.drv-kv {
+  display: grid;
+  grid-template-columns: 104px minmax(0, 1fr);
+  gap: 8px 10px;
+  align-items: center;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+}
+.drv-kv > dt {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-3));
+}
+.drv-kv > dd {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+/* The layer a change lands in, in that layer's colour. */
+.drv-band {
+  display: flex;
+  border: 1px solid;
+  border-radius: var(--radius-md, 6px);
+  overflow: hidden;
+}
+.drv-band__bar {
+  width: 6px;
+  flex: none;
+}
+.drv-band__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+}
+
+.drv-new {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 0 5px;
+  border-radius: 3px;
+  background: rgb(var(--semantic-emerald-bg));
+  color: rgb(var(--semantic-emerald-fg));
+}
+
+/* Link card: source card, predicate, target card. */
+.drv-linkcard {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.drv-endcard {
+  display: flex;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg, 8px);
+  overflow: hidden;
+  background: rgb(var(--canvas-card));
+}
+.drv-endcard--new {
+  border-style: dashed;
+  border-color: rgb(var(--semantic-emerald-fg) / 0.7);
+}
+.drv-endcard__bar {
+  width: 5px;
+  flex: none;
+}
+.drv-endcard__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 11px;
+}
+.drv-endcard__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+.drv-endcard__name {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-endcard__desc {
+  font-size: 11.5px;
+  color: rgb(var(--canvas-fg-2));
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.drv-linkcard__edge {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  padding: 6px 0 6px 16px;
+}
+.drv-linkcard__rail {
+  width: 2px;
+  flex: none;
+  border-radius: 1px;
+  background: rgb(var(--accent-primary) / 0.6);
+}
+.drv-ident {
+  margin-top: 8px;
+  font-size: 11px;
+}
+.drv-ident > summary {
+  cursor: pointer;
+}
+
+/* Change inspector: a related change (arrow, predicate, the other end). */
+.drv-relrow {
+  all: unset;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 16px minmax(64px, auto) minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  padding: 6px 4px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+.drv-relrow:hover {
+  background: rgb(var(--canvas-bg));
+}
+.drv-relrow:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: -2px;
+}
+.drv-relrow__arrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: rgb(var(--canvas-fg-3));
+}
+.drv-relrow__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.drv-relrow__name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-relrow__text {
+  overflow-wrap: anywhere;
+}
+
+/* Change inspector: the neighbourhood as wrapped layer lanes. */
+.drv-hood {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-md, 6px);
+  background: rgb(var(--canvas-bg));
+}
+.drv-hood__lane {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px dashed rgb(var(--canvas-border));
+}
+.drv-hood__lane:first-child {
+  border-top: 0;
+}
+.drv-hood__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-2));
+}
+.drv-hood__nodes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+}
+.drv-hood__node {
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 1.4;
+  padding: 2px 7px;
+  border-radius: 5px;
+  border: 1px solid rgb(var(--canvas-border));
+  background: rgb(var(--canvas-surface));
+  color: rgb(var(--canvas-fg-1));
+  outline-offset: 1px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+button.drv-hood__node {
+  cursor: pointer;
+}
+button.drv-hood__node:hover {
+  border-color: rgb(var(--canvas-fg-3));
+}
+button.drv-hood__node:focus-visible {
+  box-shadow: 0 0 0 2px rgb(var(--accent-primary));
+}
+.drv-hood__node--new {
+  border-style: dashed;
+  border-color: rgb(var(--semantic-emerald-fg) / 0.7);
+}
+.drv-hood__node--far {
+  opacity: 0.7;
+}
+.drv-hood__node--focus {
+  border-color: rgb(var(--accent-primary));
+  background: rgb(var(--accent-primary) / 0.14);
+  font-weight: 600;
 }

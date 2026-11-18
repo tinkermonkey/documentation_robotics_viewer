@@ -1,5 +1,5 @@
 /**
- * 12-layer domain palette + helpers.
+ * Layer domain palette (all 13 spec layers) + helpers.
  *
  * The slug -> hex map mirrors the design's `graph-node[data-domain=...]` swatch
  * rules (see design HTML lines ~25-50). Heimdall's compiled CSS only colors its
@@ -10,6 +10,7 @@
 export type LayerSlug =
   | 'motivation'
   | 'business'
+  | 'product'
   | 'security'
   | 'application'
   | 'technology'
@@ -21,10 +22,11 @@ export type LayerSlug =
   | 'apm'
   | 'testing';
 
-/** Ordered list of the 12 layers (matches the spec manifest layer order). */
+/** Ordered list of the spec's 13 layers (matches the spec manifest layer order; Product is layer 3 since spec 0.12). */
 export const LAYER_ORDER: LayerSlug[] = [
   'motivation',
   'business',
+  'product',
   'security',
   'application',
   'technology',
@@ -41,6 +43,7 @@ export const LAYER_ORDER: LayerSlug[] = [
 export const DOMAIN_COLORS: Record<LayerSlug, string> = {
   motivation: '#8B5CF6',
   business: '#F59E0B',
+  product: '#A3E635',
   security: '#F43F5E',
   application: '#818CF8',
   technology: '#22D3EE',
@@ -57,6 +60,7 @@ export const DOMAIN_COLORS: Record<LayerSlug, string> = {
 export const DOMAIN_LABELS: Record<LayerSlug, string> = {
   motivation: 'Motivation',
   business: 'Business',
+  product: 'Product',
   security: 'Security',
   application: 'Application',
   technology: 'Technology',
@@ -73,6 +77,7 @@ export const DOMAIN_LABELS: Record<LayerSlug, string> = {
 export const DOMAIN_STANDARDS: Record<LayerSlug, string> = {
   motivation: 'ArchiMate 3.2',
   business: 'ArchiMate 3.2',
+  product: '',
   security: 'NIST SP 800-53',
   application: 'ArchiMate 3.2',
   technology: 'ArchiMate 3.2',

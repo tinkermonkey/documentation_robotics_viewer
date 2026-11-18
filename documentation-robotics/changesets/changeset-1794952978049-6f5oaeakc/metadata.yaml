@@ -1,0 +1,46 @@
+id: changeset-1794952978049-6f5oaeakc
+name: changeset-review-clarity
+description: "Make each change in a changeset review legible on its own: label
+  the change and your decision as two different things, colour every spec layer
+  (Product included), show a link as source → predicate → target, list an
+  element's links with direction, type and layer, add a +1-layer neighbourhood
+  to the change inspector, and give the Impact tab find, filters and focus. Done
+  when a reviewer can judge any change without reading its raw id. Design:
+  https://claude.ai/artifact/DC38TetJbk1npbASw4tJXQ"
+created: 2026-11-17T22:02:58.050Z
+modified: 2026-11-18T02:31:28.623Z
+status: staged
+baseSnapshot: sha256:0e8ef2b3f96b9c44d692cee309442eaad89347198c52f81fedb3d9c8e0180654
+origin:
+  kind: plan
+stats:
+  additions: 50
+  modifications: 4
+  deletions: 0
+lastSequence: 54
+unstaged:
+  - sequence: 6
+    removedAt: 54
+    change:
+      type: add
+      elementId: application.applicationcomponent.change-neighbourhood
+      layerName: application
+      after:
+        id: add22404-7633-4319-93e1-e7aac7c0cbdf
+        path: application.applicationcomponent.change-neighbourhood
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Change Neighbourhood
+        description: "A small layer-lanes graph in the change inspector: the selected
+          element (or both ends of a link) and its reach at the inspector's
+          Follow depth, elements this changeset adds drawn dashed, with Open in
+          Impact to focus the same element there."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-17T22:03:39.530Z
+          updated_at: 2026-11-17T22:03:39.530Z
+          version: 1
+      timestamp: 2026-11-17T22:03:39.547Z
+    rewritten: true

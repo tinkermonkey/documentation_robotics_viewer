@@ -115,10 +115,10 @@ describe('ChangesetCanvas — Impact tab', () => {
     const impact = await screen.findByTestId('changeset-impact');
     expect(screen.queryByTestId('changeset-list')).not.toBeInTheDocument();
 
-    // The legend counts the changed elements by op (12 added, 7 modified in the fixture).
-    const legend = within(impact).getByRole('list', { name: 'Changed elements' });
-    expect(within(legend).getByText(/12 added/)).toBeInTheDocument();
-    expect(within(legend).getByText(/7 modified/)).toBeInTheDocument();
+    // The Change filter counts the changed elements by op (12 added, 7 modified in the fixture).
+    const change = within(impact).getByRole('group', { name: 'Show change' });
+    expect(within(change).getByRole('button', { name: /added\s*12/ })).toHaveAttribute('aria-pressed', 'true');
+    expect(within(change).getByRole('button', { name: /modified\s*7/ })).toBeInTheDocument();
     expect(screen.queryByTestId('impact-unresolved')).not.toBeInTheDocument();
 
     // Each changed element gets a scoped outline rule keyed on its lane node.
