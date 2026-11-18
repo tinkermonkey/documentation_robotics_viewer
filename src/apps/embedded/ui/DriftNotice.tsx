@@ -56,8 +56,8 @@ export function DriftApplyNote({ drift }: { drift: ChangesetDriftSummary | undef
   if (tone === 'unchecked') {
     return (
       <p className="drv-note" style={{ margin: 0 }} data-testid="drift-apply-note">
-        Drift couldn&apos;t be checked: {drift!.message} Apply isn&apos;t held for it; if the base did change, the
-        server refuses the apply and nothing is written.
+        Drift couldn&apos;t be checked: {drift!.message} If the base did change, the server refuses the apply
+        and nothing is written.
       </p>
     );
   }

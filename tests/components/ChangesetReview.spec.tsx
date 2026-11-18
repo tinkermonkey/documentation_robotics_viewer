@@ -1018,7 +1018,7 @@ describe('review — drift before Apply', () => {
     const apply = await screen.findByTestId('changeset-apply-button');
     await waitFor(() => expect(apply).toBeEnabled());
     expect(screen.getByTestId('drift-apply-note')).toHaveTextContent("Drift couldn't be checked: No base snapshot was recorded");
-    expect(screen.getByTestId('drift-apply-note')).toHaveTextContent("Apply isn't held for it");
+    expect(screen.getByTestId('drift-apply-note')).not.toHaveTextContent('held');
     expect(screen.getByTestId('drift-section')).toHaveTextContent("Drift couldn't be checked.");
     expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
   });

@@ -3,7 +3,7 @@ name: drift-before-apply
 description: Show a changeset's base drift before review and before Apply, from
   the server's drift report (#576)
 created: 2026-11-18T20:16:06.055Z
-modified: 2026-11-18T20:32:30.525Z
+modified: 2026-11-18T20:33:10.452Z
 status: staged
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
@@ -12,7 +12,7 @@ stats:
   additions: 53
   modifications: 10
   deletions: 0
-lastSequence: 78
+lastSequence: 88
 unstaged:
   - sequence: 1
     removedAt: 62
@@ -414,3 +414,86 @@ unstaged:
               symbol: src.apps.embedded.data.changesetDrift
       timestamp: 2026-11-18T20:27:59.751Z
     rewritten: true
+  - sequence: 17
+    removedAt: 79
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+      layerName: testing
+      after:
+        id: 0537a5c0-07ae-4edd-aa28-d7b85520381d
+        path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > explains the drift on the summary card and
+          in the confirm dialog, leaving Apply to the person
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: tests/components/ChangesetReview.spec.tsx
+              symbol: review — drift before Apply > explains the drift on the summary card and
+                in the confirm dialog, leaving Apply to the person
+      timestamp: 2026-11-18T20:32:29.627Z
+  - sequence: 32
+    removedAt: 80
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.changeset-review-panel
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 33
+    removedAt: 81
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.drift-notice
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.drift-notice
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 39
+    removedAt: 82
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::business.businessservice.changeset-review
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: business.businessservice.changeset-review
+        predicate: tests
+        layer: testing
+        targetLayer: business
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 54
+    removedAt: 83
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:27:58.177Z
