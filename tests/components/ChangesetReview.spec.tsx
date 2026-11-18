@@ -33,6 +33,8 @@ const FIXTURE = changesetDetail.changes as ChangeRecord[];
 const REVIEWABLE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 26, 27, 28, 29, 30, 31, 32];
 
 interface ServeOptions {
+  /** The status the detail starts in (default staged). */
+  status?: 'staged' | 'committed' | 'discarded';
   /** Omit `review` from the detail: an older dr CLI. */
   legacy?: boolean;
   review?: ChangesetReview;
@@ -60,7 +62,7 @@ function keepAll(except: Record<number, 'drop' | 'ask'> = {}): ChangesetReview {
 }
 
 function serve(opts: ServeOptions = {}): Server {
-  let status = 'staged';
+  let status: string = opts.status ?? 'staged';
   let review: ChangesetReview = opts.review ?? { decisions: {} };
   const revision = opts.revision ?? 38;
   const server: Server = { puts: [], commits: [], discards: 0, review: () => review };
@@ -298,6 +300,34 @@ describe('review — deciding changes (dr CLI with review)', () => {
     await user.click(await screen.findByTestId('decide-keep'));
     expect(await screen.findByTestId('review-decision-error')).toHaveTextContent('is not staged');
     expect(screen.getByTestId('review-tally')).toHaveTextContent('0 kept');
+  });
+});
+
+describe('review — a settled changeset', () => {
+  // #574: one applied without a change-by-change review has no decisions; its rows must not read "Needs decision".
+  it('shows each change of an applied changeset as landed, not as needing a decision', async () => {
+    serve({ status: 'committed' });
+    renderReview(1);
+    expect(await screen.findByTestId('applied-result')).toBeInTheDocument();
+    const rows = await screen.findAllByTestId('review-row');
+    expect(rows.every((r) => within(r).getByTestId('review-outcome-chip').textContent === '✓Landed')).toBe(true);
+    expect(screen.queryAllByTestId('review-verdict-chip')).toHaveLength(0);
+    expect(screen.queryByText('Needs decision')).not.toBeInTheDocument();
+    const legend = screen.getByTestId('review-legend');
+    expect(legend).toHaveTextContent('OUTCOME');
+    expect(legend).not.toHaveTextContent('YOUR DECISION');
+    const kv = within(await screen.findByTestId('change-inspector')).getByTestId('change-kv');
+    expect(kv).toHaveTextContent('Outcome✓Landed');
+    expect(kv).not.toHaveTextContent('Your decision');
+  });
+
+  it('shows each change of a discarded changeset as not applied', async () => {
+    serve({ status: 'discarded' });
+    renderReview();
+    expect(await screen.findByTestId('review-discarded')).toBeInTheDocument();
+    const rows = await screen.findAllByTestId('review-row');
+    expect(rows.every((r) => within(r).getByTestId('review-outcome-chip').getAttribute('data-outcome') === 'not-applied')).toBe(true);
+    expect(screen.getByTestId('review-legend')).toHaveTextContent('never reached the model');
   });
 });
 

@@ -41,6 +41,7 @@ import {
   LinkEndChip,
   OpChip,
   OriginBadge,
+  OutcomeChip,
   VerdictChip,
   chipTone,
   linkEndsLabel,
@@ -66,8 +67,10 @@ import {
   groupReviewItems,
   kindCountsLabel,
   leftOutAtCommit,
+  outcomeOf,
   reviewCounts,
   reviewHeadline,
+  type ChangeOutcome,
   type GroupBy,
   type ReviewGroup,
   type ReviewItem,
@@ -78,12 +81,12 @@ import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } 
 
 // ─── Rows ─────────────────────────────────────────────────────────────────────
 
-function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
+function ReviewRow({ item, model, outcome }: { item: ReviewItem; model: ReviewModel; outcome: ChangeOutcome | null }) {
   const changeSeq = useUiStore((s) => s.changeSeq);
   const selectChange = useUiStore((s) => s.selectChange);
   const state = model.stateOf(item.seq);
   const selected = changeSeq === item.seq;
-  const dropped = state === 'drop' || state === 'cascaded';
+  const dropped = !outcome && (state === 'drop' || state === 'cascaded');
   const conflictsWith = conflictPartners(model.conflicts).get(item.seq);
   return (
     <button
@@ -93,7 +96,7 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
       onClick={() => selectChange(selected ? null : item.seq)}
       data-testid="review-row"
       data-seq={item.seq}
-      data-state={state}
+      data-state={outcome ?? state}
     >
       <span className="drv-row__seq">{item.seq}</span>
       <span className="drv-row__op">
@@ -135,14 +138,14 @@ function ReviewRow({ item, model }: { item: ReviewItem; model: ReviewModel }) {
         )}
       </span>
       <span className="drv-row__verdict">
-        <VerdictChip state={state} />
+        {outcome ? <OutcomeChip outcome={outcome} /> : <VerdictChip state={state} />}
       </span>
     </button>
   );
 }
 
-/** What the two chip shapes mean: the change (filled) and your decision (outlined). */
-function ReviewLegend() {
+/** What the two chip shapes mean: the change (filled) and your decision, or once settled its outcome (outlined). */
+function ReviewLegend({ outcome }: { outcome: ChangeOutcome | null }) {
   return (
     <div className="drv-legend" data-testid="review-legend">
       <span className="drv-legend__item">
@@ -153,14 +156,22 @@ function ReviewLegend() {
         <OpChip item={{ kind: 'delete' }} />
         what the changeset does
       </span>
-      <span className="drv-legend__item">
-        <span className="drv-toolbar__label">YOUR DECISION</span>
-        <VerdictChip state="keep" />
-        <VerdictChip state="drop" />
-        <VerdictChip state="ask" />
-        <VerdictChip state="undecided" />
-        what lands on Apply
-      </span>
+      {outcome ? (
+        <span className="drv-legend__item">
+          <span className="drv-toolbar__label">OUTCOME</span>
+          <OutcomeChip outcome={outcome} />
+          {outcome === 'landed' ? 'in the model' : 'never reached the model'}
+        </span>
+      ) : (
+        <span className="drv-legend__item">
+          <span className="drv-toolbar__label">YOUR DECISION</span>
+          <VerdictChip state="keep" />
+          <VerdictChip state="drop" />
+          <VerdictChip state="ask" />
+          <VerdictChip state="undecided" />
+          what lands on Apply
+        </span>
+      )}
       <span className="drv-legend__item">
         <span className="drv-toolbar__label">LINK ENDS</span>
         <LinkEndChip end={{ id: '', name: 'added here', layerId: '', type: '', isNew: true }} />
@@ -177,13 +188,15 @@ function GroupSection({
   group,
   model,
   onBulk,
-  readOnly,
+  outcome,
 }: {
   group: ReviewGroup;
   model: ReviewModel;
   onBulk: (seqs: number[]) => void;
-  readOnly: boolean;
+  /** Set once the changeset is settled: rows show it, and nothing is left to decide. */
+  outcome: ChangeOutcome | null;
 }) {
+  const readOnly = outcome !== null;
   const headingId = `review-group-${group.key}`;
   return (
     <section className="drv-group" aria-labelledby={headingId} data-testid="review-group" data-group={group.key}>
@@ -214,12 +227,12 @@ function GroupSection({
         <span>Change</span>
         <span>{group.items.every((i) => i.ends) ? 'Link: source → target' : 'Element'}</span>
         <span>What it says</span>
-        <span style={{ justifySelf: 'end' }}>Your decision</span>
+        <span style={{ justifySelf: 'end' }}>{outcome ? 'Outcome' : 'Your decision'}</span>
       </div>
       <div role="list" aria-label={group.title}>
         {group.items.map((item) => (
           <div role="listitem" key={item.seq}>
-            <ReviewRow item={item} model={model} />
+            <ReviewRow item={item} model={model} outcome={outcome} />
           </div>
         ))}
       </div>
@@ -606,6 +619,7 @@ export function ChangesetReviewPanel({
 }) {
   const model = review.model;
   const staged = detail.status === 'staged';
+  const outcome = outcomeOf(detail.status);
   const [filter, setFilter] = useState<ShowFilter>(() => (model ? defaultFilter(model, staged) : 'all'));
   const [groupBy, setGroupBy] = useState<GroupBy>('weight');
   const [originFilter, setOriginFilter] = useState<OriginFilter>('all');
@@ -712,7 +726,7 @@ export function ChangesetReviewPanel({
         </div>
       )}
 
-      {model.items.length > 0 && <ReviewLegend />}
+      {model.items.length > 0 && <ReviewLegend outcome={outcome} />}
 
       {effectiveFilter === 'since' ? (
         <RevisionSection model={model} origin={origin} />
@@ -722,7 +736,7 @@ export function ChangesetReviewPanel({
             key={g.key}
             group={g}
             model={model}
-            readOnly={!staged}
+            outcome={outcome}
             onBulk={(seqs) => review.decide(seqs.map((s) => ({ sequence: s, verdict: 'keep' })))}
           />
         ))

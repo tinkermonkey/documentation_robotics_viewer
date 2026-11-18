@@ -25,7 +25,7 @@ import { ChangeLinkCard } from './ChangeLinkCard';
 import { ChangeNeighbourhood } from './ChangeNeighbourhood';
 import { ErrorBoundary } from './ErrorBoundary';
 import { AnnotationsSection } from './AnnotationsSection';
-import { OpChip, OriginBadge, OriginDetails, VerdictChip, plural } from './reviewParts';
+import { OpChip, OriginBadge, OriginDetails, OutcomeChip, VerdictChip, plural } from './reviewParts';
 import { buildDiffLines } from '../data/changesets';
 import { originOf, originTitle } from '../data/tier1';
 import { useCreateAnnotation } from '../data/useAnnotations';
@@ -35,6 +35,7 @@ import {
   STATE_LABEL,
   describeChange,
   valueAt,
+  type ChangeOutcome,
   type ItemState,
   type LinkEnd,
   type ReviewItem,
@@ -332,11 +333,14 @@ export function ChangeInspector({
   model,
   review,
   staged,
+  outcome = null,
 }: {
   item: ReviewItem;
   model: ReviewModel;
   review: ChangesetReviewState;
   staged: boolean;
+  /** Set once the changeset is settled: shown in place of the reviewer's decision. */
+  outcome?: ChangeOutcome | null;
 }) {
   const selectChange = useUiStore((s) => s.selectChange);
   const decision = model.decisions.get(item.seq);
@@ -397,9 +401,9 @@ export function ChangeInspector({
           <dd>
             <OpChip item={item} /> <span className="drv-muted">{changeWords(item)}</span>
           </dd>
-          <dt>Your decision</dt>
+          <dt>{outcome ? 'Outcome' : 'Your decision'}</dt>
           <dd>
-            <VerdictChip state={state} />
+            {outcome ? <OutcomeChip outcome={outcome} /> : <VerdictChip state={state} />}
             {revised && (
               <>
                 {' '}
@@ -502,7 +506,7 @@ export function ChangeInspector({
         </Section>
       )}
 
-      <LinksSection item={item} related={related} model={model} onOpen={selectChange} />
+      <LinksSection item={item} related={related} model={model} onOpen={selectChange} settled={outcome !== null} />
 
       <Section label="Source reference" testId="change-source">
         {source && (source.locations ?? []).length > 0 ? (
@@ -585,10 +589,20 @@ function relatedEntries(item: ReviewItem, related: ReviewItem[]): RelatedEntry[]
   });
 }
 
-function RelatedRow({ entry, model, onOpen }: { entry: RelatedEntry; model: ReviewModel; onOpen: () => void }) {
+function RelatedRow({
+  entry,
+  model,
+  onOpen,
+  settled,
+}: {
+  entry: RelatedEntry;
+  model: ReviewModel;
+  onOpen: () => void;
+  settled: boolean;
+}) {
   const { item, other, dir, at } = entry;
   const state = model.stateOf(item.seq);
-  const showState = state !== 'keep';
+  const showState = !settled && state !== 'keep';
   return (
     <button type="button" className="drv-relrow" onClick={onOpen} data-testid="related-row" data-seq={item.seq}>
       <span className="drv-relrow__arrow" aria-hidden="true">
@@ -625,11 +639,13 @@ function LinksSection({
   related,
   model,
   onOpen,
+  settled,
 }: {
   item: ReviewItem;
   related: ReviewItem[];
   model: ReviewModel;
   onOpen: (seq: number) => void;
+  settled: boolean;
 }) {
   const entries = relatedEntries(item, related);
   const links = entries.filter((e) => e.item.ends);
@@ -649,7 +665,7 @@ function LinksSection({
         <div role="list" aria-label={label}>
           {list.map((e) => (
             <div role="listitem" key={e.item.seq}>
-              <RelatedRow entry={e} model={model} onOpen={() => onOpen(e.item.seq)} />
+              <RelatedRow entry={e} model={model} onOpen={() => onOpen(e.item.seq)} settled={settled} />
             </div>
           ))}
         </div>
@@ -672,7 +688,7 @@ function LinksSection({
         </>
       ) : (
         <>
-          {tallyText && (
+          {tallyText && !settled && (
             <span className="drv-muted" style={{ fontSize: 11.5 }}>
               Your decisions: {tallyText}
             </span>
@@ -681,7 +697,7 @@ function LinksSection({
           {block(`Into ${item.name}`, links.filter((e) => e.dir === 'in'), 'related-in')}
           {block('Other changes to it', others, 'related-other')}
           <span className="drv-muted" style={{ fontSize: 11 }}>
-            Each row opens that change. A decision shows only when it isn&apos;t Keep.
+            Each row opens that change.{settled ? '' : ' A decision shows only when it isn\u2019t Keep.'}
           </span>
         </>
       )}

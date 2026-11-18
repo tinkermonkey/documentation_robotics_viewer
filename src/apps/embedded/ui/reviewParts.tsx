@@ -22,6 +22,7 @@ import {
   STATE_COLOR,
   STATE_GLYPH,
   STATE_LABEL,
+  type ChangeOutcome,
   type ItemState,
   type LinkEnd,
   type ReviewItem,
@@ -48,6 +49,22 @@ export function VerdictChip({ state }: { state: ItemState }) {
     >
       <span aria-hidden="true">{STATE_GLYPH[state]}</span>
       {STATE_LABEL[state]}
+    </span>
+  );
+}
+
+const OUTCOME = {
+  landed: { label: 'Landed', glyph: '✓', color: 'emerald' },
+  'not-applied': { label: 'Not applied', glyph: '–', color: 'neutral' },
+} as const;
+
+/** A settled changeset's change: what became of it, in the decision pill's shape. */
+export function OutcomeChip({ outcome }: { outcome: ChangeOutcome }) {
+  const o = OUTCOME[outcome];
+  return (
+    <span className={`drv-verdict drv-verdict--${o.color}`} data-testid="review-outcome-chip" data-outcome={outcome}>
+      <span aria-hidden="true">{o.glyph}</span>
+      {o.label}
     </span>
   );
 }

@@ -970,6 +970,22 @@ export const KIND_COLOR: Record<ChangeKind, 'emerald' | 'cyan' | 'rose'> = {
   'link-delete': 'rose',
 };
 
+/**
+ * What became of a settled changeset's changes: every change still listed in
+ * a committed changeset landed (those dropped at Apply are tombstones, shown
+ * as left out), and none of a discarded one did. Null while it is staged,
+ * when the rows show the reviewer's decision instead. A changeset applied
+ * without a change-by-change review has no decisions, so showing them there
+ * would read "Needs decision" on every row.
+ */
+export type ChangeOutcome = 'landed' | 'not-applied';
+
+export function outcomeOf(status: string | undefined): ChangeOutcome | null {
+  if (status === 'committed') return 'landed';
+  if (status === 'discarded') return 'not-applied';
+  return null;
+}
+
 /** What the reviewer decided: the Your decision column's pill (an outlined pill, never a filled chip). */
 export const STATE_LABEL: Record<ItemState, string> = {
   keep: 'Keep',
