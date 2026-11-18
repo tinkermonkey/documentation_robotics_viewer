@@ -55,7 +55,7 @@ export type Tier1Credential = Tier1Status['credentials'][string];
 export type Tier1Warming = NonNullable<WireStatus['warming']>;
 /** OpenRouter only: where card text may go. */
 export type Tier1Routing = NonNullable<WireStatus['routing']>;
-/** stage: Tier 1 stages and hides without the agent; suggest: it only suggests. */
+/** stage: Tier 1 stages and hides without the agent; hide: it only hides non-elements; suggest: it only suggests. */
 export type Tier1Mode = NonNullable<WireStatus['mode']>;
 
 function isRecord(v: unknown): v is Record<string, unknown> {
@@ -240,7 +240,7 @@ const TIER1_STATES: readonly string[] = ['off', 'misconfigured', 'no-credentials
  * what the cap leaves; credential entries that aren't `{ set, from }` and
  * per-source entries without numeric cards and cost are dropped; only string
  * warnings are kept. `warming`, `mode` and `routing` are kept whole or not at
- * all (see `warmingOf` / `routingOf`); `mode` only as suggest or stage.
+ * all (see `warmingOf` / `routingOf`); `mode` only as suggest, hide or stage.
  */
 export function toTier1Status(raw: unknown): Tier1Status | null {
   if (!isRecord(raw) || typeof raw.state !== 'string' || !TIER1_STATES.includes(raw.state)) return null;
@@ -313,7 +313,7 @@ export function toTier1Status(raw: unknown): Tier1Status | null {
   if (modelId) out.modelId = modelId;
   if (monthlyCapUsd !== undefined) out.monthlyCapUsd = monthlyCapUsd;
   if (concurrency !== undefined) out.concurrency = concurrency;
-  if (raw.mode === 'stage' || raw.mode === 'suggest') {
+  if (raw.mode === 'stage' || raw.mode === 'hide' || raw.mode === 'suggest') {
     out.mode = raw.mode;
     const modeReason = str(raw.modeReason);
     if (modeReason) out.modeReason = modeReason;
@@ -375,6 +375,7 @@ export function routingOf(raw: unknown): Tier1Routing | undefined {
 
 export const TIER1_MODE_LABEL: Record<Tier1Mode, string> = {
   stage: 'Stages without the agent',
+  hide: 'Hides non-elements without the agent',
   suggest: 'Suggests only',
 };
 

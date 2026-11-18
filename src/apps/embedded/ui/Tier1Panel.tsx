@@ -10,7 +10,7 @@
  * - Warming (on, while a codebase_index job fills the answer cache): the fill's
  *   progress in place of `reason` — cards done of the total, time left, time
  *   running, cost so far — refreshed by `useTier1` until it ends.
- * - Mode (stages without the agent / suggests only, with `modeReason`) and,
+ * - Mode (stages / hides non-elements without the agent, or suggests only, with `modeReason`) and,
  *   for OpenRouter, the upstreams card text may go to and the routing terms.
  * - A cap of $0 is a choice, not an overrun: the card says Tier 1 asks
  *   nothing, with no bar and no reset date.
