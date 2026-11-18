@@ -243,5 +243,62 @@
     ],
     "summary": "Tier 1 is misconfigured (.dr/analyzers/cbm/tier1.json is tracked by git). This month: $0.00 of the $20.00 cap, $20.00 left (0 card(s)), resets 2026-12-01 (UTC).",
     "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "warming": {
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "cloudflare-workers-ai",
+    "model": "clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "dotDrIgnored": true,
+    "warnings": [],
+    "state": "warming",
+    "reason": "the codebase_index job is filling the answer cache (1,388 of 4,071 cards, about 8 min left, $1.94 so far)",
+    "modelId": "@cf/cloudflare/clef",
+    "credentials": {
+      "accountId": {
+        "set": true,
+        "from": "CLOUDFLARE_ACCOUNT_ID"
+      },
+      "apiToken": {
+        "set": true,
+        "from": "CLOUDFLARE_API_TOKEN"
+      }
+    },
+    "month": {
+      "spentUsd": 1.94,
+      "capUsd": 20,
+      "remainingUsd": 18.06,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 1388,
+      "percentUsed": 9.7
+    },
+    "bySource": {
+      "index": {
+        "cards": 1388,
+        "costUsd": 1.94,
+        "lastAt": "2026-11-15T10:21:37.502Z"
+      }
+    },
+    "cache": {
+      "entries": 1388,
+      "bytes": 1421312,
+      "files": 1,
+      "lastCompaction": null
+    },
+    "warming": {
+      "jobId": "5b0f6c3e-2d0a-4c39-9a51-6f1e0c8f2b7a",
+      "startedAt": "2026-11-15T10:17:02.114Z",
+      "cards": {
+        "done": 1388,
+        "total": 4071
+      },
+      "costUsd": 1.94,
+      "etaSeconds": 497
+    },
+    "nearCap": false,
+    "summary": "Tier 1 is warming (the codebase_index job is filling the answer cache (1,388 of 4,071 cards, about 8 min left, $1.94 so far)). This month: $1.94 of the $20.00 cap, $18.06 left (1388 card(s)), resets 2026-12-01 (UTC).",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap, and `dr analyzer tier1 set mode suggest` keeps Tier 1 from staging or hiding anything without the agent. The spend counts this checkout only, not other clones or machines on the same account."
   }
 }

@@ -93,18 +93,22 @@ components:
             - misconfigured
             - no-credentials
             - "on"
+            - warming
             - capped
           description:
-            "on: Tier 1 runs; capped: opted in and ready, but this month's
-            spend reached the cap (cached answers are still used); off: no
-            tier1.json (the default); misconfigured: tier1.json is unreadable,
-            invalid, tracked by git, too open, or names an unknown provider or
-            model; no-credentials: a key is missing"
+            "on: Tier 1 runs; warming: on, while the codebase_index job fills
+            the answer cache (warming has its progress); capped: opted in and
+            ready, but this month's spend reached the cap (cached answers are
+            still used); off: no tier1.json (the default); misconfigured:
+            tier1.json is unreadable, invalid, tracked by git, too open, or
+            names an unknown provider or model; no-credentials: a key is
+            missing"
         reason:
           type: string
           description:
             "Why Tier 1 is not on, for a person: set for every state but on
-            (capped included: the cap, when it resets, how to raise it)"
+            (capped included: the cap, when it resets, how to raise it; warming:
+            the fill's progress)"
         analyzer:
           type: string
           description: The analyzer Tier 1 is configured for (the active one, else cbm)
@@ -121,8 +125,8 @@ components:
         modelId:
           type: string
           description:
-            The provider's model id, e.g. @cf/cloudflare/clef (on and capped
-            only)
+            The provider's model id, e.g. @cf/cloudflare/clef (on, warming and
+            capped only)
         monthlyCapUsd:
           type: number
           description: The cap tier1.json sets, default filled in (on, capped,
@@ -130,6 +134,55 @@ components:
         concurrency:
           type: integer
           description: Requests in flight at once (on, capped, no-credentials)
+        mode:
+          type: string
+          enum:
+            - suggest
+            - stage
+          description:
+            "stage: codebase_extract stages the accept band (origin confirmed
+            auto) and hides the not-element band without the agent, because the
+            model's default thresholds are verified on held-out labels and
+            tier1.json leaves mode at auto; suggest: nothing is staged or hidden
+            without the agent. Set when tier1.json names a known model"
+        modeReason:
+          type: string
+          description:
+            'Why mode: held-out verified defaults, in-sample ones, overridden
+            thresholds, or "mode": "suggest" in tier1.json'
+        routing:
+          type: object
+          properties:
+            only:
+              type: array
+              items:
+                type: string
+              description:
+                The upstreams allowed to receive card text (OpenRouter provider
+                slugs, e.g. cloudflare, deepinfra/fp8)
+            allowFallbacks:
+              type: boolean
+              enum:
+                - false
+              description: "Always false: OpenRouter never falls back to another upstream"
+            dataCollection:
+              type: string
+              enum:
+                - deny
+              description: "Always deny: only upstreams that do not collect the data"
+            zdr:
+              type: boolean
+              enum:
+                - true
+              description: Zero-data-retention endpoints only, when configured
+          required:
+            - only
+            - allowFallbacks
+            - dataCollection
+          description:
+            "OpenRouter only: the routing every request carries (on, capped,
+            no-credentials). OpenRouter's Decisions API is in alpha and may
+            change"
         credentials:
           type: object
           additionalProperties:
@@ -243,6 +296,46 @@ components:
           description:
             "Whether git ignores .dr/ (null when git cannot say: outside a git
             work tree, or git is unavailable)"
+        warming:
+          type: object
+          properties:
+            jobId:
+              type: string
+              description: The codebase_index job filling the cache
+            startedAt:
+              type: string
+              description: When the fill started (ISO 8601)
+            cards:
+              type:
+                - object
+                - "null"
+              properties:
+                done:
+                  type: integer
+                  description: Cards answered from the cache, asked, or skipped so far
+                total:
+                  type: integer
+                  description: Cards Tier 0 left undecided, which Tier 1 is asked about
+              required:
+                - done
+                - total
+              description: Null while the cards are still being built
+            costUsd:
+              type: number
+              description: Spent by the fill so far (also in month and bySource.index)
+            etaSeconds:
+              type: integer
+              description:
+                About how many seconds the fill has left, from its rate so far or
+                its estimate
+          required:
+            - jobId
+            - startedAt
+            - cards
+            - costUsd
+          description:
+            "State warming only: how far the codebase_index job's cache fill
+            has got"
         warnings:
           type: array
           items:
@@ -2161,9 +2254,11 @@ paths:
                     note:
                       A person enables, changes and disables Tier 1 with `dr analyzer tier1
                       enable|set|disable` (no tool writes tier1.json); `dr
-                      analyzer tier1 set monthly-cap <dollars>` changes the cap.
-                      The spend counts this checkout only, not other clones or
-                      machines on the same account.
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
                 onNearCap:
                   summary: On, past 80% of the cap (nearCap)
                   value:
@@ -2218,9 +2313,73 @@ paths:
                     note:
                       A person enables, changes and disables Tier 1 with `dr analyzer tier1
                       enable|set|disable` (no tool writes tier1.json); `dr
-                      analyzer tier1 set monthly-cap <dollars>` changes the cap.
-                      The spend counts this checkout only, not other clones or
-                      machines on the same account.
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
+                warming:
+                  summary: On, while the codebase_index job fills the answer cache
+                  value:
+                    analyzer: cbm
+                    config: .dr/analyzers/cbm/tier1.json
+                    provider: cloudflare-workers-ai
+                    model: clef
+                    monthlyCapUsd: 20
+                    concurrency: 4
+                    dotDrIgnored: true
+                    warnings: []
+                    state: warming
+                    reason:
+                      the codebase_index job is filling the answer cache (1,388 of 4,071
+                      cards, about 8 min left, $1.94 so far)
+                    modelId: "@cf/cloudflare/clef"
+                    credentials:
+                      accountId:
+                        set: true
+                        from: CLOUDFLARE_ACCOUNT_ID
+                      apiToken:
+                        set: true
+                        from: CLOUDFLARE_API_TOKEN
+                    month:
+                      spentUsd: 1.94
+                      capUsd: 20
+                      remainingUsd: 18.06
+                      resetsAt: "2026-12-01T00:00:00.000Z"
+                      cards: 1388
+                      percentUsed: 9.7
+                    bySource:
+                      index:
+                        cards: 1388
+                        costUsd: 1.94
+                        lastAt: "2026-11-15T10:21:37.502Z"
+                    cache:
+                      entries: 1388
+                      bytes: 1421312
+                      files: 1
+                      lastCompaction: null
+                    warming:
+                      jobId: 5b0f6c3e-2d0a-4c39-9a51-6f1e0c8f2b7a
+                      startedAt: "2026-11-15T10:17:02.114Z"
+                      cards:
+                        done: 1388
+                        total: 4071
+                      costUsd: 1.94
+                      etaSeconds: 497
+                    nearCap: false
+                    summary:
+                      "Tier 1 is warming (the codebase_index job is filling the answer cache
+                      (1,388 of 4,071 cards, about 8 min left, $1.94 so far)).
+                      This month: $1.94 of the $20.00 cap, $18.06 left (1388
+                      card(s)), resets 2026-12-01 (UTC)."
+                    note:
+                      A person enables, changes and disables Tier 1 with `dr analyzer tier1
+                      enable|set|disable` (no tool writes tier1.json); `dr
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
                 capped:
                   summary: Opted in, but the month's cap is reached
                   value:
@@ -2272,9 +2431,68 @@ paths:
                     note:
                       A person enables, changes and disables Tier 1 with `dr analyzer tier1
                       enable|set|disable` (no tool writes tier1.json); `dr
-                      analyzer tier1 set monthly-cap <dollars>` changes the cap.
-                      The spend counts this checkout only, not other clones or
-                      machines on the same account.
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
+                openRouter:
+                  summary: On through OpenRouter, pinned to one upstream
+                  value:
+                    analyzer: cbm
+                    config: .dr/analyzers/cbm/tier1.json
+                    provider: openrouter
+                    model: cloudflare/clef
+                    monthlyCapUsd: 20
+                    concurrency: 4
+                    dotDrIgnored: true
+                    warnings: []
+                    state: "on"
+                    modelId: cloudflare/clef
+                    routing:
+                      only:
+                        - cloudflare
+                      allowFallbacks: false
+                      dataCollection: deny
+                    credentials:
+                      apiKey:
+                        set: true
+                        from: OPENROUTER_API_KEY
+                    month:
+                      spentUsd: 1.37
+                      capUsd: 20
+                      remainingUsd: 18.63
+                      resetsAt: "2026-12-01T00:00:00.000Z"
+                      cards: 1032
+                      percentUsed: 6.9
+                    bySource:
+                      extract:
+                        cards: 1029
+                        costUsd: 1.3601
+                        lastAt: "2026-11-15T10:02:11.481Z"
+                      probe:
+                        cards: 3
+                        costUsd: 0.0099
+                        lastAt: "2026-11-15T09:40:52.007Z"
+                    cache:
+                      entries: 1018
+                      bytes: 1102230
+                      files: 1
+                      lastCompaction: "2026-11-15T10:02:12.310Z"
+                    nearCap: false
+                    summary:
+                      "Tier 1 is on. Through OpenRouter, forwarded only to cloudflare. This
+                      month: $1.37 of the $20.00 cap, $18.63 left (1032
+                      card(s)), resets 2026-12-01 (UTC). OpenRouter's Decisions
+                      API is in alpha and may change."
+                    note:
+                      A person enables, changes and disables Tier 1 with `dr analyzer tier1
+                      enable|set|disable` (no tool writes tier1.json); `dr
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
                 noCredentials:
                   summary: Opted in, a key missing
                   value:
@@ -2319,9 +2537,11 @@ paths:
                     note:
                       A person enables, changes and disables Tier 1 with `dr analyzer tier1
                       enable|set|disable` (no tool writes tier1.json); `dr
-                      analyzer tier1 set monthly-cap <dollars>` changes the cap.
-                      The spend counts this checkout only, not other clones or
-                      machines on the same account.
+                      analyzer tier1 set monthly-cap <dollars>` changes the cap,
+                      and `dr analyzer tier1 set mode suggest` keeps Tier 1 from
+                      staging or hiding anything without the agent. The spend
+                      counts this checkout only, not other clones or machines on
+                      the same account.
         "400":
           description: Invalid analyzer name
           content:
