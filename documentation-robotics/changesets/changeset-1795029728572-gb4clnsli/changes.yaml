@@ -278,7 +278,12 @@
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/serverVersions.ts
+          symbol: useCliVersion
+  timestamp: 2026-11-18T19:29:08.987Z
   sequenceNumber: 6
 - type: add
   elementId: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
@@ -292,13 +297,19 @@
     name: buildReviewModel > lets Apply land undecided changes as kept; the body
       drops and deletes only what was decided
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: buildReviewModel > lets Apply land undecided changes as kept; the body
+            drops and deletes only what was decided
+  timestamp: 2026-11-18T19:29:35.888Z
   sequenceNumber: 7
 - type: add
   elementId: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
@@ -311,13 +322,18 @@
     layer_id: testing
     name: buildReviewModel > holds Apply while a blocked delete is undecided
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: buildReviewModel > holds Apply while a blocked delete is undecided
+  timestamp: 2026-11-18T19:29:36.173Z
   sequenceNumber: 8
 - type: add
   elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
@@ -331,13 +347,19 @@
     name: review — deciding changes (dr CLI with review) > summarises what needs a
       decision and offers Apply with the undecided landing as kept
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — deciding changes (dr CLI with review) > summarises what needs a
+            decision and offers Apply with the undecided landing as kept
+  timestamp: 2026-11-18T19:29:36.437Z
   sequenceNumber: 9
 - type: add
   elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
@@ -351,13 +373,19 @@
     name: review — Apply > applies with changes undecided, says how many land as
       kept, and drops nothing it wasn't told to
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — Apply > applies with changes undecided, says how many land as
+            kept, and drops nothing it wasn't told to
+  timestamp: 2026-11-18T19:29:36.785Z
   sequenceNumber: 10
 - type: add
   elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
@@ -371,13 +399,19 @@
     name: review — a delete still in use > holds Apply while the blocked delete is
       undecided
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — a delete still in use > holds Apply while the blocked delete is
+            undecided
+  timestamp: 2026-11-18T19:29:37.088Z
   sequenceNumber: 11
 - type: add
   elementId: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
@@ -391,13 +425,19 @@
     name: serverVersions > reads the spec version from the spec manifest, not the
       response's version
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/serverVersions.spec.ts
+          symbol: serverVersions > reads the spec version from the spec manifest, not the
+            response's version
+  timestamp: 2026-11-18T19:29:37.364Z
   sequenceNumber: 12
 - type: add
   elementId: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
@@ -410,13 +450,18 @@
     layer_id: testing
     name: serverVersions > never takes /health's API version for the CLI's
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/serverVersions.spec.ts
+          symbol: serverVersions > never takes /health's API version for the CLI's
+  timestamp: 2026-11-18T19:29:37.635Z
   sequenceNumber: 13
 - type: add
   elementId: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
@@ -430,13 +475,19 @@
     name: shell footer > shows the spec manifest's version and the CLI version
       /health reports
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ShellFooter.spec.tsx
+          symbol: shell footer > shows the spec manifest's version and the CLI version
+            /health reports
+  timestamp: 2026-11-18T19:29:37.901Z
   sequenceNumber: 14
 - type: add
   elementId: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
@@ -449,13 +500,18 @@
     layer_id: testing
     name: shell footer > shows — when the server sends no spec or CLI version
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:23:31.214Z
       updated_at: 2026-11-18T19:23:31.214Z
       version: 1
-  timestamp: 2026-11-18T19:23:31.225Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ShellFooter.spec.tsx
+          symbol: shell footer > shows — when the server sends no spec or CLI version
+  timestamp: 2026-11-18T19:29:38.222Z
   sequenceNumber: 15
 - type: relationship-add
   elementId: application.applicationservice.use-cli-version::serves::application.applicationcomponent.status-bar
@@ -726,13 +782,19 @@
     name: shell > statusbar shows the rel count and the CLI version; the rail the
       spec version
     attributes:
-      status: approved
+      status: automated
       implementationFormat: automated
     metadata:
       created_at: 2026-11-18T19:27:42.248Z
       updated_at: 2026-11-18T19:27:42.248Z
       version: 1
-  timestamp: 2026-11-18T19:27:42.263Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/shell.spec.ts
+          symbol: shell > statusbar shows the rel count and the CLI version; the rail the
+            spec version
+  timestamp: 2026-11-18T19:29:38.504Z
   sequenceNumber: 36
 - type: relationship-add
   elementId: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version::tests::application.applicationcomponent.app-shell
@@ -758,3 +820,75 @@
     category: structural
   timestamp: 2026-11-18T19:27:42.263Z
   sequenceNumber: 38
+- type: relationship-add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T19:29:09.186Z
+  sequenceNumber: 45

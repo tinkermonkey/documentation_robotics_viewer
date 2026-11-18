@@ -3,13 +3,267 @@ name: apply-undecided-and-footer-versions
 description: Let Apply land undecided changes as kept, and show the real spec
   and CLI versions in the footer (#573)
 created: 2026-11-18T19:22:08.576Z
-modified: 2026-11-18T19:27:42.267Z
+modified: 2026-11-18T19:29:38.515Z
 status: staged
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
 stats:
-  additions: 27
+  additions: 33
   modifications: 6
   deletions: 6
-lastSequence: 38
+lastSequence: 55
+unstaged:
+  - sequence: 6
+    removedAt: 39
+    change:
+      type: add
+      elementId: application.applicationservice.use-cli-version
+      layerName: application
+      after:
+        id: dee6f57a-624a-4375-8ff2-5f156c5bc374
+        path: application.applicationservice.use-cli-version
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: useCliVersion
+        description: "React Query hook over GET /health: the dr CLI version serving the
+          viewer when /health sends one as cliVersion, else undefined so the
+          status bar shows —. Never /health's version, which is the API's own
+          (0.1.0). Pure helpers specVersionOf (spec manifest) and cliVersionOf
+          live beside it in data/serverVersions.ts."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 7
+    removedAt: 46
+    change:
+      type: add
+      elementId: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+      layerName: testing
+      after:
+        id: 0c0ad04f-ef81-4b2b-8c20-c63f296cc91a
+        path: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: buildReviewModel > lets Apply land undecided changes as kept; the body
+          drops and deletes only what was decided
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 8
+    removedAt: 47
+    change:
+      type: add
+      elementId: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+      layerName: testing
+      after:
+        id: 2ce7263a-76be-4d0b-b1a4-90acb327f754
+        path: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: buildReviewModel > holds Apply while a blocked delete is undecided
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 9
+    removedAt: 48
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+      layerName: testing
+      after:
+        id: 941be69c-5fa0-4a75-b3ef-c8a55967f6f4
+        path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — deciding changes (dr CLI with review) > summarises what needs a
+          decision and offers Apply with the undecided landing as kept
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 10
+    removedAt: 49
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+      layerName: testing
+      after:
+        id: b32bc3cb-4318-4e74-ba0d-1e2f61e714e6
+        path: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — Apply > applies with changes undecided, says how many land as
+          kept, and drops nothing it wasn't told to
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 11
+    removedAt: 50
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+      layerName: testing
+      after:
+        id: 59856441-8399-4fc8-b7ab-94d6bd8a5330
+        path: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — a delete still in use > holds Apply while the blocked delete is
+          undecided
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 12
+    removedAt: 51
+    change:
+      type: add
+      elementId: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+      layerName: testing
+      after:
+        id: 0dbf92be-9726-417e-88f1-9ab241c122e7
+        path: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: serverVersions > reads the spec version from the spec manifest, not the
+          response's version
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 13
+    removedAt: 52
+    change:
+      type: add
+      elementId: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+      layerName: testing
+      after:
+        id: efb93b88-bf0d-4e5e-bf42-78e3e8a82c23
+        path: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: serverVersions > never takes /health's API version for the CLI's
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 14
+    removedAt: 53
+    change:
+      type: add
+      elementId: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+      layerName: testing
+      after:
+        id: 4e860192-e800-47d0-9e47-383fc9add229
+        path: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: shell footer > shows the spec manifest's version and the CLI version
+          /health reports
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 15
+    removedAt: 54
+    change:
+      type: add
+      elementId: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+      layerName: testing
+      after:
+        id: 4a4b3fd0-a2b8-46c8-b7ec-6b722c585494
+        path: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: shell footer > shows — when the server sends no spec or CLI version
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:23:31.214Z
+          updated_at: 2026-11-18T19:23:31.214Z
+          version: 1
+      timestamp: 2026-11-18T19:23:31.225Z
+    rewritten: true
+  - sequence: 36
+    removedAt: 55
+    change:
+      type: add
+      elementId: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+      layerName: testing
+      after:
+        id: 39ab5520-cbaa-42ba-9708-fff9e8a8f5c5
+        path: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: shell > statusbar shows the rel count and the CLI version; the rail the
+          spec version
+        attributes:
+          status: approved
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-18T19:27:42.248Z
+          updated_at: 2026-11-18T19:27:42.248Z
+          version: 1
+      timestamp: 2026-11-18T19:27:42.263Z
+    rewritten: true
