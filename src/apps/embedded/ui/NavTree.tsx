@@ -17,6 +17,7 @@ import { LAYER_ORDER, layerLabel, type LayerSlug } from './domain';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
+import { purposeLabel } from '../data/changesetPurpose';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets'>;
 
@@ -178,6 +179,9 @@ function ChangesetRows() {
     <>
       {derived.list.map((cs) => {
         const active = view === 'changesets' && changesetId === cs.id;
+        // The purpose (a dr CLI with purposes) rides in the row's name and tooltip: NavItem has no slot for it.
+        const purpose = purposeLabel(cs.purpose);
+        const label = purpose ? `${cs.name} · ${purpose}` : cs.name;
         return (
           <div key={cs.id} style={{ position: 'relative' }}>
             <NavItem
@@ -186,7 +190,9 @@ function ChangesetRows() {
               active={active}
               depth={1}
               onClick={() => selectChangeset(cs.id)}
-              title={cs.name}
+              title={label}
+              aria-label={label}
+              data-purpose={cs.purpose}
             />
           </div>
         );

@@ -139,6 +139,12 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   `POST /api/changesets/:id/commit` (optional `{ drop, deleteBlockedLinks }` → `dropped`, `linksDeleted`) /
   `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
   validation or deletes still in use — body `{ error, blockers? }`)
+- Changeset purposes (dr CLI with documentation_robotics#1188): list and detail carry `purpose`
+  (`plan | chat | bootstrap | reconcile | verification`), `actions` (`['commit','discard']` while staged,
+  `['discard']` for a verification record, `[]` once settled) and, on a record, `verifies` (the plan's id); the
+  detail adds `scope: { since, codeCommit? }`. Commit refuses a record with a 409 naming the plan (its text
+  mentions drift: `isVerificationRecordRefusal` is checked before `isDriftError`). Discard DELETES the
+  changeset (GET answers 404, it leaves the list), so a new server has no `discarded` history.
 - `GET /api/tier1` → Tier 1 state + this month's spend (`Tier1Status`; read-only, never a credential value; an
   older dr CLI answers 404). Each change in `GET /api/changesets/:id` (and `unstaged[].change`) may carry
   `origin: { by: tier0|tier1|agent, rule?, provider?, model?, upstream?, p?: { layer, type }, confirmed? }`
@@ -279,6 +285,16 @@ For local dev use `dr visualize --no-auth`.
   `useLiveChangesetUpdates` (`data/useChangesets.ts`) refetches changesets on the server's
   `changesets.updated` broadcast (any write under `documentation-robotics/changesets/`, every verdict, Apply
   and Discard). Styles: `ui/changeset-review.css` (tokens + Heimdall `--semantic-*` chip colours only).
+- **Changesets by purpose** (#575) — `data/changesetPurpose.ts` reads `purpose` / `actions` / `verifies` /
+  `scope` (known values only, as `tier1.ts` does) and renders them, never inferring from names
+  (`-as-built`) or descriptions. Apply and Discard (summary card) come from `canDo(cs, move)`: the server's
+  `actions`, else (an older dr CLI) any staged changeset. A verification record gets Discard only (no Apply, no
+  "Keep the other N"). The inbox (`inboxGroups`): Waiting on you / on DrBot = plans, chat and changesets with
+  no known purpose; "Ready to land as built" = bootstrap / reconcile; "Verification records", each paired with
+  its plan (a plan's card links its records); History (with a PURPOSE column). The canvas eyebrow names the
+  purpose, `PurposeNote` gives its lifecycle (a record leads with its plan and what extraction read), NavTree
+  puts the purpose in the row's title / accessible name. A 404 detail shows `ChangesetGone`; a discard on a
+  server that sends `actions` returns to the inbox with a toast (`ChangesetReviewPanel`'s `onGone`).
 - **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`
   (Tier 0 rule / Tier 1 decision model / the agent). The wire types are the generated OpenAPI schemas, aliased
   in `data/tier1.ts` (one place to adjust when the contract moves). Nothing from the wire reaches React

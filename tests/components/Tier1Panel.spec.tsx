@@ -296,6 +296,11 @@ describe('Tier1Panel — mode and routing', () => {
     renderWithProviders(<Tier1Panel />);
     await waitFor(() => expect(screen.getAllByTestId('tier1-mode')).toHaveLength(2));
     expect(screen.getAllByTestId('tier1-mode')[1]).toHaveTextContent('Suggests only');
+
+    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'hide' })));
+    renderWithProviders(<Tier1Panel />);
+    await waitFor(() => expect(screen.getAllByTestId('tier1-mode')).toHaveLength(3));
+    expect(screen.getAllByTestId('tier1-mode')[2]).toHaveTextContent('Hides non-elements without the agent');
   });
 
   it("lists OpenRouter's allowed upstreams, no fallbacks and no data collection", async () => {

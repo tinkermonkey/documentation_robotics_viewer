@@ -46,6 +46,13 @@ interface ServeOptions {
   staleAfterCommit?: boolean;
   /** PUT .../review answers 404 with no JSON body (route missing). */
   reviewMissing?: boolean;
+  /** Purpose fields on the detail (a dr CLI with changeset purposes). */
+  purpose?: string;
+  actions?: string[];
+  verifies?: string;
+  scope?: { since: string; codeCommit?: string };
+  /** A discard deletes the changeset: GET answers 404 afterwards (a current dr CLI). */
+  deleteOnDiscard?: boolean;
 }
 
 interface Server {
@@ -68,13 +75,19 @@ function serve(opts: ServeOptions = {}): Server {
   const server: Server = { puts: [], commits: [], discards: 0, review: () => review };
   mswServer.use(
     http.get('*/api/changesets/:id', ({ params }) =>
-      HttpResponse.json({
-        ...changesetDetail,
-        id: params.id,
-        status: opts.staleAfterCommit ? 'staged' : status,
-        changes: opts.changes ?? FIXTURE,
-        ...(opts.legacy ? {} : { revision, unstaged: opts.unstaged ?? [], review }),
-      }),
+      opts.deleteOnDiscard && status === 'discarded'
+        ? HttpResponse.json({ error: 'Changeset not found' }, { status: 404 })
+        : HttpResponse.json({
+            ...changesetDetail,
+            id: params.id,
+            status: opts.staleAfterCommit ? 'staged' : status,
+            changes: opts.changes ?? FIXTURE,
+            ...(opts.legacy ? {} : { revision, unstaged: opts.unstaged ?? [], review }),
+            ...(opts.purpose ? { purpose: opts.purpose } : {}),
+            ...(opts.actions ? { actions: status === 'staged' ? opts.actions : [] } : {}),
+            ...(opts.verifies ? { verifies: opts.verifies } : {}),
+            ...(opts.scope ? { scope: opts.scope } : {}),
+          }),
     ),
     http.put('*/api/changesets/:id/review', async ({ request }) => {
       if (opts.legacy || opts.reviewMissing) return new HttpResponse('404 Not Found', { status: 404 });
@@ -728,6 +741,103 @@ describe('review — since your last review', () => {
     expect(within(since).getByTestId('review-withdrawn')).toHaveTextContent('You dropped it');
     // The ask on the earlier version no longer counts.
     expect(screen.getByTestId('review-headline')).toHaveTextContent('2 of 2 need a decision');
+  });
+});
+
+const RECORD_REFUSAL =
+  "Changeset 'add-export-as-built' is a verification record: the record of what was built, compared with plan 'add-export'. A verification record is never landed. Land the plan 'add-export' instead. Keep this record (it stays staged and is committed to git with the plan) or discard it. To reconcile the model with code drift, extract without a plan active and land that changeset.";
+
+describe('review — purpose and actions', () => {
+  it('offers a verification record Discard but no Apply', async () => {
+    serve({ review: keepAll(), purpose: 'verification', actions: ['discard'], verifies: 'cs-plan' });
+    renderReview();
+    await screen.findByTestId('review-summary');
+    await waitFor(() => expect(screen.getByTestId('changeset-discard-button')).toBeEnabled());
+    expect(screen.queryByTestId('changeset-apply-button')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('review-keep-rest')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('review-apply-why')).not.toBeInTheDocument();
+    expect(screen.getByText('A verification record is never applied. Keep it as a record, or discard it.')).toBeInTheDocument();
+  });
+
+  it('explains a refused commit of a verification record inline, not as drift', async () => {
+    // A detail that still offers commit (e.g. read before the server knew better): the server refuses.
+    serve({ review: keepAll(), commitError: { status: 409, body: { error: RECORD_REFUSAL } } });
+    const user = userEvent.setup();
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    await user.click(apply);
+    await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
+    const error = await screen.findByTestId('changeset-action-error');
+    expect(error).toHaveTextContent('This is a verification record, which is never applied');
+    expect(error).toHaveTextContent("Land the plan 'add-export' instead");
+    expect(error).not.toHaveTextContent('The model changed after this was staged');
+  });
+
+  it('keeps Apply and Discard on an older dr CLI that sends no actions', async () => {
+    serve({ review: keepAll() });
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(screen.getByTestId('changeset-discard-button')).toBeEnabled();
+    expect(screen.getByTestId('review-keep-rest')).toBeInTheDocument();
+    expect(screen.queryByTestId('changeset-purpose-note')).not.toBeInTheDocument();
+  });
+});
+
+describe('ChangesetCanvas — purpose', () => {
+  it('leads a verification record with the plan it verifies and what extraction read', async () => {
+    serve({
+      purpose: 'verification',
+      actions: ['discard'],
+      verifies: 'cs-plan',
+      scope: { since: 'origin/main', codeCommit: '0123456789abcdef' },
+    });
+    mswServer.use(
+      http.get('*/api/changesets', () =>
+        HttpResponse.json({
+          version: '1.0.0',
+          changesets: {
+            [ID]: { name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 38, purpose: 'verification', verifies: 'cs-plan', actions: ['discard'] },
+            'cs-plan': { name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 12, purpose: 'plan', actions: ['commit', 'discard'] },
+          },
+        }),
+      ),
+    );
+    const user = userEvent.setup();
+    renderReview();
+
+    const note = await screen.findByTestId('changeset-purpose-note');
+    await waitFor(() => expect(within(note).getByTestId('changeset-verifies')).toHaveTextContent('Verifies add-export'));
+    expect(note).toHaveTextContent('extraction read changes since origin/main, at 0123456');
+    expect(note).toHaveTextContent("It isn't applied: keep it as a record");
+    expect(screen.getByTestId('page-header-eyebrow')).toHaveTextContent('VERIFICATION RECORD');
+
+    await user.click(within(note).getByRole('button', { name: 'add-export' }));
+    expect(useUiStore.getState().changesetId).toBe('cs-plan');
+  });
+
+  it('says a changeset is gone when the server no longer has it', async () => {
+    const server = serve({ purpose: 'plan', actions: ['commit', 'discard'], deleteOnDiscard: true });
+    const user = userEvent.setup();
+    renderReview();
+
+    // Discarding here deletes it: back to the inbox, with a toast.
+    const discard = await screen.findByTestId('changeset-discard-button');
+    await waitFor(() => expect(discard).toBeEnabled());
+    await user.click(discard);
+    await user.click(await screen.findByRole('button', { name: 'Discard' }));
+    await waitFor(() => expect(server.discards).toBe(1));
+    await waitFor(() => expect(useUiStore.getState().changesetId).toBeNull());
+    expect(await screen.findByText(`Discarded ${changesetDetail.name}`)).toBeInTheDocument();
+    expect(screen.getByTestId('changeset-inbox')).toBeInTheDocument();
+
+    // Opened again (a link, back/forward): the server answers 404, and the page says it is gone.
+    act(() => useUiStore.getState().selectChangeset(ID));
+    const gone = await screen.findByTestId('changeset-gone', {}, { timeout: 4000 });
+    expect(gone).toHaveTextContent('A discarded changeset is deleted');
+    await user.click(within(gone).getByTestId('changeset-gone-back'));
+    expect(useUiStore.getState().changesetId).toBeNull();
   });
 });
 

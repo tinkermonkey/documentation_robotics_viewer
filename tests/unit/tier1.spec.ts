@@ -259,6 +259,7 @@ describe('toTier1Status', () => {
     expect(s.mode).toBe('stage');
     expect(s.modeReason).toBe('held-out verified defaults');
     expect(toTier1Status({ ...or, mode: 'suggest', modeReason: 4 })!).toMatchObject({ mode: 'suggest' });
+    expect(toTier1Status({ ...or, mode: 'hide' })!.mode).toBe('hide');
     expect('modeReason' in toTier1Status({ ...or, mode: 'suggest', modeReason: 4 })!).toBe(false);
     // An unknown mode is dropped with its reason.
     const auto = toTier1Status({ ...or, mode: 'auto', modeReason: 'x' })!;
