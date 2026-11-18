@@ -298,7 +298,7 @@ export function isChangesetGone(error: unknown): boolean {
 }
 
 export const CHANGESET_GONE_MESSAGE =
-  'This changeset is gone: the server has none with this id. Discarding a changeset deletes it, and nothing from it reached the model.';
+  'This changeset is gone: the server has none with this id. A discarded changeset is deleted, so a link to one ends here.';
 
 /**
  * What to show when a changeset's detail can't be loaded, instead of a

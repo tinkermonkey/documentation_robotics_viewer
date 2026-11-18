@@ -835,7 +835,7 @@ describe('ChangesetCanvas — purpose', () => {
     // Opened again (a link, back/forward): the server answers 404, and the page says it is gone.
     act(() => useUiStore.getState().selectChangeset(ID));
     const gone = await screen.findByTestId('changeset-gone', {}, { timeout: 4000 });
-    expect(gone).toHaveTextContent('Discarding a changeset deletes it');
+    expect(gone).toHaveTextContent('A discarded changeset is deleted');
     await user.click(within(gone).getByTestId('changeset-gone-back'));
     expect(useUiStore.getState().changesetId).toBeNull();
   });

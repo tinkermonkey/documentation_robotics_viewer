@@ -320,7 +320,7 @@ export function ChangesetInspector() {
             {detail.status === 'staged' && (
               <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
                 {canDo(detail, 'commit')
-                  ? 'Select a change to decide it: Keep, Drop or Ask DrBot. Apply waits until every change has a verdict.'
+                  ? 'Select a change to decide it: Keep, Drop or Ask DrBot. Changes you leave undecided land as kept when you apply.'
                   : detail.purpose === 'verification'
                     ? 'A verification record is never applied. Keep it as a record, or discard it.'
                     : 'The server offers no Apply for this changeset.'}
