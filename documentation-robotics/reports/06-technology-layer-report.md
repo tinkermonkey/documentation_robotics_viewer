@@ -18,9 +18,9 @@ Infrastructure, platforms, systems, and technology components.
 | ------------------------- | ----- |
 | Elements                  | 24    |
 | Intra-Layer Relationships | 21    |
-| Inter-Layer Relationships | 9     |
+| Inter-Layer Relationships | 14    |
 | Inbound Relationships     | 2     |
-| Outbound Relationships    | 7     |
+| Outbound Relationships    | 12    |
 
 **Cross-Layer References**:
 
@@ -110,8 +110,13 @@ flowchart TB
 | ------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
 | `technology.node.serves.application.applicationcomponent`           | `technology.node.vite-dev-server`                 | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-inspector`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-link-card`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-impact-view`            | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query` | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.technologyservice.serves.api.openapidocument`           | `technology.technologyservice.dr-cli-rest-server` | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
@@ -283,13 +288,18 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate    | Direction |
-| ----------- | -------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationcomponent.app-shell`             | `serves`     | outbound  |
-| inter-layer | `application.applicationcomponent.changeset-impact-view` | `serves`     | outbound  |
-| inter-layer | `application.applicationcomponent.graph-canvas`          | `serves`     | outbound  |
-| inter-layer | `ux.view.changesets-view`                                | `depends-on` | inbound   |
-| inter-layer | `ux.view.model-view`                                     | `depends-on` | inbound   |
+| Type        | Related Element                                           | Predicate    | Direction |
+| ----------- | --------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`              | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.change-inspector`       | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.change-link-card`       | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.change-neighbourhood`   | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.changeset-impact-view`  | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.graph-canvas`           | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.review-parts`           | `serves`     | outbound  |
+| inter-layer | `ux.view.changesets-view`                                 | `depends-on` | inbound   |
+| inter-layer | `ux.view.model-view`                                      | `depends-on` | inbound   |
 
 ### Node.js {#node-js}
 
@@ -613,4 +623,4 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0

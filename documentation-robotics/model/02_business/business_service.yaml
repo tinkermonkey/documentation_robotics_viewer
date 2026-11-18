@@ -22,9 +22,10 @@ business.businessservice.changeset-review:
   type: businessservice
   layer_id: business
   name: Changeset Review
-  description: "Review a changeset before it lands: its op-coded change list with
-    before/after diffs, its Impact (what it reaches outside itself, as layer
-    lanes, plus a blast-radius summary), and Apply / Discard for a staged
+  description: "Review a changeset before it lands, change by change: each change
+    labelled with what it does and what you decided (Keep / Drop / Ask DrBot),
+    links shown source → predicate → target, its Impact (what it reaches outside
+    itself, with find, filters and focus), and Apply / Discard for a staged
     changeset."
   source_reference:
     provenance: extracted

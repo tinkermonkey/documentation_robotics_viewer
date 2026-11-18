@@ -278,7 +278,10 @@ application.applicationservice.changeset-impact-analysis:
   name: Changeset Impact Analysis
   description: Lays a changeset over the model (staged additions included), nets
     its ops in order, runs multi-origin computeReach from every changed element
-    and returns the reached subgraph and per-layer blast radius.
+    and returns the reached subgraph and per-layer blast radius; narrows it to a
+    filter (change, layer, type, link category), a name search, or one focused
+    element's reach, with per-facet counts, and groups a large lane's elements
+    by type.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -329,4 +332,48 @@ application.applicationservice.neighborhood-graph:
   metadata:
     created_at: 2026-11-12T13:44:46.093Z
     updated_at: 2026-11-12T13:44:46.093Z
+    version: 1
+application.applicationservice.changeset-review-model:
+  id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+  path: application.applicationservice.changeset-review-model
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Review Model
+  description: "Pure review model over a changeset: review items, groups,
+    cancel-out pairs, effective decisions, drop cascade, conflicts,
+    since-your-review diff and the apply plan. A link item carries each end's
+    name, type, layer and whether this changeset adds it (replacing the 'new
+    source' / 'new target' / 'both ends new' chips); an element item counts its
+    new links out and in."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/changesetReview.ts
+        symbol: buildReviewModel
+  metadata:
+    created_at: 2026-11-17T22:03:59.328Z
+    updated_at: 2026-11-17T22:03:59.328Z
+    version: 1
+application.applicationservice.layer-domain-palette:
+  id: 22f728f6-82fc-4fb8-baa6-a624197a96ef
+  path: application.applicationservice.layer-domain-palette
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Layer Domain Palette
+  description: The layer slug → colour, label and order map every view draws
+    layers with, covering all 13 spec layers (Product, layer 3, gets its own
+    colour); the left rail's layer count comes from the spec, not a constant.
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/domain.ts
+  metadata:
+    created_at: 2026-11-17T22:03:59.328Z
+    updated_at: 2026-11-17T22:03:59.328Z
     version: 1

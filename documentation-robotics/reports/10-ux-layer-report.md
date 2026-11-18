@@ -16,11 +16,11 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 12    |
-| Intra-Layer Relationships | 9     |
-| Inter-Layer Relationships | 18    |
+| Elements                  | 14    |
+| Intra-Layer Relationships | 11    |
+| Inter-Layer Relationships | 20    |
 | Inbound Relationships     | 3     |
-| Outbound Relationships    | 15    |
+| Outbound Relationships    | 17    |
 
 **Cross-Layer References**:
 
@@ -34,7 +34,9 @@ flowchart LR
   subgraph ux
     ux_statepattern_authentication_flow_pattern["Authentication Flow Pattern"]
     ux_statepattern_data_loading_pattern["Data Loading Pattern"]
+    ux_subview_change_inspector_panel["Change Inspector Panel"]
     ux_subview_changeset_impact_tab["Changeset Impact Tab"]
+    ux_subview_changeset_review_list["Changeset Review List"]
     ux_uxapplication_embedded_architecture_viewer["Embedded Architecture Viewer"]
     ux_uxspec_architecture_exploration_spec["Architecture Exploration Spec"]
     ux_uxspec_authentication_spec["Authentication Spec"]
@@ -52,7 +54,9 @@ flowchart LR
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_model_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_schema_view
     ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
+    ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
+    ux_view_changesets_view -->|composes| ux_subview_changeset_review_list
   end
 ```
 
@@ -83,26 +87,28 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                | Source Node                                    | Dest Node                                                   | Dest Layer   | Predicate    | Cardinality  | Strength |
-| ---------------------------------------------- | ---------------------------------------------- | ----------------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.changesets-view`                                   | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.model-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.schema-view`                                       | `ux`         | `maps-to`    | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                | `motivation.requirement.dr-cli-server-integration`          | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                     | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                         | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                      | `business.businessrole.architecture-reviewer`               | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                      | `motivation.goal.enable-real-time-collaboration`            | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                   | `business.businessrole.model-author`                        | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                     | `business.businessobject.annotation`                        | `business`   | `references` | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                           | `technology.systemsoftware.heimdall-ui`                     | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.model-view`                           | `business.businessobject.architecture-model`                | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                           | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                           | `business.businessrole.architecture-reviewer`               | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                           | `motivation.goal.visualize-multi-layer-architecture-models` | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                          | `business.businessobject.architecture-model`                | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                          | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies`  | many-to-many | medium   |
+| Relationship ID                                | Source Node                                    | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
+| ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`      | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                      | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                      | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                   | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                     | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                           | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.model-view`                           | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                           | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                           | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                           | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                          | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                          | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 
 ## Element Reference
 
@@ -146,13 +152,53 @@ Standard data-loading state pattern used across all views; states: idle → load
 | ----------- | --------------------------------------------- | ------------- | --------- |
 | intra-layer | `ux.statepattern.authentication-flow-pattern` | `specializes` | inbound   |
 
+### Change Inspector Panel {#change-inspector-panel}
+
+**ID**: `ux.subview.change-inspector-panel`
+
+**Type**: `subview`
+
+The Changesets view's inspector with one change selected: layer band, labelled change and decision, link card, neighbourhood, links with direction, source reference.
+
+#### Attributes
+
+| Name  | Value  |
+| ----- | ------ |
+| title | Change |
+
+#### Relationships
+
+| Type        | Related Element           | Predicate  | Direction |
+| ----------- | ------------------------- | ---------- | --------- |
+| intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
+
 ### Changeset Impact Tab {#changeset-impact-tab}
 
 **ID**: `ux.subview.changeset-impact-tab`
 
 **Type**: `subview`
 
-The Changesets view's Impact tab: layer lanes of what the changed elements reach, with Follow and Labels controls.
+The Changesets view's Impact tab: layer lanes of what the changed elements reach, with Find, Show, Follow, filter facets, grouped large lanes and a focus breadcrumb.
+
+#### Relationships
+
+| Type        | Related Element           | Predicate  | Direction |
+| ----------- | ------------------------- | ---------- | --------- |
+| intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
+
+### Changeset Review List {#changeset-review-list}
+
+**ID**: `ux.subview.changeset-review-list`
+
+**Type**: `subview`
+
+The Changesets view's Review tab: labelled columns, change chips, decision pills and link chains.
+
+#### Attributes
+
+| Name  | Value  |
+| ----- | ------ |
+| title | Review |
 
 #### Relationships
 
@@ -190,14 +236,15 @@ The viewer's main experience: browse the model and the spec layer by layer as gr
 
 #### Relationships
 
-| Type        | Related Element                                 | Predicate    | Direction |
-| ----------- | ----------------------------------------------- | ------------ | --------- |
-| intra-layer | `ux.uxapplication.embedded-architecture-viewer` | `aggregates` | inbound   |
-| intra-layer | `ux.view.changesets-view`                       | `aggregates` | outbound  |
-| intra-layer | `ux.view.dr-bot-chat-drawer`                    | `aggregates` | outbound  |
-| intra-layer | `ux.view.inspector-drawer`                      | `aggregates` | outbound  |
-| intra-layer | `ux.view.model-view`                            | `aggregates` | outbound  |
-| intra-layer | `ux.view.schema-view`                           | `aggregates` | outbound  |
+| Type        | Related Element                                         | Predicate    | Direction |
+| ----------- | ------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `motivation.requirement.viewer-covers-every-spec-layer` | `satisfies`  | outbound  |
+| intra-layer | `ux.uxapplication.embedded-architecture-viewer`         | `aggregates` | inbound   |
+| intra-layer | `ux.view.changesets-view`                               | `aggregates` | outbound  |
+| intra-layer | `ux.view.dr-bot-chat-drawer`                            | `aggregates` | outbound  |
+| intra-layer | `ux.view.inspector-drawer`                              | `aggregates` | outbound  |
+| intra-layer | `ux.view.model-view`                                    | `aggregates` | outbound  |
+| intra-layer | `ux.view.schema-view`                                   | `aggregates` | outbound  |
 
 ### Authentication Spec {#authentication-spec}
 
@@ -258,16 +305,19 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 
 #### Relationships
 
-| Type        | Related Element                                  | Predicate    | Direction |
-| ----------- | ------------------------------------------------ | ------------ | --------- |
-| inter-layer | `navigation.route.app-shell-sectionview-route`   | `maps-to`    | inbound   |
-| inter-layer | `technology.systemsoftware.heimdall-ui`          | `depends-on` | outbound  |
-| inter-layer | `business.businessobject.changeset`              | `references` | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`   | `satisfies`  | outbound  |
-| inter-layer | `business.businessrole.architecture-reviewer`    | `serves`     | outbound  |
-| inter-layer | `motivation.goal.enable-real-time-collaboration` | `supports`   | outbound  |
-| intra-layer | `ux.uxspec.architecture-exploration-spec`        | `aggregates` | inbound   |
-| intra-layer | `ux.subview.changeset-impact-tab`                | `composes`   | outbound  |
+| Type        | Related Element                                              | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `navigation.route.app-shell-sectionview-route`               | `maps-to`    | inbound   |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                      | `depends-on` | outbound  |
+| inter-layer | `business.businessobject.changeset`                          | `references` | outbound  |
+| inter-layer | `motivation.requirement.each-review-change-reads-on-its-own` | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`               | `satisfies`  | outbound  |
+| inter-layer | `business.businessrole.architecture-reviewer`                | `serves`     | outbound  |
+| inter-layer | `motivation.goal.enable-real-time-collaboration`             | `supports`   | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                    | `aggregates` | inbound   |
+| intra-layer | `ux.subview.change-inspector-panel`                          | `composes`   | outbound  |
+| intra-layer | `ux.subview.changeset-impact-tab`                            | `composes`   | outbound  |
+| intra-layer | `ux.subview.changeset-review-list`                           | `composes`   | outbound  |
 
 ### DrBot Chat Drawer {#drbot-chat-drawer}
 
@@ -368,4 +418,4 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0

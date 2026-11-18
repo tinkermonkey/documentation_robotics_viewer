@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 40    |
-| Inbound Relationships     | 33    |
+| Inter-Layer Relationships | 42    |
+| Inbound Relationships     | 35    |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -110,9 +110,11 @@ flowchart TB
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`    | `a920ab1c-c481-46b6-bdb4-4050501adeac`                     | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                      | `business`   | `serves`     | unknown      | unknown  |
 | `application.applicationservice.accesses.business.businessobject`                     | `application.applicationservice.changeset-impact-analysis` | `business.businessobject.changeset`                         | `business`   | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-impact-analysis` | `business.businessservice.changeset-review`                 | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-review-model`    | `business.businessservice.changeset-review`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.chat-validation`           | `business.businessservice.ai-assisted-architecture-chat`    | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.embedded-data-loader`      | `business.businessservice.architecture-model-visualization` | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                      | `application.applicationservice.json-rpc-handler`          | `business.businessprocess.real-time-model-synchronization`  | `business`   | `serves`     | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.layer-domain-palette`      | `business.businessservice.architecture-model-visualization` | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.model-graph-transform`     | `business.businessservice.architecture-model-visualization` | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.spec-graph-transform`      | `business.businessservice.schema-exploration`               | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                      | `application.applicationservice.web-socket-client`         | `business.businessprocess.real-time-model-synchronization`  | `business`   | `serves`     | many-to-many | medium   |
@@ -320,6 +322,7 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 | Type        | Related Element                                              | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------ | ---------- | --------- |
 | inter-layer | `application.applicationservice.embedded-data-loader`        | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.layer-domain-palette`        | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.model-graph-transform`       | `realizes` | inbound   |
 | intra-layer | `business.businessfunction.cross-layer-reference-resolution` | `realizes` | inbound   |
 | intra-layer | `business.businessprocess.real-time-model-synchronization`   | `realizes` | inbound   |
@@ -331,13 +334,14 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 
 **Type**: `businessservice`
 
-Review a changeset before it lands: its op-coded change list with before/after diffs, its Impact (what it reaches outside itself, as layer lanes, plus a blast-radius summary), and Apply / Discard for a staged changeset.
+Review a changeset before it lands, change by change: each change labelled with what it does and what you decided (Keep / Drop / Ask DrBot), links shown source → predicate → target, its Impact (what it reaches outside itself, with find, filters and focus), and Apply / Discard for a staged changeset.
 
 #### Relationships
 
 | Type        | Related Element                                            | Predicate  | Direction |
 | ----------- | ---------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationservice.changeset-impact-analysis` | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.changeset-review-model`    | `realizes` | inbound   |
 | intra-layer | `business.businessprocess.changeset-review-flow`           | `realizes` | inbound   |
 | intra-layer | `business.businessobject.changeset`                        | `delivers` | outbound  |
 
@@ -372,4 +376,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0
