@@ -23,7 +23,12 @@
       created_at: 2026-11-18T20:17:32.126Z
       updated_at: 2026-11-18T20:17:32.126Z
       version: 1
-  timestamp: 2026-11-18T20:17:32.150Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/changesetDrift.ts
+          symbol: src.apps.embedded.data.changesetDrift
+  timestamp: 2026-11-18T20:27:59.751Z
   sequenceNumber: 0
 - type: add
   elementId: application.applicationcomponent.drift-notice
@@ -50,7 +55,12 @@
       created_at: 2026-11-18T20:17:32.127Z
       updated_at: 2026-11-18T20:17:32.127Z
       version: 1
-  timestamp: 2026-11-18T20:17:32.150Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/DriftNotice.tsx
+          symbol: src.apps.embedded.ui.DriftNotice
+  timestamp: 2026-11-18T20:27:59.751Z
   sequenceNumber: 1
 - type: relationship-add
   elementId: application.applicationservice.changeset-drift::realizes::business.businessservice.changeset-review
@@ -191,7 +201,12 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetDrift.spec.ts
+          symbol: changesetDrift > reads the summary and drops a malformed drift
+  timestamp: 2026-11-18T20:28:27.852Z
   sequenceNumber: 12
 - type: add
   elementId: testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli
@@ -209,7 +224,12 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetDrift.spec.ts
+          symbol: changesetDrift > reads no drift from an older dr CLI
+  timestamp: 2026-11-18T20:28:28.142Z
   sequenceNumber: 13
 - type: add
   elementId: testing.testcasesketch.changeset-drift-keeps-the-details-overlaps-and-base-changes-dropping-malformed-entries
@@ -228,7 +248,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetDrift.spec.ts
+          symbol: changesetDrift > keeps the detail's overlaps and base changes, dropping
+            malformed entries
+  timestamp: 2026-11-18T20:28:28.425Z
   sequenceNumber: 14
 - type: add
   elementId: testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one
@@ -247,7 +273,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetDrift.spec.ts
+          symbol: changesetDrift > tells a blocking drift from a quiet note and an
+            unchecked one
+  timestamp: 2026-11-18T20:28:28.706Z
   sequenceNumber: 15
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
@@ -266,7 +298,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > badges a drifted plan in the canvas header
+            and the inspector
+  timestamp: 2026-11-18T20:28:29.277Z
   sequenceNumber: 16
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
@@ -285,7 +323,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > explains the drift on the summary card and
+            holds Apply before the confirm dialog
+  timestamp: 2026-11-18T20:28:29.558Z
   sequenceNumber: 17
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
@@ -304,7 +348,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > shows no drift badge on a verification
+            record or on content-free drift
+  timestamp: 2026-11-18T20:28:30.737Z
   sequenceNumber: 18
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
@@ -323,7 +373,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > says plainly when drift could not be
+            checked, without holding Apply
+  timestamp: 2026-11-18T20:28:30.435Z
   sequenceNumber: 19
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview
@@ -342,7 +398,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > lists what the base changed under the
+            changeset in the inspector overview
+  timestamp: 2026-11-18T20:28:30.122Z
   sequenceNumber: 20
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
@@ -361,7 +423,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetReview.spec.tsx
+          symbol: review — drift before Apply > keeps Apply and the 409 backstop on an
+            older dr CLI without drift
+  timestamp: 2026-11-18T20:28:29.837Z
   sequenceNumber: 21
 - type: add
   elementId: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
@@ -380,7 +448,13 @@
       created_at: 2026-11-18T20:17:56.262Z
       updated_at: 2026-11-18T20:17:56.262Z
       version: 1
-  timestamp: 2026-11-18T20:17:56.272Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/ChangesetInbox.spec.tsx
+          symbol: ChangesetInbox > badges a drifted plan on its card, and not a record or
+            content-free drift
+  timestamp: 2026-11-18T20:28:29.000Z
   sequenceNumber: 22
 - type: relationship-add
   elementId: application.applicationservice.changeset-drift::satisfies::motivation.requirement.drift-shows-before-apply
@@ -1023,3 +1097,99 @@
     category: structural
   timestamp: 2026-11-18T20:18:29.295Z
   sequenceNumber: 53
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 54
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 55
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-18T20:27:58.177Z
+  sequenceNumber: 61
