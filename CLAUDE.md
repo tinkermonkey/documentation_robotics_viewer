@@ -61,14 +61,13 @@ src/
 │   │   ├── changesetReview.ts useChangesetReview.ts  # pure review model + verdict hook (server or localStorage)
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
-│   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, embeddedDataLoader, chatValidation
-│   ├── stores/                # KEPT data stores: annotationStore, authStore, changesetStore, chatStore, connectionStore
+│   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
+│   ├── stores/                # KEPT data stores: authStore, chatStore, connectionStore (+ localReviewStore)
 │   ├── types/                 # chat, annotations, websocket, brands
 │   └── utils/                 # fetchInterceptor (auth header), etc.
 ├── core/                      # Framework-agnostic, NO app/route deps
 │   ├── services/generatedApiClient.ts   # AUTO-GENERATED from docs/api-spec.yaml (npm run client:generate)
 │   ├── services/exceptionClassifier.ts
-│   ├── stores/                # modelStore, layerStore, elementStore, crossLayerStore
 │   └── types/                 # model.ts, layers.ts, api-client.ts (generated), exceptions.ts
 ├── index.css                  # Tailwind v4 import + Heimdall css/fonts + domain swatch / nav helper CSS
 ```
@@ -77,7 +76,8 @@ src/
 - **`ui/`**: presentation only. Composes Heimdall components; reads/writes `uiStore` (Zustand). No data fetching
   logic beyond calling `data/` hooks.
 - **`data/`**: stateless hooks + pure transforms over the REST API via TanStack Query. No JSX.
-- **`core/`**: NO route/store-from-app dependencies. Kept infrastructure and generated types only.
+- **`core/`**: NO route/store-from-app dependencies. Kept infrastructure and generated types only (no stores:
+  model data comes from the `data/` React Query hooks).
 - **Stores**: Zustand only (NO React context for state). Data stores in `stores/`; UI state in `ui/uiStore.ts`.
 - **Generated code**: never hand-edit `core/types/api-client.ts` or `core/services/generatedApiClient.ts` —
   regenerate with `npm run client:generate` (runs in `npm run build`).

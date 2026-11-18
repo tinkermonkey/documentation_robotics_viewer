@@ -1,0 +1,15 @@
+id: changeset-1795029648225-fryjiqt1s
+name: remove-dead-pre-heimdall-stores
+description: Remove the pre-Heimdall stores and embeddedDataLoader that nothing
+  imports (#580)
+created: 2026-11-18T19:20:48.240Z
+modified: 2026-11-18T19:22:43.883Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 8
+  modifications: 4
+  deletions: 34
+lastSequence: 45

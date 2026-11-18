@@ -1,0 +1,732 @@
+- type: relationship-add
+  elementId: api.operation.list-annotation-replies::references::application.applicationservice.use-annotations
+  layerName: api
+  after:
+    source: api.operation.list-annotation-replies
+    target: application.applicationservice.use-annotations
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:21:50.873Z
+  sequenceNumber: 0
+- type: relationship-add
+  elementId: api.operation.create-annotation-reply::references::application.applicationservice.use-annotations
+  layerName: api
+  after:
+    source: api.operation.create-annotation-reply
+    target: application.applicationservice.use-annotations
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:21:50.873Z
+  sequenceNumber: 1
+- type: relationship-add
+  elementId: api.operation.commit-changeset::references::application.applicationservice.use-changesets
+  layerName: api
+  after:
+    source: api.operation.commit-changeset
+    target: application.applicationservice.use-changesets
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:21:50.873Z
+  sequenceNumber: 2
+- type: relationship-add
+  elementId: api.operation.discard-changeset::references::application.applicationservice.use-changesets
+  layerName: api
+  after:
+    source: api.operation.discard-changeset
+    target: application.applicationservice.use-changesets
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:21:50.873Z
+  sequenceNumber: 3
+- type: update
+  elementId: ux.statepattern.data-loading-pattern
+  layerName: ux
+  before:
+    id: 3bbe4a82-91ae-4c4e-bf95-1d26d1dfaf3d
+    path: ux.statepattern.data-loading-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Data Loading Pattern
+    description: "Standard data-loading state pattern used across all views; states:
+      idle → loading → loaded/error; with optional retry action on error state."
+    attributes: &a1
+      category: data-loading
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/services/embeddedDataLoader.ts
+    metadata: &a2
+      created_at: 2026-03-20T13:25:14.685Z
+      updated_at: 2026-03-20T13:25:14.685Z
+      version: 1
+  after:
+    id: 3bbe4a82-91ae-4c4e-bf95-1d26d1dfaf3d
+    path: ux.statepattern.data-loading-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Data Loading Pattern
+    description: "Standard data-loading state pattern used across all views; states:
+      idle → loading → loaded/error; with optional retry action on error state."
+    attributes: *a1
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/data/useModel.ts
+          symbol: useModel
+    metadata: *a2
+  timestamp: 2026-11-18T19:22:01.918Z
+  sequenceNumber: 4
+- type: update
+  elementId: business.businessobject.changeset
+  layerName: business
+  before:
+    id: 99380a26-1064-4515-9d15-fec7620549cd
+    path: business.businessobject.changeset
+    spec_node_id: business.businessobject
+    type: businessobject
+    layer_id: business
+    name: Changeset
+    description: A proposed set of architecture model changes that can be reviewed,
+      staged, and committed
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/changesetStore.ts
+    metadata: &a3
+      created_at: 2026-03-20T13:40:52.572Z
+      updated_at: 2026-03-20T13:40:52.572Z
+      version: 1
+  after:
+    id: 99380a26-1064-4515-9d15-fec7620549cd
+    path: business.businessobject.changeset
+    spec_node_id: business.businessobject
+    type: businessobject
+    layer_id: business
+    name: Changeset
+    description: A proposed set of architecture model changes that can be reviewed,
+      staged, and committed
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/useChangesets.ts
+          symbol: useChangeset
+    metadata: *a3
+  timestamp: 2026-11-18T19:22:02.148Z
+  sequenceNumber: 5
+- type: update
+  elementId: business.businessprocess.changeset-review-flow
+  layerName: business
+  before:
+    id: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
+    path: business.businessprocess.changeset-review-flow
+    spec_node_id: business.businessprocess
+    type: businessprocess
+    layer_id: business
+    name: Changeset Review Flow
+    description: Process of fetching proposed changesets, visualizing diffs, and
+      presenting them for review
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/stores/changesetStore.ts
+    metadata: &a4
+      created_at: 2026-03-20T13:40:35.392Z
+      updated_at: 2026-03-20T13:40:35.392Z
+      version: 1
+  after:
+    id: c4ba5c59-3f4e-49a9-9915-a48049ddb68e
+    path: business.businessprocess.changeset-review-flow
+    spec_node_id: business.businessprocess
+    type: businessprocess
+    layer_id: business
+    name: Changeset Review Flow
+    description: Process of fetching proposed changesets, visualizing diffs, and
+      presenting them for review
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/useChangesetReview.ts
+          symbol: useChangesetReview
+    metadata: *a4
+  timestamp: 2026-11-18T19:22:02.321Z
+  sequenceNumber: 6
+- type: update
+  elementId: business.businessservice.model-annotation
+  layerName: business
+  before:
+    id: af8620f0-9b01-41f2-992c-b90355d2e92c
+    path: business.businessservice.model-annotation
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Model Annotation
+    description: Collaborative annotation of architecture model elements with
+      comments and markup
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/annotationStore.ts
+    metadata: &a5
+      created_at: 2026-03-20T13:40:28.290Z
+      updated_at: 2026-03-20T13:40:28.290Z
+      version: 1
+  after:
+    id: af8620f0-9b01-41f2-992c-b90355d2e92c
+    path: business.businessservice.model-annotation
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Model Annotation
+    description: Collaborative annotation of architecture model elements with
+      comments and markup
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/useAnnotations.ts
+          symbol: useAnnotations
+    metadata: *a5
+  timestamp: 2026-11-18T19:22:02.490Z
+  sequenceNumber: 7
+- type: delete
+  elementId: application.applicationservice.embedded-data-loader
+  layerName: application
+  before:
+    id: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
+    path: application.applicationservice.embedded-data-loader
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Embedded Data Loader
+    description: Coordinates data loading for the embedded app; selects between DR
+      CLI server, GitHub, or local file sources based on connection state
+    attributes:
+      serviceType: asynchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/embeddedDataLoader.ts
+          symbol: embeddedDataLoader
+    metadata:
+      created_at: 2026-03-20T12:56:15.772Z
+      updated_at: 2026-03-20T12:56:15.772Z
+      version: 1
+  timestamp: 2026-11-18T19:22:18.006Z
+  sequenceNumber: 8
+- type: relationship-delete
+  elementId: 13b1a5ff-1cea-4ca0-b557-81f4629f2736::satisfies::6ffaff00-8bf8-4580-98ff-8d2a612a9021
+  layerName: application
+  before:
+    source: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
+    target: 6ffaff00-8bf8-4580-98ff-8d2a612a9021
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-18T19:22:18.012Z
+  sequenceNumber: 9
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::depends-on::application.applicationservice.error-tracker
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationservice.error-tracker
+    predicate: depends-on
+    layer: application
+  timestamp: 2026-11-18T19:22:18.018Z
+  sequenceNumber: 10
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::serves::application.applicationfunction.annotation-store
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationfunction.annotation-store
+    predicate: serves
+    layer: application
+  timestamp: 2026-11-18T19:22:18.024Z
+  sequenceNumber: 11
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::serves::application.applicationfunction.changeset-store
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: application.applicationfunction.changeset-store
+    predicate: serves
+    layer: application
+  timestamp: 2026-11-18T19:22:18.030Z
+  sequenceNumber: 12
+- type: relationship-delete
+  elementId: application.applicationservice.embedded-data-loader::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  before:
+    source: application.applicationservice.embedded-data-loader
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+  timestamp: 2026-11-18T19:22:18.036Z
+  sequenceNumber: 13
+- type: delete
+  elementId: application.applicationfunction.annotation-store
+  layerName: application
+  before:
+    id: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+    path: application.applicationfunction.annotation-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Annotation Store
+    description: Zustand store managing user annotations on model elements; syncs
+      with DR CLI server via REST API
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/annotationStore.ts
+          symbol: annotationStore
+    metadata:
+      created_at: 2026-03-20T12:57:07.014Z
+      updated_at: 2026-03-20T12:57:07.014Z
+      version: 1
+  timestamp: 2026-11-18T19:22:18.236Z
+  sequenceNumber: 14
+- type: relationship-delete
+  elementId: application.applicationfunction.annotation-store::depends-on::application.applicationfunction.auth-store
+  layerName: application
+  before:
+    source: application.applicationfunction.annotation-store
+    target: application.applicationfunction.auth-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-18T19:22:18.241Z
+  sequenceNumber: 15
+- type: relationship-delete
+  elementId: ff16c609-618e-4dd9-b477-12e17c000df8::realizes::71f9eb72-20e1-4ae6-be30-425c11e59edb
+  layerName: api
+  before:
+    source: ff16c609-618e-4dd9-b477-12e17c000df8
+    target: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-18T19:22:18.246Z
+  sequenceNumber: 16
+- type: relationship-delete
+  elementId: 8630981b-236c-47ed-b99b-e977c56bdc63::realizes::71f9eb72-20e1-4ae6-be30-425c11e59edb
+  layerName: api
+  before:
+    source: 8630981b-236c-47ed-b99b-e977c56bdc63
+    target: 71f9eb72-20e1-4ae6-be30-425c11e59edb
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-18T19:22:18.250Z
+  sequenceNumber: 17
+- type: relationship-delete
+  elementId: application.applicationservice.error-tracker::serves::application.applicationfunction.annotation-store
+  layerName: application
+  before:
+    source: application.applicationservice.error-tracker
+    target: application.applicationfunction.annotation-store
+    predicate: serves
+    layer: application
+  timestamp: 2026-11-18T19:22:18.255Z
+  sequenceNumber: 18
+- type: relationship-delete
+  elementId: api.operation.get-annotation::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  before:
+    source: api.operation.get-annotation
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.263Z
+  sequenceNumber: 19
+- type: relationship-delete
+  elementId: api.operation.replace-annotation::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  before:
+    source: api.operation.replace-annotation
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.268Z
+  sequenceNumber: 20
+- type: relationship-delete
+  elementId: api.operation.list-annotation-replies::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  before:
+    source: api.operation.list-annotation-replies
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.274Z
+  sequenceNumber: 21
+- type: relationship-delete
+  elementId: api.operation.create-annotation-reply::realizes::application.applicationfunction.annotation-store
+  layerName: api
+  before:
+    source: api.operation.create-annotation-reply
+    target: application.applicationfunction.annotation-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.280Z
+  sequenceNumber: 22
+- type: delete
+  elementId: application.applicationfunction.changeset-store
+  layerName: application
+  before:
+    id: f1edef84-1298-486c-b347-f47c3b0f9712
+    path: application.applicationfunction.changeset-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Changeset Store
+    description: Zustand store managing the active changeset list, selected
+      changeset, and changeset diff state
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/changesetStore.ts
+          symbol: changesetStore
+    metadata:
+      created_at: 2026-03-20T12:57:06.131Z
+      updated_at: 2026-03-20T12:57:06.131Z
+      version: 1
+  timestamp: 2026-11-18T19:22:18.465Z
+  sequenceNumber: 23
+- type: relationship-delete
+  elementId: application.applicationfunction.changeset-store::depends-on::application.applicationfunction.connection-store
+  layerName: application
+  before:
+    source: application.applicationfunction.changeset-store
+    target: application.applicationfunction.connection-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-18T19:22:18.480Z
+  sequenceNumber: 24
+- type: relationship-delete
+  elementId: f952fcc0-7c42-4586-a306-a5f2f94a3068::realizes::f1edef84-1298-486c-b347-f47c3b0f9712
+  layerName: api
+  before:
+    source: f952fcc0-7c42-4586-a306-a5f2f94a3068
+    target: f1edef84-1298-486c-b347-f47c3b0f9712
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-18T19:22:18.489Z
+  sequenceNumber: 25
+- type: relationship-delete
+  elementId: api.operation.commit-changeset::realizes::application.applicationfunction.changeset-store
+  layerName: api
+  before:
+    source: api.operation.commit-changeset
+    target: application.applicationfunction.changeset-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.501Z
+  sequenceNumber: 26
+- type: relationship-delete
+  elementId: api.operation.discard-changeset::realizes::application.applicationfunction.changeset-store
+  layerName: api
+  before:
+    source: api.operation.discard-changeset
+    target: application.applicationfunction.changeset-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.511Z
+  sequenceNumber: 27
+- type: delete
+  elementId: application.applicationfunction.layer-store
+  layerName: application
+  before:
+    id: d7373609-3530-467c-aa03-4a64956cd7ee
+    path: application.applicationfunction.layer-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Layer Store
+    description: Zustand store managing active layer selection and layer visibility filters
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/stores/layerStore.ts
+          symbol: layerStore
+    metadata:
+      created_at: 2026-03-20T12:56:39.090Z
+      updated_at: 2026-03-20T12:56:39.090Z
+      version: 1
+  timestamp: 2026-11-18T19:22:18.778Z
+  sequenceNumber: 28
+- type: relationship-delete
+  elementId: application.applicationfunction.layer-store::depends-on::application.applicationfunction.model-store
+  layerName: application
+  before:
+    source: application.applicationfunction.layer-store
+    target: application.applicationfunction.model-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-18T19:22:18.792Z
+  sequenceNumber: 29
+- type: relationship-delete
+  elementId: api.operation.get-layer::realizes::application.applicationfunction.layer-store
+  layerName: api
+  before:
+    source: api.operation.get-layer
+    target: application.applicationfunction.layer-store
+    predicate: realizes
+    layer: api
+    targetLayer: application
+  timestamp: 2026-11-18T19:22:18.814Z
+  sequenceNumber: 30
+- type: delete
+  elementId: application.applicationfunction.element-store
+  layerName: application
+  before:
+    id: 25361e14-6a34-4c96-bad3-a439ac3ca028
+    path: application.applicationfunction.element-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Element Store
+    description: Zustand store tracking selected element, highlighted paths, and
+      focus mode state
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/stores/elementStore.ts
+          symbol: elementStore
+    metadata:
+      created_at: 2026-03-20T12:56:50.218Z
+      updated_at: 2026-03-20T12:56:50.218Z
+      version: 1
+  timestamp: 2026-11-18T19:22:19.041Z
+  sequenceNumber: 31
+- type: relationship-delete
+  elementId: application.applicationfunction.element-store::depends-on::application.applicationfunction.model-store
+  layerName: application
+  before:
+    source: application.applicationfunction.element-store
+    target: application.applicationfunction.model-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-18T19:22:19.049Z
+  sequenceNumber: 32
+- type: relationship-delete
+  elementId: application.applicationfunction.element-store::accesses::data-model.objectschema.model-element
+  layerName: application
+  before:
+    source: application.applicationfunction.element-store
+    target: data-model.objectschema.model-element
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+  timestamp: 2026-11-18T19:22:19.058Z
+  sequenceNumber: 33
+- type: delete
+  elementId: application.applicationfunction.cross-layer-store
+  layerName: application
+  before:
+    id: 5a3e7022-c367-491a-9d03-05dc8e77ae90
+    path: application.applicationfunction.cross-layer-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Cross-Layer Store
+    description: Zustand store holding resolved cross-layer references and edge data
+      for the graph
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/stores/crossLayerStore.ts
+          symbol: crossLayerStore
+    metadata:
+      created_at: 2026-03-20T12:56:51.374Z
+      updated_at: 2026-03-20T12:56:51.374Z
+      version: 1
+  timestamp: 2026-11-18T19:22:19.250Z
+  sequenceNumber: 34
+- type: relationship-delete
+  elementId: application.applicationfunction.cross-layer-store::depends-on::application.applicationfunction.model-store
+  layerName: application
+  before:
+    source: application.applicationfunction.cross-layer-store
+    target: application.applicationfunction.model-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-18T19:22:19.260Z
+  sequenceNumber: 35
+- type: delete
+  elementId: application.applicationfunction.model-store
+  layerName: application
+  before:
+    id: 3b08f432-72aa-4df6-978c-d76d3312f72b
+    path: application.applicationfunction.model-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Model Store
+    description: Global Zustand store holding the parsed architecture model, loading
+      state, and error state
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/stores/modelStore.ts
+          symbol: modelStore
+    metadata:
+      created_at: 2026-03-20T12:56:38.341Z
+      updated_at: 2026-03-20T12:56:38.341Z
+      version: 1
+  timestamp: 2026-11-18T19:22:19.456Z
+  sequenceNumber: 36
+- type: relationship-delete
+  elementId: dfc6509e-98f5-479a-bfe9-14bfddbb838a::realizes::3b08f432-72aa-4df6-978c-d76d3312f72b
+  layerName: api
+  before:
+    source: dfc6509e-98f5-479a-bfe9-14bfddbb838a
+    target: 3b08f432-72aa-4df6-978c-d76d3312f72b
+    predicate: realizes
+    layer: api
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: medium
+      basis: domain-pattern
+  timestamp: 2026-11-18T19:22:19.465Z
+  sequenceNumber: 37
+- type: relationship-delete
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.layer
+  layerName: application
+  before:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.layer
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+  timestamp: 2026-11-18T19:22:19.474Z
+  sequenceNumber: 38
+- type: relationship-delete
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.model-element
+  layerName: application
+  before:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.model-element
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+  timestamp: 2026-11-18T19:22:19.485Z
+  sequenceNumber: 39
+- type: relationship-delete
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.predicate-definition
+  layerName: application
+  before:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.predicate-definition
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+  timestamp: 2026-11-18T19:22:19.494Z
+  sequenceNumber: 40
+- type: relationship-delete
+  elementId: application.applicationfunction.model-store::accesses::data-model.objectschema.spec-layer-data
+  layerName: application
+  before:
+    source: application.applicationfunction.model-store
+    target: data-model.objectschema.spec-layer-data
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+  timestamp: 2026-11-18T19:22:19.502Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: api.operation.get-annotations::references::application.applicationservice.use-annotations
+  layerName: api
+  after:
+    source: api.operation.get-annotations
+    target: application.applicationservice.use-annotations
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:22:43.877Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: api.operation.create-annotation::references::application.applicationservice.use-annotations
+  layerName: api
+  after:
+    source: api.operation.create-annotation
+    target: application.applicationservice.use-annotations
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:22:43.877Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: api.operation.list-changesets::references::application.applicationservice.use-changesets
+  layerName: api
+  after:
+    source: api.operation.list-changesets
+    target: application.applicationservice.use-changesets
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:22:43.877Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: api.operation.get-architecture-model::references::application.applicationservice.use-model
+  layerName: api
+  after:
+    source: api.operation.get-architecture-model
+    target: application.applicationservice.use-model
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-18T19:22:43.877Z
+  sequenceNumber: 45
