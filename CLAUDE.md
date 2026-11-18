@@ -305,9 +305,10 @@ For local dev use `dr visualize --no-auth`.
   dropped, none from an older dr CLI) and `driftTone` reads it: `blocks` (server's `blocksCommit`), `quiet`
   (content-free), `unchecked` (unknown), `settled` (not-applicable). `ui/DriftNotice.tsx`: `DriftBadge` ("Base
   changed since this was staged", the message as its title) only on `blocks`, on the inbox card, canvas header
-  and inspector; `DriftApplyNote` on the summary card holds Apply (disabled, before its confirm dialog) and
-  says the way forward (ask DrBot to restage; no "land anyway": the REST commit has no force), or says plainly
-  that drift couldn't be checked without holding Apply; `DriftSection` in the inspector overview lists the
+  and inspector; `DriftApplyNote` on the summary card warns before Apply (which stays enabled: the person
+  decides) that the server will likely refuse the commit, with the way forward (ask DrBot to restage; no "land
+  anyway": the REST commit has no force), and `ApplyConfirm`'s `driftWarning` says the drift 409 is the
+  expected outcome; or it says plainly that drift couldn't be checked; `DriftSection` in the inspector overview lists the
   overlaps and base changes per layer (a cut list said as cut), content-free as a quiet line, a record's
   message as information. With no `drift` the 409 after confirm is the only signal, as before (the backstop).
 - **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`

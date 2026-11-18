@@ -6,9 +6,10 @@
  *   blocks a commit (a plan the server would refuse to apply). Inbox card,
  *   canvas header, inspector.
  * - `DriftApplyNote`: on the review's summary card, before Apply's confirm
- *   dialog: why Apply is held and the way forward (ask DrBot to restage; the
- *   apply route takes no force, so the viewer offers no "land anyway"). Says
- *   plainly when drift couldn't be checked, and that Apply isn't held for it.
+ *   dialog: the server will likely refuse the commit, and the way forward is
+ *   to ask DrBot to restage (the apply route takes no force, so the viewer
+ *   offers no "land anyway"). Apply stays open; its confirm dialog warns too,
+ *   and the 409 is the result. Says plainly when drift couldn't be checked.
  * - `DriftSection`: the inspector overview's drift detail: the message, the
  *   staged changes the base now overlaps, and the base's changes per layer
  *   (a cut list is said as cut). Content-free drift is a quiet note; a
@@ -47,7 +48,7 @@ export function DriftApplyNote({ drift }: { drift: ChangesetDriftSummary | undef
   if (tone === 'blocks') {
     return (
       <div role="status" className="drv-alert" data-testid="drift-apply-note">
-        <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message} Apply is held: the server would refuse it.{' '}
+        <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message} The server will likely refuse the commit.{' '}
         {DRIFT_WAY_FORWARD}
       </div>
     );

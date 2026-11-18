@@ -15,8 +15,8 @@
       the base (counts, per-layer, cut lists with truncated). Validated from the
       wire like tier1.ts: malformed values are dropped, an older dr CLI's
       missing drift reads as none known. driftTone says whether drift is a
-      problem (blocks a commit), a quiet note (content-free), unchecked
-      (unknown) or nothing to show."
+      problem to warn about (blocks a commit), a quiet note (content-free),
+      unchecked (unknown) or nothing to show."
     attributes:
       serviceType: synchronous
     metadata:
@@ -28,7 +28,7 @@
       locations:
         - file: src/apps/embedded/data/changesetDrift.ts
           symbol: src.apps.embedded.data.changesetDrift
-  timestamp: 2026-11-18T20:27:59.751Z
+  timestamp: 2026-11-18T20:32:30.508Z
   sequenceNumber: 0
 - type: add
   elementId: application.applicationcomponent.drift-notice
@@ -42,13 +42,14 @@
     name: Drift Notice
     description: "How a changeset's base drift reads in the Changesets view: the
       'Base changed since this was staged' badge (inbox card, canvas header,
-      inspector) for a plan whose drift blocks a commit, the summary card's
-      Apply note (what changed, ask DrBot to restage; the viewer can't land it
-      anyway, the commit route takes no force), and the inspector overview's
-      drift section (message, the staged changes the base now overlaps,
-      per-layer base change counts, a cut list said as cut). Content-free drift
-      is a quiet note, unknown says it couldn't be checked, a verification
-      record or settled changeset only shows the server's message."
+      inspector) for a plan whose drift blocks a commit, the summary card's note
+      before Apply (the server will likely refuse the commit; ask DrBot to
+      restage; the viewer can't land it anyway, the commit route takes no force;
+      Apply stays enabled), and the inspector overview's drift section (message,
+      the staged changes the base now overlaps, per-layer base change counts, a
+      cut list said as cut). Content-free drift is a quiet note, unknown says it
+      couldn't be checked, a verification record or settled changeset only shows
+      the server's message."
     attributes:
       type: internal
     metadata:
@@ -60,7 +61,7 @@
       locations:
         - file: src/apps/embedded/ui/DriftNotice.tsx
           symbol: src.apps.embedded.ui.DriftNotice
-  timestamp: 2026-11-18T20:27:59.751Z
+  timestamp: 2026-11-18T20:32:30.248Z
   sequenceNumber: 1
 - type: relationship-add
   elementId: application.applicationservice.changeset-drift::realizes::business.businessservice.changeset-review
@@ -316,7 +317,7 @@
     type: testcasesketch
     layer_id: testing
     name: review — drift before Apply > explains the drift on the summary card and
-      holds Apply before the confirm dialog
+      in the confirm dialog, leaving Apply to the person
     attributes:
       status: automated
     metadata:
@@ -328,8 +329,8 @@
       locations:
         - file: tests/components/ChangesetReview.spec.tsx
           symbol: review — drift before Apply > explains the drift on the summary card and
-            holds Apply before the confirm dialog
-  timestamp: 2026-11-18T20:28:29.558Z
+            in the confirm dialog, leaving Apply to the person
+  timestamp: 2026-11-18T20:32:29.627Z
   sequenceNumber: 17
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
@@ -1193,3 +1194,55 @@
     category: structural
   timestamp: 2026-11-18T20:27:58.177Z
   sequenceNumber: 61
+- type: update
+  elementId: application.applicationcomponent.changeset-review-panel
+  layerName: application
+  before:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      When the server reports drift that blocks a commit, the summary card says
+      so and holds Apply before its confirm dialog; the 409 after confirm stays
+      the backstop."
+    attributes: &a28
+      type: internal
+    source_reference: &a29
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+          symbol: ChangesetReviewPanel
+    metadata: &a30
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  after:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      When the server reports drift that blocks a commit, the summary card warns
+      before Apply (which stays enabled) and the Apply confirm dialog says the
+      drift refusal is the expected outcome; the 409 after confirm is the
+      result."
+    attributes: *a28
+    source_reference: *a29
+    metadata: *a30
+  timestamp: 2026-11-18T20:32:29.918Z
+  sequenceNumber: 76

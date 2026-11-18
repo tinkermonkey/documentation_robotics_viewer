@@ -946,22 +946,36 @@ describe('review — drift before Apply', () => {
     expect(screen.getByTestId('drift-section')).toHaveTextContent(DRIFTED_MESSAGE);
   });
 
-  it('explains the drift on the summary card and holds Apply before the confirm dialog', async () => {
-    const server = serve({ ...PLAN, review: keepAll(), drift: DRIFTED });
+  it('explains the drift on the summary card and in the confirm dialog, leaving Apply to the person', async () => {
+    const server = serve({
+      ...PLAN,
+      review: keepAll(),
+      drift: DRIFTED,
+      commitError: { status: 409, body: { error: 'Base model has drifted since changeset creation: what this changeset was staged against changed in the base. Nothing was written.' } },
+    });
     const user = userEvent.setup();
     renderReview();
+    // Before any dialog.
     const note = await screen.findByTestId('drift-apply-note');
     expect(note).toHaveTextContent(DRIFTED_MESSAGE);
+    expect(note).toHaveTextContent('The server will likely refuse the commit');
     expect(note).toHaveTextContent('Ask DrBot to restage it');
     expect(note).toHaveTextContent('the apply route takes no force');
+    // Apply stays open: the person decides.
     const apply = screen.getByTestId('changeset-apply-button');
-    expect(apply).toBeDisabled();
-    expect(apply.getAttribute('title')).toMatch(/base model changed since this was staged/);
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(apply.getAttribute('title') ?? '').not.toMatch(/refuse/);
     await user.click(apply);
-    expect(screen.queryByTestId('apply-confirm')).not.toBeInTheDocument();
-    expect(server.commits).toEqual([]);
-    // Discard stays open: the way out of a stale plan.
-    expect(screen.getByTestId('changeset-discard-button')).toBeEnabled();
+    const confirm = await screen.findByTestId('apply-confirm');
+    expect(within(confirm).getByTestId('apply-confirm-drift')).toHaveTextContent(
+      'The server will most likely refuse this apply for drift',
+    );
+    // The 409 is the expected result, handled as before.
+    await user.click(within(confirm).getByTestId('apply-confirm-button'));
+    expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent(
+      'Nothing was written. The model changed after this was staged.',
+    );
+    expect(server.commits).toHaveLength(1);
   });
 
   it('shows no drift badge on a verification record or on content-free drift', async () => {
@@ -1036,6 +1050,7 @@ describe('review — drift before Apply', () => {
     expect(screen.queryByTestId('drift-apply-note')).not.toBeInTheDocument();
     expect(screen.queryByTestId('drift-section')).not.toBeInTheDocument();
     await user.click(apply);
+    expect(within(await screen.findByTestId('apply-confirm')).queryByTestId('apply-confirm-drift')).not.toBeInTheDocument();
     await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
     expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent(
       'Nothing was written. The model changed after this was staged.',

@@ -171,7 +171,7 @@ export function toDrift(v: unknown): ChangesetDrift | undefined {
 
 /**
  * How the viewer treats a drift report:
- * - `blocks`: a commit would be refused (badge it, hold Apply, say why).
+ * - `blocks`: a commit would be refused (badge it, warn before Apply and in its dialog).
  * - `quiet`: content-free drift, a note at most, never a warning.
  * - `unchecked`: drift couldn't be checked; say so plainly, block nothing.
  * - `settled`: not-applicable (a verification record, a settled changeset):
@@ -202,10 +202,6 @@ export function driftBlocksCommit(drift: ChangesetDriftSummary | undefined): boo
 }
 
 export const DRIFT_BADGE_LABEL = 'Base changed since this was staged';
-
-/** Why Apply is held, for its tooltip and the summary card. */
-export const DRIFT_APPLY_WHY =
-  'The base model changed since this was staged, so the server would refuse to apply it';
 
 /** The way forward for a drifted plan: the viewer can't force a commit (the route takes no force). */
 export const DRIFT_WAY_FORWARD =

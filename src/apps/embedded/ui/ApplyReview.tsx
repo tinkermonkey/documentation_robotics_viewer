@@ -27,13 +27,15 @@ export interface ApplyConfirmProps {
   pairs: CancelPair[];
   /** An older dr CLI: every change lands, there is nothing to leave out. */
   local: boolean;
+  /** The server reports drift that blocks a commit: say the refusal is the expected outcome. */
+  driftWarning?: boolean;
 }
 
 function itemText(item: ReviewItem): string {
   return item.kind === 'link-add' || item.kind === 'link-delete' ? item.summary : item.name;
 }
 
-export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, local }: ApplyConfirmProps) {
+export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, local, driftWarning = false }: ApplyConfirmProps) {
   const lands = plan.landing.length;
   const dropped = plan.dropped.length;
   const k = plan.landingByKind;
@@ -59,6 +61,13 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+        {driftWarning && (
+          <div role="alert" className="drv-alert" data-testid="apply-confirm-drift">
+            <strong>The base changed since this was staged.</strong> The server will most likely refuse this apply
+            for drift, and then nothing is written and your decisions are kept. Asking DrBot to restage it is the way
+            forward.
+          </div>
+        )}
         <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: 'rgb(var(--canvas-fg-2))' }}>
           {plural(lands, 'change')} land in the model.
           {dropped > 0 && ` ${dropped} you left out are taken out first and stay in the changeset's history.`}

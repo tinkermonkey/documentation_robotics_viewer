@@ -87,7 +87,7 @@ import {
 } from '../data/changesetReview';
 import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
 import { canDo } from '../data/changesetPurpose';
-import { DRIFT_APPLY_WHY, driftBlocksCommit } from '../data/changesetDrift';
+import { driftBlocksCommit } from '../data/changesetDrift';
 import { DriftApplyNote } from './DriftNotice';
 
 // ─── Rows ─────────────────────────────────────────────────────────────────────
@@ -426,8 +426,8 @@ function SummaryCard({
   // The moves the server allows (a verification record: Discard only).
   const canApply = canDo(detail, 'commit');
   const canDiscard = canDo(detail, 'discard');
-  // The server says a commit would be refused for drift: hold Apply and say why before its dialog.
-  const driftHolds = canApply && driftBlocksCommit(detail.drift);
+  // The server reports drift that blocks a commit: Apply stays open, but says so before and in its dialog.
+  const driftWarns = canApply && driftBlocksCommit(detail.drift);
 
   // "Keep the other N": undecided changes, except blocked deletes (keeping
   // one deletes its links too, which wants its own look).
@@ -550,8 +550,8 @@ function SummaryCard({
               <Button
                 variant="accent"
                 size="sm"
-                disabled={busy || !model.canApply || driftHolds}
-                title={driftHolds ? DRIFT_APPLY_WHY : why}
+                disabled={busy || !model.canApply}
+                title={why}
                 onClick={() => setConfirming('apply')}
                 data-testid="changeset-apply-button"
               >
@@ -627,6 +627,7 @@ function SummaryCard({
         plan={model.apply}
         pairs={model.pairs}
         local={local}
+        driftWarning={driftWarns}
       />
       <ConfirmDialog
         isOpen={confirming === 'discard'}

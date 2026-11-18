@@ -3,16 +3,16 @@ name: drift-before-apply
 description: Show a changeset's base drift before review and before Apply, from
   the server's drift report (#576)
 created: 2026-11-18T20:16:06.055Z
-modified: 2026-11-18T20:28:30.752Z
+modified: 2026-11-18T20:32:30.525Z
 status: staged
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
 stats:
   additions: 53
-  modifications: 9
+  modifications: 10
   deletions: 0
-lastSequence: 74
+lastSequence: 78
 unstaged:
   - sequence: 1
     removedAt: 62
@@ -314,4 +314,103 @@ unstaged:
           updated_at: 2026-11-18T20:17:56.262Z
           version: 1
       timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 17
+    removedAt: 75
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+      layerName: testing
+      after:
+        id: 0537a5c0-07ae-4edd-aa28-d7b85520381d
+        path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > explains the drift on the summary card and
+          holds Apply before the confirm dialog
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: tests/components/ChangesetReview.spec.tsx
+              symbol: review — drift before Apply > explains the drift on the summary card and
+                holds Apply before the confirm dialog
+      timestamp: 2026-11-18T20:28:29.558Z
+    rewritten: true
+  - sequence: 1
+    removedAt: 77
+    change:
+      type: add
+      elementId: application.applicationcomponent.drift-notice
+      layerName: application
+      after:
+        id: 84b29574-1d05-4995-80f1-2fd471364cf1
+        path: application.applicationcomponent.drift-notice
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Drift Notice
+        description: "How a changeset's base drift reads in the Changesets view: the
+          'Base changed since this was staged' badge (inbox card, canvas header,
+          inspector) for a plan whose drift blocks a commit, the summary card's
+          Apply note (what changed, ask DrBot to restage; the viewer can't land
+          it anyway, the commit route takes no force), and the inspector
+          overview's drift section (message, the staged changes the base now
+          overlaps, per-layer base change counts, a cut list said as cut).
+          Content-free drift is a quiet note, unknown says it couldn't be
+          checked, a verification record or settled changeset only shows the
+          server's message."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-18T20:17:32.127Z
+          updated_at: 2026-11-18T20:17:32.127Z
+          version: 1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/ui/DriftNotice.tsx
+              symbol: src.apps.embedded.ui.DriftNotice
+      timestamp: 2026-11-18T20:27:59.751Z
+    rewritten: true
+  - sequence: 0
+    removedAt: 78
+    change:
+      type: add
+      elementId: application.applicationservice.changeset-drift
+      layerName: application
+      after:
+        id: 5fd8124e-faf2-4a50-ac5e-428a95c7db35
+        path: application.applicationservice.changeset-drift
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Changeset Drift
+        description: "Reads a changeset's base drift from the dr CLI's changeset
+          endpoints (drift on GET /api/changesets and /api/changesets/:id):
+          state (none, content-free, drifted, not-applicable, unknown),
+          blocksCommit and the server's message, and on the detail the overlaps
+          and what changed in the base (counts, per-layer, cut lists with
+          truncated). Validated from the wire like tier1.ts: malformed values
+          are dropped, an older dr CLI's missing drift reads as none known.
+          driftTone says whether drift is a problem (blocks a commit), a quiet
+          note (content-free), unchecked (unknown) or nothing to show."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-18T20:17:32.126Z
+          updated_at: 2026-11-18T20:17:32.126Z
+          version: 1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/changesetDrift.ts
+              symbol: src.apps.embedded.data.changesetDrift
+      timestamp: 2026-11-18T20:27:59.751Z
     rewritten: true
