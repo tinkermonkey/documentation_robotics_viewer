@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-11-18T16:40:30.249Z
+# Last updated: 2026-11-18T17:34:55.163Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -5229,66 +5229,6 @@
   layer: testing
   targetLayer: security
   category: structural
-- source: testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
-- source: testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2
-  target: security.secureresource.web-socket-json-rpc-channel
-  predicate: tests
-  layer: testing
-  targetLayer: security
-  category: structural
 - source: application.applicationservice.use-model
   target: business.businessservice.architecture-model-visualization
   predicate: realizes
@@ -8451,6 +8391,66 @@
   category: structural
 - source: testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone
   target: application.applicationservice.chat-context-builder
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame
+  target: application.applicationservice.web-socket-client
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2
+  target: application.applicationservice.web-socket-client
   predicate: tests
   layer: testing
   targetLayer: application

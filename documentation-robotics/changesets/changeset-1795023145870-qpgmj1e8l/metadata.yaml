@@ -1,0 +1,20 @@
+id: changeset-1795023145870-qpgmj1e8l
+name: fix-websocket-test-links
+description: "Move the 10 websocketClient test cases that aren't about auth from
+  the WebSocket JSON-RPC channel (security) to the Web Socket Client service
+  they test. Point the service at the WebSocketClient class as well as its
+  instance, and the security element at the method that does the auth
+  (getAuthProtocols), so later extractions don't send the suite to the security
+  element again. Done: only the 2 Sec-WebSocket-Protocol tests test the security
+  element."
+created: 2026-11-18T17:32:25.895Z
+modified: 2026-11-18T17:34:55.231Z
+status: committed
+baseSnapshot: sha256:4ebb068a9e66aed9eccb21c89a02318f25b7ff6176dc6f780ce62c7a42d53939
+origin:
+  kind: plan
+stats:
+  additions: 10
+  modifications: 2
+  deletions: 10
+lastSequence: 22

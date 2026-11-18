@@ -1631,16 +1631,16 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.viewport-vp-param-round-trips-a-parsed-param-equals-the-rounded-viewport-it-came-from`                        | `application.applicationservice.graph-viewport-key`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-no-subprotocol-when-no-token-is-set`                 | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-auth-via-sec-web-socket-protocol-passes-token-actual-token-as-the-web-socket-08da44fa`       | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later`                   | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket`                                      | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f`   | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032`    | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d`     | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58`     | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect`                        | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34`  | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame`                        | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.security.secureresource`                                | `testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2`    | `security.secureresource.web-socket-json-rpc-channel`            | `security`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later`                   | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket`                                      | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f`   | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032`    | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d`     | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58`     | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect`                        | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34`  | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame`                        | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2`    | `application.applicationservice.web-socket-client`               | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone`                    | `application.applicationservice.chat-context-builder`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `application.applicationservice.chat-service`                    | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `application.applicationservice.use-annotations`                 | `application` | `covers`    | many-to-many | medium   |
@@ -15234,9 +15234,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — disconnect() &gt; detaches all handlers and closes the socket {#websocketclient-disconnect-detaches-all-handlers-and-closes-the-socket}
 
@@ -15252,9 +15252,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — JSON-RPC double-emit guard (THE REGRESSION) &gt; dispatches a JSON-RPC frame (no `type`) to the message listener EXACTLY ONCE {#websocketclient-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-the-message-listener-exactly-once}
 
@@ -15270,9 +15270,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — JSON-RPC double-emit guard (THE REGRESSION) &gt; dispatches a JSON-RPC notification (no `type`) to the message listener EXACTLY ONCE {#websocketclient-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-type-to-the-message-listener-exactly-once}
 
@@ -15288,9 +15288,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — orphan guard (StrictMode double-invoke) &gt; returns early without a new socket when already OPEN {#websocketclient-orphan-guard-strictmode-double-invoke-returns-early-without-a-new-socket-when-already-open}
 
@@ -15306,9 +15306,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — orphan guard (StrictMode double-invoke) &gt; tears down a prior non-OPEN socket when connect() runs again {#websocketclient-orphan-guard-strictmode-double-invoke-tears-down-a-prior-non-open-socket-when-connect-runs-again}
 
@@ -15324,9 +15324,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — reconnect / backoff &gt; does NOT reconnect after an intentional disconnect() {#websocketclient-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect}
 
@@ -15342,9 +15342,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — reconnect / backoff &gt; schedules a reconnect with exponential backoff on an unexpected close {#websocketclient-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-close}
 
@@ -15360,9 +15360,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — typed app frames &gt; does NOT fire a `model` listener for a JSON-RPC frame {#websocketclient-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame}
 
@@ -15378,9 +15378,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### websocketClient — typed app frames &gt; fires BOTH the typed listener and the generic message listener for a `type` frame {#websocketclient-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-for-a-type-frame}
 
@@ -15396,9 +15396,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate | Direction |
-| ----------- | ----------------------------------------------------- | --------- | --------- |
-| inter-layer | `security.secureresource.web-socket-json-rpc-channel` | `tests`   | outbound  |
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `tests`   | outbound  |
 
 ### withChatContext &gt; puts the context block before the question, or leaves the question alone {#withchatcontext-puts-the-context-block-before-the-question-or-leaves-the-question-alone}
 
@@ -15504,4 +15504,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-18T17:34:55.286Z | Model Version: 0.1.0

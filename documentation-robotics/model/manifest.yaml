@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.5.0
 spec_version: 0.13.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-18T16:40:30.685Z
+updated: 2026-11-18T17:34:55.255Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -39,9 +39,9 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
+      feature: 11
       persona: 2
       softwarecapability: 5
-      feature: 11
       userworkflow: 1
       workflowstep: 4
   security:
@@ -154,9 +154,9 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
+      testcasesketch: 758
       testcoveragemodel: 1
       testcoveragetarget: 2
-      testcasesketch: 758
 changeset_history:
   - name: sync-pre-merge-fixes
     committed_at: 2026-11-12T16:19:59.958Z
@@ -166,6 +166,9 @@ changeset_history:
     action: committed
   - name: model-sync-2026-11-18
     committed_at: 2026-11-18T16:40:30.591Z
+    action: committed
+  - name: fix-websocket-test-links
+    committed_at: 2026-11-18T17:34:55.253Z
     action: committed
 reconciled:
   changeset: model-sync-2026-11-18

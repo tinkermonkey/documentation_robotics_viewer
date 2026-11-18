@@ -18,8 +18,8 @@ Application components, services, and interactions.
 | ------------------------- | ----- |
 | Elements                  | 79    |
 | Intra-Layer Relationships | 158   |
-| Inter-Layer Relationships | 838   |
-| Inbound Relationships     | 780   |
+| Inter-Layer Relationships | 848   |
+| Inbound Relationships     | 790   |
 | Outbound Relationships    | 58    |
 
 **Cross-Layer References**:
@@ -969,6 +969,16 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.viewport-vp-param-only-fits-the-canvas-it-was-recorded-on-a-tagless-older-link-fits-any`                      | `application.applicationservice.graph-viewport-key`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.viewport-vp-param-rejects-j`                                                                                  | `application.applicationservice.graph-viewport-key`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.viewport-vp-param-round-trips-a-parsed-param-equals-the-rounded-viewport-it-came-from`                        | `application.applicationservice.graph-viewport-key`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later`                   | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket`                                      | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f`   | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032`    | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d`     | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58`     | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect`                        | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34`  | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame`                        | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2`    | `application.applicationservice.web-socket-client`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone`                    | `application.applicationservice.chat-context-builder`            | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `application.applicationservice.chat-service`                    | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `application.applicationservice.use-annotations`                 | `application` | `covers`     | many-to-many | medium   |
@@ -3543,16 +3553,26 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 #### Relationships
 
-| Type        | Related Element                                                        | Predicate     | Direction |
-| ----------- | ---------------------------------------------------------------------- | ------------- | --------- |
-| inter-layer | `apm.metricinstrument.web-socket-reconnection-attempt-counter`         | `monitors`    | inbound   |
-| inter-layer | `business.businessprocess.real-time-model-synchronization`             | `serves`      | outbound  |
-| inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `covers`      | inbound   |
-| intra-layer | `application.applicationfunction.connection-store`                     | `realizes`    | inbound   |
-| intra-layer | `application.applicationinterface.dr-cli-web-socket-interface`         | `assigned-to` | inbound   |
-| intra-layer | `application.applicationservice.json-rpc-handler`                      | `depends-on`  | inbound   |
-| intra-layer | `application.applicationservice.error-tracker`                         | `depends-on`  | outbound  |
+| Type        | Related Element                                                                                                                      | Predicate     | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------- |
+| inter-layer | `apm.metricinstrument.web-socket-reconnection-attempt-counter`                                                                       | `monitors`    | inbound   |
+| inter-layer | `business.businessprocess.real-time-model-synchronization`                                                                           | `serves`      | outbound  |
+| inter-layer | `testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later`                  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket`                                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-frame-no-type-to-d0e7c24f`  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-json-rpc-double-emit-guard-the-regression-dispatches-a-json-rpc-notification-no-2d3d6032`   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-returns-early-without-a-new-socket-when-fea4196d`    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-orphan-guard-strict-mode-double-invoke-tears-down-a-prior-non-open-socket-when-f01e6a58`    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-reconnect-backoff-does-not-reconnect-after-an-intentional-disconnect`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-reconnect-backoff-schedules-a-reconnect-with-exponential-backoff-on-an-unexpected-f3243b34` | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2`   | `tests`       | inbound   |
+| inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                               | `covers`      | inbound   |
+| intra-layer | `application.applicationfunction.connection-store`                                                                                   | `realizes`    | inbound   |
+| intra-layer | `application.applicationinterface.dr-cli-web-socket-interface`                                                                       | `assigned-to` | inbound   |
+| intra-layer | `application.applicationservice.json-rpc-handler`                                                                                    | `depends-on`  | inbound   |
+| intra-layer | `application.applicationservice.error-tracker`                                                                                       | `depends-on`  | outbound  |
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-18T17:34:55.286Z | Model Version: 0.1.0
