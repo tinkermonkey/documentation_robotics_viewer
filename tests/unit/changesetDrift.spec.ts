@@ -4,6 +4,7 @@ import {
   baseChangesByLayer,
   driftBlocksCommit,
   driftTone,
+  overlapReasonLabel,
   toDrift,
   toDriftSummary,
 } from '@/apps/embedded/data/changesetDrift';
@@ -42,7 +43,9 @@ describe('changesetDrift', () => {
       overlapping: {
         elements: [
           { id: 'application.applicationservice.use-changesets', reason: 'changed-in-base' },
+          { id: 'data-model.objectschema.gone', reason: 'removed-in-base' },
           { id: 'x', reason: 'made-up' },
+          { id: 'y', reason: 5 },
           'nope',
         ],
         relationships: [
@@ -64,11 +67,20 @@ describe('changesetDrift', () => {
     expect(drift?.warnings).toEqual(['Overlaps: 1 element.']);
     expect(drift?.baseIndex).toBe('recorded');
     expect(drift?.overlapping).toEqual({
-      elements: [{ id: 'application.applicationservice.use-changesets', reason: 'changed-in-base' }],
+      // A reason this viewer doesn't know (a newer CLI) is kept, not dropped: a blocking drift never lists nothing.
+      elements: [
+        { id: 'application.applicationservice.use-changesets', reason: 'changed-in-base' },
+        { id: 'data-model.objectschema.gone', reason: 'removed-in-base' },
+        { id: 'x', reason: 'made-up' },
+      ],
       relationships: [
         { source: 'a.b.c', predicate: 'serves', target: 'd.e.f', reason: 'endpoint-removed-in-base', endpoints: ['d.e.f'] },
       ],
     });
+    expect(overlapReasonLabel('removed-in-base')).toBe('the base removed it');
+    expect(overlapReasonLabel('endpoint-changed-in-base')).toBe('the base changed an end');
+    expect(overlapReasonLabel('made-up')).toBe('made-up');
+    expect(overlapReasonLabel('toString')).toBe('toString');
     const changes = drift!.baseChanges!;
     expect(changes.counts).toEqual({ elementsAdded: 2, elementsRemoved: 0, elementsChanged: 61, relationshipsAdded: 1, relationshipsRemoved: 0 });
     expect(changes.elementsChanged).toEqual(['application.applicationservice.use-changesets']);

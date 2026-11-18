@@ -32,24 +32,28 @@ import type { components } from '../../../core/types/api-client';
 // ─── Wire types (the generated OpenAPI schemas) ───────────────────────────────
 
 export type ChangesetDriftSummary = components['schemas']['ChangesetDriftSummary'];
-export type ChangesetDrift = components['schemas']['ChangesetDrift'];
+type WireDrift = components['schemas']['ChangesetDrift'];
+type WireOverlaps = NonNullable<WireDrift['overlapping']>;
+type WireElementOverlap = WireOverlaps['elements'][number];
+type WireRelationshipOverlap = WireOverlaps['relationships'][number];
+/**
+ * An overlap's `reason` may be one this viewer doesn't know yet (a newer CLI,
+ * e.g. `removed-in-base`): the overlap is kept and shows under that name, so a
+ * blocking drift never shows an empty list.
+ */
+type ElementOverlap = Omit<WireElementOverlap, 'reason'> & { reason: WireElementOverlap['reason'] | (string & {}) };
+type RelationshipOverlap = Omit<WireRelationshipOverlap, 'reason'> & {
+  reason: WireRelationshipOverlap['reason'] | (string & {});
+};
+export type DriftOverlaps = { elements: ElementOverlap[]; relationships: RelationshipOverlap[] };
+export type ChangesetDrift = Omit<WireDrift, 'overlapping'> & { overlapping?: DriftOverlaps };
 export type DriftState = ChangesetDriftSummary['state'];
-export type DriftOverlaps = NonNullable<ChangesetDrift['overlapping']>;
 export type DriftBaseChanges = NonNullable<ChangesetDrift['baseChanges']>;
 type BaseIndex = NonNullable<ChangesetDrift['baseIndex']>;
-type ElementOverlap = DriftOverlaps['elements'][number];
-type RelationshipOverlap = DriftOverlaps['relationships'][number];
 type BaseRelationship = DriftBaseChanges['relationshipsAdded'][number];
 
 export const DRIFT_STATES: readonly DriftState[] = ['none', 'content-free', 'drifted', 'not-applicable', 'unknown'];
 const BASE_INDEX: readonly BaseIndex[] = ['recorded', 'not-recorded', 'unreadable'];
-const ELEMENT_REASONS: readonly ElementOverlap['reason'][] = ['already-in-base', 'already-removed', 'changed-in-base'];
-const RELATIONSHIP_REASONS: readonly RelationshipOverlap['reason'][] = [
-  'already-in-base',
-  'already-removed',
-  'endpoint-changed-in-base',
-  'endpoint-removed-in-base',
-];
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 
@@ -111,13 +115,13 @@ function toOverlaps(v: unknown): DriftOverlaps | undefined {
   for (const e of Array.isArray(v.elements) ? v.elements : []) {
     if (!isObject(e)) continue;
     const id = str(e.id);
-    const reason = oneOf(e.reason, ELEMENT_REASONS);
+    const reason = str(e.reason);
     if (id && reason) elements.push({ id, reason });
   }
   const rels: RelationshipOverlap[] = [];
   for (const r of Array.isArray(v.relationships) ? v.relationships : []) {
     const base = relationship(r);
-    const reason = isObject(r) ? oneOf(r.reason, RELATIONSHIP_REASONS) : undefined;
+    const reason = isObject(r) ? str(r.reason) : undefined;
     if (!base || !reason) continue;
     const endpoints = strings((r as Record<string, unknown>).endpoints);
     rels.push(endpoints.length ? { ...base, reason, endpoints } : { ...base, reason });
@@ -227,13 +231,19 @@ export function baseChangeCountsLabel(changes: DriftBaseChanges): string {
 }
 
 /** What an overlap's reason means, for the inspector. */
-export const OVERLAP_REASON: Record<ElementOverlap['reason'] | RelationshipOverlap['reason'], string> = {
+const OVERLAP_REASON: Record<string, string> = {
   'already-in-base': 'the base already has it',
   'already-removed': 'the base already removed it',
   'changed-in-base': 'the base changed it',
+  'removed-in-base': 'the base removed it',
   'endpoint-changed-in-base': 'the base changed an end',
   'endpoint-removed-in-base': 'the base removed an end',
 };
+
+/** An overlap's reason in words; a reason this viewer doesn't know shows as sent. */
+export function overlapReasonLabel(reason: string): string {
+  return Object.prototype.hasOwnProperty.call(OVERLAP_REASON, reason) ? OVERLAP_REASON[reason] : reason;
+}
 
 /** The layer slug of a dotted id (`layer.type.slug`). */
 export function layerOfId(id: string): string {

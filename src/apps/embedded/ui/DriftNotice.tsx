@@ -24,7 +24,7 @@ import { plural } from './reviewParts';
 import {
   DRIFT_BADGE_LABEL,
   DRIFT_WAY_FORWARD,
-  OVERLAP_REASON,
+  overlapReasonLabel,
   baseChangeCountsLabel,
   baseChangesByLayer,
   driftTone,
@@ -95,7 +95,7 @@ function Overlaps({ drift }: { drift: ChangesetDrift }) {
       <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
         {o.elements.map((e) => (
           <li key={`e:${e.id}`}>
-            <span className="drv-mono">{e.id}</span>: {OVERLAP_REASON[e.reason]}
+            <span className="drv-mono">{e.id}</span>: {overlapReasonLabel(e.reason)}
           </li>
         ))}
         {o.relationships.map((r) => (
@@ -103,7 +103,7 @@ function Overlaps({ drift }: { drift: ChangesetDrift }) {
             <span className="drv-mono">
               {r.source} —{r.predicate}→ {r.target}
             </span>
-            : {OVERLAP_REASON[r.reason]}
+            : {overlapReasonLabel(r.reason)}
             {r.endpoints?.length ? ` (${r.endpoints.join(', ')})` : ''}
           </li>
         ))}
