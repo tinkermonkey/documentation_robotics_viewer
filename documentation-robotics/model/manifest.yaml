@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.4.0
+cli_version: 0.5.0
 spec_version: 0.12.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-12T16:19:59.958Z
+updated: 2026-11-18T14:48:34.533Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 3
+      requirement: 5
       stakeholder: 3
   business:
     order: 2
@@ -59,11 +59,11 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 10
+      applicationcomponent: 16
       applicationfunction: 10
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 16
+      applicationservice: 18
   technology:
     order: 6
     name: Technology
@@ -111,7 +111,7 @@ layers:
     enabled: true
     elements:
       statepattern: 2
-      subview: 1
+      subview: 3
       uxapplication: 1
       uxspec: 2
       view: 6
@@ -153,4 +153,7 @@ layers:
 changeset_history:
   - name: sync-pre-merge-fixes
     committed_at: 2026-11-12T16:19:59.958Z
+    action: committed
+  - name: changeset-review-clarity
+    committed_at: 2026-11-18T14:48:34.532Z
     action: committed

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Added element inspector</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="ds/heimdall/colors_and_type.css">
+<link rel="stylesheet" href="review.css">
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+.kv{display:grid;grid-template-columns:110px minmax(0,1fr);row-gap:8px;align-items:center}
+.lr{display:grid;grid-template-columns:18px 86px minmax(0,1fr);column-gap:8px;align-items:start;padding:6px 0;border-bottom:1px solid var(--canvas-border)}
+.lr:last-child{border-bottom:0}
+.lr .who{display:flex;flex-direction:column;min-width:0}
+.lr .nm{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arr{font-family:var(--font-mono);color:var(--canvas-fg-3);font-size:12px;padding-top:1px}
+.lane{position:absolute;left:0;right:0;border-top:1px dashed var(--canvas-border-2)}
+.lane-l{position:absolute;left:8px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:0.08em;text-transform:uppercase;display:flex;gap:5px;align-items:center}
+.gn{position:absolute;height:24px;display:flex;align-items:center;gap:5px;padding:0 7px;border-radius:5px;background:var(--canvas-surface);border:1px solid var(--canvas-border-strong);font-size:10.5px;white-space:nowrap;color:var(--canvas-fg-1)}
+.gn.nw{border-style:dashed;border-color:rgba(16,185,129,0.7)}
+.gn.focus{outline:2px solid var(--accent-primary);outline-offset:2px;font-weight:600}
+</style>
+</helmet>
+<div class="dk" style="width: 460px; height: 1500px; display: flex; flex-direction: column; border-left: 1px solid var(--canvas-border);">
+
+  <div class="sec" style="gap: 10px;">
+    <a href="#" style="font-size: 12px;">← Changeset</a>
+    <span class="eb">Change 15 of 293</span>
+    <div style="display: flex; align-items: stretch; gap: 0; border-radius: var(--radius-md); overflow: hidden; border: 1px solid rgba(163,230,53,0.45);">
+      <div style="background: var(--l-product); width: 6px;"></div>
+      <div style="flex: 1; padding: 8px 10px; background: rgba(163,230,53,0.08); display: flex; align-items: center; justify-content: space-between;">
+        <span style="display: flex; flex-direction: column;"><span class="eb" style="color: #D9F99D;">Adds to</span><span style="font-weight: 600; font-size: 14px;">Product layer</span></span>
+        <span style="display: flex; flex-direction: column; align-items: flex-end;"><span class="eb">as a</span><span class="mono" style="font-size: 12.5px;">feature</span></span>
+      </div>
+    </div>
+    <span style="font-size: 18px; font-weight: 700; letter-spacing: -0.015em;">Project status</span>
+    <span class="mono faint" style="font-size: 10.5px;">product.feature.project-status</span>
+  </div>
+
+  <div class="sec">
+    <div class="kv">
+      <span class="eb">Change</span><span><span class="op op-add">+ element</span> <span class="muted" style="font-size: 12px;">new in this changeset</span></span>
+      <span class="eb">Your decision</span><span><span class="dec dec-keep">✓ Keep</span></span>
+      <span class="eb">Decided by</span><span class="muted" style="font-size: 12px;">the agent · staged 9 Nov</span>
+    </div>
+    <div style="display: flex; gap: 6px; margin-top: 4px;"><button class="btn btn-accent" type="button">Keep</button><button class="btn" type="button">Drop</button><button class="btn" type="button">Ask DrBot</button></div>
+  </div>
+
+  <div class="sec">
+    <span class="eb">Description</span>
+    <p style="margin: 0; color: var(--canvas-fg-1); font-size: 12.5px;">MCP: project_status. Where this repo stands with DR: model present, spec version against the CLI, active and staged changesets, code index present and fresh, viewer running, and the suggested next step.</p>
+  </div>
+
+  <div class="sec">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="eb">Neighbourhood · +1 layer</span>
+      <div class="seg"><button type="button">Direct</button><button class="on" type="button">+1 layer</button></div>
+    </div>
+    <div style="position: relative; height: 230px; border: 1px solid var(--canvas-border); border-radius: var(--radius-md); background: var(--canvas-bg-2); overflow: hidden;">
+      <div class="lane" style="top: 0;"></div>
+      <span class="lane-l" style="top: 6px; color: #C4B5FD;"><span class="dot" style="background: var(--l-motivation);"></span>Motivation</span>
+      <div class="lane" style="top: 76px;"></div>
+      <span class="lane-l" style="top: 82px; color: #D9F99D;"><span class="dot" style="background: var(--l-product);"></span>Product</span>
+      <svg width="424" height="230" viewBox="0 0 424 230" style="position: absolute; left: 0; top: 0;" aria-hidden="true">
+        <g stroke="rgba(148,163,184,0.55)" stroke-width="1.2" fill="none">
+          <path d="M212 150 C212 110 120 80 120 48"/>
+          <path d="M212 150 C212 110 300 90 300 48" stroke-dasharray="3 3"/>
+          <path d="M212 150 C160 150 110 130 74 128"/>
+          <path d="M212 150 C260 150 310 130 350 128"/>
+          <path d="M212 150 C180 170 120 196 78 200"/>
+          <path d="M212 150 C240 180 290 196 340 200"/>
+        </g>
+      </svg>
+      <span class="gn nw" style="left: 40px; top: 36px;"><span class="dot" style="background: var(--l-motivation);"></span>Developer stays in the conv…</span>
+      <span class="gn" style="left: 262px; top: 36px; opacity: 0.85;"><span class="dot" style="background: var(--l-motivation);"></span>DR is the spec… <span class="faint">+2</span></span>
+      <span class="gn" style="left: 18px; top: 116px;"><span class="dot" style="background: var(--l-product);"></span>Project setup</span>
+      <span class="gn focus nw" style="left: 166px; top: 138px;"><span class="dot" style="background: var(--l-product);"></span>Project status</span>
+      <span class="gn" style="left: 316px; top: 116px;"><span class="dot" style="background: var(--l-product);"></span>MCP server</span>
+      <span class="gn" style="left: 14px; top: 188px;"><span class="dot" style="background: var(--l-product);"></span>Developer <span class="faint">+1</span></span>
+      <span class="gn nw" style="left: 270px; top: 188px;"><span class="dot" style="background: var(--l-product);"></span>4 workflow steps</span>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <span class="faint" style="font-size: 11px;">dashed = added by this changeset · faded = reached past the direct links</span>
+      <a href="#" style="font-size: 12px;">Open in Impact →</a>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+      <span class="eb">Links · 9 · all added by this changeset</span>
+      <span class="faint" style="font-size: 11px;">decisions: 8 keep · 1 drop</span>
+    </div>
+    <span class="faint" style="font-size: 11.5px; margin-top: 2px;">Out of Project status · 5</span>
+    <div>
+      <div class="lr"><span class="arr">→</span><span class="pred">realizes</span><span class="who"><span class="nm">Project setup</span><span class="typ"><span class="dot" style="background: var(--l-product); width: 6px; height: 6px;"></span> product · software capability</span></span></div>
+      <div class="lr"><span class="arr">→</span><span class="pred">serves</span><span class="who"><span class="nm">Developer</span><span class="typ">product · persona</span></span></div>
+      <div class="lr"><span class="arr">→</span><span class="pred">serves</span><span class="who"><span class="nm">Project maintainer</span><span class="typ">product · persona</span></span></div>
+      <div class="lr"><span class="arr">→</span><span class="pred">satisfies</span><span class="who"><span class="nm">Developer stays in the conversation <span class="new">NEW</span> <span class="dec dec-drop" style="font-size: 10.5px; padding: 0 6px;">✕ Drop</span></span><span class="typ"><span class="dot" style="background: var(--l-motivation); width: 6px; height: 6px;"></span> motivation · requirement</span></span></div>
+      <div class="lr"><span class="arr">→</span><span class="pred">depends-on</span><span class="who"><span class="nm">MCP server</span><span class="typ">product · feature</span></span></div>
+    </div>
+    <span class="faint" style="font-size: 11.5px; margin-top: 4px;">Into Project status · 4</span>
+    <div>
+      <div class="lr"><span class="arr">←</span><span class="pred">uses</span><span class="who"><span class="nm">Onboard a project: Ask the agent to set up DR <span class="new">NEW</span></span><span class="typ">product · workflow step</span></span></div>
+      <div class="lr"><span class="arr">←</span><span class="pred">uses</span><span class="who"><span class="nm">Onboard a project: Choose how the model starts <span class="new">NEW</span></span><span class="typ">product · workflow step</span></span></div>
+      <div class="lr"><span class="arr">←</span><span class="pred">uses</span><span class="who"><span class="nm">Keep the model as-built: Agent reports drift <span class="new">NEW</span></span><span class="typ">product · workflow step</span></span></div>
+      <div class="lr"><span class="arr">←</span><span class="pred">uses</span><span class="who"><span class="nm">Upgrade a model: Agent reports the model is behind <span class="new">NEW</span></span><span class="typ">product · workflow step</span></span></div>
+    </div>
+    <span class="faint" style="font-size: 11px;">Each row opens that link's change. A row you dropped shows ✕ at its end; kept rows show nothing.</span>
+  </div>
+
+  <div class="sec">
+    <span class="eb">Source reference</span>
+    <span class="muted" style="font-size: 12.5px;">None yet: nothing points this element at code.</span>
+    <span class="faint" style="font-size: 11.5px;">A planned feature gets one when it's built and the as-built references are adopted.</span>
+  </div>
+
+  <div class="sec" style="border-bottom: 0;">
+    <span class="eb">Full change</span>
+    <button class="btn" type="button" style="align-self: flex-start;">Show the JSON diff</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":460,"height":1500}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

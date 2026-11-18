@@ -1,0 +1,23 @@
+{
+  "v": 3,
+  "createdOnFiles": {"v": 1, "at": "2026-11-17T21:30:00Z"},
+  "title": "Changeset review clarity",
+  "launch": {"view": "canvas"},
+  "pages": [],
+  "boards": {
+    "Main.dc.html": {"x": 0, "y": 0, "w": 1000, "h": 940, "title": "1 · Review list: labelled columns, change vs decision, link chains"},
+    "ElementInspector.dc.html": {"x": 1080, "y": 0, "w": 460, "h": 1500, "title": "2 · Added element: layer, +1 neighbourhood, links with direction"},
+    "LinkInspector.dc.html": {"x": 1620, "y": 0, "w": 460, "h": 1140, "title": "3 · Added link: source → predicate → target"},
+    "Impact.dc.html": {"x": 0, "y": 1740, "w": 1360, "h": 900, "title": "4 · Impact: find, filter, focus"}
+  },
+  "order": ["Main.dc.html", "ElementInspector.dc.html", "LinkInspector.dc.html", "Impact.dc.html"],
+  "notes": {
+    "title": {"x": 0, "y": -300, "text": "Changeset review: making each change legible", "kind": "title1", "maxW": 2080},
+    "n1": {"x": 2160, "y": 0, "w": 380, "size": "m", "fill": "orange", "text": "What the feedback traced to\n\n• \"kept\" = YOUR verdict (Keep), not the link. The op chip (add / + link) and the verdict chip sit side by side with no labels, so a new link reads \"kept\".\n• \"new source\" = the link's SOURCE ELEMENT is new in this changeset. Nothing to do with source references — only 9 of 293 changes carry one.\n• Product is spec layer 3, but the viewer knows 12 layers: 276 of 293 changes get a grey swatch.\n• A link's inspector shows the sentence and the raw id only.\n• \"Links in this changeset\" lists A predicate B with no direction, type or layer.\n• Impact: ~280 nodes in 2 lanes, no search or filter."},
+    "n2": {"x": 2160, "y": 560, "w": 380, "size": "m", "fill": "blue", "text": "Two vocabularies, two shapes\n\nCHANGE (what the changeset does): solid tinted chip with a glyph — + element, + link, ~ update, − delete.\n\nDECISION (what you said): outlined pill in its own labelled column — ✓ Keep, ✕ Drop, ? Ask, • Needs decision. Hidden in the inspector's related-links list once the changeset is applied."},
+    "n3": {"x": 1440, "y": 1740, "w": 420, "size": "m", "fill": "green", "text": "Impact usability guidance\n\n1. Start narrow: open on the changeset's own elements (\"Changes only\"), reach is opt-in via Follow.\n2. Search jumps and focuses, it doesn't just highlight.\n3. Filters are facets with counts: layer, change, element type, link category.\n4. Big lanes collapse to a count + top types; expand on demand.\n5. Focus = one element + its +1 layer; breadcrumb back to all.\n6. Selection in the graph and the review list are the same selection."}
+  },
+  "designSystems": [
+    {"title": "Heimdall Design System", "namespace": "heimdall", "artifact": "https://claude.ai/artifact/CXEhqwb8YDNrHWi5cvTDaU", "version": "1794949441-272c", "copiedAt": "2026-11-17T21:30:00Z"}
+  ]
+}

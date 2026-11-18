@@ -13,7 +13,6 @@
  * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
  */
 
-import { useState } from 'react';
 import { Button, PageHeader, SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { useChangesets, useChangeset, changesetLoadErrorMessage } from '../data/useChangesets';
@@ -57,13 +56,20 @@ export function ChangesetCanvas() {
   const changesetId = useUiStore((s) => s.changesetId);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
   const follow = useUiStore((s) => s.inspectorFollow);
-  const setFollow = useUiStore((s) => s.setInspectorFollow);
+  const tab = useUiStore((s) => s.changesetTab);
+  const setTab = useUiStore((s) => s.setChangesetTab);
+  const impactFocus = useUiStore((s) => s.impactFocus);
   const { derived: registry } = useChangesets();
   const { detail, error } = useChangeset(changesetId);
   const { derived: model } = useModel();
   const review = useChangesetReview(detail);
-  const [tab, setTab] = useState<ChangesetTab>('changes');
   const impact = useChangesetImpact(model, tab === 'impact' ? detail : null, follow);
+  const focused = useChangesetImpact(
+    model,
+    tab === 'impact' && impactFocus ? detail : null,
+    follow,
+    impactFocus ? [impactFocus] : null,
+  );
 
   const summaryEntry = registry.list.find((c) => c.id === changesetId);
   const name = detail?.name ?? summaryEntry?.name ?? '';
@@ -157,8 +163,7 @@ export function ChangesetCanvas() {
             key={detail.id}
             changesetId={detail.id}
             impact={impact}
-            follow={follow}
-            onFollowChange={setFollow}
+            focused={focused}
           />
         ) : (
           <div

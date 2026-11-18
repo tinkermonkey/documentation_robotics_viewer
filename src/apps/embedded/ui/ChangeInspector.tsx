@@ -20,17 +20,24 @@
 import { useEffect, useState } from 'react';
 import { Button, Chip, SideBySideDiff, TextArea } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
-import { layerLabel } from './domain';
+import { layerColor, layerLabel } from './domain';
+import { ChangeLinkCard } from './ChangeLinkCard';
+import { ChangeNeighbourhood } from './ChangeNeighbourhood';
+import { ErrorBoundary } from './ErrorBoundary';
 import { AnnotationsSection } from './AnnotationsSection';
-import { LayerSwatch, OpChip, OriginBadge, OriginDetails, VerdictChip, plural } from './reviewParts';
+import { OpChip, OriginBadge, OriginDetails, OutcomeChip, VerdictChip, plural } from './reviewParts';
 import { buildDiffLines } from '../data/changesets';
 import { originOf, originTitle } from '../data/tier1';
 import { useCreateAnnotation } from '../data/useAnnotations';
 import type { ChangesetReviewState } from '../data/useChangesetReview';
 import {
   KIND_LABEL,
+  STATE_LABEL,
   describeChange,
   valueAt,
+  type ChangeOutcome,
+  type ItemState,
+  type LinkEnd,
   type ReviewItem,
   type ReviewModel,
   type Verdict,
@@ -94,6 +101,67 @@ function WhatChanges({ item }: { item: ReviewItem }) {
     <p className={`drv-text-block${item.kind === 'delete' ? ' drv-text-block--before' : ''}`}>
       {description ?? '(no description)'}
     </p>
+  );
+}
+
+/** What the change does, in words, beside its chip. */
+function changeWords(item: ReviewItem): string {
+  switch (item.kind) {
+    case 'add':
+      return 'new in this changeset';
+    case 'link-add':
+      return 'a new link';
+    case 'update':
+      return `changes ${plural(item.fields.length, 'field')}`;
+    case 'delete':
+      return 'removes it from the model';
+    case 'link-delete':
+      return 'removes the link';
+  }
+}
+
+const BAND_VERB: Record<ReviewItem['kind'], string> = {
+  add: 'Adds to',
+  update: 'Changes in',
+  delete: 'Removes from',
+  'link-add': 'Adds a link',
+  'link-delete': 'Removes a link',
+};
+
+/** "Adds to · Product layer · as a feature", in the layer's colour; for a link, the layers it joins. */
+function LayerBand({ item }: { item: ReviewItem }) {
+  const color = layerColor(item.ends ? item.ends.source.layerId : item.layerId);
+  const where = item.ends
+    ? item.ends.source.layerId === item.ends.target.layerId
+      ? `within ${layerLabel(item.ends.source.layerId)}`
+      : `${layerLabel(item.ends.source.layerId)} → ${layerLabel(item.ends.target.layerId)}`
+    : `${layerLabel(item.layerId)} layer`;
+  const type = item.link ? item.link.predicate : (item.record.after ?? item.record.before)?.type;
+  return (
+    <div
+      className="drv-band"
+      style={{
+        borderColor: `color-mix(in srgb, ${color} 45%, transparent)`,
+        background: `color-mix(in srgb, ${color} 9%, transparent)`,
+      }}
+      data-testid="change-layer-band"
+    >
+      <span aria-hidden="true" className="drv-band__bar" style={{ background: color }} />
+      <span className="drv-band__body">
+        <span style={{ display: 'flex', flexDirection: 'column' }}>
+          <span className="drv-eyebrow">{BAND_VERB[item.kind]}</span>
+          <span style={{ fontWeight: 600, fontSize: 14, color: 'rgb(var(--canvas-fg-1))' }}>{where}</span>
+        </span>
+        {typeof type === 'string' && type && (
+          <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
+            <span className="drv-eyebrow">{item.link ? 'predicate' : 'as a'}</span>
+            <span className="drv-mono" style={{ fontSize: 12.5, color: 'rgb(var(--canvas-fg-1))' }}>
+              {type}
+            </span>
+          </span>
+        )}
+      </span>
+    </div>
   );
 }
 
@@ -265,11 +333,14 @@ export function ChangeInspector({
   model,
   review,
   staged,
+  outcome = null,
 }: {
   item: ReviewItem;
   model: ReviewModel;
   review: ChangesetReviewState;
   staged: boolean;
+  /** Set once the changeset is settled: shown in place of the reviewer's decision. */
+  outcome?: ChangeOutcome | null;
 }) {
   const selectChange = useUiStore((s) => s.selectChange);
   const decision = model.decisions.get(item.seq);
@@ -291,6 +362,7 @@ export function ChangeInspector({
       i.seq !== item.seq &&
       ((i.link && (ends.has(i.link.source) || ends.has(i.link.target))) || (!i.link && ends.has(i.elementId))),
   );
+  const position = model.items.indexOf(item) + 1;
   const source = sourceOf(item);
   const origin = originOf(item.record);
   const diffLines = showJson ? buildDiffLines(item.record) : [];
@@ -309,23 +381,45 @@ export function ChangeInspector({
           </Button>
         </div>
         <span className="drv-eyebrow">
-          Change · seq {item.seq} · {KIND_LABEL[item.kind]} · {layerLabel(item.layerId)}
+          Change {item.seq} · {position} of {model.items.length}
         </span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <LayerSwatch layerId={item.layerId} height={20} />
-          <span style={{ fontSize: 16, fontWeight: 600, color: 'rgb(var(--canvas-fg-1))', lineHeight: 1.3 }}>
-            {item.link ? item.summary : item.name}
-          </span>
-        </div>
-        <span className="drv-mono drv-muted" style={{ fontSize: 11, wordBreak: 'break-all' }}>
-          {item.elementId}
-        </span>
-        <div className="drv-pills">
-          <OpChip item={item} />
-          <OriginBadge origin={origin} />
-          <VerdictChip state={state} />
-          {revised && <Chip variant="violet">revised since your review</Chip>}
-        </div>
+        <LayerBand item={item} />
+        {item.link ? (
+          <ChangeLinkCard item={item} model={model} />
+        ) : (
+          <>
+            <span style={{ fontSize: 17, fontWeight: 700, color: 'rgb(var(--canvas-fg-1))', lineHeight: 1.3 }}>
+              {item.name}
+            </span>
+            <span className="drv-mono drv-muted" style={{ fontSize: 11, wordBreak: 'break-all' }}>
+              {item.elementId}
+            </span>
+          </>
+        )}
+        <dl className="drv-kv" data-testid="change-kv">
+          <dt>Change</dt>
+          <dd>
+            <OpChip item={item} /> <span className="drv-muted">{changeWords(item)}</span>
+          </dd>
+          <dt>{outcome ? 'Outcome' : 'Your decision'}</dt>
+          <dd>
+            {outcome ? <OutcomeChip outcome={outcome} /> : <VerdictChip state={state} />}
+            {revised && (
+              <>
+                {' '}
+                <Chip variant="violet">revised since your review</Chip>
+              </>
+            )}
+          </dd>
+          {origin && (
+            <>
+              <dt>Decided by</dt>
+              <dd>
+                <OriginBadge origin={origin} /> <span className="drv-muted">{originTitle(origin.by)}</span>
+              </dd>
+            </>
+          )}
+        </dl>
       </div>
 
       {staged && (
@@ -395,9 +489,15 @@ export function ChangeInspector({
         </Section>
       )}
 
-      <Section label={item.kind === 'update' ? 'What changes' : item.link ? 'Link' : 'Description'}>
-        <WhatChanges item={item} />
-      </Section>
+      {!item.link && (
+        <Section label={item.kind === 'update' ? 'What changes' : 'Description'}>
+          <WhatChanges item={item} />
+        </Section>
+      )}
+
+      <ErrorBoundary key={item.seq} what="the neighbourhood">
+        <ChangeNeighbourhood item={item} model={model} />
+      </ErrorBoundary>
 
       {origin && (
         <Section label="Decided by" testId="change-origin">
@@ -406,29 +506,30 @@ export function ChangeInspector({
         </Section>
       )}
 
-      {source && (
-        <Section label="Source">
-          {(source.locations ?? []).map((l, i) => (
-            <span key={i} className="drv-mono" style={{ fontSize: 12, color: 'rgb(var(--canvas-fg-1))', wordBreak: 'break-all' }}>
-              {l.file}
-              {l.symbol ? ` › ${l.symbol}` : ''}
-            </span>
-          ))}
-          {source.provenance && <Chip variant="neutral">{source.provenance}</Chip>}
-        </Section>
-      )}
+      <LinksSection item={item} related={related} model={model} onOpen={selectChange} settled={outcome !== null} />
 
-      <Section label={`Links in this changeset · ${related.length}`} testId="change-related">
-        {related.length === 0 ? (
-          <span className="drv-muted" style={{ fontSize: 12.5 }}>
-            None.
-          </span>
-        ) : (
-          <div className="drv-links-list">
-            {related.map((r) => (
-              <RelatedRow key={r.seq} item={r} model={model} onOpen={() => selectChange(r.seq)} />
+      <Section label="Source reference" testId="change-source">
+        {source && (source.locations ?? []).length > 0 ? (
+          <>
+            {(source.locations ?? []).map((l, i) => (
+              <span key={i} className="drv-mono" style={{ fontSize: 12, color: 'rgb(var(--canvas-fg-1))', wordBreak: 'break-all' }}>
+                {l.file}
+                {l.symbol ? ` › ${l.symbol}` : ''}
+              </span>
             ))}
-          </div>
+            {source.provenance && <Chip variant="neutral">{source.provenance}</Chip>}
+          </>
+        ) : (
+          <>
+            <span className="drv-muted" style={{ fontSize: 12.5 }} data-testid="change-source-none">
+              {item.link ? "Links don't carry one; see each end's element." : 'None yet: nothing points this element at code.'}
+            </span>
+            {!item.link && item.kind === 'add' && (
+              <span className="drv-muted" style={{ fontSize: 11.5 }}>
+                A planned element gets one when it&apos;s built and the as-built references are adopted.
+              </span>
+            )}
+          </>
         )}
       </Section>
 
@@ -462,17 +563,145 @@ function BlockerRow({ direction, text }: { direction: 'in' | 'out'; text: string
   );
 }
 
-function RelatedRow({ item, model, onOpen }: { item: ReviewItem; model: ReviewModel; onOpen: () => void }) {
+/** Where a related change sits relative to the element (or the link's ends). */
+interface RelatedEntry {
+  item: ReviewItem;
+  /** The link's other end, seen from the element it touches. */
+  other?: LinkEnd;
+  dir?: 'out' | 'in';
+  /** For a link change: which end of it this change touches. */
+  at?: 'source' | 'target';
+}
+
+function relatedEntries(item: ReviewItem, related: ReviewItem[]): RelatedEntry[] {
+  const ids = item.ends ? { source: item.ends.source.id, target: item.ends.target.id } : null;
+  const touches = ids ? [ids.source, ids.target] : [item.elementId];
+  return related.map((r): RelatedEntry => {
+    if (!r.ends) return { item: r, at: ids ? (r.elementId === ids.source ? 'source' : 'target') : undefined };
+    const out = touches.includes(r.ends.source.id);
+    const end = out ? r.ends.source.id : r.ends.target.id;
+    return {
+      item: r,
+      dir: out ? 'out' : 'in',
+      other: out ? r.ends.target : r.ends.source,
+      at: ids ? (end === ids.source ? 'source' : 'target') : undefined,
+    };
+  });
+}
+
+function RelatedRow({
+  entry,
+  model,
+  onOpen,
+  settled,
+}: {
+  entry: RelatedEntry;
+  model: ReviewModel;
+  onOpen: () => void;
+  settled: boolean;
+}) {
+  const { item, other, dir, at } = entry;
+  const state = model.stateOf(item.seq);
+  const showState = !settled && state !== 'keep';
   return (
-    <>
-      <span className="drv-mono drv-muted">{item.seq}</span>
-      <span>
-        <button type="button" className="drv-linkbtn" style={{ fontWeight: 400 }} onClick={onOpen}>
-          {describeChange(item.record, model.nameOf)}
-        </button>{' '}
-        <VerdictChip state={model.stateOf(item.seq)} />
+    <button type="button" className="drv-relrow" onClick={onOpen} data-testid="related-row" data-seq={item.seq}>
+      <span className="drv-relrow__arrow" aria-hidden="true">
+        {dir === 'out' ? '→' : dir === 'in' ? '←' : '·'}
       </span>
-    </>
+      <span className="drv-chain__pred" aria-hidden="true">
+        {item.link ? item.link.predicate : KIND_LABEL[item.kind]}
+      </span>
+      <span className="drv-relrow__who" aria-hidden="true">
+        <span className="drv-relrow__name">
+          <span className="drv-relrow__text">{other ? other.name : item.name}</span>
+          {other?.isNew && <span className="drv-new">NEW</span>}
+          {showState && <VerdictChip state={state} />}
+        </span>
+        <span className="drv-row__type">
+          {other && (
+            <span className="drv-end__dot" style={{ background: layerColor(other.layerId), width: 6, height: 6, display: 'inline-block', marginRight: 4 }} />
+          )}
+          {other ? `${layerLabel(other.layerId).toLowerCase()} · ${other.type}` : item.typeLabel}
+          {at ? ` · at the ${at}` : ''} · change {item.seq}
+        </span>
+      </span>
+      <span className="drv-sr-only">
+        {item.link ? describeChange(item.record, model.nameOf) : `${KIND_LABEL[item.kind]} ${item.name}`}, change {item.seq}
+        {other?.isNew ? `, ${other.name} is new` : ''}
+        {showState ? `, ${STATE_LABEL[state]}` : ''}
+      </span>
+    </button>
+  );
+}
+
+function LinksSection({
+  item,
+  related,
+  model,
+  onOpen,
+  settled,
+}: {
+  item: ReviewItem;
+  related: ReviewItem[];
+  model: ReviewModel;
+  onOpen: (seq: number) => void;
+  settled: boolean;
+}) {
+  const entries = relatedEntries(item, related);
+  const links = entries.filter((e) => e.item.ends);
+  const others = entries.filter((e) => !e.item.ends);
+  const counts = new Map<ItemState, number>();
+  for (const e of links) {
+    const st = model.stateOf(e.item.seq);
+    counts.set(st, (counts.get(st) ?? 0) + 1);
+  }
+  const tallyText = [...counts].map(([st, n]) => `${n} ${STATE_LABEL[st].toLowerCase()}`).join(' · ');
+  const block = (label: string, list: RelatedEntry[], testId: string) =>
+    list.length > 0 && (
+      <div data-testid={testId} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+        <span className="drv-muted" style={{ fontSize: 11.5 }}>
+          {label} · {list.length}
+        </span>
+        <div role="list" aria-label={label}>
+          {list.map((e) => (
+            <div role="listitem" key={e.item.seq}>
+              <RelatedRow entry={e} model={model} onOpen={() => onOpen(e.item.seq)} settled={settled} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  const title = item.link ? `Other changes on these ends · ${entries.length}` : `Links in this changeset · ${links.length}`;
+  return (
+    <Section label={title} testId="change-related">
+      {entries.length === 0 ? (
+        <span className="drv-muted" style={{ fontSize: 12.5 }}>
+          None.
+        </span>
+      ) : item.link ? (
+        <>
+          {block('At the source', entries.filter((e) => e.at === 'source'), 'related-source')}
+          {block('At the target', entries.filter((e) => e.at === 'target'), 'related-target')}
+          <span className="drv-muted" style={{ fontSize: 11 }}>
+            Arrows are relative to the end they touch: → out of it, ← into it.
+          </span>
+        </>
+      ) : (
+        <>
+          {tallyText && !settled && (
+            <span className="drv-muted" style={{ fontSize: 11.5 }}>
+              Your decisions: {tallyText}
+            </span>
+          )}
+          {block(`Out of ${item.name}`, links.filter((e) => e.dir === 'out'), 'related-out')}
+          {block(`Into ${item.name}`, links.filter((e) => e.dir === 'in'), 'related-in')}
+          {block('Other changes to it', others, 'related-other')}
+          <span className="drv-muted" style={{ fontSize: 11 }}>
+            Each row opens that change.{settled ? '' : ' A decision shows only when it isn\u2019t Keep.'}
+          </span>
+        </>
+      )}
+    </Section>
   );
 }
 

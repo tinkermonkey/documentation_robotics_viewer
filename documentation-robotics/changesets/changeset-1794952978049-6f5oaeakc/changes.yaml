@@ -1,0 +1,912 @@
+- type: add
+  elementId: motivation.requirement.each-review-change-reads-on-its-own
+  layerName: motivation
+  after:
+    id: 76c0c4a0-d4cc-4f6e-8fba-73912268beb3
+    path: motivation.requirement.each-review-change-reads-on-its-own
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Each review change reads on its own
+    description: "A reviewer can judge any change in a changeset from the review
+      list and the change inspector alone: what it does, what they decided,
+      which layer it lands in, and how a link's ends connect, without reading
+      its raw id."
+    attributes:
+      requirementType: functional
+      priority: high
+      documentation: "Verified on a large changeset (mcp-gateway-use-cases, 293
+        changes): the change chip and the decision are labelled and shaped
+        differently; no chip reuses the word 'source' for anything but a source
+        reference; a link shows source → predicate → target with each end's
+        type, layer and whether this changeset adds it; an element's links list
+        direction, predicate and the other end's type and layer."
+    metadata:
+      created_at: 2026-11-17T22:03:39.502Z
+      updated_at: 2026-11-17T22:03:39.502Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 0
+- type: add
+  elementId: motivation.requirement.viewer-covers-every-spec-layer
+  layerName: motivation
+  after:
+    id: f8781526-b50a-47a4-9ec1-49b7bf05f9ba
+    path: motivation.requirement.viewer-covers-every-spec-layer
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Viewer covers every spec layer
+    description: Every layer in the DR spec the server reports has a colour, a label
+      and a place in the layer order; nothing falls back to grey, and no count
+      of layers is written into the UI.
+    attributes:
+      requirementType: functional
+      priority: high
+      documentation: Spec 0.12+ has 13 layers with Product as layer 3; the viewer knew
+        12, so Product elements rendered with a grey swatch and the left rail
+        said '12 layers'.
+    metadata:
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset
+      adds."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+          symbol: ChangesetReviewPanel
+    metadata:
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationcomponent.change-inspector
+  layerName: application
+  after:
+    id: aa83f5b0-d62e-449d-96ca-b71ea2af054f
+    path: application.applicationcomponent.change-inspector
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Change Inspector
+    description: "The Changesets inspector column with a change selected. Header: an
+      'Adds to <Layer> layer as a <type>' band in the layer's colour, then
+      labelled Change / Your decision / Decided by rows. A link change shows the
+      Change Link Card. Links in this changeset are grouped Out of / Into the
+      element, each row with an arrow, the predicate, the other end's name,
+      type, layer and a NEW mark, and a decision only when it isn't Keep. The
+      Source reference section always shows, saying none yet when there is
+      none."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangeInspector.tsx
+          symbol: ChangeInspector
+    metadata:
+      created_at: 2026-11-17T22:03:39.529Z
+      updated_at: 2026-11-17T22:03:39.529Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 3
+- type: add
+  elementId: application.applicationcomponent.review-parts
+  layerName: application
+  after:
+    id: fa515bb2-c9e5-4eb8-96e1-4fc62604cd61
+    path: application.applicationcomponent.review-parts
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Review Parts
+    description: "Shared review pieces: the change chip (with glyph), the decision
+      pill, the origin badge, the layer swatch and the link chain chip ([source]
+      —predicate→ [target], dashed when an end is added here)."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/reviewParts.tsx
+    metadata:
+      created_at: 2026-11-17T22:03:39.529Z
+      updated_at: 2026-11-17T22:03:39.529Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 4
+- type: add
+  elementId: application.applicationcomponent.change-link-card
+  layerName: application
+  after:
+    id: ba386ee3-a6da-42a8-9e40-eed0694a0cf5
+    path: application.applicationcomponent.change-link-card
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Change Link Card
+    description: "A link change in the inspector as source card → predicate → target
+      card, after the Model view's EdgeInspector (Heimdall GraphEdgeInspector):
+      each card shows layer swatch, type, name, description and NEW or 'in the
+      model'; the predicate shows its meaning (PredicateTooltip). The raw
+      source::predicate::target id folds under Identifier."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-17T22:03:39.530Z
+      updated_at: 2026-11-17T22:03:39.530Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangeLinkCard.tsx
+          symbol: ChangeLinkCard
+  timestamp: 2026-11-18T10:51:04.275Z
+  sequenceNumber: 5
+- type: add
+  elementId: application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    id: add22404-7633-4319-93e1-e7aac7c0cbdf
+    path: application.applicationcomponent.change-neighbourhood
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Change Neighbourhood
+    description: "Compact layer lanes in the change inspector: the selected element
+      (or both ends of a link) and its reach at the inspector's Follow depth,
+      each lane's elements wrapping (a GraphCanvas lanes graph is one row per
+      layer and unreadable at inspector width). The focused element is amber,
+      elements this changeset adds are dashed, other changed ones carry the
+      Impact op outline, elements past the direct links are faded; an element
+      with a change opens it, and Open in Impact focuses the same element
+      there."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-17T22:03:39.530Z
+      updated_at: 2026-11-17T22:03:39.530Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangeNeighbourhood.tsx
+          symbol: ChangeNeighbourhood
+  timestamp: 2026-11-18T10:51:04.275Z
+  sequenceNumber: 6
+- type: add
+  elementId: application.applicationcomponent.apply-review
+  layerName: application
+  after:
+    id: 2a10e552-278c-4119-a2b1-c8f47e40baf7
+    path: application.applicationcomponent.apply-review
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Apply Review
+    description: Apply confirmation (what lands, what's left out, links deleted with
+      their elements) and the applied result, landed by layer. A landed-by-layer
+      row keeps the layer name and its counts apart at any inspector width.
+    attributes:
+      type: internal
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ApplyReview.tsx
+          symbol: ApplyConfirm
+    metadata:
+      created_at: 2026-11-17T22:03:39.530Z
+      updated_at: 2026-11-17T22:03:39.530Z
+      version: 1
+  timestamp: 2026-11-18T10:51:04.275Z
+  sequenceNumber: 7
+- type: add
+  elementId: ux.subview.changeset-review-list
+  layerName: ux
+  after:
+    id: bc016545-eff2-494c-b257-99682e2af843
+    path: ux.subview.changeset-review-list
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Changeset Review List
+    description: "The Changesets view's Review tab: labelled columns, change chips,
+      decision pills and link chains."
+    attributes:
+      title: Review
+    metadata:
+      created_at: 2026-11-17T22:03:39.531Z
+      updated_at: 2026-11-17T22:03:39.531Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 8
+- type: add
+  elementId: ux.subview.change-inspector-panel
+  layerName: ux
+  after:
+    id: 0e6f6f52-4fd2-4b38-b817-a971f6a80329
+    path: ux.subview.change-inspector-panel
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Change Inspector Panel
+    description: "The Changesets view's inspector with one change selected: layer
+      band, labelled change and decision, link card, neighbourhood, links with
+      direction, source reference."
+    attributes:
+      title: Change
+    metadata:
+      created_at: 2026-11-17T22:03:39.536Z
+      updated_at: 2026-11-17T22:03:39.536Z
+      version: 1
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: motivation.requirement.each-review-change-reads-on-its-own::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.each-review-change-reads-on-its-own
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: motivation.requirement.viewer-covers-every-spec-layer::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.viewer-covers-every-spec-layer
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-canvas::composes::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-canvas
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-inspector::composes::application.applicationcomponent.change-inspector
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-inspector
+    target: application.applicationcomponent.change-inspector
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: application.applicationcomponent.change-inspector::composes::application.applicationcomponent.change-link-card
+  layerName: application
+  after:
+    source: application.applicationcomponent.change-inspector
+    target: application.applicationcomponent.change-link-card
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationcomponent.change-inspector::composes::application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    source: application.applicationcomponent.change-inspector
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-review-panel::composes::application.applicationcomponent.apply-review
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-review-panel
+    target: application.applicationcomponent.apply-review
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-review-panel::uses::application.applicationcomponent.review-parts
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-review-panel
+    target: application.applicationcomponent.review-parts
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationcomponent.change-inspector::uses::application.applicationcomponent.review-parts
+  layerName: application
+  after:
+    source: application.applicationcomponent.change-inspector
+    target: application.applicationcomponent.review-parts
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationcomponent.change-link-card::uses::application.applicationcomponent.review-parts
+  layerName: application
+  after:
+    source: application.applicationcomponent.change-link-card
+    target: application.applicationcomponent.review-parts
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.layered-reach::serves::application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    source: application.applicationservice.layered-reach
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::serves::application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.change-link-card
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.change-link-card
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.change-neighbourhood
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: ux.view.changesets-view::composes::ux.subview.changeset-review-list
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: ux.subview.changeset-review-list
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: ux.view.changesets-view::composes::ux.subview.change-inspector-panel
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: ux.subview.change-inspector-panel
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: ux.view.changesets-view::satisfies::motivation.requirement.each-review-change-reads-on-its-own
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: motivation.requirement.each-review-change-reads-on-its-own
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::satisfies::motivation.requirement.viewer-covers-every-spec-layer
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: motivation.requirement.viewer-covers-every-spec-layer
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:39.547Z
+  sequenceNumber: 27
+- type: add
+  elementId: application.applicationservice.changeset-review-model
+  layerName: application
+  after:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, layer and whether this changeset adds it (replacing the 'new
+      source' / 'new target' / 'both ends new' chips); an element item counts
+      its new links out and in."
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/changesetReview.ts
+          symbol: buildReviewModel
+    metadata:
+      created_at: 2026-11-17T22:03:59.328Z
+      updated_at: 2026-11-17T22:03:59.328Z
+      version: 1
+  timestamp: 2026-11-18T10:51:04.275Z
+  sequenceNumber: 28
+- type: add
+  elementId: application.applicationservice.layer-domain-palette
+  layerName: application
+  after:
+    id: 22f728f6-82fc-4fb8-baa6-a624197a96ef
+    path: application.applicationservice.layer-domain-palette
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Layer Domain Palette
+    description: The layer slug → colour, label and order map every view draws
+      layers with, covering all 13 spec layers (Product, layer 3, gets its own
+      colour); the left rail's layer count comes from the spec, not a constant.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/domain.ts
+    metadata:
+      created_at: 2026-11-17T22:03:59.328Z
+      updated_at: 2026-11-17T22:03:59.328Z
+      version: 1
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-review-panel::realizes::application.applicationservice.changeset-review-model
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-review-panel
+    target: application.applicationservice.changeset-review-model
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::serves::application.applicationcomponent.change-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationcomponent.change-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::realizes::business.businessservice.changeset-review
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: business.businessservice.changeset-review
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::satisfies::motivation.requirement.each-review-change-reads-on-its-own
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: motivation.requirement.each-review-change-reads-on-its-own
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.review-parts
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.review-parts
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.graph-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.graph-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.app-shell
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::satisfies::motivation.requirement.viewer-covers-every-spec-layer
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: motivation.requirement.viewer-covers-every-spec-layer
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::satisfies::motivation.requirement.each-review-change-reads-on-its-own
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: motivation.requirement.each-review-change-reads-on-its-own
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-17T22:03:59.341Z
+  sequenceNumber: 41
+- type: update
+  elementId: application.applicationcomponent.changeset-impact-view
+  layerName: application
+  before:
+    id: 45f5d489-3338-4821-82e0-dae0d3684317
+    path: application.applicationcomponent.changeset-impact-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Impact View
+    description: "The Impact tab: every changed element as a reach origin, drawn as
+      heimdall-ui layer lanes (gutter-routed skip-layer links, bundled
+      same-layer links). Clicking a changed element isolates its reach; clicking
+      an element the changeset only reaches shows the changeset's reach through
+      it (the graph holds only the links the changeset's reach travels)."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+          symbol: ChangesetImpactView
+    metadata: &a3
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: 45f5d489-3338-4821-82e0-dae0d3684317
+    path: application.applicationcomponent.changeset-impact-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Impact View
+    description: "The Impact tab: changed elements as reach origins, drawn as
+      heimdall-ui layer lanes. Find (a match focuses that element), Show Changes
+      only / Changes + reach, filters with counts by change, layer, element type
+      and link category, large lanes grouped by type with expand on demand, a
+      focus breadcrumb (one element + its Follow reach) and a results list; the
+      focused element is the same selection as the Review list's."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-17T22:03:59.426Z
+  sequenceNumber: 42
+- type: update
+  elementId: application.applicationservice.changeset-impact-analysis
+  layerName: application
+  before:
+    id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+    path: application.applicationservice.changeset-impact-analysis
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Impact Analysis
+    description: Lays a changeset over the model (staged additions included), nets
+      its ops in order, runs multi-origin computeReach from every changed
+      element and returns the reached subgraph and per-layer blast radius.
+    attributes: &a4
+      serviceType: synchronous
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/changesetImpact.ts
+          symbol: changesetImpact
+    metadata: &a6
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+    path: application.applicationservice.changeset-impact-analysis
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Impact Analysis
+    description: Lays a changeset over the model (staged additions included), nets
+      its ops in order, runs multi-origin computeReach from every changed
+      element and returns the reached subgraph and per-layer blast radius;
+      narrows it to a filter (change, layer, type, link category), a name
+      search, or one focused element's reach, with per-facet counts, and groups
+      a large lane's elements by type.
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-17T22:03:59.513Z
+  sequenceNumber: 43
+- type: update
+  elementId: ux.subview.changeset-impact-tab
+  layerName: ux
+  before:
+    id: f80be9c7-b219-41e8-874e-dafd31c26402
+    path: ux.subview.changeset-impact-tab
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Changeset Impact Tab
+    description: "The Changesets view's Impact tab: layer lanes of what the changed
+      elements reach, with Follow and Labels controls."
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetImpactView.tsx
+          symbol: ChangesetImpactView
+    metadata: &a8
+      created_at: 2026-11-12T13:45:15.985Z
+      updated_at: 2026-11-12T13:45:15.985Z
+      version: 1
+  after:
+    id: f80be9c7-b219-41e8-874e-dafd31c26402
+    path: ux.subview.changeset-impact-tab
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Changeset Impact Tab
+    description: "The Changesets view's Impact tab: layer lanes of what the changed
+      elements reach, with Find, Show, Follow, filter facets, grouped large
+      lanes and a focus breadcrumb."
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-17T22:03:59.617Z
+  sequenceNumber: 44
+- type: update
+  elementId: business.businessservice.changeset-review
+  layerName: business
+  before:
+    id: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+    path: business.businessservice.changeset-review
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Changeset Review
+    description: "Review a changeset before it lands: its op-coded change list with
+      before/after diffs, its Impact (what it reaches outside itself, as layer
+      lanes, plus a blast-radius summary), and Apply / Discard for a staged
+      changeset."
+    source_reference: &a9
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: &a10
+      created_at: 2026-03-20T13:40:23.062Z
+      updated_at: 2026-03-20T13:40:23.062Z
+      version: 1
+  after:
+    id: 03823476-93f8-4ab4-8c51-cd93bf459ff0
+    path: business.businessservice.changeset-review
+    spec_node_id: business.businessservice
+    type: businessservice
+    layer_id: business
+    name: Changeset Review
+    description: "Review a changeset before it lands, change by change: each change
+      labelled with what it does and what you decided (Keep / Drop / Ask DrBot),
+      links shown source → predicate → target, its Impact (what it reaches
+      outside itself, with find, filters and focus), and Apply / Discard for a
+      staged changeset."
+    source_reference: *a9
+    metadata: *a10
+  timestamp: 2026-11-17T22:03:59.689Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.review-parts
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.review-parts
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 46
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.changeset-review-panel
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.change-inspector
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.change-inspector
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::serves::application.applicationcomponent.change-link-card
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationcomponent.change-link-card
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::serves::application.applicationcomponent.apply-review
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationcomponent.apply-review
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 50
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.changeset-review-model
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.changeset-review-model
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 51
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.layer-domain-palette
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.layer-domain-palette
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-17T22:04:12.901Z
+  sequenceNumber: 52
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-17T22:04:24.922Z
+  sequenceNumber: 53

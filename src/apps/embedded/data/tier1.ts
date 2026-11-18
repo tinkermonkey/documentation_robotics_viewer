@@ -222,7 +222,7 @@ export function originFilterOptions(
 
 // ─── Tier 1 status ────────────────────────────────────────────────────────────
 
-const TIER1_STATES: readonly string[] = ['off', 'misconfigured', 'no-credentials', 'on', 'capped'];
+const TIER1_STATES: readonly string[] = ['off', 'misconfigured', 'no-credentials', 'on', 'warming', 'capped'];
 
 /**
  * The body as a Tier1Status the panel can render, or null when it isn't one
@@ -311,6 +311,7 @@ export function toTier1Status(raw: unknown): Tier1Status | null {
 
 export const TIER1_STATE_LABEL: Record<Tier1State, string> = {
   on: 'on',
+  warming: 'warming up',
   capped: 'capped',
   off: 'off',
   misconfigured: 'misconfigured',
@@ -320,6 +321,7 @@ export const TIER1_STATE_LABEL: Record<Tier1State, string> = {
 /** Chip colour per state (Heimdall StatusColor). */
 export const TIER1_STATE_COLOR: Record<Tier1State, 'emerald' | 'amber' | 'rose' | 'neutral'> = {
   on: 'emerald',
+  warming: 'emerald',
   capped: 'rose',
   off: 'neutral',
   misconfigured: 'rose',

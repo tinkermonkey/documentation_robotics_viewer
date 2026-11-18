@@ -16,10 +16,10 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 18    |
-| Intra-Layer Relationships | 24    |
-| Inter-Layer Relationships | 28    |
-| Inbound Relationships     | 28    |
+| Elements                  | 20    |
+| Intra-Layer Relationships | 26    |
+| Inter-Layer Relationships | 33    |
+| Inbound Relationships     | 33    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
@@ -44,7 +44,9 @@ flowchart LR
     motivation_principle_read_first_always["Read First, Always"]
     motivation_principle_zustand_only_state_management["Zustand-Only State Management"]
     motivation_requirement_dr_cli_server_integration["DR CLI Server Integration"]
+    motivation_requirement_each_review_change_reads_on_its_own["Each review change reads on its own"]
     motivation_requirement_embedded_deployment_mode["Embedded Deployment Mode"]
+    motivation_requirement_viewer_covers_every_spec_layer["Viewer covers every spec layer"]
     motivation_requirement_wcag_21_aa_compliance["WCAG 2.1 AA Compliance"]
     motivation_stakeholder_architecture_team["Architecture Team"]
     motivation_stakeholder_development_team["Development Team"]
@@ -65,7 +67,9 @@ flowchart LR
     motivation_principle_read_first_always -->|influence| motivation_goal_accelerate_architecture_documentation
     motivation_principle_zustand_only_state_management -->|influence| motivation_requirement_dr_cli_server_integration
     motivation_requirement_dr_cli_server_integration -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
+    motivation_requirement_each_review_change_reads_on_its_own -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_embedded_deployment_mode -->|realizes| motivation_goal_accelerate_architecture_documentation
+    motivation_requirement_viewer_covers_every_spec_layer -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_wcag_21_aa_compliance -->|realizes| motivation_goal_ensure_accessible_architecture_views
     motivation_stakeholder_architecture_team -->|associated-with| motivation_requirement_dr_cli_server_integration
     motivation_stakeholder_architecture_team -->|influence| motivation_goal_visualize_multi_layer_architecture_models
@@ -105,36 +109,41 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                       | Source Node                                   | Dest Node                                                   | Dest Layer   | Predicate   | Cardinality  | Strength |
-| ------------------------------------------------------------------------------------- | --------------------------------------------- | ----------------------------------------------------------- | ------------ | ----------- | ------------ | -------- |
-| `03823476-93f8-4ab4-8c51-cd93bf459ff0-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `03823476-93f8-4ab4-8c51-cd93bf459ff0`        | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                      | `motivation` | `realizes`  | unknown      | unknown  |
-| `13b1a5ff-1cea-4ca0-b557-81f4629f2736-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `13b1a5ff-1cea-4ca0-b557-81f4629f2736`        | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `35295e18-08a8-4ca0-ada3-40a017cb4318-realizes-462e2931-4c7c-4051-a9ac-8817c270d650`  | `35295e18-08a8-4ca0-ada3-40a017cb4318`        | `462e2931-4c7c-4051-a9ac-8817c270d650`                      | `motivation` | `realizes`  | unknown      | unknown  |
-| `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`        | `e748118c-b989-43fe-b0d2-9121e931fcd2`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`        | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                      | `motivation` | `realizes`  | unknown      | unknown  |
-| `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`        | `e748118c-b989-43fe-b0d2-9121e931fcd2`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`        | `fc86a033-81bd-4933-abb8-b24076577123`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration` | `motivation.goal.visualize-multi-layer-architecture-models` | `motivation` | `realizes`  | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.annotation-id`   | `motivation.constraint.type-script-strict-mode`             | `motivation` | `satisfies` | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.changeset-id`    | `motivation.constraint.type-script-strict-mode`             | `motivation` | `satisfies` | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.element-id`      | `motivation.constraint.type-script-strict-mode`             | `motivation` | `satisfies` | many-to-many | medium   |
-| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`        | `e748118c-b989-43fe-b0d2-9121e931fcd2`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `53fad2bb-e97d-44a2-83cf-61201e992163`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9df37bbd-8ffd-4d80-899f-9437aa03282a` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `9df37bbd-8ffd-4d80-899f-9437aa03282a`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9fe1281a-2547-416f-872f-38e1b066db15` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `9fe1281a-2547-416f-872f-38e1b066db15`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `e748118c-b989-43fe-b0d2-9121e931fcd2`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `462e2931-4c7c-4051-a9ac-8817c270d650`                      | `motivation` | `supports`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`        | `ef84b64d-883c-4471-9b56-a58574bac2b9`                      | `motivation` | `supports`  | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`        | `fc86a033-81bd-4933-abb8-b24076577123`                      | `motivation` | `satisfies` | unknown      | unknown  |
-| `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`        | `731285cc-dc15-4c64-a342-a933ce00bd61`                      | `motivation` | `realizes`  | unknown      | unknown  |
-| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`               | `motivation.requirement.dr-cli-server-integration`          | `motivation` | `satisfies` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                     | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies` | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`                                                    | `ux.view.changesets-view`                     | `motivation.goal.enable-real-time-collaboration`            | `motivation` | `supports`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.model-view`                          | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies` | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`                                                    | `ux.view.model-view`                          | `motivation.goal.visualize-multi-layer-architecture-models` | `motivation` | `supports`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.schema-view`                         | `motivation.requirement.wcag-21-aa-compliance`              | `motivation` | `satisfies` | many-to-many | medium   |
+| Relationship ID                                                                       | Source Node                                                | Dest Node                                                    | Dest Layer   | Predicate   | Cardinality  | Strength |
+| ------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ | ------------ | ----------- | ------------ | -------- |
+| `03823476-93f8-4ab4-8c51-cd93bf459ff0-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `03823476-93f8-4ab4-8c51-cd93bf459ff0`                     | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                       | `motivation` | `realizes`  | unknown      | unknown  |
+| `13b1a5ff-1cea-4ca0-b557-81f4629f2736-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `13b1a5ff-1cea-4ca0-b557-81f4629f2736`                     | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `35295e18-08a8-4ca0-ada3-40a017cb4318-realizes-462e2931-4c7c-4051-a9ac-8817c270d650`  | `35295e18-08a8-4ca0-ada3-40a017cb4318`                     | `462e2931-4c7c-4051-a9ac-8817c270d650`                       | `motivation` | `realizes`  | unknown      | unknown  |
+| `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                     | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                       | `motivation` | `realizes`  | unknown      | unknown  |
+| `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-impact-analysis` | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies` | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-review-model`    | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies` | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`      | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies` | many-to-many | medium   |
+| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`                     | `fc86a033-81bd-4933-abb8-b24076577123`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`              | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `realizes`  | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.annotation-id`                | `motivation.constraint.type-script-strict-mode`              | `motivation` | `satisfies` | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.changeset-id`                 | `motivation.constraint.type-script-strict-mode`              | `motivation` | `satisfies` | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.element-id`                   | `motivation.constraint.type-script-strict-mode`              | `motivation` | `satisfies` | many-to-many | medium   |
+| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `53fad2bb-e97d-44a2-83cf-61201e992163`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9df37bbd-8ffd-4d80-899f-9437aa03282a` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `9df37bbd-8ffd-4d80-899f-9437aa03282a`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9fe1281a-2547-416f-872f-38e1b066db15` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `9fe1281a-2547-416f-872f-38e1b066db15`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `462e2931-4c7c-4051-a9ac-8817c270d650`                       | `motivation` | `supports`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `ef84b64d-883c-4471-9b56-a58574bac2b9`                       | `motivation` | `supports`  | unknown      | unknown  |
+| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                     | `fc86a033-81bd-4933-abb8-b24076577123`                       | `motivation` | `satisfies` | unknown      | unknown  |
+| `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                     | `731285cc-dc15-4c64-a342-a933ce00bd61`                       | `motivation` | `realizes`  | unknown      | unknown  |
+| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.architecture-exploration-spec`                  | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies` | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                            | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                  | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                  | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies` | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`                                                    | `ux.view.changesets-view`                                  | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.model-view`                                       | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies` | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`                                                    | `ux.view.model-view`                                       | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.schema-view`                                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies` | many-to-many | medium   |
 
 ## Element Reference
 
@@ -329,15 +338,17 @@ Provide interactive, navigable visualization of 12-layer architecture models usi
 
 #### Relationships
 
-| Type        | Related Element                                           | Predicate   | Direction |
-| ----------- | --------------------------------------------------------- | ----------- | --------- |
-| inter-layer | `business.businessservice.schema-exploration`             | `realizes`  | inbound   |
-| inter-layer | `ux.view.model-view`                                      | `supports`  | inbound   |
-| intra-layer | `motivation.driver.architecture-documentation-complexity` | `influence` | inbound   |
-| intra-layer | `motivation.principle.core-app-architectural-separation`  | `influence` | outbound  |
-| intra-layer | `motivation.principle.core-app-architectural-separation`  | `influence` | inbound   |
-| intra-layer | `motivation.requirement.dr-cli-server-integration`        | `realizes`  | inbound   |
-| intra-layer | `motivation.stakeholder.architecture-team`                | `influence` | inbound   |
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `business.businessservice.schema-exploration`                | `realizes`  | inbound   |
+| inter-layer | `ux.view.model-view`                                         | `supports`  | inbound   |
+| intra-layer | `motivation.driver.architecture-documentation-complexity`    | `influence` | inbound   |
+| intra-layer | `motivation.principle.core-app-architectural-separation`     | `influence` | outbound  |
+| intra-layer | `motivation.principle.core-app-architectural-separation`     | `influence` | inbound   |
+| intra-layer | `motivation.requirement.dr-cli-server-integration`           | `realizes`  | inbound   |
+| intra-layer | `motivation.requirement.each-review-change-reads-on-its-own` | `realizes`  | inbound   |
+| intra-layer | `motivation.requirement.viewer-covers-every-spec-layer`      | `realizes`  | inbound   |
+| intra-layer | `motivation.stakeholder.architecture-team`                   | `influence` | inbound   |
 
 ### Core-App Architectural Separation {#core-app-architectural-separation}
 
@@ -429,6 +440,31 @@ Viewer must connect to DR CLI REST API and WebSocket JSON-RPC endpoint to load a
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`        | outbound  |
 | intra-layer | `motivation.stakeholder.architecture-team`                  | `associated-with` | inbound   |
 
+### Each review change reads on its own {#each-review-change-reads-on-its-own}
+
+**ID**: `motivation.requirement.each-review-change-reads-on-its-own`
+
+**Type**: `requirement`
+
+A reviewer can judge any change in a changeset from the review list and the change inspector alone: what it does, what they decided, which layer it lands in, and how a link's ends connect, without reading its raw id.
+
+#### Attributes
+
+| Name            | Value                                                                                                                                                                                                                                                                                                                                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| documentation   | Verified on a large changeset (mcp-gateway-use-cases, 293 changes): the change chip and the decision are labelled and shaped differently; no chip reuses the word 'source' for anything but a source reference; a link shows source → predicate → target with each end's type, layer and whether this changeset adds it; an element's links list direction, predicate and the other end's type and layer. |
+| priority        | high                                                                                                                                                                                                                                                                                                                                                                                                      |
+| requirementType | functional                                                                                                                                                                                                                                                                                                                                                                                                |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.changeset-impact-analysis`  | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.changeset-review-model`     | `satisfies` | inbound   |
+| inter-layer | `ux.view.changesets-view`                                   | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
+
 ### Embedded Deployment Mode {#embedded-deployment-mode}
 
 **ID**: `motivation.requirement.embedded-deployment-mode`
@@ -450,6 +486,30 @@ Viewer must support deployment as an embedded iframe within the DR CLI local web
 | ----------- | ------------------------------------------------------- | ------------ | --------- |
 | intra-layer | `motivation.constraint.browser-only-deployment`         | `constrains` | inbound   |
 | intra-layer | `motivation.goal.accelerate-architecture-documentation` | `realizes`   | outbound  |
+
+### Viewer covers every spec layer {#viewer-covers-every-spec-layer}
+
+**ID**: `motivation.requirement.viewer-covers-every-spec-layer`
+
+**Type**: `requirement`
+
+Every layer in the DR spec the server reports has a colour, a label and a place in the layer order; nothing falls back to grey, and no count of layers is written into the UI.
+
+#### Attributes
+
+| Name            | Value                                                                                                                                                     |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| documentation   | Spec 0.12+ has 13 layers with Product as layer 3; the viewer knew 12, so Product elements rendered with a grey swatch and the left rail said '12 layers'. |
+| priority        | high                                                                                                                                                      |
+| requirementType | functional                                                                                                                                                |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.layer-domain-palette`       | `satisfies` | inbound   |
+| inter-layer | `ux.uxspec.architecture-exploration-spec`                   | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
 
 ### WCAG 2.1 AA Compliance {#wcag-2-1-aa-compliance}
 
@@ -543,4 +603,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0

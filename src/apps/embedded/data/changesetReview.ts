@@ -84,6 +84,17 @@ export interface ReviewLink {
   predicate: string;
 }
 
+/** One end of a link change, as the review shows it. */
+export interface LinkEnd {
+  id: string;
+  name: string;
+  layerId: string;
+  /** Element type (from the dotted id `{layer}.{type}.{slug}`). */
+  type: string;
+  /** This changeset adds the element. */
+  isNew: boolean;
+}
+
 export interface ReviewItem {
   seq: number;
   kind: ChangeKind;
@@ -104,6 +115,11 @@ export interface ReviewItem {
   blockers: DeleteBlocker[];
   /** Relationship changes: the endpoints. */
   link?: ReviewLink;
+  /** Relationship changes: each end's name, type, layer and whether this changeset adds it. */
+  ends?: { source: LinkEnd; target: LinkEnd };
+  /** Element adds: the links this changeset adds out of and into it. */
+  linksOut?: number;
+  linksIn?: number;
   /** Updates: whether "Keep N routine" may decide it (its name and type stay). */
   bulkEligible: boolean;
   record: ChangeRecord;
@@ -319,14 +335,20 @@ export function toReviewItems(
   const addedIds = new Set(
     changes.filter((c) => changeKind(c) === 'add' && c.elementId).map((c) => c.elementId as string),
   );
-  const linkCount = new Map<string, number>();
+  const linksOut = new Map<string, number>();
+  const linksIn = new Map<string, number>();
   for (const c of changes) {
     if (changeKind(c) !== 'link-add' || cancelled.has(c.sequenceNumber ?? -1)) continue;
     const l = linkOf(c);
     if (!l) continue;
-    for (const end of [l.source, l.target]) linkCount.set(end, (linkCount.get(end) ?? 0) + 1);
+    linksOut.set(l.source, (linksOut.get(l.source) ?? 0) + 1);
+    linksIn.set(l.target, (linksIn.get(l.target) ?? 0) + 1);
   }
   const nameFor = (id: string) => nameOf(id) ?? nameFromId(id);
+  const endOf = (id: string): LinkEnd => {
+    const [layerId = '', type = 'element'] = id.split('.');
+    return { id, name: nameFor(id), layerId, type, isNew: addedIds.has(id) };
+  };
 
   return changes
     .filter((c) => c.sequenceNumber !== undefined && !cancelled.has(c.sequenceNumber))
@@ -343,13 +365,8 @@ export function toReviewItems(
 
       if (kind === 'link-add' || kind === 'link-delete') {
         const link = linkOf(record) ?? { source: elementId, target: '', predicate: '' };
-        const srcNew = addedIds.has(link.source);
-        const tgtNew = addedIds.has(link.target);
-        if (kind === 'link-add') {
-          if (srcNew && tgtNew) chips.push('both ends new');
-          else if (srcNew) chips.push('new source');
-          else if (tgtNew) chips.push('new target');
-        }
+        // Whether an end is new shows on the end itself (a dashed chip), not as a chip of its own:
+        // "new source" read as a source reference.
         return {
           seq,
           kind,
@@ -363,6 +380,7 @@ export function toReviewItems(
           chips,
           blockers: [],
           link,
+          ends: { source: endOf(link.source), target: endOf(link.target) },
           bulkEligible: false,
           record,
         } satisfies ReviewItem;
@@ -394,9 +412,10 @@ export function toReviewItems(
       }
 
       const description = asString(obj.description);
+      const out = linksOut.get(elementId) ?? 0;
+      const into = linksIn.get(elementId) ?? 0;
       if (kind === 'add') {
-        const n = linkCount.get(elementId) ?? 0;
-        if (n > 0) chips.push(plural(n, 'link'));
+        if (out + into > 0) chips.push(`${plural(out + into, 'new link')} · ${out} out · ${into} in`);
         else chips.push('no links');
       }
       if (blockers.length > 0) chips.push(`${plural(blockers.length, 'link')} still ${blockers.length === 1 ? 'uses' : 'use'} it`);
@@ -412,6 +431,7 @@ export function toReviewItems(
         summary: description ?? (kind === 'add' ? `Adds this ${type}` : `Removes this ${type}`),
         chips,
         blockers,
+        ...(kind === 'add' ? { linksOut: out, linksIn: into } : {}),
         bulkEligible: false,
         record,
       } satisfies ReviewItem;
@@ -932,10 +952,11 @@ export function groupReviewItems(
 
 // ─── Labels ───────────────────────────────────────────────────────────────────
 
+/** What a change does: the Change column's chip (a glyph, then the noun). */
 export const KIND_LABEL: Record<ChangeKind, string> = {
-  add: 'add',
-  update: 'update',
-  delete: 'delete',
+  add: '+ element',
+  update: '~ update',
+  delete: '− delete',
   'link-add': '+ link',
   'link-delete': '− link',
 };
@@ -949,12 +970,38 @@ export const KIND_COLOR: Record<ChangeKind, 'emerald' | 'cyan' | 'rose'> = {
   'link-delete': 'rose',
 };
 
+/**
+ * What became of a settled changeset's changes: every change still listed in
+ * a committed changeset landed (those dropped at Apply are tombstones, shown
+ * as left out), and none of a discarded one did. Null while it is staged,
+ * when the rows show the reviewer's decision instead. A changeset applied
+ * without a change-by-change review has no decisions, so showing them there
+ * would read "Needs decision" on every row.
+ */
+export type ChangeOutcome = 'landed' | 'not-applied';
+
+export function outcomeOf(status: string | undefined): ChangeOutcome | null {
+  if (status === 'committed') return 'landed';
+  if (status === 'discarded') return 'not-applied';
+  return null;
+}
+
+/** What the reviewer decided: the Your decision column's pill (an outlined pill, never a filled chip). */
 export const STATE_LABEL: Record<ItemState, string> = {
-  keep: 'kept',
-  drop: 'dropped',
-  ask: 'asked DrBot',
-  undecided: 'needs decision',
-  cascaded: 'left out',
+  keep: 'Keep',
+  drop: 'Drop',
+  ask: 'Ask DrBot',
+  undecided: 'Needs decision',
+  cascaded: 'Left out',
+};
+
+/** The decision pill's glyph, so a decision never relies on colour alone. */
+export const STATE_GLYPH: Record<ItemState, string> = {
+  keep: '✓',
+  drop: '✕',
+  ask: '?',
+  undecided: '•',
+  cascaded: '↳',
 };
 
 export const STATE_COLOR: Record<ItemState, 'emerald' | 'rose' | 'violet' | 'amber' | 'neutral'> = {

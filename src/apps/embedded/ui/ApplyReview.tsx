@@ -185,10 +185,13 @@ export function AppliedResult({ landed, leftOut, linksDeleted }: AppliedResultPr
 function LandedRow({ layerId, text, onOpen }: { layerId: string; text: string; onOpen: () => void }) {
   return (
     <>
-      <LayerSwatch layerId={layerId} height={18} />
-      <span>{layerLabel(layerId)}</span>
-      <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>
-        {text}
+      <LayerSwatch layerId={layerId} height={30} />
+      {/* Name and counts stack, so they can't run into each other in a narrow inspector. */}
+      <span className="drv-landed__layer">
+        <span>{layerLabel(layerId)}</span>
+        <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>
+          {text}
+        </span>
       </span>
       <Button variant="link" size="sm" onClick={onOpen} aria-label={`Open ${layerLabel(layerId)} in Model`}>
         Open in Model

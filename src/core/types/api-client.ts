@@ -1542,11 +1542,11 @@ export interface components {
         };
         Tier1Status: {
             /**
-             * @description on: Tier 1 runs; capped: opted in and ready, but this month's spend reached the cap (cached answers are still used); off: no tier1.json (the default); misconfigured: tier1.json is unreadable, invalid, tracked by git, too open, or names an unknown provider or model; no-credentials: a key is missing
+             * @description on: Tier 1 runs; warming: on, while the codebase_index job fills the answer cache (warming has its progress); capped: opted in and ready, but this month's spend reached the cap (cached answers are still used); off: no tier1.json (the default); misconfigured: tier1.json is unreadable, invalid, tracked by git, too open, or names an unknown provider or model; no-credentials: a key is missing
              * @enum {string}
              */
-            state: "off" | "misconfigured" | "no-credentials" | "on" | "capped";
-            /** @description Why Tier 1 is not on, for a person: set for every state but on (capped included: the cap, when it resets, how to raise it) */
+            state: "off" | "misconfigured" | "no-credentials" | "on" | "warming" | "capped";
+            /** @description Why Tier 1 is not on, for a person: set for every state but on (capped included: the cap, when it resets, how to raise it; warming: the fill's progress) */
             reason?: string;
             /** @description The analyzer Tier 1 is configured for (the active one, else cbm) */
             analyzer: string;
@@ -1556,12 +1556,39 @@ export interface components {
             provider?: string;
             /** @description The model tier1.json names (on, capped, no-credentials) */
             model?: string;
-            /** @description The provider's model id, e.g. @cf/cloudflare/clef (on and capped only) */
+            /** @description The provider's model id, e.g. @cf/cloudflare/clef (on, warming and capped only) */
             modelId?: string;
             /** @description The cap tier1.json sets, default filled in (on, capped, no-credentials); month.capUsd is always present */
             monthlyCapUsd?: number;
             /** @description Requests in flight at once (on, capped, no-credentials) */
             concurrency?: number;
+            /**
+             * @description stage: codebase_extract stages the accept band (origin confirmed auto) and hides the not-element band without the agent, because the model's default thresholds are verified on held-out labels and tier1.json leaves mode at auto; suggest: nothing is staged or hidden without the agent. Set when tier1.json names a known model
+             * @enum {string}
+             */
+            mode?: "suggest" | "stage";
+            /** @description Why mode: held-out verified defaults, in-sample ones, overridden thresholds, or "mode": "suggest" in tier1.json */
+            modeReason?: string;
+            /** @description OpenRouter only: the routing every request carries (on, capped, no-credentials). OpenRouter's Decisions API is in alpha and may change */
+            routing?: {
+                /** @description The upstreams allowed to receive card text (OpenRouter provider slugs, e.g. cloudflare, deepinfra/fp8) */
+                only: string[];
+                /**
+                 * @description Always false: OpenRouter never falls back to another upstream
+                 * @enum {boolean}
+                 */
+                allowFallbacks: false;
+                /**
+                 * @description Always deny: only upstreams that do not collect the data
+                 * @enum {string}
+                 */
+                dataCollection: "deny";
+                /**
+                 * @description Zero-data-retention endpoints only, when configured
+                 * @enum {boolean}
+                 */
+                zdr?: true;
+            };
             /** @description Per credential the provider needs: whether it is set and where from (never the value); empty when off or misconfigured */
             credentials: {
                 [key: string]: {
@@ -1606,6 +1633,24 @@ export interface components {
             };
             /** @description Whether git ignores .dr/ (null when git cannot say: outside a git work tree, or git is unavailable) */
             dotDrIgnored: boolean | null;
+            /** @description State warming only: how far the codebase_index job's cache fill has got */
+            warming?: {
+                /** @description The codebase_index job filling the cache */
+                jobId: string;
+                /** @description When the fill started (ISO 8601) */
+                startedAt: string;
+                /** @description Null while the cards are still being built */
+                cards: {
+                    /** @description Cards answered from the cache, asked, or skipped so far */
+                    done: number;
+                    /** @description Cards Tier 0 left undecided, which Tier 1 is asked about */
+                    total: number;
+                } | null;
+                /** @description Spent by the fill so far (also in month and bySource.index) */
+                costUsd: number;
+                /** @description About how many seconds the fill has left, from its rate so far or its estimate */
+                etaSeconds?: number;
+            };
             warnings: string[];
             /** @description One line for a person: the state, then this month's spend against the cap (and the 80% warning) */
             summary: string;

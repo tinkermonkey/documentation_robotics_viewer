@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 39    |
-| Intra-Layer Relationships | 59    |
-| Inter-Layer Relationships | 63    |
-| Inbound Relationships     | 37    |
-| Outbound Relationships    | 26    |
+| Elements                  | 47    |
+| Intra-Layer Relationships | 79    |
+| Inter-Layer Relationships | 75    |
+| Inbound Relationships     | 44    |
+| Outbound Relationships    | 31    |
 
 **Cross-Layer References**:
 
@@ -34,15 +34,21 @@ Application components, services, and interactions.
 | Element                                                        | Type                   | Relationships |
 | -------------------------------------------------------------- | ---------------------- | ------------- |
 | `application.applicationcomponent.annotations-section`         | `applicationcomponent` | 2             |
-| `application.applicationcomponent.app-shell`                   | `applicationcomponent` | 7             |
-| `application.applicationcomponent.changeset-canvas`            | `applicationcomponent` | 2             |
-| `application.applicationcomponent.changeset-impact-view`       | `applicationcomponent` | 3             |
-| `application.applicationcomponent.changeset-inspector`         | `applicationcomponent` | 3             |
+| `application.applicationcomponent.app-shell`                   | `applicationcomponent` | 8             |
+| `application.applicationcomponent.apply-review`                | `applicationcomponent` | 2             |
+| `application.applicationcomponent.change-inspector`            | `applicationcomponent` | 5             |
+| `application.applicationcomponent.change-link-card`            | `applicationcomponent` | 3             |
+| `application.applicationcomponent.change-neighbourhood`        | `applicationcomponent` | 3             |
+| `application.applicationcomponent.changeset-canvas`            | `applicationcomponent` | 3             |
+| `application.applicationcomponent.changeset-impact-view`       | `applicationcomponent` | 4             |
+| `application.applicationcomponent.changeset-inspector`         | `applicationcomponent` | 4             |
+| `application.applicationcomponent.changeset-review-panel`      | `applicationcomponent` | 5             |
 | `application.applicationcomponent.chat-panel`                  | `applicationcomponent` | 4             |
-| `application.applicationcomponent.graph-canvas`                | `applicationcomponent` | 7             |
+| `application.applicationcomponent.graph-canvas`                | `applicationcomponent` | 8             |
 | `application.applicationcomponent.inspector-drawer`            | `applicationcomponent` | 7             |
-| `application.applicationcomponent.nav-tree`                    | `applicationcomponent` | 2             |
+| `application.applicationcomponent.nav-tree`                    | `applicationcomponent` | 3             |
 | `application.applicationcomponent.page-view`                   | `applicationcomponent` | 4             |
+| `application.applicationcomponent.review-parts`                | `applicationcomponent` | 4             |
 | `application.applicationfunction.annotation-store`             | `applicationfunction`  | 3             |
 | `application.applicationfunction.auth-store`                   | `applicationfunction`  | 3             |
 | `application.applicationfunction.changeset-store`              | `applicationfunction`  | 2             |
@@ -56,7 +62,8 @@ Application components, services, and interactions.
 | `application.applicationinterface.dr-cli-rest-interface`       | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface` | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                    | `applicationprocess`   | 1             |
-| `application.applicationservice.changeset-impact-analysis`     | `applicationservice`   | 4             |
+| `application.applicationservice.changeset-impact-analysis`     | `applicationservice`   | 5             |
+| `application.applicationservice.changeset-review-model`        | `applicationservice`   | 5             |
 | `application.applicationservice.chat-context-builder`          | `applicationservice`   | 2             |
 | `application.applicationservice.chat-service`                  | `applicationservice`   | 3             |
 | `application.applicationservice.chat-validation`               | `applicationservice`   | 1             |
@@ -65,7 +72,8 @@ Application components, services, and interactions.
 | `application.applicationservice.exception-classifier`          | `applicationservice`   | 2             |
 | `application.applicationservice.generated-api-client`          | `applicationservice`   | 4             |
 | `application.applicationservice.json-rpc-handler`              | `applicationservice`   | 4             |
-| `application.applicationservice.layered-reach`                 | `applicationservice`   | 3             |
+| `application.applicationservice.layer-domain-palette`          | `applicationservice`   | 5             |
+| `application.applicationservice.layered-reach`                 | `applicationservice`   | 4             |
 | `application.applicationservice.model-graph-transform`         | `applicationservice`   | 7             |
 | `application.applicationservice.neighborhood-graph`            | `applicationservice`   | 1             |
 | `application.applicationservice.page-data-builder`             | `applicationservice`   | 4             |
@@ -105,71 +113,83 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                        | Source Node                                                            | Dest Node                                                   | Dest Layer    | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
-| `13b1a5ff-1cea-4ca0-b557-81f4629f2736-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021`  | `13b1a5ff-1cea-4ca0-b557-81f4629f2736`                                 | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                      | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                      | `application` | `references` | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                      | `application` | `references` | unknown      | unknown  |
-| `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04-realizes-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`   | `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04`                                 | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                      | `business`    | `realizes`   | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                      | `application` | `realizes`   | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `8630981b-236c-47ed-b99b-e977c56bdc63`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                      | `application` | `references` | unknown      | unknown  |
-| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-accesses-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                      | `business`    | `accesses`   | unknown      | unknown  |
-| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `35295e18-08a8-4ca0-ada3-40a017cb4318`                      | `business`    | `realizes`   | unknown      | unknown  |
-| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `a47870bf-898b-425f-9f73-92663193355a`                      | `security`    | `requires`   | unknown      | unknown  |
-| `a920ab1c-c481-46b6-bdb4-4050501adeac-realizes-e642ad79-62ea-47a4-ae04-d512d0ef7881`   | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                 | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                      | `business`    | `realizes`   | unknown      | unknown  |
-| `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`     | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                 | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                      | `business`    | `serves`     | unknown      | unknown  |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.commit-changeset`                                       | `application.applicationfunction.changeset-store`           | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                                       | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.create-annotation-reply`                                | `application.applicationfunction.annotation-store`          | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                                | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.discard-changeset`                                      | `application.applicationfunction.changeset-store`           | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                                      | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-annotation`                                         | `application.applicationfunction.annotation-store`          | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-annotation`                                         | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-layer`                                              | `application.applicationfunction.layer-store`               | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-layer`                                              | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.list-annotation-replies`                                | `application.applicationfunction.annotation-store`          | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                                | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.replace-annotation`                                     | `application.applicationfunction.annotation-store`          | `application` | `realizes`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                                     | `application.applicationservice.generated-api-client`       | `application` | `references` | many-to-many | medium   |
-| `apm.metricinstrument.monitors.application.applicationservice`                         | `apm.metricinstrument.web-socket-reconnection-attempt-counter`         | `application.applicationservice.web-socket-client`          | `application` | `monitors`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                           | `data-model.objectschema.chat-message`                      | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                           | `data-model.objectschema.tool-invocation-content`           | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.element-store`                        | `data-model.objectschema.model-element`                     | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.layer`                             | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.model-element`                     | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.predicate-definition`              | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.spec-layer-data`                   | `data-model`  | `accesses`   | many-to-many | medium   |
-| `application.applicationservice.accesses.business.businessobject`                      | `application.applicationservice.changeset-impact-analysis`             | `business.businessobject.changeset`                         | `business`    | `accesses`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-impact-analysis`             | `business.businessservice.changeset-review`                 | `business`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-validation`                       | `business.businessservice.ai-assisted-architecture-chat`    | `business`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.embedded-data-loader`                  | `business.businessservice.architecture-model-visualization` | `business`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.json-rpc-handler`                      | `business.businessprocess.real-time-model-synchronization`  | `business`    | `serves`     | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.model-graph-transform`                 | `business.businessservice.architecture-model-visualization` | `business`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.spec-graph-transform`                  | `business.businessservice.schema-exploration`               | `business`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.web-socket-client`                     | `business.businessprocess.real-time-model-synchronization`  | `business`    | `serves`     | many-to-many | medium   |
-| `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                 | `b7775f1a-2418-4c7a-84aa-997efd658a97`                      | `application` | `references` | unknown      | unknown  |
-| `b7775f1a-2418-4c7a-84aa-997efd658a97-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `35295e18-08a8-4ca0-ada3-40a017cb4318`                      | `business`    | `realizes`   | unknown      | unknown  |
-| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `a47870bf-898b-425f-9f73-92663193355a`                      | `security`    | `requires`   | unknown      | unknown  |
-| `b7775f1a-2418-4c7a-84aa-997efd658a97-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                      | `business`    | `serves`     | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-realizes-3b08f432-72aa-4df6-978c-d76d3312f72b`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                 | `3b08f432-72aa-4df6-978c-d76d3312f72b`                      | `application` | `realizes`   | unknown      | unknown  |
-| `f952fcc0-7c42-4586-a306-a5f2f94a3068-realizes-f1edef84-1298-486c-b347-f47c3b0f9712`   | `f952fcc0-7c42-4586-a306-a5f2f94a3068`                                 | `f1edef84-1298-486c-b347-f47c3b0f9712`                      | `application` | `realizes`   | unknown      | unknown  |
-| `fbd68c51-36fa-48ef-b381-5599d2678a90-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `fbd68c51-36fa-48ef-b381-5599d2678a90`                                 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                      | `business`    | `serves`     | unknown      | unknown  |
-| `ff16c609-618e-4dd9-b477-12e17c000df8-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `ff16c609-618e-4dd9-b477-12e17c000df8`                                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                      | `application` | `realizes`   | unknown      | unknown  |
-| `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                      | `application` | `references` | unknown      | unknown  |
-| `navigation.navigationflow.realizes.application.applicationprocess`                    | `navigation.navigationflow.authentication-to-model-flow`               | `application.applicationprocess.auth-route`                 | `application` | `realizes`   | many-to-many | medium   |
-| `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.app-shell-sectionview-route`                         | `application.applicationcomponent.app-shell`                | `application` | `depends-on` | many-to-many | medium   |
-| `technology.node.serves.application.applicationcomponent`                              | `technology.node.vite-dev-server`                                      | `application.applicationcomponent.app-shell`                | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.app-shell`                | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.changeset-impact-view`    | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.graph-canvas`             | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                            | `application.applicationcomponent.app-shell`                | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                      | `application.applicationcomponent.graph-canvas`             | `application` | `serves`     | many-to-many | medium   |
-| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.chat-service`               | `application` | `covers`     | many-to-many | medium   |
-| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.web-socket-client`          | `application` | `covers`     | many-to-many | medium   |
-| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-impact-analysis`  | `application` | `covers`     | many-to-many | medium   |
-| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layered-reach`              | `application` | `covers`     | many-to-many | medium   |
-| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.model-graph-transform`      | `application` | `covers`     | many-to-many | medium   |
+| Relationship ID                                                                        | Source Node                                                            | Dest Node                                                    | Dest Layer    | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ | ------------- | ------------ | ------------ | -------- |
+| `13b1a5ff-1cea-4ca0-b557-81f4629f2736-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021`  | `13b1a5ff-1cea-4ca0-b557-81f4629f2736`                                 | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                       | `motivation`  | `satisfies`  | unknown      | unknown  |
+| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                       | `application` | `references` | unknown      | unknown  |
+| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                       | `application` | `references` | unknown      | unknown  |
+| `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04-realizes-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`   | `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04`                                 | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`    | `realizes`   | unknown      | unknown  |
+| `8630981b-236c-47ed-b99b-e977c56bdc63-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                       | `application` | `realizes`   | unknown      | unknown  |
+| `8630981b-236c-47ed-b99b-e977c56bdc63-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `8630981b-236c-47ed-b99b-e977c56bdc63`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                       | `application` | `references` | unknown      | unknown  |
+| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-accesses-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                       | `business`    | `accesses`   | unknown      | unknown  |
+| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `35295e18-08a8-4ca0-ada3-40a017cb4318`                       | `business`    | `realizes`   | unknown      | unknown  |
+| `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                 | `a47870bf-898b-425f-9f73-92663193355a`                       | `security`    | `requires`   | unknown      | unknown  |
+| `a920ab1c-c481-46b6-bdb4-4050501adeac-realizes-e642ad79-62ea-47a4-ae04-d512d0ef7881`   | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                 | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                       | `business`    | `realizes`   | unknown      | unknown  |
+| `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`     | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                 | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`    | `serves`     | unknown      | unknown  |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.commit-changeset`                                       | `application.applicationfunction.changeset-store`            | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                                       | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.create-annotation-reply`                                | `application.applicationfunction.annotation-store`           | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                                | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.discard-changeset`                                      | `application.applicationfunction.changeset-store`            | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                                      | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-annotation`                                         | `application.applicationfunction.annotation-store`           | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-annotation`                                         | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-layer`                                              | `application.applicationfunction.layer-store`                | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-layer`                                              | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.list-annotation-replies`                                | `application.applicationfunction.annotation-store`           | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                                | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `api.operation.realizes.application.applicationfunction`                               | `api.operation.replace-annotation`                                     | `application.applicationfunction.annotation-store`           | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                                     | `application.applicationservice.generated-api-client`        | `application` | `references` | many-to-many | medium   |
+| `apm.metricinstrument.monitors.application.applicationservice`                         | `apm.metricinstrument.web-socket-reconnection-attempt-counter`         | `application.applicationservice.web-socket-client`           | `application` | `monitors`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                           | `data-model.objectschema.chat-message`                       | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                           | `data-model.objectschema.tool-invocation-content`            | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.element-store`                        | `data-model.objectschema.model-element`                      | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.layer`                              | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.model-element`                      | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.predicate-definition`               | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.model-store`                          | `data-model.objectschema.spec-layer-data`                    | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.business.businessobject`                      | `application.applicationservice.changeset-impact-analysis`             | `business.businessobject.changeset`                          | `business`    | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-impact-analysis`             | `business.businessservice.changeset-review`                  | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.changeset-impact-analysis`             | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-review-model`                | `business.businessservice.changeset-review`                  | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.changeset-review-model`                | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-validation`                       | `business.businessservice.ai-assisted-architecture-chat`     | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.embedded-data-loader`                  | `business.businessservice.architecture-model-visualization`  | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.json-rpc-handler`                      | `business.businessprocess.real-time-model-synchronization`   | `business`    | `serves`     | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.layer-domain-palette`                  | `business.businessservice.architecture-model-visualization`  | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.layer-domain-palette`                  | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.model-graph-transform`                 | `business.businessservice.architecture-model-visualization`  | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.spec-graph-transform`                  | `business.businessservice.schema-exploration`                | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.web-socket-client`                     | `business.businessprocess.real-time-model-synchronization`   | `business`    | `serves`     | many-to-many | medium   |
+| `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                 | `b7775f1a-2418-4c7a-84aa-997efd658a97`                       | `application` | `references` | unknown      | unknown  |
+| `b7775f1a-2418-4c7a-84aa-997efd658a97-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `35295e18-08a8-4ca0-ada3-40a017cb4318`                       | `business`    | `realizes`   | unknown      | unknown  |
+| `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `a47870bf-898b-425f-9f73-92663193355a`                       | `security`    | `requires`   | unknown      | unknown  |
+| `b7775f1a-2418-4c7a-84aa-997efd658a97-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                       | `business`    | `serves`     | unknown      | unknown  |
+| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-realizes-3b08f432-72aa-4df6-978c-d76d3312f72b`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                 | `3b08f432-72aa-4df6-978c-d76d3312f72b`                       | `application` | `realizes`   | unknown      | unknown  |
+| `f952fcc0-7c42-4586-a306-a5f2f94a3068-realizes-f1edef84-1298-486c-b347-f47c3b0f9712`   | `f952fcc0-7c42-4586-a306-a5f2f94a3068`                                 | `f1edef84-1298-486c-b347-f47c3b0f9712`                       | `application` | `realizes`   | unknown      | unknown  |
+| `fbd68c51-36fa-48ef-b381-5599d2678a90-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `fbd68c51-36fa-48ef-b381-5599d2678a90`                                 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                       | `business`    | `serves`     | unknown      | unknown  |
+| `ff16c609-618e-4dd9-b477-12e17c000df8-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `ff16c609-618e-4dd9-b477-12e17c000df8`                                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                       | `application` | `realizes`   | unknown      | unknown  |
+| `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                       | `application` | `references` | unknown      | unknown  |
+| `navigation.navigationflow.realizes.application.applicationprocess`                    | `navigation.navigationflow.authentication-to-model-flow`               | `application.applicationprocess.auth-route`                  | `application` | `realizes`   | many-to-many | medium   |
+| `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.app-shell-sectionview-route`                         | `application.applicationcomponent.app-shell`                 | `application` | `depends-on` | many-to-many | medium   |
+| `technology.node.serves.application.applicationcomponent`                              | `technology.node.vite-dev-server`                                      | `application.applicationcomponent.app-shell`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.app-shell`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.change-inspector`          | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.change-link-card`          | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.change-neighbourhood`      | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.changeset-impact-view`     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.changeset-review-panel`    | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.graph-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                | `application.applicationcomponent.review-parts`              | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                            | `application.applicationcomponent.app-shell`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                      | `application.applicationcomponent.graph-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.chat-service`                | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.web-socket-client`           | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-impact-analysis`   | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-review-model`      | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layer-domain-palette`        | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layered-reach`               | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.model-graph-transform`       | `application` | `covers`     | many-to-many | medium   |
 
 ## Element Reference
 
@@ -223,6 +243,99 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | intra-layer | `application.applicationcomponent.graph-canvas`        | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.nav-tree`            | `composes`    | outbound  |
 | intra-layer | `application.applicationservice.exception-classifier`  | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.layer-domain-palette`  | `serves`      | inbound   |
+
+### Apply Review {#apply-review}
+
+**ID**: `application.applicationcomponent.apply-review`
+
+**Type**: `applicationcomponent`
+
+Apply confirmation (what lands, what's left out, links deleted with their elements) and the applied result, landed by layer. A landed-by-layer row keeps the layer name and its counts apart at any inspector width.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `application.applicationcomponent.changeset-review-panel` | `composes` | inbound   |
+| intra-layer | `application.applicationservice.changeset-review-model`   | `serves`   | inbound   |
+
+### Change Inspector {#change-inspector}
+
+**ID**: `application.applicationcomponent.change-inspector`
+
+**Type**: `applicationcomponent`
+
+The Changesets inspector column with a change selected. Header: an 'Adds to &lt;Layer&gt; layer as a &lt;type&gt;' band in the layer's colour, then labelled Change / Your decision / Decided by rows. A link change shows the Change Link Card. Links in this changeset are grouped Out of / Into the element, each row with an arrow, the predicate, the other end's name, type, layer and a NEW mark, and a decision only when it isn't Keep. The Source reference section always shows, saying none yet when there is none.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate  | Direction |
+| ----------- | ------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                 | `serves`   | inbound   |
+| intra-layer | `application.applicationcomponent.change-link-card`     | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.change-neighbourhood` | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.review-parts`         | `uses`     | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-inspector`  | `composes` | inbound   |
+| intra-layer | `application.applicationservice.changeset-review-model` | `serves`   | inbound   |
+
+### Change Link Card {#change-link-card}
+
+**ID**: `application.applicationcomponent.change-link-card`
+
+**Type**: `applicationcomponent`
+
+A link change in the inspector as source card → predicate → target card, after the Model view's EdgeInspector (Heimdall GraphEdgeInspector): each card shows layer swatch, type, name, description and NEW or 'in the model'; the predicate shows its meaning (PredicateTooltip). The raw source::predicate::target id folds under Identifier.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate  | Direction |
+| ----------- | ------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                 | `serves`   | inbound   |
+| intra-layer | `application.applicationcomponent.change-inspector`     | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.review-parts`         | `uses`     | outbound  |
+| intra-layer | `application.applicationservice.changeset-review-model` | `serves`   | inbound   |
+
+### Change Neighbourhood {#change-neighbourhood}
+
+**ID**: `application.applicationcomponent.change-neighbourhood`
+
+**Type**: `applicationcomponent`
+
+Compact layer lanes in the change inspector: the selected element (or both ends of a link) and its reach at the inspector's Follow depth, each lane's elements wrapping (a GraphCanvas lanes graph is one row per layer and unreadable at inspector width). The focused element is amber, elements this changeset adds are dashed, other changed ones carry the Impact op outline, elements past the direct links are faded; an element with a change opens it, and Open in Impact focuses the same element there.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                            | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                    | `serves`   | inbound   |
+| intra-layer | `application.applicationcomponent.change-inspector`        | `composes` | inbound   |
+| intra-layer | `application.applicationservice.changeset-impact-analysis` | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.layered-reach`             | `serves`   | inbound   |
 
 ### Changeset Canvas {#changeset-canvas}
 
@@ -240,10 +353,11 @@ The Changesets view's main pane: the op-coded change list with side-by-side diff
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate  | Direction |
-| ----------- | -------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `application.applicationcomponent.app-shell`             | `composes` | inbound   |
-| intra-layer | `application.applicationcomponent.changeset-impact-view` | `composes` | outbound  |
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `application.applicationcomponent.app-shell`              | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.changeset-impact-view`  | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-review-panel` | `composes` | outbound  |
 
 ### Changeset Impact View {#changeset-impact-view}
 
@@ -251,7 +365,7 @@ The Changesets view's main pane: the op-coded change list with side-by-side diff
 
 **Type**: `applicationcomponent`
 
-The Impact tab: every changed element as a reach origin, drawn as heimdall-ui layer lanes (gutter-routed skip-layer links, bundled same-layer links). Clicking a changed element isolates its reach; clicking an element the changeset only reaches shows the changeset's reach through it (the graph holds only the links the changeset's reach travels).
+The Impact tab: changed elements as reach origins, drawn as heimdall-ui layer lanes. Find (a match focuses that element), Show Changes only / Changes + reach, filters with counts by change, layer, element type and link category, large lanes grouped by type with expand on demand, a focus breadcrumb (one element + its Follow reach) and a results list; the focused element is the same selection as the Review list's.
 
 #### Attributes
 
@@ -267,6 +381,7 @@ The Impact tab: every changed element as a reach origin, drawn as heimdall-ui la
 | intra-layer | `application.applicationcomponent.changeset-canvas`        | `composes` | inbound   |
 | intra-layer | `application.applicationservice.changeset-impact-analysis` | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.changeset-impact-analysis` | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.layer-domain-palette`      | `serves`   | inbound   |
 
 ### Changeset Inspector {#changeset-inspector}
 
@@ -287,8 +402,34 @@ The Changesets view's right pane: status, blast radius, added/modified/deleted c
 | Type        | Related Element                                            | Predicate  | Direction |
 | ----------- | ---------------------------------------------------------- | ---------- | --------- |
 | intra-layer | `application.applicationcomponent.app-shell`               | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.change-inspector`        | `composes` | outbound  |
 | intra-layer | `application.applicationservice.changeset-impact-analysis` | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`      | `serves`   | inbound   |
+
+### Changeset Review Panel {#changeset-review-panel}
+
+**ID**: `application.applicationcomponent.changeset-review-panel`
+
+**Type**: `applicationcomponent`
+
+A changeset's Review tab: the summary card, the Show / Group by / Decided by controls and the per-change rows. Columns are labelled (#, Change, Element or link, What it says, Your decision); a change chip carries a glyph (+ element, + link, ~ update, − delete) and the decision is an outlined pill in its own column; a link row is a chain \[source\] —predicate→ \[target\] with a dashed end for an element this changeset adds.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate  | Direction |
+| ----------- | ------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                 | `serves`   | inbound   |
+| intra-layer | `application.applicationcomponent.changeset-canvas`     | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.apply-review`         | `composes` | outbound  |
+| intra-layer | `application.applicationservice.changeset-review-model` | `realizes` | outbound  |
+| intra-layer | `application.applicationcomponent.review-parts`         | `uses`     | outbound  |
+| intra-layer | `application.applicationservice.changeset-review-model` | `serves`   | inbound   |
 
 ### Chat Panel {#chat-panel}
 
@@ -338,6 +479,7 @@ The primary graph-view component for the Model and Schema views; mounts Heimdall
 | intra-layer | `application.applicationcomponent.page-view`             | `composes` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`   | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.relationship-derivation` | `realizes` | outbound  |
+| intra-layer | `application.applicationservice.layer-domain-palette`    | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`   | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.spec-graph-transform`    | `serves`   | inbound   |
 
@@ -383,10 +525,11 @@ Sidebar navigation: an accordion of Model / Schema / Changesets sections, each w
 
 #### Relationships
 
-| Type        | Related Element                              | Predicate     | Direction |
-| ----------- | -------------------------------------------- | ------------- | --------- |
-| intra-layer | `application.applicationcomponent.app-shell` | `composes`    | inbound   |
-| intra-layer | `application.applicationfunction.ui-store`   | `assigned-to` | outbound  |
+| Type        | Related Element                                       | Predicate     | Direction |
+| ----------- | ----------------------------------------------------- | ------------- | --------- |
+| intra-layer | `application.applicationcomponent.app-shell`          | `composes`    | inbound   |
+| intra-layer | `application.applicationfunction.ui-store`            | `assigned-to` | outbound  |
+| intra-layer | `application.applicationservice.layer-domain-palette` | `serves`      | inbound   |
 
 ### Page View {#page-view}
 
@@ -410,6 +553,30 @@ The graph/page toggle's page mode: the full record of a layer, spec node type or
 | intra-layer | `application.applicationservice.page-data-builder`  | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.neighborhood-graph` | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.page-data-builder`  | `serves`   | inbound   |
+
+### Review Parts {#review-parts}
+
+**ID**: `application.applicationcomponent.review-parts`
+
+**Type**: `applicationcomponent`
+
+Shared review pieces: the change chip (with glyph), the decision pill, the origin badge, the layer swatch and the link chain chip (\[source\] —predicate→ \[target\], dashed when an end is added here).
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate | Direction |
+| ----------- | --------------------------------------------------------- | --------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                   | `serves`  | inbound   |
+| intra-layer | `application.applicationcomponent.change-inspector`       | `uses`    | inbound   |
+| intra-layer | `application.applicationcomponent.change-link-card`       | `uses`    | inbound   |
+| intra-layer | `application.applicationcomponent.changeset-review-panel` | `uses`    | inbound   |
+| intra-layer | `application.applicationservice.layer-domain-palette`     | `serves`  | inbound   |
 
 ### Annotation Store {#annotation-store}
 
@@ -638,7 +805,7 @@ TanStack Router route handling token-based authentication via magic link; extrac
 
 **Type**: `applicationservice`
 
-Lays a changeset over the model (staged additions included), nets its ops in order, runs multi-origin computeReach from every changed element and returns the reached subgraph and per-layer blast radius.
+Lays a changeset over the model (staged additions included), nets its ops in order, runs multi-origin computeReach from every changed element and returns the reached subgraph and per-layer blast radius; narrows it to a filter (change, layer, type, link category), a name search, or one focused element's reach, with per-facet counts, and groups a large lane's elements by type.
 
 #### Attributes
 
@@ -652,11 +819,40 @@ Lays a changeset over the model (staged additions included), nets its ops in ord
 | ----------- | ----------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `business.businessobject.changeset`                               | `accesses`   | outbound  |
 | inter-layer | `business.businessservice.changeset-review`                       | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.each-review-change-reads-on-its-own`      | `satisfies`  | outbound  |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-impact-view`          | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`            | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.change-neighbourhood`           | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-impact-view`          | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-inspector`            | `serves`     | outbound  |
+
+### Changeset Review Model {#changeset-review-model}
+
+**ID**: `application.applicationservice.changeset-review-model`
+
+**Type**: `applicationservice`
+
+Pure review model over a changeset: review items, groups, cancel-out pairs, effective decisions, drop cascade, conflicts, since-your-review diff and the apply plan. A link item carries each end's name, type, layer and whether this changeset adds it (replacing the 'new source' / 'new target' / 'both ends new' chips); an element item counts its new links out and in.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                   | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `business.businessservice.changeset-review`                       | `realizes`  | outbound  |
+| inter-layer | `motivation.requirement.each-review-change-reads-on-its-own`      | `satisfies` | outbound  |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `covers`    | inbound   |
+| intra-layer | `application.applicationcomponent.changeset-review-panel`         | `realizes`  | inbound   |
+| intra-layer | `application.applicationcomponent.apply-review`                   | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.change-inspector`               | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.change-link-card`               | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-review-panel`         | `serves`    | outbound  |
 
 ### Chat Context Builder {#chat-context-builder}
 
@@ -846,6 +1042,33 @@ Processes incoming JSON-RPC 2.0 messages from the WebSocket connection; routes m
 | intra-layer | `application.applicationservice.error-tracker`                 | `depends-on`  | outbound  |
 | intra-layer | `application.applicationservice.web-socket-client`             | `depends-on`  | outbound  |
 
+### Layer Domain Palette {#layer-domain-palette}
+
+**ID**: `application.applicationservice.layer-domain-palette`
+
+**Type**: `applicationservice`
+
+The layer slug → colour, label and order map every view draws layers with, covering all 13 spec layers (Product, layer 3, gets its own colour); the left rail's layer count comes from the spec, not a constant.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                   | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `business.businessservice.architecture-model-visualization`       | `realizes`  | outbound  |
+| inter-layer | `motivation.requirement.viewer-covers-every-spec-layer`           | `satisfies` | outbound  |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `covers`    | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                      | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-impact-view`          | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.graph-canvas`                   | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.nav-tree`                       | `serves`    | outbound  |
+| intra-layer | `application.applicationcomponent.review-parts`                   | `serves`    | outbound  |
+
 ### Layered Reach {#layered-reach}
 
 **ID**: `application.applicationservice.layered-reach`
@@ -867,6 +1090,7 @@ Whole-model heimdall-ui layered index and the inspector's followed-across-layers
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage` | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.inspector-drawer`               | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`            | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.change-neighbourhood`           | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`               | `serves`     | outbound  |
 
 ### Model Graph Transform {#model-graph-transform}
@@ -1011,4 +1235,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-12T16:19:59.959Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0

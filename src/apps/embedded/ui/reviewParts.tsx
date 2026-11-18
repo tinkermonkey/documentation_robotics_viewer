@@ -6,7 +6,7 @@
 
 import type { SyntheticEvent } from 'react';
 import { Chip } from '@tinkermonkey/heimdall-ui';
-import { layerColor } from './domain';
+import { layerColor, layerLabel } from './domain';
 import { RichTooltip } from './RichTooltip';
 import {
   deciderLabel,
@@ -20,8 +20,11 @@ import {
   KIND_COLOR,
   KIND_LABEL,
   STATE_COLOR,
+  STATE_GLYPH,
   STATE_LABEL,
+  type ChangeOutcome,
   type ItemState,
+  type LinkEnd,
   type ReviewItem,
 } from '../data/changesetReview';
 
@@ -33,12 +36,77 @@ export function OpChip({ item }: { item: Pick<ReviewItem, 'kind'> }) {
   );
 }
 
+/**
+ * The reviewer's decision: an outlined, round pill with a glyph, so it never
+ * reads as another change chip (those are filled). Needs decision is dashed.
+ */
 export function VerdictChip({ state }: { state: ItemState }) {
   return (
-    <Chip variant={STATE_COLOR[state]} data-testid="review-verdict-chip" data-state={state}>
+    <span
+      className={`drv-verdict drv-verdict--${STATE_COLOR[state]}${state === 'undecided' ? ' drv-verdict--open' : ''}`}
+      data-testid="review-verdict-chip"
+      data-state={state}
+    >
+      <span aria-hidden="true">{STATE_GLYPH[state]}</span>
       {STATE_LABEL[state]}
-    </Chip>
+    </span>
   );
+}
+
+const OUTCOME = {
+  landed: { label: 'Landed', glyph: '✓', color: 'emerald' },
+  'not-applied': { label: 'Not applied', glyph: '–', color: 'neutral' },
+} as const;
+
+/** A settled changeset's change: what became of it, in the decision pill's shape. */
+export function OutcomeChip({ outcome }: { outcome: ChangeOutcome }) {
+  const o = OUTCOME[outcome];
+  return (
+    <span className={`drv-verdict drv-verdict--${o.color}`} data-testid="review-outcome-chip" data-outcome={outcome}>
+      <span aria-hidden="true">{o.glyph}</span>
+      {o.label}
+    </span>
+  );
+}
+
+/** One end of a link: layer dot + name, dashed when this changeset adds the element. */
+export function LinkEndChip({ end }: { end: LinkEnd }) {
+  return (
+    <span
+      className={`drv-end${end.isNew ? ' drv-end--new' : ''}`}
+      data-testid="link-end"
+      data-new={end.isNew || undefined}
+      title={`${end.name} · ${layerLabel(end.layerId)} · ${end.type}${end.isNew ? ' · added by this changeset' : ''}`}
+    >
+      <span aria-hidden="true" className="drv-end__dot" style={{ background: layerColor(end.layerId) }} />
+      <span className="drv-end__name">{end.name}</span>
+      {end.isNew && <span className="drv-sr-only"> (new)</span>}
+    </span>
+  );
+}
+
+/** A link as [source] —predicate→ [target]. */
+export function LinkChain({ ends, predicate }: { ends: { source: LinkEnd; target: LinkEnd }; predicate: string }) {
+  return (
+    <span className="drv-chain" data-testid="link-chain">
+      <LinkEndChip end={ends.source} />
+      <span className="drv-chain__pred">
+        {predicate}
+        <svg width="14" height="10" viewBox="0 0 16 10" aria-hidden="true">
+          <path d="M0 5h13M10 1.5L14 5l-4 3.5" stroke="currentColor" strokeWidth="1.4" fill="none" />
+        </svg>
+      </span>
+      <LinkEndChip end={ends.target} />
+    </span>
+  );
+}
+
+/** "feature → requirement · Product → Motivation" (the layers only when they differ). */
+export function linkEndsLabel(ends: { source: LinkEnd; target: LinkEnd }): string {
+  const types = `${ends.source.type} → ${ends.target.type}`;
+  return ends.source.layerId === ends.target.layerId
+    ? `${types} · within ${layerLabel(ends.source.layerId)}`
+    : `${types} · ${layerLabel(ends.source.layerId)} → ${layerLabel(ends.target.layerId)}`;
 }
 
 /** The origin's details as a definition list (tooltip and change inspector). */

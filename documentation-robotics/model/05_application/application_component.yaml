@@ -139,11 +139,12 @@ application.applicationcomponent.changeset-impact-view:
   type: applicationcomponent
   layer_id: application
   name: Changeset Impact View
-  description: "The Impact tab: every changed element as a reach origin, drawn as
-    heimdall-ui layer lanes (gutter-routed skip-layer links, bundled same-layer
-    links). Clicking a changed element isolates its reach; clicking an element
-    the changeset only reaches shows the changeset's reach through it (the graph
-    holds only the links the changeset's reach travels)."
+  description: "The Impact tab: changed elements as reach origins, drawn as
+    heimdall-ui layer lanes. Find (a match focuses that element), Show Changes
+    only / Changes + reach, filters with counts by change, layer, element type
+    and link category, large lanes grouped by type with expand on demand, a
+    focus breadcrumb (one element + its Follow reach) and a results list; the
+    focused element is the same selection as the Review list's."
   attributes:
     type: internal
   source_reference:
@@ -217,4 +218,142 @@ application.applicationcomponent.annotations-section:
   metadata:
     created_at: 2026-11-12T13:44:46.091Z
     updated_at: 2026-11-12T13:44:46.091Z
+    version: 1
+application.applicationcomponent.changeset-review-panel:
+  id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+  path: application.applicationcomponent.changeset-review-panel
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Changeset Review Panel
+  description: "A changeset's Review tab: the summary card, the Show / Group by /
+    Decided by controls and the per-change rows. Columns are labelled (#,
+    Change, Element or link, What it says, Your decision); a change chip carries
+    a glyph (+ element, + link, ~ update, − delete) and the decision is an
+    outlined pill in its own column; a link row is a chain [source] —predicate→
+    [target] with a dashed end for an element this changeset adds."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+        symbol: ChangesetReviewPanel
+  metadata:
+    created_at: 2026-11-17T22:03:39.519Z
+    updated_at: 2026-11-17T22:03:39.519Z
+    version: 1
+application.applicationcomponent.change-inspector:
+  id: aa83f5b0-d62e-449d-96ca-b71ea2af054f
+  path: application.applicationcomponent.change-inspector
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Change Inspector
+  description: "The Changesets inspector column with a change selected. Header: an
+    'Adds to <Layer> layer as a <type>' band in the layer's colour, then
+    labelled Change / Your decision / Decided by rows. A link change shows the
+    Change Link Card. Links in this changeset are grouped Out of / Into the
+    element, each row with an arrow, the predicate, the other end's name, type,
+    layer and a NEW mark, and a decision only when it isn't Keep. The Source
+    reference section always shows, saying none yet when there is none."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/ChangeInspector.tsx
+        symbol: ChangeInspector
+  metadata:
+    created_at: 2026-11-17T22:03:39.529Z
+    updated_at: 2026-11-17T22:03:39.529Z
+    version: 1
+application.applicationcomponent.review-parts:
+  id: fa515bb2-c9e5-4eb8-96e1-4fc62604cd61
+  path: application.applicationcomponent.review-parts
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Review Parts
+  description: "Shared review pieces: the change chip (with glyph), the decision
+    pill, the origin badge, the layer swatch and the link chain chip ([source]
+    —predicate→ [target], dashed when an end is added here)."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/reviewParts.tsx
+  metadata:
+    created_at: 2026-11-17T22:03:39.529Z
+    updated_at: 2026-11-17T22:03:39.529Z
+    version: 1
+application.applicationcomponent.change-link-card:
+  id: ba386ee3-a6da-42a8-9e40-eed0694a0cf5
+  path: application.applicationcomponent.change-link-card
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Change Link Card
+  description: "A link change in the inspector as source card → predicate → target
+    card, after the Model view's EdgeInspector (Heimdall GraphEdgeInspector):
+    each card shows layer swatch, type, name, description and NEW or 'in the
+    model'; the predicate shows its meaning (PredicateTooltip). The raw
+    source::predicate::target id folds under Identifier."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangeLinkCard.tsx
+        symbol: ChangeLinkCard
+  metadata:
+    created_at: 2026-11-17T22:03:39.530Z
+    updated_at: 2026-11-17T22:03:39.530Z
+    version: 1
+application.applicationcomponent.change-neighbourhood:
+  id: add22404-7633-4319-93e1-e7aac7c0cbdf
+  path: application.applicationcomponent.change-neighbourhood
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Change Neighbourhood
+  description: "Compact layer lanes in the change inspector: the selected element
+    (or both ends of a link) and its reach at the inspector's Follow depth, each
+    lane's elements wrapping (a GraphCanvas lanes graph is one row per layer and
+    unreadable at inspector width). The focused element is amber, elements this
+    changeset adds are dashed, other changed ones carry the Impact op outline,
+    elements past the direct links are faded; an element with a change opens it,
+    and Open in Impact focuses the same element there."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ChangeNeighbourhood.tsx
+        symbol: ChangeNeighbourhood
+  metadata:
+    created_at: 2026-11-17T22:03:39.530Z
+    updated_at: 2026-11-17T22:03:39.530Z
+    version: 1
+application.applicationcomponent.apply-review:
+  id: 2a10e552-278c-4119-a2b1-c8f47e40baf7
+  path: application.applicationcomponent.apply-review
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Apply Review
+  description: Apply confirmation (what lands, what's left out, links deleted with
+    their elements) and the applied result, landed by layer. A landed-by-layer
+    row keeps the layer name and its counts apart at any inspector width.
+  attributes:
+    type: internal
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/ApplyReview.tsx
+        symbol: ApplyConfirm
+  metadata:
+    created_at: 2026-11-17T22:03:39.530Z
+    updated_at: 2026-11-17T22:03:39.530Z
     version: 1

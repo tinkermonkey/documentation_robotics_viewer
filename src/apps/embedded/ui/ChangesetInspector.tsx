@@ -33,7 +33,7 @@ import { ErrorBoundary } from './ErrorBoundary';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
-import { netStats } from '../data/changesetReview';
+import { netStats, outcomeOf } from '../data/changesetReview';
 import {
   changesetLoadErrorMessage,
   useChangeset,
@@ -216,6 +216,7 @@ export function ChangesetInspector() {
               model={review.model}
               review={review}
               staged={detail.status === 'staged'}
+              outcome={outcomeOf(detail.status)}
             />
           </ErrorBoundary>
         </div>

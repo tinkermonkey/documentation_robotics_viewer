@@ -9,8 +9,8 @@ thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 **Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned via npm),
 Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5.
 
-**12 Architecture Layers:** Motivation, Business, Security, Application, Technology, API, Data Model,
-Data Store, UX, Navigation, APM, Testing.
+**13 Architecture Layers** (spec 0.12+): Motivation, Business, Product, Security, Application, Technology,
+API, Data Model, Data Store, UX, Navigation, APM, Testing.
 
 > **History:** The UX was fully rebuilt on Heimdall (June 2026), replacing the previous React Flow +
 > Flowbite + Storybook + Playwright stack. There is **no React Flow, Flowbite, Storybook, or Playwright**
@@ -42,13 +42,14 @@ src/
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
 │   │   ├── ChangesetInbox.tsx ChangesetReviewPanel.tsx ChangeInspector.tsx ApplyReview.tsx  # per-change review
+│   │   ├── ChangeLinkCard.tsx ChangeNeighbourhood.tsx  # change inspector: link as source→predicate→target; reach as wrapped lanes
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
-│   │   ├── domain.ts          # 12-layer slug→color/label map
+│   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
 │   │   └── domain-and-nav.css # 12-domain swatch CSS + nav-item helpers (Heimdall's bundle lacks DR domains)
 │   ├── data/                  # Stateless hooks + transforms over the API (no UI)
 │   │   ├── useModel.ts useSpec.ts useChangesets.ts useAnnotations.ts   # React Query hooks
@@ -113,7 +114,7 @@ not used yet. (We
 hand-roll the `AppShell` and 3-level `NavTree` rather than using `ShellLayout`/`Sidebar`, which are
 single-canvas / 2-level only.)
 
-**Domain colors (load-bearing):** the 12 DR layer colors are NOT in Heimdall's bundle. They live in
+**Domain colors (load-bearing):** the 13 DR layer colors are NOT in Heimdall's bundle. They live in
 `src/apps/embedded/ui/domain.ts` and are applied to graph node swatches via
 `.graph-node[data-domain="<slug>"] .graph-node__swatch { background: <hex> }` in `domain-and-nav.css`.
 Pass `domainColor` = the **layer slug** (e.g. `data-model`), not a hex.
@@ -239,7 +240,16 @@ For local dev use `dr visualize --no-auth`.
   from the detail + local verdicts for an older CLI. A kept delete that gains a blocker the reviewer hadn't
   seen (`localReviewStore.blockersSeen`, recorded per keep) goes back to "needs decision". A summary card (headline, tally, pills, `ProgressBar`, Discard / Keep the other N / Apply) and
   Show (Since your review · Needs decision · Decided · All) / Group by (Review weight · Layer · Sequence)
-  `SegmentedControl`s sit over the rows. A row selects `uiStore.changeSeq` (not persisted, cleared on a
+  `SegmentedControl`s sit over the rows, then a legend: the CHANGE chip is a filled Heimdall `Chip` with a
+  glyph (`+ element`, `+ link`, `~ update`, `− delete`), YOUR DECISION an outlined round pill with a glyph
+  (`VerdictChip` → `.drv-verdict`; Needs decision dashed) in its own labelled column. A link row is a
+  `LinkChain` [source] —predicate→ [target] built from `ReviewItem.ends` (name, layer, type from the dotted
+  id, `isNew` = this changeset adds it → dashed); there are no "new source/target" chips (they read as a
+  source reference). An element add's chip is "N new links · o out · i in". The change inspector opens with
+  a layer band ("Adds to Product layer · as a feature"), labelled Change / Your decision / Decided by rows,
+  `ChangeLinkCard` for a link, `ChangeNeighbourhood` (wrapped lanes, not a GraphCanvas: Heimdall lanes are
+  one row per layer and unreadable at 380px), links grouped Out of / Into (other end's type + layer, NEW, a
+  decision only when it isn't Keep) and an always-shown Source reference. A row selects `uiStore.changeSeq` (not persisted, cleared on a
   changeset switch), and the permanent inspector column becomes `ChangeInspector`: decision + note (Ask DrBot
   with a note also posts it as an annotation on the element — not for an element only this changeset adds), a
   blocked delete's Resolve choices (Delete the links too = keep, Keep the element = drop; radios only pick,
@@ -303,7 +313,14 @@ For local dev use `dr visualize --no-auth`.
   element isn't in the current model are counted ("n changes not in the model"), not dropped silently.
   `ChangesetInspector`'s `BlastRadius` shows the same reach per layer in the changeset overview. Verify the
   lanes' fit in a visible browser or headless Chrome: a hidden Browser pane throttles animation frames
-  and the mount fit never lands.
+  and the mount fit never lands. A large changeset is narrowed four ways: **Find** (Heimdall `FilterBar`;
+  matches listed beside the lanes, changed first, ↑↓ + Enter), **focus** (`uiStore.impactFocus`, a dotted id
+  or UUID: `changesetImpact(…, focus)` reaches from that element only; set by a lane click, a match, or the
+  change inspector's Open in Impact, which also sets `uiStore.changesetTab`), **Show** Changes only /
+  Changes + reach plus facet filters with counts (`impactFacets` / `filterImpact`: op, layer, type, link
+  category — sets of what's HIDDEN, empty = everything), and **Large lanes** (`groupLargeLanes`: a lane over
+  `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node; clicking one expands it).
+  `changesOf` maps an element to the changes touching it (Open its change).
 - **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's

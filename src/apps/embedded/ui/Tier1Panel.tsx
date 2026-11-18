@@ -159,7 +159,8 @@ function Credentials({ status }: { status: Tier1Status }) {
  * `summary` for the other states. Nothing when Tier 1 is simply on.
  */
 function Reason({ status }: { status: Tier1Status }) {
-  const running = status.state === 'on' || status.state === 'capped';
+  // Warming is on while codebase_index fills the answer cache; its progress is in `reason`.
+  const running = status.state === 'on' || status.state === 'warming' || status.state === 'capped';
   if (status.reason) {
     return (
       <p className="drv-text-block" style={{ margin: 0 }} data-testid="tier1-reason">

@@ -33,6 +33,20 @@
         "design/node_pages"
       ],
       "port": 3005
+    },
+    {
+      "name": "dr-bundle",
+      "runtimeExecutable": "dr",
+      "runtimeArgs": [
+        "visualize",
+        "--no-auth",
+        "--port",
+        "8093",
+        "--no-browser",
+        "--viewer-path",
+        "dist/embedded/dr-viewer-bundle"
+      ],
+      "port": 8093
     }
   ]
 }

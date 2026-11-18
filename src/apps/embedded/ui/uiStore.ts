@@ -61,6 +61,10 @@ interface UiState {
   /** Changesets view: the change (sequence number) open in the review
    *  inspector. Cleared with every changeset switch; not persisted. */
   changeSeq: number | null;
+  /** Changesets view: the Review list or the Impact lanes. Not persisted. */
+  changesetTab: 'changes' | 'impact';
+  /** Impact tab: the element whose reach it shows alone (null: every change). Not persisted. */
+  impactFocus: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
   wide: boolean;
@@ -170,6 +174,9 @@ interface UiState {
   selectChangeset: (changesetId: string | null) => void;
   /** Open a change of the selected changeset in the review inspector (null: the changeset overview). */
   selectChange: (seq: number | null) => void;
+  setChangesetTab: (tab: 'changes' | 'impact') => void;
+  /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. */
+  focusImpact: (elementId: string | null) => void;
   /** Switch the main panel between the live graph and the page-view scaffold.
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
@@ -236,6 +243,8 @@ export const useUiStore = create<UiState>()(
       highlightedEdgeId: null,
       changesetId: null,
       changeSeq: null,
+      changesetTab: 'changes',
+      impactFocus: null,
       // Dark by default (first visit, nothing persisted yet) — a later
       // explicit choice via toggleCanvasDark persists and overrides this.
       canvasDark: true,
@@ -359,11 +368,15 @@ export const useUiStore = create<UiState>()(
           view: 'changesets',
           changesetId,
           changeSeq: s.changesetId === changesetId ? s.changeSeq : null,
+          changesetTab: s.changesetId === changesetId ? s.changesetTab : 'changes',
+          impactFocus: s.changesetId === changesetId ? s.impactFocus : null,
           highlightedEdgeId: null,
           expandedSections: onlySection('changesets'),
         })),
 
       selectChange: (changeSeq) => set({ changeSeq }),
+      setChangesetTab: (changesetTab) => set({ changesetTab }),
+      focusImpact: (impactFocus) => set(impactFocus ? { impactFocus, changesetTab: 'impact' } : { impactFocus }),
 
       setMode: (mode) => set({ mode }),
 

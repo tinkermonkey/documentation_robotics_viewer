@@ -33,6 +33,8 @@ const FIXTURE = changesetDetail.changes as ChangeRecord[];
 const REVIEWABLE = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 22, 23, 26, 27, 28, 29, 30, 31, 32];
 
 interface ServeOptions {
+  /** The status the detail starts in (default staged). */
+  status?: 'staged' | 'committed' | 'discarded';
   /** Omit `review` from the detail: an older dr CLI. */
   legacy?: boolean;
   review?: ChangesetReview;
@@ -60,7 +62,7 @@ function keepAll(except: Record<number, 'drop' | 'ask'> = {}): ChangesetReview {
 }
 
 function serve(opts: ServeOptions = {}): Server {
-  let status = 'staged';
+  let status: string = opts.status ?? 'staged';
   let review: ChangesetReview = opts.review ?? { decisions: {} };
   const revision = opts.revision ?? 38;
   const server: Server = { puts: [], commits: [], discards: 0, review: () => review };
@@ -192,6 +194,100 @@ describe('review — deciding changes (dr CLI with review)', () => {
     expect(screen.getByTestId('change-related')).toHaveTextContent('Data Loader depends-on Relationships YAML Parser');
   });
 
+  it('labels the columns and the two chip shapes, and draws a link as source → predicate → target', async () => {
+    serve();
+    const user = userEvent.setup();
+    renderReview();
+    await screen.findAllByTestId('review-row');
+    await user.click(within(screen.getByTestId('review-filter')).getByRole('radio', { name: /^All/ }));
+    const legend = screen.getByTestId('review-legend');
+    expect(legend).toHaveTextContent('CHANGE');
+    expect(legend).toHaveTextContent('YOUR DECISION');
+    expect(within(row(1)).getByTestId('review-op-chip')).toHaveTextContent('+ element');
+    expect(within(row(1)).getByTestId('review-verdict-chip')).toHaveTextContent('Needs decision');
+    // Seq 19 links two elements this changeset adds; seq 27's target is already in the model.
+    const chain = within(row(19)).getByTestId('link-chain');
+    expect(within(chain).getAllByTestId('link-end').map((e) => e.hasAttribute('data-new'))).toEqual([true, true]);
+    expect(chain).toHaveTextContent('depends-on');
+    expect(within(row(27)).getAllByTestId('link-end').map((e) => e.hasAttribute('data-new'))).toEqual([true, false]);
+    expect(row(19)).not.toHaveTextContent('new source');
+    expect(row(27)).toHaveTextContent('objectschema → objectschema · within Data Model');
+  });
+
+  it("heads an added element's inspector with its layer, labelled rows and links grouped by direction", async () => {
+    serve();
+    renderReview(1);
+    const inspector = await screen.findByTestId('change-inspector');
+    expect(within(inspector).getByTestId('change-layer-band')).toHaveTextContent(/Adds to\s*Application layer/);
+    expect(within(inspector).getByTestId('change-layer-band')).toHaveTextContent('applicationservice');
+    const kv = within(inspector).getByTestId('change-kv');
+    expect(kv).toHaveTextContent('Change+ element new in this changeset');
+    expect(kv).toHaveTextContent('Your decision');
+    // Out: it depends on the Predicate Type Mapper (19); in: the Data Loader depends on it (20).
+    const out = within(inspector).getByTestId('related-out');
+    expect(out).toHaveTextContent('depends-on');
+    expect(out).toHaveTextContent('Predicate Type Mapper');
+    expect(out).toHaveTextContent('NEW');
+    expect(within(inspector).getByTestId('related-in')).toHaveTextContent('Data Loader');
+    // Its source reference is listed under its own heading.
+    expect(within(inspector).getByTestId('change-source')).toHaveTextContent(/\.ts/);
+    expect(within(inspector).queryByTestId('change-source-none')).not.toBeInTheDocument();
+    expect(within(inspector).getByTestId('change-neighbourhood')).toBeInTheDocument();
+  });
+
+  it('says when an element has no source reference instead of hiding the section', async () => {
+    const changes = FIXTURE.map((c) =>
+      c.sequenceNumber === 1 ? { ...c, after: { ...(c.after ?? {}), source_reference: undefined } } : c,
+    );
+    serve({ changes });
+    renderReview(1);
+    expect(await screen.findByTestId('change-source-none')).toHaveTextContent('None yet');
+  });
+
+  it('shows a link change as a card: source, predicate, target', async () => {
+    serve();
+    renderReview(27);
+    const card = await screen.findByTestId('change-link-card');
+    expect(within(card).getByTestId('link-card-source')).toHaveTextContent('NEW');
+    expect(within(card).getByTestId('link-card-target')).toHaveTextContent('in the model');
+    expect(card).toHaveTextContent('extends');
+    expect(within(card).getByText('Identifier')).toBeInTheDocument();
+    expect(screen.getByTestId('change-layer-band')).toHaveTextContent(/Adds a link\s*within Data Model/);
+    expect(screen.getByTestId('change-source-none')).toHaveTextContent("Links don't carry one");
+  });
+
+  it('opens the element in Impact from its neighbourhood', async () => {
+    serve();
+    const user = userEvent.setup();
+    renderReview(1);
+    await user.click(await screen.findByTestId('neighbourhood-open-impact'));
+    expect(useUiStore.getState().changesetTab).toBe('impact');
+    expect(useUiStore.getState().impactFocus).toBe('application.applicationservice.relationships-yaml-parser');
+    const crumbs = await screen.findByTestId('impact-breadcrumb');
+    expect(crumbs).toHaveTextContent('Relationships YAML Parser');
+    await user.click(within(crumbs).getByTestId('impact-show-all'));
+    expect(useUiStore.getState().impactFocus).toBeNull();
+  });
+
+  it('finds an element in Impact and focuses it with Enter', async () => {
+    serve();
+    const user = userEvent.setup();
+    renderReview();
+    await screen.findAllByTestId('review-row');
+    act(() => useUiStore.getState().setChangesetTab('impact'));
+    const impact = await screen.findByTestId('changeset-impact');
+    expect(within(impact).getByTestId('impact-help')).toBeInTheDocument();
+    await user.type(within(impact).getByRole('textbox'), 'predicate');
+    const matches = await within(impact).findByTestId('impact-matches');
+    expect(within(matches).getAllByRole('option').length).toBeGreaterThan(0);
+    await user.keyboard('{Enter}');
+    expect(useUiStore.getState().impactFocus).not.toBeNull();
+    expect(await within(impact).findByTestId('impact-focus')).toHaveTextContent(/Predicate/);
+    // Its change opens in the inspector column.
+    await user.click(within(impact).getByTestId('impact-open-change'));
+    expect(useUiStore.getState().changeSeq).not.toBeNull();
+  });
+
   it('rolls the verdict back and says why when the server refuses it', async () => {
     serve();
     mswServer.use(
@@ -204,6 +300,34 @@ describe('review — deciding changes (dr CLI with review)', () => {
     await user.click(await screen.findByTestId('decide-keep'));
     expect(await screen.findByTestId('review-decision-error')).toHaveTextContent('is not staged');
     expect(screen.getByTestId('review-tally')).toHaveTextContent('0 kept');
+  });
+});
+
+describe('review — a settled changeset', () => {
+  // #574: one applied without a change-by-change review has no decisions; its rows must not read "Needs decision".
+  it('shows each change of an applied changeset as landed, not as needing a decision', async () => {
+    serve({ status: 'committed' });
+    renderReview(1);
+    expect(await screen.findByTestId('applied-result')).toBeInTheDocument();
+    const rows = await screen.findAllByTestId('review-row');
+    expect(rows.every((r) => within(r).getByTestId('review-outcome-chip').textContent === '✓Landed')).toBe(true);
+    expect(screen.queryAllByTestId('review-verdict-chip')).toHaveLength(0);
+    expect(screen.queryByText('Needs decision')).not.toBeInTheDocument();
+    const legend = screen.getByTestId('review-legend');
+    expect(legend).toHaveTextContent('OUTCOME');
+    expect(legend).not.toHaveTextContent('YOUR DECISION');
+    const kv = within(await screen.findByTestId('change-inspector')).getByTestId('change-kv');
+    expect(kv).toHaveTextContent('Outcome✓Landed');
+    expect(kv).not.toHaveTextContent('Your decision');
+  });
+
+  it('shows each change of a discarded changeset as not applied', async () => {
+    serve({ status: 'discarded' });
+    renderReview();
+    expect(await screen.findByTestId('review-discarded')).toBeInTheDocument();
+    const rows = await screen.findAllByTestId('review-row');
+    expect(rows.every((r) => within(r).getByTestId('review-outcome-chip').getAttribute('data-outcome') === 'not-applied')).toBe(true);
+    expect(screen.getByTestId('review-legend')).toHaveTextContent('never reached the model');
   });
 });
 

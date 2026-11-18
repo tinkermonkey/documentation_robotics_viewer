@@ -18,9 +18,9 @@ Test strategies, test cases, test data, and test coverage.
 | ------------------------- | ----- |
 | Elements                  | 6     |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 13    |
+| Inter-Layer Relationships | 15    |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 13    |
+| Outbound Relationships    | 15    |
 
 **Cross-Layer References**:
 
@@ -83,6 +83,8 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.chat-service`              | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage` | `application.applicationservice.web-socket-client`         | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-impact-analysis` | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.changeset-review-model`    | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layer-domain-palette`      | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.layered-reach`             | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`      | `application.applicationservice.model-graph-transform`     | `application` | `covers`    | many-to-many | medium   |
 
@@ -218,6 +220,8 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 | Type        | Related Element                                                    | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------------ | ---------- | --------- |
 | inter-layer | `application.applicationservice.changeset-impact-analysis`         | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.changeset-review-model`            | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.layer-domain-palette`              | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.layered-reach`                     | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.model-graph-transform`             | `covers`   | outbound  |
 | intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model`             | `composes` | inbound   |
@@ -225,4 +229,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-12T13:57:21.197Z | Model Version: 0.1.0
+Generated: 2026-11-18T14:48:34.537Z | Model Version: 0.1.0

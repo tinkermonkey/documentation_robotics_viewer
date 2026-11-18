@@ -61,3 +61,47 @@ motivation.requirement.embedded-deployment-mode:
     created_at: 2026-03-20T13:41:29.146Z
     updated_at: 2026-03-20T13:41:29.146Z
     version: 1
+motivation.requirement.each-review-change-reads-on-its-own:
+  id: 76c0c4a0-d4cc-4f6e-8fba-73912268beb3
+  path: motivation.requirement.each-review-change-reads-on-its-own
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Each review change reads on its own
+  description: "A reviewer can judge any change in a changeset from the review
+    list and the change inspector alone: what it does, what they decided, which
+    layer it lands in, and how a link's ends connect, without reading its raw
+    id."
+  attributes:
+    requirementType: functional
+    priority: high
+    documentation: "Verified on a large changeset (mcp-gateway-use-cases, 293
+      changes): the change chip and the decision are labelled and shaped
+      differently; no chip reuses the word 'source' for anything but a source
+      reference; a link shows source → predicate → target with each end's type,
+      layer and whether this changeset adds it; an element's links list
+      direction, predicate and the other end's type and layer."
+  metadata:
+    created_at: 2026-11-17T22:03:39.502Z
+    updated_at: 2026-11-17T22:03:39.502Z
+    version: 1
+motivation.requirement.viewer-covers-every-spec-layer:
+  id: f8781526-b50a-47a4-9ec1-49b7bf05f9ba
+  path: motivation.requirement.viewer-covers-every-spec-layer
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Viewer covers every spec layer
+  description: Every layer in the DR spec the server reports has a colour, a label
+    and a place in the layer order; nothing falls back to grey, and no count of
+    layers is written into the UI.
+  attributes:
+    requirementType: functional
+    priority: high
+    documentation: Spec 0.12+ has 13 layers with Product as layer 3; the viewer knew
+      12, so Product elements rendered with a grey swatch and the left rail said
+      '12 layers'.
+  metadata:
+    created_at: 2026-11-17T22:03:39.519Z
+    updated_at: 2026-11-17T22:03:39.519Z
+    version: 1

@@ -6,7 +6,8 @@ ux.subview.changeset-impact-tab:
   layer_id: ux
   name: Changeset Impact Tab
   description: "The Changesets view's Impact tab: layer lanes of what the changed
-    elements reach, with Follow and Labels controls."
+    elements reach, with Find, Show, Follow, filter facets, grouped large lanes
+    and a focus breadcrumb."
   source_reference:
     provenance: extracted
     locations:
@@ -15,4 +16,35 @@ ux.subview.changeset-impact-tab:
   metadata:
     created_at: 2026-11-12T13:45:15.985Z
     updated_at: 2026-11-12T13:45:15.985Z
+    version: 1
+ux.subview.changeset-review-list:
+  id: bc016545-eff2-494c-b257-99682e2af843
+  path: ux.subview.changeset-review-list
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Changeset Review List
+  description: "The Changesets view's Review tab: labelled columns, change chips,
+    decision pills and link chains."
+  attributes:
+    title: Review
+  metadata:
+    created_at: 2026-11-17T22:03:39.531Z
+    updated_at: 2026-11-17T22:03:39.531Z
+    version: 1
+ux.subview.change-inspector-panel:
+  id: 0e6f6f52-4fd2-4b38-b817-a971f6a80329
+  path: ux.subview.change-inspector-panel
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Change Inspector Panel
+  description: "The Changesets view's inspector with one change selected: layer
+    band, labelled change and decision, link card, neighbourhood, links with
+    direction, source reference."
+  attributes:
+    title: Change
+  metadata:
+    created_at: 2026-11-17T22:03:39.536Z
+    updated_at: 2026-11-17T22:03:39.536Z
     version: 1
