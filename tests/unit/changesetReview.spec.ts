@@ -201,6 +201,45 @@ describe('buildReviewModel', () => {
     expect(reviewHeadline(m.tally)).toBe('28 of 30 need a decision');
   });
 
+  // #573: a changeset reviewed as a whole needs no verdict per change.
+  it('lets Apply land undecided changes as kept; the body drops and deletes only what was decided', () => {
+    // seq 7 dropped (its link 32 cascades), seq 0 kept, the other 27 undecided.
+    const m = buildReviewModel({
+      changes: FIXTURE,
+      review: { decisions: { '0': { verdict: 'keep' }, '7': { verdict: 'drop' } } },
+    });
+    expect(m.ready).toBe(false);
+    expect(m.canApply).toBe(true);
+    expect(m.apply.landing).toHaveLength(28);
+    expect(m.apply.undecided).toHaveLength(27);
+    expect(m.apply.undecided.map((i) => i.seq)).not.toContain(0);
+    expect(m.apply.undecided.map((i) => i.seq)).not.toContain(32);
+    expect(m.apply.body).toEqual({ drop: [7], deleteBlockedLinks: [] });
+    // Nothing decided at all: everything lands, the body still names both lists, empty.
+    const none = buildReviewModel({ changes: FIXTURE });
+    expect(none.canApply).toBe(true);
+    expect(none.apply.undecided).toHaveLength(30);
+    expect(none.apply.body).toEqual({ drop: [], deleteBlockedLinks: [] });
+    // A change asked about still holds Apply.
+    expect(buildReviewModel({ changes: FIXTURE, review: { decisions: { '1': { verdict: 'ask' } } } }).canApply).toBe(false);
+  });
+
+  it('holds Apply while a blocked delete is undecided', () => {
+    const blockers = [{ relationshipId: `${B}::serves::${A}`, direction: 'in' as const, otherElementId: B, predicate: 'serves' }];
+    const changes = [el(3, 'delete', A, { blockers }), el(4, 'update', C, { before: { description: 'a' }, after: { description: 'b' } })];
+    const open = buildReviewModel({ changes });
+    expect(open.canApply).toBe(false);
+    expect(open.blockedUndecided.map((i) => i.seq)).toEqual([3]);
+    // Deciding it (either way) is enough; the routine update may stay undecided.
+    const kept = buildReviewModel({ changes, review: { decisions: { '3': { verdict: 'keep' } } } });
+    expect(kept.canApply).toBe(true);
+    expect(kept.apply.body).toEqual({ drop: [], deleteBlockedLinks: [3] });
+    expect(kept.apply.undecided.map((i) => i.seq)).toEqual([4]);
+    const dropped = buildReviewModel({ changes, review: { decisions: { '3': { verdict: 'drop' } } } });
+    expect(dropped.canApply).toBe(true);
+    expect(dropped.apply.body).toEqual({ drop: [3], deleteBlockedLinks: [] });
+  });
+
   it('is ready once every change is kept or dropped; the body still names both lists', () => {
     const decisions = Object.fromEntries(
       buildReviewModel({ changes: FIXTURE }).items.map((i) => [String(i.seq), { verdict: 'keep' as const }]),

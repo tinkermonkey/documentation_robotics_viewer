@@ -3,8 +3,9 @@
  * (Keep / Drop / Ask DrBot) and apply what you kept.
  *
  * - A summary card: how many still need a decision, the tally, pills, a
- *   progress bar, and Discard / Keep the other N / Apply (Apply waits until
- *   every change has a verdict and none is waiting on DrBot).
+ *   progress bar, and Discard / Keep the other N / Apply. Apply lands the
+ *   undecided changes as kept (#573) and waits only where a decision is
+ *   required: a delete still in use, a change asked about, a drop conflict.
  * - A Show filter (Since your review · Needs decision · Decided · All) and a
  *   Group by (Review weight · Layer · Sequence) over the change rows. A row
  *   opens the change in the inspector column (`uiStore.changeSeq`).
@@ -416,16 +417,18 @@ function SummaryCard({
   // "Keep the other N": undecided changes, except blocked deletes (keeping
   // one deletes its links too, which wants its own look).
   const rest = model.items.filter((i) => model.stateOf(i.seq) === 'undecided' && i.blockers.length === 0);
-  const blockedOpen = model.items.filter((i) => i.blockers.length > 0 && model.stateOf(i.seq) === 'undecided');
+  const blockedOpen = model.blockedUndecided;
+  const undecidedLanding = model.apply.undecided.length;
   // The same counts the dr CLI's list reports (and the inbox shows).
   const counts = reviewCounts(model);
   const pct = counts.total ? Math.round((counts.decided / counts.total) * 100) : 100;
   const kindCounts = countKinds(model.items);
   const lands = model.apply.landing.length;
-  const why = model.ready
+  // Apply waits only on what must be decided; other undecided changes land as kept.
+  const why = model.canApply
     ? undefined
-    : tally.undecided > 0
-      ? `${plural(tally.undecided, 'change')} still need${tally.undecided === 1 ? 's' : ''} a decision`
+    : blockedOpen.length > 0
+      ? `${plural(blockedOpen.length, 'delete')} still in use need${blockedOpen.length === 1 ? 's' : ''} a decision`
       : tally.asked > 0
         ? `Waiting on DrBot for ${tally.asked}`
         : model.conflicts.length > 0
@@ -522,15 +525,17 @@ function SummaryCard({
           <Button
             variant="accent"
             size="sm"
-            disabled={busy || !model.ready}
+            disabled={busy || !model.canApply}
             title={why}
             onClick={() => setConfirming('apply')}
             data-testid="changeset-apply-button"
           >
             {applying
               ? 'Applying…'
-              : model.ready
-                ? `Apply ${lands} kept${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''}`
+              : model.canApply
+                ? undecidedLanding > 0
+                  ? `Apply ${lands}${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''} · ${undecidedLanding} undecided as kept`
+                  : `Apply ${lands} kept${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''}`
                 : 'Apply'}
           </Button>
         </div>
@@ -545,6 +550,12 @@ function SummaryCard({
           <Chip variant="neutral" data-testid="review-local-pill">
             verdicts kept in this browser
           </Chip>
+        )}
+        {model.canApply && undecidedLanding > 0 && (
+          <span className="drv-muted" style={{ fontSize: 12 }} data-testid="review-apply-undecided">
+            Apply lands the {plural(undecidedLanding, 'undecided change')} as kept. Drop or ask about any you want held
+            back first.
+          </span>
         )}
         {why && (
           <span className="drv-muted" style={{ fontSize: 12 }} data-testid="review-apply-why">
@@ -671,7 +682,13 @@ export function ChangesetReviewPanel({
     <div className="drv-review" data-testid="review-panel">
       {staged && <SummaryCard detail={detail} review={review} model={model} onResult={onResult} />}
       {detail.status === 'committed' && (
-        <AppliedResult landed={model.items} leftOut={leftOut} linksDeleted={result?.linksDeleted} />
+        <AppliedResult
+          landed={model.items}
+          leftOut={leftOut}
+          linksDeleted={result?.linksDeleted}
+          // Verdicts kept in this browser are cleared on Apply, so only the server's record can say.
+          undecidedLanded={review.mode === 'server' ? model.apply.undecided.length : undefined}
+        />
       )}
       {detail.status === 'discarded' && (
         <div className="drv-card drv-summary" data-testid="review-discarded">

@@ -67,6 +67,9 @@ export function currentAnnotations(): AnnotationRecord[] {
 }
 
 export const handlers = [
+  // As today's dr CLI answers: `version` is the API's own, and there is no cliVersion.
+  http.get('*/health', () => HttpResponse.json({ status: 'ok', version: '0.1.0' })),
+
   http.get('*/api/model', () => HttpResponse.json(model)),
 
   http.get('*/api/spec', () => HttpResponse.json(spec)),

@@ -1,0 +1,15 @@
+id: changeset-1795029728572-gb4clnsli
+name: apply-undecided-and-footer-versions
+description: Let Apply land undecided changes as kept, and show the real spec
+  and CLI versions in the footer (#573)
+created: 2026-11-18T19:22:08.576Z
+modified: 2026-11-18T19:27:42.267Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 27
+  modifications: 6
+  deletions: 6
+lastSequence: 38

@@ -255,11 +255,15 @@ For local dev use `dr visualize --no-auth`.
   blocked delete's Resolve choices (Delete the links too = keep, Keep the element = drop; radios only pick,
   Confirm records, Clear verdict clears), before/after per changed field (field in amber), source, the
   changeset's other changes on that element, the JSON diff and comments; with no change selected it shows the
-  changeset overview (`BlastRadius`, StatTiles). Apply opens `ApplyConfirm` (what lands, what's left out
-  incl. cascades, links deleted with their elements) and commits through the generated
+  changeset overview (`BlastRadius`, StatTiles). Apply does NOT need a verdict on every change (#573):
+  `model.canApply` waits only on an undecided delete still in use (`blockedUndecided`), an ask or a drop
+  conflict; every other undecided change lands as kept (`apply.undecided`, in neither body list — the server
+  lands what it isn't told to drop). `model.ready` still means "every change decided". Apply opens
+  `ApplyConfirm` (what lands, what's left out incl. cascades, links deleted with their elements, how many
+  undecided land as kept) and commits through the generated
   `usePostapichangesetschangesetIdcommit` with body `{ drop, deleteBlockedLinks }` (BOTH lists, always — the
   server only applies reviewed-commit rules when the body names either); a committed changeset shows
-  `AppliedResult` (landed by layer, what was left out). Refusals inline: 409 drift ("nothing was written, your
+  `AppliedResult` (landed by layer, what was left out, how many landed without a decision — server mode only). Refusals inline: 409 drift ("nothing was written, your
   decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
   Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
   `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
@@ -359,6 +363,11 @@ For local dev use `dr visualize --no-auth`.
   through the MCP tools appear without a reload. It only invalidates, so the echo of the viewer's own writes
   never inserts twice. On a delete it drops the replies query only after the lists refetch and only if
   inactive — removing one a still-mounted thread observes refetches it, and that's a 404.
+- **Footer versions** (#573) — the rail's `SPEC` is `/api/spec`'s `schemas['manifest.json'].specVersion`
+  (any schema's `specVersion` as fallback; `data/serverVersions.ts` `specVersionOf`, used by `useSpec`); the
+  status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
+  `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
+  Today's dr CLI sends no `cliVersion`, so the status bar reads `cli —` until it does.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
   applies only on a first-ever visit; a persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`

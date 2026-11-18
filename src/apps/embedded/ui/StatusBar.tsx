@@ -2,7 +2,8 @@
  * StatusBar — 28px mono shell footer.
  *
  * Left:  `{n} {layer} elements` · `{rels} refs indexed · 0 unresolved`
- * Right: `cli {version} · refs ok`
+ * Right: `cli {version} · refs ok` — the dr CLI version `/health` reports as
+ *        `cliVersion`, or "—" when it sends none (never the API's own `version`).
  *
  * Uses Heimdall's <Statusbar> for layout + tokens; content is mono spans fed
  * from the live model / spec.
@@ -12,7 +13,7 @@ import { Statusbar } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { useModel } from '../data/useModel';
-import { useSpec } from '../data/useSpec';
+import { useCliVersion } from '../data/serverVersions';
 
 const monoStyle: React.CSSProperties = {
   fontFamily: "'JetBrains Mono',monospace",
@@ -28,15 +29,13 @@ const dotStyle: React.CSSProperties = {
 export function StatusBar() {
   const layerId = useUiStore((s) => s.layerId);
   const { derived: model } = useModel();
-  const { derived: spec } = useSpec();
+  const cliVersion = useCliVersion() ?? '—';
 
   const layerCount = layerId ? model.countsByLayer[layerId] ?? 0 : 0;
   const layerName = layerId ? layerLabel(layerId).toLowerCase() : '';
   const elementsLabel = layerId
     ? `${layerCount} ${layerName} elements`
     : `${model.nodes.length} elements`;
-
-  const cliVersion = spec.version || '—';
 
   return (
     <Statusbar
@@ -53,7 +52,11 @@ export function StatusBar() {
           </span>
         </div>
       }
-      right={<span style={dotStyle}>cli {cliVersion} · refs ok</span>}
+      right={
+        <span style={dotStyle} data-testid="status-cli-version">
+          cli {cliVersion} · refs ok
+        </span>
+      }
     />
   );
 }

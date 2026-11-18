@@ -1,7 +1,8 @@
 /**
  * LeftRail — 244px dark nav rail: header eyebrow + 3-level NavTree + footer.
  *
- * Footer shows `SPEC {version}` (from /api/spec) and `{L} layers · {N} rels`
+ * Footer shows `SPEC {version}` (the spec manifest's specVersion via useSpec,
+ * "—" when the server sends none) and `{L} layers · {N} rels`
  * (L from /api/spec's layers, N from /api/model links length).
  */
 
@@ -85,6 +86,7 @@ export function LeftRail() {
             letterSpacing: '0.08em',
             color: 'rgb(var(--shell-fg-3))',
           }}
+          data-testid="rail-spec-version"
         >
           SPEC {specVersion}
         </span>

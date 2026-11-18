@@ -66,7 +66,8 @@ describe('useSpec — maps the /api/spec fixture', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.derived.version).toBe('0.1.0');
+    // The schemas' specVersion, not the payload's own `version` (the API's 0.1.0).
+    expect(result.current.derived.version).toBe('0.8.4');
     // At least one layer schema was derived, and each typeCount matches its ids.
     const byLayer = result.current.derived.byLayer;
     expect(Object.keys(byLayer).length).toBeGreaterThan(0);

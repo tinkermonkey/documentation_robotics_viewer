@@ -136,12 +136,16 @@ beforeEach(() => {
 });
 
 describe('review — deciding changes (dr CLI with review)', () => {
-  it('summarises what needs a decision and holds Apply until every change has one', async () => {
+  // #573: Apply no longer waits for a verdict on every change.
+  it('summarises what needs a decision and offers Apply with the undecided landing as kept', async () => {
     serve();
     renderReview();
     expect(await screen.findByTestId('review-headline')).toHaveTextContent('30 of 30 need a decision');
-    expect(screen.getByTestId('changeset-apply-button')).toBeDisabled();
-    expect(screen.getByTestId('review-apply-why')).toHaveTextContent('30 changes still need a decision');
+    const apply = screen.getByTestId('changeset-apply-button');
+    expect(apply).toBeEnabled();
+    expect(apply).toHaveTextContent('Apply 30 · 30 undecided as kept');
+    expect(screen.getByTestId('review-apply-undecided')).toHaveTextContent('Apply lands the 30 undecided changes as kept');
+    expect(screen.queryByTestId('review-apply-why')).not.toBeInTheDocument();
     expect(screen.getByRole('progressbar', { name: '0 of 30 decided' })).toBeInTheDocument();
     expect(screen.queryByTestId('review-local-pill')).not.toBeInTheDocument();
   });
@@ -356,6 +360,30 @@ describe('review — Apply', () => {
     expect(screen.getByTestId('applied-left-out')).toHaveTextContent('2 left out');
   });
 
+  it("applies with changes undecided, says how many land as kept, and drops nothing it wasn't told to", async () => {
+    // Only seq 7 is decided (dropped; its link 32 goes with it): the other 28 have no verdict.
+    const server = serve({ review: { decisions: { '7': { verdict: 'drop', atRevision: 38 } }, lastReviewedRevision: 38 } });
+    const user = userEvent.setup();
+    renderReview();
+
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toHaveTextContent('Apply 28, drop 2 · 28 undecided as kept'));
+    expect(apply).toBeEnabled();
+    await user.click(apply);
+
+    const dialog = await screen.findByTestId('apply-confirm');
+    expect(within(dialog).getByTestId('apply-confirm-undecided')).toHaveTextContent(
+      /All 28 have no decision \(.*\)\. Apply lands them as kept/,
+    );
+    expect(within(dialog).getByTestId('apply-confirm-dropped')).toHaveTextContent('RelationshipType');
+    await user.click(within(dialog).getByTestId('apply-confirm-button'));
+
+    // No verdicts are written for the undecided: the body names only the drop.
+    await waitFor(() => expect(server.commits).toEqual([{ drop: [7], deleteBlockedLinks: [] }]));
+    expect(server.puts).toEqual([]);
+    expect(await screen.findByTestId('applied-undecided')).toHaveTextContent(/28 .*landed without a per-change decision/);
+  });
+
   it('keeps Apply shut after it succeeds until the changeset reads as committed', async () => {
     const server = serve({ review: keepAll(), staleAfterCommit: true });
     const user = userEvent.setup();
@@ -498,6 +526,33 @@ describe('review — a delete still in use', () => {
     );
     await user.click(within(screen.getByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
     await waitFor(() => expect(server.commits).toEqual([{ drop: [], deleteBlockedLinks: [3] }]));
+  });
+});
+
+describe('review — a delete still in use', () => {
+  it('holds Apply while the blocked delete is undecided', async () => {
+    const blocked: ChangeRecord = {
+      type: 'delete',
+      elementId: 'application.applicationservice.data-loader',
+      layerName: 'application',
+      sequenceNumber: 3,
+      before: { name: 'Data Loader', type: 'applicationservice' },
+      blockers: [{ relationshipId: 'a::serves::application.applicationservice.data-loader', direction: 'in', otherElementId: 'a', predicate: 'serves' }],
+    };
+    const routine: ChangeRecord = {
+      type: 'update',
+      elementId: 'application.applicationservice.other',
+      layerName: 'application',
+      sequenceNumber: 4,
+      before: { name: 'Other', description: 'a' },
+      after: { name: 'Other', description: 'b' },
+    };
+    serve({ changes: [blocked, routine], revision: 5 });
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(screen.getByTestId('review-apply-why')).toHaveTextContent('1 delete still in use needs a decision'));
+    expect(apply).toBeDisabled();
+    expect(screen.queryByTestId('review-apply-undecided')).not.toBeInTheDocument();
   });
 });
 
