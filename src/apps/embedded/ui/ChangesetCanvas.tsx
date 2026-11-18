@@ -11,15 +11,40 @@
  * `ChangesetImpactView` — the elements the changeset reaches outside itself,
  * as heimdall-ui lanes. Its follow depth is the Model inspector's
  * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
+ *
+ * The eyebrow names the changeset's purpose (a dr CLI with purposes), and a
+ * note over the list says what this kind of changeset is for and what happens
+ * next: a verification record leads with the plan it verifies and what its
+ * extraction read; a plan names its verification records.
+ *
+ * A changeset the server no longer has (404: a current dr CLI deletes a
+ * changeset it discards) shows as gone, with a way back to the inbox. A
+ * discard from this page goes back to the inbox itself, with a toast.
  */
 
-import { Button, PageHeader, SegmentedControl } from '@tinkermonkey/heimdall-ui';
+import { useState } from 'react';
+import { Button, PageHeader, SegmentedControl, Toast } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
-import { useChangesets, useChangeset, changesetLoadErrorMessage } from '../data/useChangesets';
+import {
+  useChangesets,
+  useChangeset,
+  changesetLoadErrorMessage,
+  isChangesetGone,
+  CHANGESET_GONE_MESSAGE,
+  type ChangesetSummary,
+} from '../data/useChangesets';
 import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
 import { originLabel } from '../data/changesetReview';
+import {
+  purposeLabel,
+  purposeLifecycle,
+  recordsOf,
+  scopeLabel,
+  type ChangesetPurpose,
+  type ChangesetScope,
+} from '../data/changesetPurpose';
 import { ChangesetImpactView } from './ChangesetImpactView';
 import { ChangesetReviewPanel } from './ChangesetReviewPanel';
 import { ChangesetInbox } from './ChangesetInbox';
@@ -50,6 +75,82 @@ function ChangesetEmptyState({ message, alert = false }: { message: string; aler
   );
 }
 
+/** The changeset is gone (404): say so, and offer the way back. */
+function ChangesetGone({ onBack }: { onBack: () => void }) {
+  return (
+    <div
+      role="alert"
+      style={{ flex: 1, display: 'grid', placeItems: 'center', padding: 24 }}
+      data-testid="changeset-gone"
+    >
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center', maxWidth: 520 }}>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))', textAlign: 'center' }}>
+          {CHANGESET_GONE_MESSAGE}
+        </p>
+        <Button variant="secondary" size="sm" onClick={onBack} data-testid="changeset-gone-back">
+          ← All changesets
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * What this kind of changeset is for and what happens next; for a
+ * verification record, the plan it verifies (first) and what extraction read;
+ * for a plan, its verification records.
+ */
+function PurposeNote({
+  purpose,
+  verifies,
+  plan,
+  scope,
+  records,
+  onOpen,
+}: {
+  purpose: ChangesetPurpose | undefined;
+  verifies: string | undefined;
+  plan: ChangesetSummary | undefined;
+  scope: ChangesetScope | undefined;
+  records: ChangesetSummary[];
+  onOpen: (id: string) => void;
+}) {
+  const lifecycle = purposeLifecycle(purpose, plan?.name ?? verifies);
+  if (!lifecycle) return null;
+  const read = scopeLabel(scope);
+  return (
+    <div className="drv-note" style={{ margin: '0 0 14px 0', maxWidth: 900 }} data-testid="changeset-purpose-note">
+      {purpose === 'verification' && (
+        <p style={{ margin: '0 0 6px 0', fontWeight: 600 }} data-testid="changeset-verifies">
+          Verifies{' '}
+          {plan ? (
+            <button type="button" className="drv-linkbtn" onClick={() => onOpen(plan.id)}>
+              {plan.name}
+            </button>
+          ) : (
+            <span className="drv-mono">{verifies ?? 'its plan'}</span>
+          )}
+          {read && <span className="drv-muted" style={{ fontWeight: 400 }}> · extraction read {read}</span>}
+        </p>
+      )}
+      <p style={{ margin: 0 }}>{lifecycle}</p>
+      {records.length > 0 && (
+        <p style={{ margin: '6px 0 0 0' }} data-testid="changeset-records">
+          Verified by{' '}
+          {records.map((r, i) => (
+            <span key={r.id}>
+              {i > 0 && ', '}
+              <button type="button" className="drv-linkbtn" onClick={() => onOpen(r.id)}>
+                {r.name}
+              </button>
+            </span>
+          ))}
+        </p>
+      )}
+    </div>
+  );
+}
+
 type ChangesetTab = 'changes' | 'impact';
 
 export function ChangesetCanvas() {
@@ -76,6 +177,15 @@ export function ChangesetCanvas() {
   const status = detail?.status ?? summaryEntry?.status ?? 'unknown';
   const changesCount = detail?.changesCount ?? summaryEntry?.changesCount ?? 0;
   const origin = originLabel(detail?.origin ?? summaryEntry?.origin);
+  const purpose = detail?.purpose ?? summaryEntry?.purpose;
+  const verifies = detail?.verifies ?? summaryEntry?.verifies;
+  const plan = verifies ? registry.list.find((c) => c.id === verifies) : undefined;
+  const records = changesetId ? recordsOf(changesetId, registry.list) : [];
+  // A current dr CLI deletes a discarded changeset: the detail answers 404 from then on.
+  const gone = isChangesetGone(error);
+  const eyebrow = ['CHANGESET', purposeLabel(purpose), origin].filter(Boolean).join(' · ').toUpperCase();
+  // Set when this page discarded the changeset and went back to the inbox.
+  const [notice, setNotice] = useState<string | null>(null);
 
   return (
     <div
@@ -106,7 +216,7 @@ export function ChangesetCanvas() {
                   display: 'inline-block',
                 }}
               />
-              <span>CHANGESET{origin ? ` · ${origin.toUpperCase()}` : ''}</span>
+              <span>{eyebrow}</span>
             </>
           }
           title={name}
@@ -153,6 +263,8 @@ export function ChangesetCanvas() {
           >
             <ChangesetInbox />
           </div>
+        ) : gone ? (
+          <ChangesetGone onBack={() => selectChangeset(null)} />
         ) : !detail && error ? (
           <ChangesetEmptyState message={changesetLoadErrorMessage(error)} alert />
         ) : !detail ? (
@@ -176,6 +288,14 @@ export function ChangesetCanvas() {
             }}
             data-testid="changeset-list"
           >
+            <PurposeNote
+              purpose={purpose}
+              verifies={verifies}
+              plan={plan}
+              scope={detail.scope}
+              records={records}
+              onOpen={selectChangeset}
+            />
             {detail.description && (
               <p
                 style={{
@@ -191,11 +311,24 @@ export function ChangesetCanvas() {
             )}
             {/* Remount per changeset so filters start from that changeset's state (and a failed render gets a fresh try). */}
             <ErrorBoundary key={detail.id} what="this changeset's review">
-              <ChangesetReviewPanel detail={detail} review={review} />
+              <ChangesetReviewPanel
+                detail={detail}
+                review={review}
+                onGone={(title) => {
+                  setNotice(title);
+                  selectChangeset(null);
+                }}
+              />
             </ErrorBoundary>
           </div>
         )}
       </div>
+      <Toast
+        isOpen={notice !== null}
+        onClose={() => setNotice(null)}
+        variant="success"
+        title={notice ?? ''}
+      />
     </div>
   );
 }

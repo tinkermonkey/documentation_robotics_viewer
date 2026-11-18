@@ -19,6 +19,12 @@
  *
  * A committed changeset shows what landed instead (`AppliedResult`); a
  * discarded one, a note. Both keep the read-only change list.
+ *
+ * Apply and Discard are offered as the server's `actions` allow (`canDo`; an
+ * older dr CLI without them: both while staged). A verification record
+ * offers Discard and never Apply; were a commit of one refused anyway (409),
+ * the refusal is explained inline. A current dr CLI deletes a discarded
+ * changeset, so a discard here hands back to the canvas (`onGone`).
  */
 
 import { useMemo, useState } from 'react';
@@ -56,6 +62,7 @@ import {
   changesetActionErrorMessage,
   commitBlockers,
   isDriftError,
+  isVerificationRecordRefusal,
   type ChangesetActionResult,
   type ChangesetDetail,
 } from '../data/useChangesets';
@@ -79,6 +86,7 @@ import {
   type ShowFilter,
 } from '../data/changesetReview';
 import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
+import { canDo } from '../data/changesetPurpose';
 
 // ─── Rows ─────────────────────────────────────────────────────────────────────
 
@@ -413,6 +421,9 @@ function SummaryCard({
   const busy = commit.isPending || discard.isPending || settled !== null;
   const applying = commit.isPending || settled === 'apply';
   const local = review.mode === 'local';
+  // The moves the server allows (a verification record: Discard only).
+  const canApply = canDo(detail, 'commit');
+  const canDiscard = canDo(detail, 'discard');
 
   // "Keep the other N": undecided changes, except blocked deletes (keeping
   // one deletes its links too, which wants its own look).
@@ -445,6 +456,12 @@ function SummaryCard({
         onResult(result, `Applied ${plural(result.committed ?? lands, 'change')} to the model`);
       },
       onError: (err) => {
+        if (isVerificationRecordRefusal(err)) {
+          setError(
+            `Nothing was written. This is a verification record, which is never applied: ${changesetActionErrorMessage(err)}`,
+          );
+          return;
+        }
         if (isDriftError(err)) {
           setError(
             "Nothing was written. The model changed after this was staged. Your decisions are kept: ask DrBot to restage, then review only what moved.",
@@ -504,40 +521,46 @@ function SummaryCard({
           {model.pairs.length > 0 && ` · ${plural(model.pairs.length, 'pair')} cancel out`}
         </span>
         <div className="drv-summary__actions">
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={busy}
-            onClick={() => setConfirming('discard')}
-            data-testid="changeset-discard-button"
-          >
-            {discard.isPending || settled === 'discard' ? 'Discarding…' : 'Discard changeset'}
-          </Button>
-          <Button
-            variant="secondary"
-            size="sm"
-            disabled={busy || rest.length === 0}
-            onClick={() => review.decide(rest.map((i) => ({ sequence: i.seq, verdict: 'keep' })))}
-            data-testid="review-keep-rest"
-          >
-            {rest.length > 0 ? `Keep the other ${rest.length}` : 'Nothing left'}
-          </Button>
-          <Button
-            variant="accent"
-            size="sm"
-            disabled={busy || !model.canApply}
-            title={why}
-            onClick={() => setConfirming('apply')}
-            data-testid="changeset-apply-button"
-          >
-            {applying
-              ? 'Applying…'
-              : model.canApply
-                ? undecidedLanding > 0
-                  ? `Apply ${lands}${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''} · ${undecidedLanding} undecided as kept`
-                  : `Apply ${lands} kept${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''}`
-                : 'Apply'}
-          </Button>
+          {canDiscard && (
+            <Button
+              variant="secondary"
+              size="sm"
+              disabled={busy}
+              onClick={() => setConfirming('discard')}
+              data-testid="changeset-discard-button"
+            >
+              {discard.isPending || settled === 'discard' ? 'Discarding…' : 'Discard changeset'}
+            </Button>
+          )}
+          {canApply && (
+            <>
+              <Button
+                variant="secondary"
+                size="sm"
+                disabled={busy || rest.length === 0}
+                onClick={() => review.decide(rest.map((i) => ({ sequence: i.seq, verdict: 'keep' })))}
+                data-testid="review-keep-rest"
+              >
+                {rest.length > 0 ? `Keep the other ${rest.length}` : 'Nothing left'}
+              </Button>
+              <Button
+                variant="accent"
+                size="sm"
+                disabled={busy || !model.canApply}
+                title={why}
+                onClick={() => setConfirming('apply')}
+                data-testid="changeset-apply-button"
+              >
+                {applying
+                  ? 'Applying…'
+                  : model.canApply
+                    ? undecidedLanding > 0
+                      ? `Apply ${lands}${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''} · ${undecidedLanding} undecided as kept`
+                      : `Apply ${lands} kept${model.apply.dropped.length ? `, drop ${model.apply.dropped.length}` : ''}`
+                    : 'Apply'}
+              </Button>
+            </>
+          )}
         </div>
       </div>
       <div className="drv-pills" role="group" aria-label="What needs a decision">
@@ -551,13 +574,13 @@ function SummaryCard({
             verdicts kept in this browser
           </Chip>
         )}
-        {model.canApply && undecidedLanding > 0 && (
+        {canApply && model.canApply && undecidedLanding > 0 && (
           <span className="drv-muted" style={{ fontSize: 12 }} data-testid="review-apply-undecided">
             Apply lands the {plural(undecidedLanding, 'undecided change')} as kept. Drop or ask about any you want held
             back first.
           </span>
         )}
-        {why && (
+        {why && canApply && (
           <span className="drv-muted" style={{ fontSize: 12 }} data-testid="review-apply-why">
             Apply: {why.charAt(0).toLowerCase() + why.slice(1)}.
           </span>
@@ -624,9 +647,12 @@ function defaultFilter(model: ReviewModel, staged: boolean): ShowFilter {
 export function ChangesetReviewPanel({
   detail,
   review,
+  onGone,
 }: {
   detail: ChangesetDetail;
   review: ChangesetReviewState;
+  /** Called after a discard on a dr CLI that deletes the changeset (it sends `actions`). */
+  onGone?: (toast: string) => void;
 }) {
   const model = review.model;
   const staged = detail.status === 'staged';
@@ -668,6 +694,11 @@ export function ChangesetReviewPanel({
     setResult(r);
     // The changeset is settled: verdicts kept in this browser have done their job.
     clearLocal(detail.id);
+    // A dr CLI that sends actions deletes a discarded changeset: nothing is left to show here.
+    if (r.status === 'discarded' && detail.actions && onGone) {
+      onGone(title);
+      return;
+    }
     setToast({ open: true, variant: 'success', title });
   };
 

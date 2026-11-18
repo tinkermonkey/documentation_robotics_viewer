@@ -76,6 +76,57 @@ describe('ChangesetInbox', () => {
     expect(useUiStore.getState().changesetId).toBe('cs-a');
   });
 
+  it('keeps a verification record out of Waiting on you and pairs it with its plan', async () => {
+    serveList({
+      'cs-plan': {
+        name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 12,
+        purpose: 'plan', actions: ['commit', 'discard'], review: { decided: 0, total: 12, asked: 0 },
+      },
+      'cs-rec': {
+        name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 9,
+        purpose: 'verification', verifies: 'cs-plan', actions: ['discard'], review: { decided: 0, total: 9, asked: 0 },
+      },
+      'cs-boot': {
+        name: 'extract-abc', status: 'staged', created: '2026-11-17T11:00:00Z', changes_count: 40,
+        purpose: 'bootstrap', actions: ['commit', 'discard'], review: { decided: 0, total: 40, asked: 0 },
+      },
+    });
+    const user = userEvent.setup();
+    renderInbox();
+
+    const onYou = await screen.findByTestId('inbox-on-you');
+    await within(onYou).findByText('add-export');
+    expect(within(onYou).queryByText('add-export-as-built')).not.toBeInTheDocument();
+    expect(within(onYou).queryByText('extract-abc')).not.toBeInTheDocument();
+    expect(within(onYou).getByText('add-export').closest('article')).toHaveTextContent(/plan · /);
+    // The plan names its record.
+    expect(within(onYou).getByTestId('inbox-plan-record')).toHaveTextContent('verified by add-export-as-built');
+
+    expect(within(screen.getByTestId('inbox-to-land')).getByText('extract-abc')).toBeInTheDocument();
+
+    const records = screen.getByTestId('inbox-records');
+    const record = within(records).getByTestId('inbox-record');
+    expect(record).toHaveTextContent('add-export-as-built');
+    expect(within(record).getByTestId('inbox-record-plan')).toHaveTextContent('Verifies add-export');
+    expect(within(record).queryByRole('button', { name: /review/i })).not.toBeInTheDocument();
+    await user.click(within(record).getByRole('button', { name: 'add-export' }));
+    expect(useUiStore.getState().changesetId).toBe('cs-plan');
+  });
+
+  it("shows each changeset's purpose in the history", async () => {
+    serveList({
+      'cs-c': {
+        name: 'landed-plan', status: 'committed', created: '2026-11-12T09:00:00Z', changes_count: 4,
+        purpose: 'plan', actions: [],
+      },
+      'cs-d': { name: 'older', status: 'committed', created: '2026-11-10T09:00:00Z', changes_count: 2 },
+    });
+    renderInbox();
+    await screen.findByTestId('inbox-history');
+    expect(screen.getByRole('heading', { name: 'History' })).toBeInTheDocument();
+    expect(screen.getAllByTestId('inbox-history-purpose').map((c) => c.textContent)).toEqual(['plan', '—']);
+  });
+
   it('counts verdicts kept in this browser for an older dr CLI, by the shared definition', async () => {
     // The detail (MSW's default: the fixture, 38 changes of which 8 cancel out) gives total 30;
     // dropping RelationshipType (7) also leaves out its link (32), which counts as decided.

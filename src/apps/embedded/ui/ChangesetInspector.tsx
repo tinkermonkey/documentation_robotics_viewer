@@ -34,6 +34,7 @@ import { useModel } from '../data/useModel';
 import { useChangesetImpact } from '../data/changesetImpact';
 import { useChangesetReview } from '../data/useChangesetReview';
 import { netStats, outcomeOf } from '../data/changesetReview';
+import { canDo } from '../data/changesetPurpose';
 import {
   changesetLoadErrorMessage,
   useChangeset,
@@ -318,8 +319,11 @@ export function ChangesetInspector() {
 
             {detail.status === 'staged' && (
               <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
-                Select a change to decide it: Keep, Drop or Ask DrBot. Apply waits until every change has a
-                verdict.
+                {canDo(detail, 'commit')
+                  ? 'Select a change to decide it: Keep, Drop or Ask DrBot. Apply waits until every change has a verdict.'
+                  : detail.purpose === 'verification'
+                    ? 'A verification record is never applied. Keep it as a record, or discard it.'
+                    : 'The server offers no Apply for this changeset.'}
               </p>
             )}
 

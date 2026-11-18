@@ -24,6 +24,13 @@ import {
   type UnstagedChange,
 } from './changesetReview';
 import { websocketClient } from '../services/websocketClient';
+import {
+  purposeFields,
+  toScope,
+  type ChangesetMove,
+  type ChangesetPurpose,
+  type ChangesetScope,
+} from './changesetPurpose';
 
 /** Review progress the list reports per changeset (a dr CLI with changeset review). */
 export interface ChangesetReviewProgress {
@@ -43,6 +50,12 @@ export interface ChangesetSummary {
   revision?: number;
   /** Absent from a dr CLI without changeset review. */
   review?: ChangesetReviewProgress;
+  /** What it is for (a dr CLI with changeset purposes; known values only). */
+  purpose?: ChangesetPurpose;
+  /** The moves the server allows now; undefined from an older dr CLI (see `canDo`). */
+  actions?: ChangesetMove[];
+  /** A verification record: the id of the plan it verifies. */
+  verifies?: string;
 }
 
 interface ChangesetEntry {
@@ -54,6 +67,9 @@ interface ChangesetEntry {
   origin?: ChangesetOrigin;
   revision?: number;
   review?: ChangesetReviewProgress;
+  purpose?: unknown;
+  actions?: unknown;
+  verifies?: unknown;
   [key: string]: unknown;
 }
 
@@ -87,6 +103,7 @@ export function useChangesets() {
       origin: entry.origin,
       revision: entry.revision,
       review: entry.review,
+      ...purposeFields(entry),
     }));
 
     // Newest first by created timestamp (stable for equal/empty timestamps).
@@ -120,6 +137,10 @@ interface ChangesetDetailPayload {
   origin?: ChangesetOrigin;
   unstaged?: UnstagedChange[];
   review?: ChangesetReview;
+  purpose?: unknown;
+  actions?: unknown;
+  verifies?: unknown;
+  scope?: unknown;
   [key: string]: unknown;
 }
 
@@ -148,6 +169,14 @@ export interface ChangesetDetail {
    * review: verdicts then live in this browser (see useChangesetReview).
    */
   review?: ChangesetReview;
+  /** What it is for (a dr CLI with changeset purposes; known values only). */
+  purpose?: ChangesetPurpose;
+  /** The moves the server allows now; undefined from an older dr CLI (see `canDo`). */
+  actions?: ChangesetMove[];
+  /** A verification record: the id of the plan it verifies. */
+  verifies?: string;
+  /** A verification record: what its extraction read. */
+  scope?: ChangesetScope;
 }
 
 const EMPTY_STATS: ChangesetStats = { additions: 0, modifications: 0, deletions: 0 };
@@ -166,6 +195,7 @@ export function useChangeset(id: string | null) {
 
   const detail = useMemo<ChangesetDetail | null>(() => {
     if (!raw) return null;
+    const scope = toScope(raw.scope);
     return {
       id: raw.id ?? id ?? '',
       name: raw.name ?? raw.id ?? '',
@@ -186,6 +216,8 @@ export function useChangeset(id: string | null) {
       origin: raw.origin,
       unstaged: raw.unstaged ?? [],
       review: raw.review,
+      ...purposeFields(raw),
+      ...(scope ? { scope } : {}),
     };
   }, [raw, id]);
 
@@ -229,9 +261,20 @@ export function commitBlockers(error: unknown): Record<string, unknown[]> | null
   }
 }
 
+/**
+ * A 409 commit refusal for a verification record, which is never landed (a
+ * dr CLI with changeset purposes). Its message names the plan to land
+ * instead, and mentions drift, so it is checked before `isDriftError`.
+ */
+export function isVerificationRecordRefusal(error: unknown): boolean {
+  if (!(error instanceof ApiError) || error.status !== 409) return false;
+  return /verification record/i.test(error.serverMessage ?? error.body);
+}
+
 /** A 409 commit refusal whose message says the model drifted since staging. */
 export function isDriftError(error: unknown): boolean {
   if (!(error instanceof ApiError) || error.status !== 409) return false;
+  if (isVerificationRecordRefusal(error)) return false;
   return /drift|changed since/i.test(error.serverMessage ?? error.body);
 }
 
@@ -246,6 +289,18 @@ export function changesetActionErrorMessage(error: unknown): string {
 }
 
 /**
+ * A 404 for a changeset: the server has none with this id. A current dr CLI
+ * deletes a changeset when it is discarded, so this is also what a discarded
+ * one looks like.
+ */
+export function isChangesetGone(error: unknown): boolean {
+  return error instanceof ApiError && error.status === 404;
+}
+
+export const CHANGESET_GONE_MESSAGE =
+  'This changeset is gone: the server has none with this id. Discarding a changeset deletes it, and nothing from it reached the model.';
+
+/**
  * What to show when a changeset's detail can't be loaded, instead of a
  * "loading" message that never resolves. A refused token (401/403) usually
  * means this tab holds an older server's token: reloading picks up the stored
@@ -256,7 +311,7 @@ export function changesetLoadErrorMessage(error: unknown): string {
     if (error.status === 401 || error.status === 403) {
       return "couldn't load the changeset: the server refused this tab's access token. Reload the page, or open the viewer again from its link.";
     }
-    if (error.status === 404) return "couldn't load the changeset: the server has no changeset with this id.";
+    if (error.status === 404) return CHANGESET_GONE_MESSAGE;
   }
   return `couldn't load the changeset: ${changesetActionErrorMessage(error)}`;
 }

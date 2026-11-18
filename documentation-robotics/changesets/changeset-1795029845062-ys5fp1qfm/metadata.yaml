@@ -1,0 +1,15 @@
+id: changeset-1795029845062-ys5fp1qfm
+name: changeset-purposes-and-actions
+description: Treat changesets by purpose and render their allowed actions from
+  the server, so verification records aren't offered as plans to apply (#575)
+created: 2026-11-18T19:24:05.068Z
+modified: 2026-11-18T19:25:24.493Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 35
+  modifications: 9
+  deletions: 0
+lastSequence: 43
