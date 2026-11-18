@@ -15,6 +15,11 @@
  * a changeset as it spends; see useLiveChangesetUpdates) and the window
  * regaining focus. That is what picks up a server upgraded to one with the
  * route.
+ *
+ * While Tier 1 is warming (a codebase_index job filling the answer cache) it
+ * is also asked every `WARMING_POLL_MS`, so the fill's progress moves without
+ * a reload; polling stops as soon as a read says any other state. The CLI
+ * sends no broadcast for the fill's progress.
  */
 
 import { useMemo } from 'react';
@@ -35,9 +40,18 @@ export function isTier1Unavailable(error: unknown): boolean {
   return error instanceof SyntaxError;
 }
 
+/** How often the status is asked again while Tier 1 is warming. */
+export const WARMING_POLL_MS = 5000;
+
+/** The refetch interval for a read: `WARMING_POLL_MS` while warming, else none. */
+export function tier1RefetchInterval(data: unknown): number | false {
+  return toTier1Status(data)?.state === 'warming' ? WARMING_POLL_MS : false;
+}
+
 export function useTier1(): Tier1View {
   const query = useGetapitier1({
     retry: (failures: number, error: unknown) => !isTier1Unavailable(error) && failures < 1,
+    refetchInterval: (q: { state: { data: unknown } }) => tier1RefetchInterval(q.state.data),
   });
 
   return useMemo<Tier1View>(() => {

@@ -7,6 +7,11 @@
  *   the 80% warning when `nearCap`, rose at the cap), the reset date, spend per
  *   source, where each credential comes from (never its value), the answer
  *   cache, warnings, and the server's `reason` whenever Tier 1 isn't on.
+ * - Warming (on, while a codebase_index job fills the answer cache): the fill's
+ *   progress in place of `reason` — cards done of the total, time left, time
+ *   running, cost so far — refreshed by `useTier1` until it ends.
+ * - Mode (stages without the agent / suggests only, with `modeReason`) and,
+ *   for OpenRouter, the upstreams card text may go to and the routing terms.
  * - A cap of $0 is a choice, not an overrun: the card says Tier 1 asks
  *   nothing, with no bar and no reset date.
  * - Off (the default, not opted in): a folded one-liner, so the inbox stays
@@ -26,10 +31,14 @@ import { Chip, ProgressBar } from '@tinkermonkey/heimdall-ui';
 import { WithCode } from './reviewParts';
 import { useTier1 } from '../data/useTier1';
 import {
+  TIER1_MODE_LABEL,
   TIER1_STATE_COLOR,
   TIER1_STATE_LABEL,
   formatBytes,
   formatCount,
+  formatDuration,
+  warmingPercent,
+  type Tier1Warming,
   formatPercent,
   formatResetDate,
   formatUsd,
@@ -139,6 +148,96 @@ function Spend({ status }: { status: Tier1Status }) {
   );
 }
 
+/**
+ * Warming: how far the codebase_index job's cache fill has got — cards done of
+ * the total as a bar (or that the cards are still being built), time left,
+ * how long it has run and its cost so far. `useTier1` re-reads the status
+ * while warming, so this moves on its own.
+ */
+function Warming({ warming }: { warming: Tier1Warming }) {
+  const { cards } = warming;
+  const started = Date.parse(warming.startedAt);
+  const elapsed = Number.isNaN(started) ? null : Math.max(0, (Date.now() - started) / 1000);
+  const facts = [
+    warming.etaSeconds !== undefined ? `${formatDuration(warming.etaSeconds)} left` : null,
+    elapsed !== null ? `running ${formatDuration(elapsed).replace(/^about /, '')}` : null,
+    `${formatUsd(warming.costUsd)} so far`,
+  ].filter(Boolean);
+  const pct = warmingPercent(cards);
+  return (
+    <div className="drv-tier1__warming" data-testid="tier1-warming">
+      <div className="drv-tier1__spend">
+        <span className="drv-eyebrow">Filling the answer cache</span>
+        {cards ? (
+          <span data-testid="tier1-warming-cards">
+            {formatCount(cards.done)} of {formatCount(cards.total)} cards
+          </span>
+        ) : (
+          <span data-testid="tier1-warming-cards">Building the cards…</span>
+        )}
+      </div>
+      {cards && (
+        <ProgressBar
+          percent={pct}
+          color="cyan"
+          height={4}
+          role="progressbar"
+          aria-label={`Answer cache fill: ${formatCount(cards.done)} of ${formatCount(cards.total)} cards`}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={pct}
+          data-testid="tier1-warming-bar"
+        />
+      )}
+      <span className="drv-mono drv-muted" style={{ fontSize: 12 }} data-testid="tier1-warming-facts">
+        {facts.join(' · ')}
+      </span>
+    </div>
+  );
+}
+
+/**
+ * Mode and routing: whether Tier 1 places changes without the agent (and the
+ * server's reason), and for OpenRouter, the upstreams card text may go to.
+ * Read-only: the server's `note` names the command that changes the mode.
+ */
+function Settings({ status }: { status: Tier1Status }) {
+  const { mode, modeReason, routing } = status;
+  if (!mode && !routing) return null;
+  return (
+    <dl className="drv-kv" style={{ margin: 0 }} data-testid="tier1-settings">
+      {mode && (
+        <>
+          <dt>Mode</dt>
+          <dd data-testid="tier1-mode" data-mode={mode}>
+            <span style={{ color: 'rgb(var(--canvas-fg-1))' }}>{TIER1_MODE_LABEL[mode]}</span>
+            {modeReason && (
+              <span className="drv-muted" style={{ flexBasis: '100%', fontSize: 12 }} data-testid="tier1-mode-reason">
+                <WithCode text={modeReason} />
+              </span>
+            )}
+          </dd>
+        </>
+      )}
+      {routing && (
+        <>
+          <dt>Card text to</dt>
+          <dd data-testid="tier1-routing">
+            {routing.only.map((u) => (
+              <Chip key={u} variant="neutral" data-testid="tier1-upstream">
+                {u}
+              </Chip>
+            ))}
+            <span className="drv-muted" style={{ flexBasis: '100%', fontSize: 12 }} data-testid="tier1-routing-terms">
+              only these · no fallbacks · no data collection{routing.zdr ? ' · zero data retention' : ''}
+            </span>
+          </dd>
+        </>
+      )}
+    </dl>
+  );
+}
+
 function Credentials({ status }: { status: Tier1Status }) {
   const entries = Object.entries(status.credentials);
   if (entries.length === 0) return null;
@@ -203,6 +302,7 @@ function Tier1Card({ status }: { status: Tier1Status }) {
         ? ' drv-card--attention'
         : '';
   const modelLine = [status.provider, status.modelId ?? status.model].filter(Boolean).join(' · ');
+  const warming = status.state === 'warming' ? status.warming : undefined;
   return (
     <section
       className={`drv-card drv-tier1${tone}`}
@@ -224,8 +324,10 @@ function Tier1Card({ status }: { status: Tier1Status }) {
         )}
       </div>
 
-      <Reason status={status} />
+      {/* While warming, the progress below says what `reason` says in words. */}
+      {warming ? <Warming warming={warming} /> : <Reason status={status} />}
       {status.state !== 'misconfigured' && <Spend status={status} />}
+      <Settings status={status} />
       <Credentials status={status} />
 
       {status.warnings.length > 0 && (

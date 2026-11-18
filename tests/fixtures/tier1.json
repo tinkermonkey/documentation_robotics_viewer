@@ -300,5 +300,59 @@
     "nearCap": false,
     "summary": "Tier 1 is warming (the codebase_index job is filling the answer cache (1,388 of 4,071 cards, about 8 min left, $1.94 so far)). This month: $1.94 of the $20.00 cap, $18.06 left (1388 card(s)), resets 2026-12-01 (UTC).",
     "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap, and `dr analyzer tier1 set mode suggest` keeps Tier 1 from staging or hiding anything without the agent. The spend counts this checkout only, not other clones or machines on the same account."
+  },
+  "openRouter": {
+    "analyzer": "cbm",
+    "config": ".dr/analyzers/cbm/tier1.json",
+    "provider": "openrouter",
+    "model": "cloudflare/clef",
+    "monthlyCapUsd": 20,
+    "concurrency": 4,
+    "dotDrIgnored": true,
+    "warnings": [],
+    "state": "on",
+    "modelId": "cloudflare/clef",
+    "routing": {
+      "only": [
+        "cloudflare"
+      ],
+      "allowFallbacks": false,
+      "dataCollection": "deny"
+    },
+    "credentials": {
+      "apiKey": {
+        "set": true,
+        "from": "OPENROUTER_API_KEY"
+      }
+    },
+    "month": {
+      "spentUsd": 1.37,
+      "capUsd": 20,
+      "remainingUsd": 18.63,
+      "resetsAt": "2026-12-01T00:00:00.000Z",
+      "cards": 1032,
+      "percentUsed": 6.9
+    },
+    "bySource": {
+      "extract": {
+        "cards": 1029,
+        "costUsd": 1.3601,
+        "lastAt": "2026-11-15T10:02:11.481Z"
+      },
+      "probe": {
+        "cards": 3,
+        "costUsd": 0.0099,
+        "lastAt": "2026-11-15T09:40:52.007Z"
+      }
+    },
+    "cache": {
+      "entries": 1018,
+      "bytes": 1102230,
+      "files": 1,
+      "lastCompaction": "2026-11-15T10:02:12.310Z"
+    },
+    "nearCap": false,
+    "summary": "Tier 1 is on. Through OpenRouter, forwarded only to cloudflare. This month: $1.37 of the $20.00 cap, $18.63 left (1032 card(s)), resets 2026-12-01 (UTC). OpenRouter's Decisions API is in alpha and may change.",
+    "note": "A person enables, changes and disables Tier 1 with `dr analyzer tier1 enable|set|disable` (no tool writes tier1.json); `dr analyzer tier1 set monthly-cap <dollars>` changes the cap, and `dr analyzer tier1 set mode suggest` keeps Tier 1 from staging or hiding anything without the agent. The spend counts this checkout only, not other clones or machines on the same account."
   }
 }

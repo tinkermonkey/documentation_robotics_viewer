@@ -12,6 +12,7 @@ import {
   deciderLabel,
   formatBytes,
   formatCount,
+  formatDuration,
   formatPercent,
   formatProbability,
   formatResetDate,
@@ -27,8 +28,9 @@ import {
   spendColor,
   splitCode,
   toTier1Status,
+  warmingPercent,
 } from '@/apps/embedded/data/tier1';
-import { isTier1Unavailable } from '@/apps/embedded/data/useTier1';
+import { WARMING_POLL_MS, isTier1Unavailable, tier1RefetchInterval } from '@/apps/embedded/data/useTier1';
 import { ApiError } from '@/core/services/generatedApiClient';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
 import tier1 from '../fixtures/tier1.json';
@@ -222,6 +224,80 @@ describe('toTier1Status', () => {
     expect(toTier1Status({ state: 'on', month: { ...month, percentUsed: 140 } })!.month.percentUsed).toBe(100);
     expect(toTier1Status({ state: 'on', month: { ...month, percentUsed: null } })!.month.percentUsed).toBeNull();
     expect('percentUsed' in toTier1Status({ state: 'on', month })!.month).toBe(false);
+  });
+
+  it('keeps a well-formed warming object and drops a malformed one', () => {
+    expect(toTier1Status(tier1.warming)!.warming).toEqual(tier1.warming.warming);
+    const w = tier1.warming.warming;
+    const warming = (patch: object) => toTier1Status({ ...tier1.warming, warming: { ...w, ...patch } });
+    // Cards still being built.
+    expect(warming({ cards: null })!.warming!.cards).toBeNull();
+    // A bad eta is left out; the rest stays.
+    expect(warming({ etaSeconds: -3 })!.warming).toEqual({ ...w, etaSeconds: undefined });
+    expect('etaSeconds' in warming({ etaSeconds: 'soon' })!.warming!).toBe(false);
+    // Malformed: the whole warming goes, the status still reads.
+    for (const bad of [
+      { jobId: undefined },
+      { startedAt: 7 },
+      { costUsd: '1.94' },
+      { cards: { done: 5, total: 4 } },
+      { cards: { done: 1.5, total: 4 } },
+      { cards: { done: -1, total: 4 } },
+      { cards: 'many' },
+    ]) {
+      const s = warming(bad)!;
+      expect(s.state).toBe('warming');
+      expect(s.warming).toBeUndefined();
+    }
+    expect(toTier1Status({ ...tier1.warming, warming: 'yes' })!.warming).toBeUndefined();
+  });
+
+  it("keeps mode only as suggest or stage, and routing's string upstreams", () => {
+    const or = tier1.openRouter;
+    expect(toTier1Status(or)!.routing).toEqual({ only: ['cloudflare'], allowFallbacks: false, dataCollection: 'deny' });
+    const s = toTier1Status({ ...or, mode: 'stage', modeReason: 'held-out verified defaults' })!;
+    expect(s.mode).toBe('stage');
+    expect(s.modeReason).toBe('held-out verified defaults');
+    expect(toTier1Status({ ...or, mode: 'suggest', modeReason: 4 })!).toMatchObject({ mode: 'suggest' });
+    expect('modeReason' in toTier1Status({ ...or, mode: 'suggest', modeReason: 4 })!).toBe(false);
+    // An unknown mode is dropped with its reason.
+    const auto = toTier1Status({ ...or, mode: 'auto', modeReason: 'x' })!;
+    expect(auto.mode).toBeUndefined();
+    expect(auto.modeReason).toBeUndefined();
+
+    const routing = (r: unknown) => toTier1Status({ ...or, routing: r })!.routing;
+    expect(routing({ ...or.routing, only: ['cloudflare', 3, '', 'deepinfra/fp8'], zdr: true })).toEqual({
+      only: ['cloudflare', 'deepinfra/fp8'],
+      allowFallbacks: false,
+      dataCollection: 'deny',
+      zdr: true,
+    });
+    expect(routing({ ...or.routing, zdr: 'yes' })).not.toHaveProperty('zdr');
+    // Never claims terms the server didn't send.
+    expect(routing({ ...or.routing, allowFallbacks: true })).toBeUndefined();
+    expect(routing({ ...or.routing, dataCollection: 'allow' })).toBeUndefined();
+    expect(routing({ ...or.routing, only: [7] })).toBeUndefined();
+    expect(routing({ ...or.routing, only: 'cloudflare' })).toBeUndefined();
+    expect(routing(null)).toBeUndefined();
+  });
+});
+
+describe('warming', () => {
+  it('words a duration and the share of cards done', () => {
+    expect(formatDuration(42)).toBe('under a minute');
+    expect(formatDuration(497)).toBe('about 8 min');
+    expect(formatDuration(3900)).toBe('about 1 h 5 min');
+    expect(formatDuration(7200)).toBe('about 2 h');
+    expect(formatDuration(-1)).toBe('—');
+    expect(warmingPercent({ done: 1388, total: 4071 })).toBe(34.1);
+    expect(warmingPercent({ done: 0, total: 0 })).toBe(0);
+    expect(warmingPercent(null)).toBe(0);
+  });
+
+  it('polls only while warming', () => {
+    expect(tier1RefetchInterval(tier1.warming)).toBe(WARMING_POLL_MS);
+    expect(tier1RefetchInterval(tier1.on)).toBe(false);
+    expect(tier1RefetchInterval(undefined)).toBe(false);
   });
 });
 
