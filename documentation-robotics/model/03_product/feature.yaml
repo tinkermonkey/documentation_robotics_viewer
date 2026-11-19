@@ -213,3 +213,33 @@ product.feature.tier1-mode-and-routing:
     created_at: 2026-11-18T18:31:43.980Z
     updated_at: 2026-11-18T18:31:43.980Z
     version: 1
+product.feature.nav-tree-type-groups:
+  id: e1aff2db-327f-4b05-8797-430a8add7c32
+  path: product.feature.nav-tree-type-groups
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Nav Tree Type Groups
+  description: The left rail's Model tree groups each layer's elements under their
+    node type with a count (Layer › Node type (n) › Element). Groups start
+    collapsed and sort A–Z by type label, elements A–Z inside; a type with one
+    element still gets a group. The selected element's group opens wherever it
+    was chosen. Opening a group pushes no history. The Schema tree is unchanged.
+  attributes:
+    priority: medium
+    status: planned
+    size: s
+  accepted_gaps:
+    - direction: incoming
+      predicate: realizes
+      other_spec_node_id: ux.view
+      reason: The nav tree is shell chrome in the left rail, not a view; the model has
+        no UX element for the rail, and the feature is realized by the nav-tree
+        component and its grouping service.
+      decided_by: agent
+      decided_at: 2026-11-19T17:48:21.827Z
+      changeset: changeset-1795110463195-az6w0eh20
+  metadata:
+    created_at: 2026-11-19T17:47:57.267Z
+    updated_at: 2026-11-19T17:47:57.267Z
+    version: 1

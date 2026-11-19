@@ -15726,3 +15726,51 @@ testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdo
     created_at: 2026-11-19T17:46:37.493Z
     updated_at: 2026-11-19T17:46:37.493Z
     version: 1
+testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted:
+  id: e63fc27f-0627-4964-bbde-a47d1a6bc0ee
+  path: testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: Groups A–Z by type label, elements A–Z inside, a single-element
+      type still grouped; groupKeyOf names the group holding an element.
+  metadata:
+    created_at: 2026-11-19T17:48:07.767Z
+    updated_at: 2026-11-19T17:48:07.767Z
+    version: 1
+testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history:
+  id: d5a430f2-02c0-4513-a923-0758bf23356f
+  path: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree type groups > a layer opens onto collapsed groups and a group
+    opens without history
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:07.767Z
+    updated_at: 2026-11-19T17:48:07.767Z
+    version: 1
+testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row:
+  id: 298400b7-bbc0-4328-909e-c43e0b4f92f9
+  path: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree type groups > a selection made elsewhere opens its group and
+    reveals its row
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: Graph click, deep link (before and after the model loads) or
+      cross-layer navigate.
+  metadata:
+    created_at: 2026-11-19T17:48:07.767Z
+    updated_at: 2026-11-19T17:48:07.767Z
+    version: 1

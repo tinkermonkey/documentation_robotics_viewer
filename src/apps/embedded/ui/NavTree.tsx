@@ -1,5 +1,7 @@
 /**
- * NavTree — 3-level hierarchical navigation (Section -> Layer -> Element).
+ * NavTree — hierarchical navigation: Section -> Layer -> Element, with a
+ * Model layer's elements grouped under their node type (#592):
+ * Layer -> Node type (count) -> Element.
  *
  * Heimdall's <Sidebar> is only 2-level, so this is built on Heimdall's real
  * <NavItem> button (icon/label/count/active/depth) + the design's
@@ -8,9 +10,15 @@
  * `domain.ts`; counts come from the live model (`useModel`) and spec
  * (`useSpec`); leaves are element names (Model) or node-type names (Schema).
  * Changesets lists changesets, or a subtle empty hint when the model has none.
+ *
+ * Type groups (`data/navTreeGroups.ts`) start collapsed. Their open state is
+ * local to the tree, not in `uiStore` or the URL, so opening one pushes no
+ * history. The group holding the selected element opens whenever the
+ * selection changes, wherever it came from (a nav click, the graph, a deep
+ * link, a cross-layer navigate), so the reveal effect can scroll to its row.
  */
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavItem, type IconName } from '@tinkermonkey/heimdall-ui';
 import { useUiStore, type ViewKind } from './uiStore';
 import { LAYER_ORDER, layerLabel, type LayerSlug } from './domain';
@@ -18,6 +26,7 @@ import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
 import { purposeLabel } from '../data/changesetPurpose';
+import { groupByType, typeGroupKey } from '../data/navTreeGroups';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets'>;
 
@@ -72,13 +81,47 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
   );
 }
 
-/** A level-1 (layer) row + its expanded element/node-type leaves. */
+/** Which Model type groups are open, and how to toggle one (local tree state). */
+interface GroupState {
+  openGroups: ReadonlySet<string>;
+  toggleGroup: (key: string) => void;
+}
+
+/** A leaf row: a Model element or a Schema node type. */
+function LeafRow({
+  label,
+  active,
+  className,
+  onSelect,
+}: {
+  label: string;
+  active: boolean;
+  className: string;
+  onSelect: () => void;
+}) {
+  return (
+    <div style={{ position: 'relative' }}>
+      <NavItem
+        label={label}
+        active={active}
+        depth={1}
+        className={className}
+        onClick={onSelect}
+        title={label}
+      />
+    </div>
+  );
+}
+
+/** A level-1 (layer) row + its expanded type groups (Model) or node-type leaves (Schema). */
 function LayerRow({
   sectionId,
   slug,
+  groups: groupState,
 }: {
   sectionId: SectionId;
   slug: LayerSlug;
+  groups: GroupState;
 }) {
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
@@ -98,22 +141,19 @@ function LayerRow({
   // Count: spec node-types for Schema (from `nodeSchemas` keys, so data-model is
   // non-zero), model elements for Model.
   const specInfo = spec.byLayer[slug];
-  const modelNodes = model.nodesByLayer[slug] ?? [];
+  const modelNodes = model.nodesByLayer[slug];
   const count =
     sectionId === 'spec'
       ? specInfo?.typeCount ?? 0
-      : modelNodes.length;
+      : modelNodes?.length ?? 0;
 
-  // Leaves: element names (Model) or node-type titles (Schema). Schema leaf id
-  // is the spec_node_id (`<slug>.<shortname>`) so selecting it matches the
-  // graph node id the canvas / inspector operate on.
-  const leaves: { id: string; label: string }[] =
-    sectionId === 'spec'
-      ? (specInfo?.typeIds ?? []).map((t, i) => ({
-          id: `${slug}.${t}`,
-          label: specInfo?.typeTitles[i] ?? t,
-        }))
-      : modelNodes.map((n) => ({ id: n.id, label: n.name }));
+  // Model: the layer's elements under their node type, A–Z (#592).
+  const typeGroups = useMemo(
+    () => (sectionId === 'model' && open ? groupByType(slug, modelNodes ?? [], specInfo) : []),
+    [sectionId, open, slug, modelNodes, specInfo],
+  );
+
+  const isActive = (id: string) => view === sectionId && layerId === slug && selectedId === id;
 
   return (
     <>
@@ -128,27 +168,56 @@ function LayerRow({
         />
         <Chevron open={open} />
       </div>
+      {/* Schema leaves: node-type titles. The leaf id is the spec_node_id
+          (`<slug>.<shortname>`) so selecting it matches the graph node id the
+          canvas / inspector operate on. */}
       {open &&
-        leaves.map((leaf) => {
-          const leafActive =
-            view === sectionId && layerId === slug && selectedId === leaf.id;
+        sectionId === 'spec' &&
+        (specInfo?.typeIds ?? []).map((t, i) => {
+          const id = `${slug}.${t}`;
           return (
-            <div key={leaf.id} style={{ position: 'relative' }}>
-              <NavItem
-                label={leaf.label}
-                active={leafActive}
-                depth={1}
-                className="drv-nav-l2"
-                onClick={() =>
-                  sectionId === 'model'
-                    ? navigateToElement(leaf.id, slug)
-                    : navigateToSpecNode(leaf.id, slug)
-                }
-                title={leaf.label}
-              />
-            </div>
+            <LeafRow
+              key={id}
+              label={specInfo?.typeTitles[i] ?? t}
+              active={isActive(id)}
+              className="drv-nav-l2"
+              onSelect={() => navigateToSpecNode(id, slug)}
+            />
           );
         })}
+      {typeGroups.map((group) => {
+        const groupOpen = groupState.openGroups.has(group.key);
+        const n = group.nodes.length;
+        const name = `${group.label}, ${n} ${n === 1 ? 'element' : 'elements'}`;
+        return (
+          <div key={group.key}>
+            <div style={{ position: 'relative' }}>
+              <NavItem
+                label={group.label}
+                count={n}
+                depth={1}
+                className="drv-nav-l2 drv-nav-group"
+                aria-expanded={groupOpen}
+                aria-label={name}
+                title={name}
+                data-testid={`nav-type-group-${group.key}`}
+                onClick={() => groupState.toggleGroup(group.key)}
+              />
+              <Chevron open={groupOpen} />
+            </div>
+            {groupOpen &&
+              group.nodes.map((node) => (
+                <LeafRow
+                  key={node.id}
+                  label={node.name}
+                  active={isActive(node.id)}
+                  className="drv-nav-l3"
+                  onSelect={() => navigateToElement(node.id, slug)}
+                />
+              ))}
+          </div>
+        );
+      })}
     </>
   );
 }
@@ -210,8 +279,37 @@ export function NavTree() {
   const treeRef = useRef<HTMLDivElement>(null);
   // The leaf rows render from these, so a cold deep link (store set before the
   // data arrives) reveals the selected leaf once they load, not just its layer.
-  const modelNodes = useModel().derived.nodes.length;
+  const { derived: model } = useModel();
+  const modelNodes = model.nodes.length;
   const changesetCount = useChangesets().derived.list.length;
+
+  // Model type groups (#592): collapsed until opened. Local state on purpose —
+  // not in uiStore or the URL — so opening a group pushes no history.
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<string>>(() => new Set());
+  const toggleGroup = useCallback((key: string) => {
+    setOpenGroups((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+  }, []);
+  const groups = useMemo<GroupState>(() => ({ openGroups, toggleGroup }), [openGroups, toggleGroup]);
+
+  // The type group holding the selected Model element, once the model has it.
+  const selectedGroup = useMemo(() => {
+    if (view !== 'model' || !layerId || !selectedId) return null;
+    const node = model.nodesByLayer[layerId]?.find((n) => n.id === selectedId);
+    return node ? typeGroupKey(layerId, node.type) : null;
+  }, [view, layerId, selectedId, model.nodesByLayer]);
+
+  // Open the selection's group whenever the selection changes (or the model it
+  // needs arrives), wherever it was made. Closing it afterwards sticks until
+  // the next selection.
+  useEffect(() => {
+    if (!selectedGroup) return;
+    setOpenGroups((prev) => (prev.has(selectedGroup) ? prev : new Set(prev).add(selectedGroup)));
+  }, [selectedGroup, selectedId]);
+  const selectedGroupOpen = selectedGroup !== null && openGroups.has(selectedGroup);
 
   // Reveal the selection (#560): after any navigation — a nav click, a
   // cross-layer link, a deep link, back/forward — scroll the deepest active
@@ -220,7 +318,7 @@ export function NavTree() {
     const active = treeRef.current?.querySelectorAll<HTMLElement>('.nav-item--active');
     const deepest = active?.[active.length - 1];
     deepest?.scrollIntoView?.({ block: 'nearest' });
-  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount]);
+  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount, selectedGroupOpen]);
 
   return (
     <div
@@ -238,7 +336,7 @@ export function NavTree() {
             {open &&
               section.id !== 'changesets' &&
               LAYER_ORDER.map((slug) => (
-                <LayerRow key={slug} sectionId={section.id} slug={slug} />
+                <LayerRow key={slug} sectionId={section.id} slug={slug} groups={groups} />
               ))}
           </div>
         );
