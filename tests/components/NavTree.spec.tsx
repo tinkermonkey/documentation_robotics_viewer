@@ -314,7 +314,7 @@ describe('NavTree — reveals the selection', () => {
   });
 });
 
-describe('NavTree — type groups (#592)', () => {
+describe('NavTree type groups', () => {
   const goals = model.nodes.filter((n) => n.layer_id === 'motivation' && n.type === 'goal');
 
   it('a layer opens onto collapsed groups and a group opens without history', async () => {
