@@ -64,6 +64,13 @@ test.describe('changesets', () => {
     await expect(page.getByTestId('page-header-actions')).toContainText(`${detail.changes.length} changes`);
 
     // Review rows render (changes that cancel out within the changeset are folded away).
+    // A changeset someone already reviewed opens on "Since your review", which shows
+    // revision cards rather than rows, so ask for All first when the filter is offered.
+    await expect(page.getByTestId('review-panel')).toBeVisible({ timeout: 15_000 });
+    const showFilter = page.getByTestId('review-filter');
+    if (await showFilter.isVisible()) {
+      await showFilter.getByRole('radio', { name: /^All/ }).click();
+    }
     const rows = page.getByTestId('review-row');
     await expect(rows.first()).toBeVisible({ timeout: 15_000 });
     expect(await rows.count()).toBeGreaterThan(0);
