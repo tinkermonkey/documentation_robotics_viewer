@@ -108,6 +108,11 @@ describe('originDetails', () => {
   it('shows only what a Tier 0 origin carries', () => {
     expect(originDetails({ by: 'tier0', rule: 'node-mapping:Route' })).toEqual([{ key: 'Rule', value: 'node-mapping:Route' }]);
     expect(originDetails({ by: 'agent' })).toEqual([]);
+    // An upgrade's rule names the retired relationship type.
+    expect(originDetails({ by: 'upgrade', rule: 'aggregates (retired in 0.13.0)' })).toEqual([
+      { key: 'Retired', value: 'aggregates (retired in 0.13.0)' },
+    ]);
+    expect(originSummary({ by: 'upgrade' })).toMatch(/^Dropped by a spec upgrade/);
     expect(originSummary({ by: 'tier0', rule: 'edge:CALLS' })).toBe('Decided by a Tier 0 rule · rule edge:CALLS');
   });
 

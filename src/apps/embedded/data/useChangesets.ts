@@ -282,7 +282,8 @@ export function commitBlockers(error: unknown): Record<string, unknown[]> | null
  */
 export function isVerificationRecordRefusal(error: unknown): boolean {
   if (!(error instanceof ApiError) || error.status !== 409) return false;
-  return /verification record/i.test(error.serverMessage ?? error.body);
+  // A verification record or an upgrade record: neither is ever landed.
+  return /verification record|upgrade record/i.test(error.serverMessage ?? error.body);
 }
 
 /** A 409 commit refusal whose message says the model drifted since staging. */

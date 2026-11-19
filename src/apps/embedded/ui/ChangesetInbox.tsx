@@ -12,6 +12,8 @@
  *   "Ready to land as built", with the same progress.
  * - Verification records go under their own heading, each paired with the
  *   plan it verifies. They are never applied: kept as a record or discarded.
+ * - Upgrade records (the relationships a spec upgrade dropped) go under their
+ *   own heading. Never applied: reviewed, restored from by hand, discarded.
  * - The history: what landed (and, from an older dr CLI, what was discarded:
  *   a current one deletes a discarded changeset), with each one's purpose.
  *
@@ -184,6 +186,33 @@ function RecordCard({ record, plan }: { record: ChangesetSummary; plan?: Changes
   );
 }
 
+/** An upgrade record: what a spec upgrade dropped. Reviewed, restored from by hand, discarded; never applied. */
+function UpgradeCard({ record }: { record: ChangesetSummary }) {
+  const selectChangeset = useUiStore((s) => s.selectChangeset);
+  return (
+    <article className="drv-card drv-inbox__card" data-testid="inbox-upgrade" data-changeset={record.id}>
+      <div className="drv-summary__top">
+        <Chip variant="neutral">upgrade</Chip>
+        <h3 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: 'rgb(var(--canvas-fg-1))' }}>{record.name}</h3>
+        <span className="drv-muted" style={{ fontSize: 12.5 }}>
+          {plural(record.changesCount, 'relationship')} dropped · {formatDay(record.created)}
+        </span>
+        <span style={{ marginLeft: 'auto' }}>
+          <Button
+            variant="secondary"
+            size="sm"
+            onClick={() => selectChangeset(record.id)}
+            aria-label={`Open ${record.name}`}
+            data-testid="inbox-upgrade-open"
+          >
+            Open
+          </Button>
+        </span>
+      </div>
+    </article>
+  );
+}
+
 export function ChangesetInbox() {
   const { derived, isLoading } = useChangesets();
   const local = useLocalReviewStore((s) => s.byChangeset);
@@ -197,7 +226,7 @@ export function ChangesetInbox() {
   const onYou = staged.filter((s) => !waitingOnDrBot(s.p));
   const onBot = staged.filter((s) => waitingOnDrBot(s.p));
   const toLand = groups.land.map((cs) => ({ cs, p: progressOf(cs, localCounts) }));
-  const { records, history } = groups;
+  const { records, upgrades, history } = groups;
 
   return (
     <div className="drv-inbox" data-testid="changeset-inbox">
@@ -206,7 +235,8 @@ export function ChangesetInbox() {
         <p style={{ margin: 0, maxWidth: 900, lineHeight: 1.55, color: 'rgb(var(--canvas-fg-2))', fontSize: 13.5 }}>
           Changes staged against the model. Nothing reaches the model until you apply it. Plans and DrBot&apos;s
           changes wait on your review; changesets extracted from the code land the model as built; verification
-          records compare what was built with a plan, and are kept or discarded, never applied.
+          records compare what was built with a plan, and are kept or discarded, never applied. Upgrade records list
+          what a spec upgrade dropped.
         </p>
       </div>
 
@@ -250,6 +280,21 @@ export function ChangesetInbox() {
           </p>
           {records.map(({ record, plan }) => (
             <RecordCard key={record.id} record={record} plan={plan} />
+          ))}
+        </section>
+      )}
+
+      {upgrades.length > 0 && (
+        <section className="drv-inbox__section" aria-labelledby="inbox-upgrades" data-testid="inbox-upgrades">
+          <h2 id="inbox-upgrades" style={{ margin: 0, fontSize: 15, fontWeight: 600, color: 'rgb(var(--canvas-fg-1))' }}>
+            Upgrade records <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>{upgrades.length}</span>
+          </h2>
+          <p className="drv-muted" style={{ margin: 0, fontSize: 13 }}>
+            Relationships a spec upgrade dropped because the new catalog has no replacement for their types. A
+            record isn&apos;t applied: review it, restore what you still need by hand in a plan, then discard it.
+          </p>
+          {upgrades.map((cs) => (
+            <UpgradeCard key={cs.id} record={cs} />
           ))}
         </section>
       )}

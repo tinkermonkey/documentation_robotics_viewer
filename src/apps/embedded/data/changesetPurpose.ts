@@ -14,6 +14,11 @@
  *   the record of what was built, compared with the plan it `verifies`. It is
  *   never landed: kept as a record (it stays staged and is committed to git
  *   with the plan) or discarded. Its actions are `['discard']`.
+ * - `upgrade-record` (`dr upgrade` / project_upgrade) records the relationships
+ *   a spec migration dropped because the new catalog has no replacement for
+ *   their types, each as a staged relationship delete. It is never landed:
+ *   reviewed, restored from by hand (in a plan) and discarded. Its actions are
+ *   `['discard']`.
  *
  * The viewer renders these rather than working them out: Apply and Discard
  * come from `actions`, never from names (`-as-built`) or descriptions. An
@@ -46,6 +51,7 @@ export const CHANGESET_PURPOSES: readonly ChangesetPurpose[] = [
   'bootstrap',
   'reconcile',
   'verification',
+  'upgrade-record',
 ];
 const MOVES: readonly ChangesetMove[] = ['commit', 'discard'];
 
@@ -118,6 +124,7 @@ export const PURPOSE_LABEL: Record<ChangesetPurpose, string> = {
   bootstrap: 'bootstrap',
   reconcile: 'reconcile',
   verification: 'verification record',
+  'upgrade-record': 'upgrade record',
 };
 
 /** "plan" etc.; undefined when the server sent none (an older dr CLI). */
@@ -142,6 +149,8 @@ export function purposeLifecycle(purpose: ChangesetPurpose | undefined, planName
       return 'Extracted from changed code with no plan active. Applying it reconciles the model with the code.';
     case 'verification':
       return `Record of what was built, compared with ${planName ? `plan "${planName}"` : 'its plan'}. It isn't applied: keep it as a record (it stays staged and is committed to git with the plan), or discard it.`;
+    case 'upgrade-record':
+      return "What a spec upgrade dropped: relationships whose types the new catalog retired, with no replacement. It isn't applied: review it, restore what you still need by hand in a plan, then discard it.";
     default:
       return undefined;
   }
@@ -170,6 +179,8 @@ export interface InboxGroups<T extends PurposedChangeset> {
   land: T[];
   /** Staged verification records, each with the plan it verifies when that is listed. */
   records: { record: T; plan?: T }[];
+  /** Staged upgrade records: what a spec upgrade dropped, to review and discard. */
+  upgrades: T[];
   /** Applied (and, from an older dr CLI, discarded) changesets. */
   history: T[];
 }
@@ -180,14 +191,15 @@ export interface InboxGroups<T extends PurposedChangeset> {
  * what landed there; an older one also lists discarded ones.
  */
 export function inboxGroups<T extends PurposedChangeset>(list: readonly T[]): InboxGroups<T> {
-  const out: InboxGroups<T> = { review: [], land: [], records: [], history: [] };
+  const out: InboxGroups<T> = { review: [], land: [], records: [], upgrades: [], history: [] };
   const byId = new Map(list.map((c) => [c.id, c]));
   for (const cs of list) {
     if (cs.status !== 'staged') out.history.push(cs);
     else if (cs.purpose === 'verification') {
       const plan = cs.verifies ? byId.get(cs.verifies) : undefined;
       out.records.push(plan ? { record: cs, plan } : { record: cs });
-    } else if (cs.purpose === 'bootstrap' || cs.purpose === 'reconcile') out.land.push(cs);
+    } else if (cs.purpose === 'upgrade-record') out.upgrades.push(cs);
+    else if (cs.purpose === 'bootstrap' || cs.purpose === 'reconcile') out.land.push(cs);
     else out.review.push(cs);
   }
   return out;

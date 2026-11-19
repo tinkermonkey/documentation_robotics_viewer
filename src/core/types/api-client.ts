@@ -932,20 +932,20 @@ export interface paths {
                                     /** @description Where the changeset came from; absent on changesets made before it was recorded */
                                     origin?: {
                                         /**
-                                         * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), or `dr changeset create` (cli)
+                                         * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), `dr changeset create` (cli), or a spec migration run by `dr upgrade` or project_upgrade (upgrade)
                                          * @enum {string}
                                          */
-                                        kind: "chat" | "plan" | "extract" | "cli";
+                                        kind: "chat" | "plan" | "extract" | "cli" | "upgrade";
                                         detail?: string;
                                     };
                                     /**
-                                     * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded)
+                                     * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded), upgrade-record (`dr upgrade` or project_upgrade: the relationships a spec migration dropped because the catalog has no replacement for their types, each a staged relationship delete; never lands, it is reviewed, restored from by hand and discarded)
                                      * @enum {string}
                                      */
-                                    purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat";
+                                    purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat" | "upgrade-record";
                                     /** @description For a verification record: the id of the plan changeset it verifies */
                                     verifies?: string;
-                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
+                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
                                     actions: ("commit" | "discard")[];
                                     drift: components["schemas"]["ChangesetDriftSummary"];
                                     /** @description The changeset's nextSequenceNumber */
@@ -1020,17 +1020,17 @@ export interface paths {
                             /** @description Where the changeset came from; absent on changesets made before it was recorded */
                             origin?: {
                                 /**
-                                 * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), or `dr changeset create` (cli)
+                                 * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), `dr changeset create` (cli), or a spec migration run by `dr upgrade` or project_upgrade (upgrade)
                                  * @enum {string}
                                  */
-                                kind: "chat" | "plan" | "extract" | "cli";
+                                kind: "chat" | "plan" | "extract" | "cli" | "upgrade";
                                 detail?: string;
                             };
                             /**
-                             * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded)
+                             * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded), upgrade-record (`dr upgrade` or project_upgrade: the relationships a spec migration dropped because the catalog has no replacement for their types, each a staged relationship delete; never lands, it is reviewed, restored from by hand and discarded)
                              * @enum {string}
                              */
-                            purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat";
+                            purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat" | "upgrade-record";
                             /** @description For a verification record: the id of the plan changeset it verifies */
                             verifies?: string;
                             /** @description For a verification record: what its extraction read */
@@ -1040,7 +1040,7 @@ export interface paths {
                                 /** @description The commit extraction read the code at */
                                 codeCommit?: string;
                             };
-                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
+                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
                             actions: ("commit" | "discard")[];
                             drift: components["schemas"]["ChangesetDrift"];
                             /** @description Unstaged and rewritten changes (tombstones), oldest first */
@@ -1326,7 +1326,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record, which is never landed */
+                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record or an upgrade record, which is never landed */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1437,7 +1437,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record, which is never landed */
+                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record or an upgrade record, which is never landed */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1542,7 +1542,7 @@ export interface components {
         /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). The changeset's own endpoint adds what changed */
         ChangesetDriftSummary: {
             /**
-             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
              * @enum {string}
              */
             state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
@@ -1554,7 +1554,7 @@ export interface components {
         /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). warnings, baseIndex, overlapping and baseChanges are present only when the base's hash changed (states content-free and drifted) */
         ChangesetDrift: {
             /**
-             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
              * @enum {string}
              */
             state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
@@ -1628,14 +1628,14 @@ export interface components {
                 truncated: boolean;
             };
         };
-        /** @description Who decided this change (codebase_extract only); absent on changes staged otherwise and in older changesets */
+        /** @description Who decided this change (codebase_extract, and the relationship deletes of an upgrade record); absent on changes staged otherwise and in older changesets */
         ChangeOrigin: {
             /**
-             * @description tier0: a Tier-0 rule or the node or edge mapping; tier1: a decision model (Tier 1); agent: the calling agent
+             * @description tier0: a Tier-0 rule or the node or edge mapping; tier1: a decision model (Tier 1); agent: the calling agent; upgrade: a spec migration, which dropped the relationship (the relationship deletes of an upgrade record)
              * @enum {string}
              */
-            by: "tier0" | "tier1" | "agent";
-            /** @description Tier 0: the rule (e.g. node-mapping:Route, or edge:CALLS for a relationship between elements the run did not add); Tier 1: tier1:<question set> (e.g. tier1:dr-qset-2) */
+            by: "tier0" | "tier1" | "agent" | "upgrade";
+            /** @description Tier 0: the rule (e.g. node-mapping:Route, or edge:CALLS for a relationship between elements the run did not add); Tier 1: tier1:<question set> (e.g. tier1:dr-qset-2); upgrade: the retired relationship type and the change record that retired it */
             rule?: string;
             /** @description Tier 1: the provider (e.g. cloudflare-workers-ai) */
             provider?: string;

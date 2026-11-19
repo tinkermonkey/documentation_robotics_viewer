@@ -17,6 +17,7 @@ import { http, HttpResponse } from 'msw';
 
 import { ChangesetCanvas } from '@/apps/embedded/ui/ChangesetCanvas';
 import { ChangesetInspector } from '@/apps/embedded/ui/ChangesetInspector';
+import { keepRestLabel } from '@/apps/embedded/ui/ChangesetReviewPanel';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { useLocalReviewStore } from '@/apps/embedded/stores/localReviewStore';
 import { changesetActionErrorMessage } from '@/apps/embedded/data/useChangesets';
@@ -172,6 +173,16 @@ describe('review — deciding changes (dr CLI with review)', () => {
     expect(screen.queryByTestId('review-apply-why')).not.toBeInTheDocument();
     expect(screen.getByRole('progressbar', { name: '0 of 30 decided' })).toBeInTheDocument();
     expect(screen.queryByTestId('review-local-pill')).not.toBeInTheDocument();
+    // Nothing decided yet: the bulk keep covers all of them, not "the other" N.
+    expect(screen.getByTestId('review-keep-rest')).toHaveTextContent('Keep all 30');
+  });
+
+  it("names the bulk keep by what's decided: all, the other N, or all but the blocked deletes", () => {
+    expect(keepRestLabel(30, 0, 0)).toBe('Keep all 30');
+    expect(keepRestLabel(28, 2, 0)).toBe('Keep the other 28');
+    expect(keepRestLabel(12, 0, 2)).toBe('Keep 12, not the 2 blocked deletes');
+    expect(keepRestLabel(12, 0, 1)).toBe('Keep 12, not the 1 blocked delete');
+    expect(keepRestLabel(0, 3, 0)).toBe('Nothing left');
   });
 
   it('records Keep from the inspector and flips the row', async () => {
@@ -770,6 +781,15 @@ describe('review — purpose and actions', () => {
     expect(screen.getByText('A verification record is never applied. Keep it as a record, or discard it.')).toBeInTheDocument();
   });
 
+  it('offers an upgrade record Discard but no Apply, and says what to do with it', async () => {
+    serve({ review: keepAll(), purpose: 'upgrade-record', actions: ['discard'] });
+    renderReview();
+    await screen.findByTestId('review-summary');
+    await waitFor(() => expect(screen.getByTestId('changeset-discard-button')).toBeEnabled());
+    expect(screen.queryByTestId('changeset-apply-button')).not.toBeInTheDocument();
+    expect(screen.getByText(/An upgrade record is never applied\. Review what the upgrade dropped/)).toBeInTheDocument();
+  });
+
   it('explains a refused commit of a verification record inline, not as drift', async () => {
     // A detail that still offers commit (e.g. read before the server knew better): the server refuses.
     serve({ review: keepAll(), commitError: { status: 409, body: { error: RECORD_REFUSAL } } });
@@ -780,7 +800,7 @@ describe('review — purpose and actions', () => {
     await user.click(apply);
     await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
     const error = await screen.findByTestId('changeset-action-error');
-    expect(error).toHaveTextContent('This is a verification record, which is never applied');
+    expect(error).toHaveTextContent('This is a record, which is never applied');
     expect(error).toHaveTextContent("Land the plan 'add-export' instead");
     expect(error).not.toHaveTextContent('The model changed after this was staged');
   });
@@ -866,6 +886,7 @@ describe('review — an older dr CLI (no review API)', () => {
     expect(JSON.parse(localStorage.getItem('dr-viewer-local-review')!).state.byChangeset[ID]['13'].verdict).toBe('keep');
     expect(server.puts).toEqual([]);
 
+    expect(screen.getByTestId('review-keep-rest')).toHaveTextContent(/^Keep the other \d+/);
     await user.click(screen.getByTestId('review-keep-rest'));
     const apply = screen.getByTestId('changeset-apply-button');
     await waitFor(() => expect(apply).toBeEnabled());

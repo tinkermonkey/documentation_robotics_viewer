@@ -116,6 +116,27 @@ describe('ChangesetInbox', () => {
     expect(useUiStore.getState().changesetId).toBe('cs-plan');
   });
 
+  it('lists an upgrade record under its own heading, never under Waiting on you', async () => {
+    serveList({
+      'cs-upg': {
+        name: 'upgrade-0.13.0-drops', status: 'staged', created: '2026-11-19T10:00:00Z', changes_count: 3,
+        purpose: 'upgrade-record', actions: ['discard'], origin: { kind: 'upgrade' },
+        review: { decided: 0, total: 3, asked: 0 },
+        drift: { state: 'not-applicable', blocksCommit: false, message: 'An upgrade record is never landed, so base drift does not apply to it.' },
+      },
+    });
+    const user = userEvent.setup();
+    renderInbox();
+
+    const upgrades = await screen.findByTestId('inbox-upgrades');
+    const card = within(upgrades).getByTestId('inbox-upgrade');
+    expect(card).toHaveTextContent('upgrade-0.13.0-drops');
+    expect(card).toHaveTextContent('3 relationships dropped');
+    expect(within(screen.getByTestId('inbox-on-you')).queryByText('upgrade-0.13.0-drops')).not.toBeInTheDocument();
+    await user.click(within(card).getByTestId('inbox-upgrade-open'));
+    expect(useUiStore.getState().changesetId).toBe('cs-upg');
+  });
+
   it("shows each changeset's purpose in the history", async () => {
     serveList({
       'cs-c': {
