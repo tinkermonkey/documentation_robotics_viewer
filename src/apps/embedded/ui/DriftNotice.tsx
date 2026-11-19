@@ -56,8 +56,8 @@ export function DriftApplyNote({ drift }: { drift: ChangesetDriftSummary | undef
   if (tone === 'unchecked') {
     return (
       <p className="drv-note" style={{ margin: 0 }} data-testid="drift-apply-note">
-        Drift couldn&apos;t be checked: {drift!.message} If the base did change, the server refuses the apply
-        and nothing is written.
+        {/* The server's message says whether a commit is blocked (unchecked drift never is): add nothing to it. */}
+        Drift couldn&apos;t be checked: {drift!.message}
       </p>
     );
   }

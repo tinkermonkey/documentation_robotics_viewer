@@ -1019,6 +1019,8 @@ describe('review — drift before Apply', () => {
     await waitFor(() => expect(apply).toBeEnabled());
     expect(screen.getByTestId('drift-apply-note')).toHaveTextContent("Drift couldn't be checked: No base snapshot was recorded");
     expect(screen.getByTestId('drift-apply-note')).not.toHaveTextContent('held');
+    // Unchecked drift never blocks a commit: the note must not say the server refuses it.
+    expect(screen.getByTestId('drift-apply-note')).not.toHaveTextContent('refuse');
     expect(screen.getByTestId('drift-section')).toHaveTextContent("Drift couldn't be checked.");
     expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
   });
