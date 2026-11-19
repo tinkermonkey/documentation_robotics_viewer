@@ -47,6 +47,7 @@ src/
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
+│   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent); node pages, #588 next
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
@@ -182,6 +183,12 @@ For local dev use `dr visualize --no-auth`.
   keyed by `view:layerId:graphLayout:nodeMarginPreset` so it recenters on switch.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
+- **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
+  section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
+  react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
+  prose, so plain text reads as before). Shown in full, never collapsed. A layer page's generated lead is
+  `PageData.summary` (plain text, above it); the description is never a fact. Reuse `MarkdownText` for any other
+  model prose (changeset descriptions, #588).
 - **Inspector selection drawer** (`Inspector.tsx`, both Model + Schema) — a Heimdall `DetailDrawer` overlay
   floating over the graph area's right edge, not a permanent sidebar column: translucent/blurred, auto-hides
   (`open={!!metadata}`) when nothing's selected, resizable via its own left-edge handle (local `width` state,
