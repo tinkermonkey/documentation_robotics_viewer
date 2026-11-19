@@ -2,13 +2,15 @@
  * Topbar — 54px dark shell header.
  *
  * Brand mark (amber gradient square + wordmark) · spacer · light/dark canvas
- * SegmentedControl (bound to uiStore.canvasDark) · DrBot toggle (amber pulse
- * dot, bound to uiStore.chatOpen) · connection status (pulse dot + label fed by
+ * SegmentedControl (bound to uiStore.canvasDark) · DrBot launcher (amber pulse
+ * dot, bound to uiStore.chatOpen; the floating DrBot panel hangs under it and
+ * Escape in the panel returns focus here) · connection status (pulse dot + label fed by
  * connectionStore).
  */
 
 import { SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
+import { DRBOT_LAUNCHER_TESTID } from './chatAnchor';
 import { useConnectionStore, type ConnectionState } from '../stores/connectionStore';
 
 const CONNECTION_META: Record<
@@ -30,7 +32,8 @@ const CANVAS_OPTIONS = [
 export function Topbar() {
   const canvasDark = useUiStore((s) => s.canvasDark);
   const toggleCanvasDark = useUiStore((s) => s.toggleCanvasDark);
-  const chatOpen = useUiStore((s) => s.chatOpen);
+  // A docked column folded to its rail tab is open but not showing.
+  const chatOpen = useUiStore((s) => s.chatOpen && !(s.chatDocked && s.chatDockCollapsed));
   const toggleChat = useUiStore((s) => s.toggleChat);
   const connectionState = useConnectionStore((s) => s.state);
 
@@ -109,11 +112,12 @@ export function Topbar() {
         aria-label="Canvas theme"
       />
 
-      {/* DrBot chat toggle */}
+      {/* DrBot launcher */}
       <button
         type="button"
         onClick={toggleChat}
         aria-pressed={chatOpen}
+        data-testid={DRBOT_LAUNCHER_TESTID}
         style={{
           display: 'flex',
           alignItems: 'center',

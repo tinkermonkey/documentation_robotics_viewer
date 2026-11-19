@@ -46,10 +46,11 @@ src/
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
-│   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
+│   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
+│   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent); node pages, #588 next
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
-│   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
+│   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chat*/inspectorWidth/expanded
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
 │   │   └── domain-and-nav.css # 12-domain swatch CSS + nav-item helpers (Heimdall's bundle lacks DR domains)
 │   ├── data/                  # Stateless hooks + transforms over the API (no UI)
@@ -369,7 +370,21 @@ For local dev use `dr visualize --no-auth`.
   category — sets of what's HIDDEN, empty = everything), and **Large lanes** (`groupLargeLanes`: a lane over
   `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node; clicking one expands it).
   `changesOf` maps an element to the changes touching it (Open its change).
-- **DrBot chat** — 372px drawer (closed until opened; then persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
+- **DrBot panel** (#597, `ChatDrawer.tsx`) — a floating, non-modal panel (`role="dialog"`, `aria-modal="false"`,
+  "DrBot") under the topbar launcher (`data-testid="topbar-drbot-toggle"`), at the top-right of the view's area
+  below its page header, so it never reflows the canvas or wraps/covers the header. The view registers that area
+  with `useChatAnchor(ref)` (`ui/chatAnchor.ts`: Canvas's graph area, ChangesetCanvas's body); the panel is
+  `position: fixed`, placed from the anchor's rect via a ResizeObserver (no polling). `chatPanelLayout.ts` is the
+  pure placement rule: left of an open Inspector `DetailDrawer` (Inspector publishes `inspectorWidth` /
+  `inspectorHasContent` to `uiStore`); when the area can't fit panel + drawer + 240px of graph, the panel takes the
+  drawer's place and sets `chatCoversDrawer` (Inspector's `open` is `hasContent && !chatCoversDrawer`, so the
+  drawer returns when DrBot closes); under 720px it fills the area. 440×640 default, resized from the left edge
+  (a keyboard separator: ←/→, Shift, Home/End) and the bottom-left corner, 340–820px wide, ≥360px tall. Opening
+  focuses the composer; Escape INSIDE the panel (an `onKeyDown` on it, never `window`, so Escape on the canvas
+  still clears the selection) closes it and refocuses the launcher. Dock (header button) → an in-flow column
+  (`role="complementary"`) at the row's end, 320–760px with a splitter, that collapses to a 32px rail tab; the
+  launcher expands a collapsed dock. `chatPanelSize` / `chatDocked` / `chatDockWidth` / `chatDockCollapsed` persist
+  (clamped on hydration). Streaming is live WS/JSON-RPC.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
   `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`) with a `tool_use_id`: once with
@@ -416,7 +431,7 @@ For local dev use `dr visualize --no-auth`.
   and **DrBot starts closed** at any width (`chatOpen: false`, #597) — both apply only on a first-ever visit; a
   persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
-  (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
+  (DrBot open/closed) and the DrBot panel's size / dock state, and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
   `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a
   reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
   see its `partialize`). Navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*) is

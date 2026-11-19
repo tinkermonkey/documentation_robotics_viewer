@@ -11,9 +11,13 @@
  * (animates to width 0) with nothing selected instead of showing an empty
  * sidebar; `GraphInspector`'s own empty state stays mounted underneath (inert,
  * clipped) so it's still there the instant something IS selected. Width is
- * locally resizable (`onWidthChange`) via the drawer's own left-edge handle,
+ * resizable (`onWidthChange`) via the drawer's own left-edge handle,
  * translucent/blurred background — all Heimdall's `DetailDrawer` chrome, not
- * reimplemented here.
+ * reimplemented here. The width and whether there is something to show go to
+ * `uiStore` (`inspectorWidth`, `inspectorHasContent`) so the floating DrBot
+ * panel can step left of the drawer; when the graph area is too narrow for
+ * both, DrBot sets `chatCoversDrawer` and the drawer stays closed until DrBot
+ * closes (#597).
  *
  * Renders Heimdall `GraphInspector`. In the MODEL view it is fed by an element's
  * `GraphNodeMetadata` (title/kind/domain/description + a curated PROPERTIES grid)
@@ -60,7 +64,7 @@
  * resolves a raw UUID to its layer first).
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import { GraphInspector, DetailDrawer } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
@@ -87,12 +91,14 @@ function layerOfSpecNode(specNodeId: string): string {
   return lastDot > 0 ? specNodeId.slice(0, lastDot) : specNodeId;
 }
 
-/** Initial drawer width in px — matches the previous fixed sidebar's width;
- *  resizable from there via the drawer's own left-edge handle. */
-const DEFAULT_INSPECTOR_WIDTH = 320;
-
 export function Inspector() {
-  const [width, setWidth] = useState(DEFAULT_INSPECTOR_WIDTH);
+  // Width lives in uiStore (starts at DEFAULT_INSPECTOR_WIDTH, the old fixed
+  // sidebar's) so the floating DrBot panel can step left of the drawer (#597).
+  const width = useUiStore((s) => s.inspectorWidth);
+  const setWidth = useUiStore((s) => s.setInspectorWidth);
+  const setHasContent = useUiStore((s) => s.setInspectorHasContent);
+  // A narrow graph area: DrBot takes the drawer's place until it closes.
+  const chatCoversDrawer = useUiStore((s) => s.chatCoversDrawer);
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
@@ -188,9 +194,15 @@ export function Inspector() {
   // API keys them by the canonical dotted id, not the node UUID.
   const annotationElementId = modelNode ? dottedId(modelNode) : null;
 
+  const hasContent = !!metadata || !!edge;
+  useEffect(() => {
+    setHasContent(hasContent);
+  }, [hasContent, setHasContent]);
+  useEffect(() => () => setHasContent(false), [setHasContent]);
+
   return (
     <DetailDrawer
-      open={!!metadata || !!edge}
+      open={hasContent && !chatCoversDrawer}
       width={width}
       onWidthChange={setWidth}
       data-testid="inspector"

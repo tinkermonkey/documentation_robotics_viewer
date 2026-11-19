@@ -228,6 +228,172 @@ body.dark-canvas {
   }
 }
 
+/* ---- DrBot panel frame (ChatDrawer.tsx, #597) -----------------------------
+ * Floating: a fixed, non-modal panel over the view's area (below Modal's 200
+ * and the tooltips' 1000). Docked: an in-flow column with a left splitter that
+ * collapses to a 32px rail tab. Canvas tokens only, so dark canvas flips it. */
+.drv-chat-float,
+.drv-chat-dock {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgb(var(--canvas-bg));
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-chat-float {
+  position: fixed;
+  z-index: 40;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: var(--radius-lg, 10px);
+  box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: right 160ms ease;
+}
+@media (prefers-reduced-motion: reduce) {
+  .drv-chat-float {
+    transition: none;
+  }
+}
+
+/* Clip the content to the rounded frame; the resize handles sit outside it. */
+.drv-chat-float > .drv-chat-header {
+  border-top-left-radius: var(--radius-lg, 10px);
+  border-top-right-radius: var(--radius-lg, 10px);
+}
+.drv-chat-float > div:last-child {
+  overflow: hidden;
+  border-bottom-left-radius: var(--radius-lg, 10px);
+  border-bottom-right-radius: var(--radius-lg, 10px);
+}
+
+.drv-chat-dock {
+  position: relative;
+  flex: none;
+  border-left: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-chat-header {
+  height: 40px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px 0 16px;
+  border-bottom: 1px solid rgb(var(--canvas-border));
+}
+
+.drv-chat-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(var(--accent-primary));
+  display: inline-block;
+  flex: none;
+}
+
+.drv-chat-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.drv-chat-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.drv-chat-iconbtn {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: rgb(var(--canvas-fg-3));
+  cursor: pointer;
+}
+.drv-chat-iconbtn:hover {
+  background: rgb(var(--canvas-surface));
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-chat-iconbtn:focus-visible,
+.drv-chat-edge:focus-visible,
+.drv-chat-splitter:focus-visible,
+.drv-chat-rail:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: -2px;
+}
+
+/* Resize handles: the floating panel's left edge + bottom-left corner, the
+ * docked column's left splitter. An amber line shows on hover / focus. */
+.drv-chat-edge,
+.drv-chat-splitter {
+  position: absolute;
+  left: -4px;
+  width: 8px;
+  cursor: ew-resize;
+  z-index: 2;
+  touch-action: none;
+}
+.drv-chat-edge {
+  top: 12px;
+  bottom: 16px;
+}
+.drv-chat-splitter {
+  top: 0;
+  bottom: 0;
+}
+.drv-chat-edge:hover,
+.drv-chat-edge:focus-visible,
+.drv-chat-splitter:hover,
+.drv-chat-splitter:focus-visible {
+  background: linear-gradient(
+    90deg,
+    transparent 3px,
+    rgb(var(--accent-primary)) 3px,
+    rgb(var(--accent-primary)) 5px,
+    transparent 5px
+  );
+}
+.drv-chat-corner {
+  position: absolute;
+  left: -4px;
+  bottom: -4px;
+  width: 14px;
+  height: 14px;
+  cursor: nesw-resize;
+  z-index: 3;
+  touch-action: none;
+  border-left: 2px solid rgb(var(--canvas-fg-4));
+  border-bottom: 2px solid rgb(var(--canvas-fg-4));
+  border-bottom-left-radius: 6px;
+}
+
+.drv-chat-rail {
+  flex: none;
+  width: 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  background: rgb(var(--canvas-bg));
+  border: 0;
+  border-left: 1px solid rgb(var(--canvas-border));
+  color: rgb(var(--canvas-fg-2));
+  font: 600 12px Inter, system-ui, sans-serif;
+  cursor: pointer;
+}
+.drv-chat-rail:hover {
+  color: rgb(var(--canvas-fg-1));
+  background: rgb(var(--canvas-surface));
+}
+
 /* ---- Inter-layer (foreign) nodes in the Model graph ----------------------
  * Visibly secondary to the layer's own elements, but never by fading text:
  * they're clickable (they navigate to their home layer), so their labels must

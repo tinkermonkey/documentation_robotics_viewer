@@ -109,6 +109,7 @@ import { useUiStore, type GraphLayout, type NodeMarginPreset, type NodeDisplay }
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
+import { useChatAnchor } from './chatAnchor';
 import { ModelCardNode } from './ModelCardNode';
 import { PillNode } from './PillNode';
 import { PredicateTooltipContent, PREDICATE_TOOLTIP_DELAY_MS } from './PredicateTooltip';
@@ -502,6 +503,8 @@ export function Canvas() {
   // siblings would vanish the instant Fullscreen was used. The graph-mode relative wrapper below
   // is exactly that ancestor (it wraps all three), so this ref is attached there.
   const canvasAreaRef = useRef<HTMLDivElement>(null);
+  // The floating DrBot panel sits at this area's top-right, below the header.
+  useChatAnchor(canvasAreaRef);
 
   // Viewport history (?vp=) — see useViewportHistory. The key is also
   // GraphCanvas's React key, so a viewport only ever applies to the canvas

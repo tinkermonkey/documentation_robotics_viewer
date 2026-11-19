@@ -26,7 +26,7 @@
  * discard from this page goes back to the inbox itself, with a toast.
  */
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Button, PageHeader, SegmentedControl, Toast } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import {
@@ -54,6 +54,7 @@ import { ChangesetReviewPanel } from './ChangesetReviewPanel';
 import { ChangesetInbox } from './ChangesetInbox';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DriftBadge } from './DriftNotice';
+import { useChatAnchor } from './chatAnchor';
 
 /** Status → swatch color (committed/discarded = emerald, staged = amber). */
 function statusColor(status: string): string {
@@ -165,6 +166,9 @@ export function ChangesetCanvas() {
   const tab = useUiStore((s) => s.changesetTab);
   const setTab = useUiStore((s) => s.setChangesetTab);
   const impactFocus = useUiStore((s) => s.impactFocus);
+  // The floating DrBot panel sits at the body's top-right, below the header.
+  const bodyRef = useRef<HTMLDivElement>(null);
+  useChatAnchor(bodyRef);
   const { derived: registry } = useChangesets();
   const { detail, error } = useChangeset(changesetId);
   const { derived: model } = useModel();
@@ -262,7 +266,7 @@ export function ChangesetCanvas() {
         />
       )}
 
-      <div style={{ flex: 1, position: 'relative', minHeight: 0 }}>
+      <div ref={bodyRef} style={{ flex: 1, position: 'relative', minHeight: 0 }}>
         {!changesetId ? (
           <div
             className="drv-scroll"
