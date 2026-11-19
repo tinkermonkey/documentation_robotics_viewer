@@ -1,0 +1,52 @@
+id: changeset-1795110463195-az6w0eh20
+name: nav-tree-by-type
+description: "Issue #592. Group the Model nav tree's elements under their node
+  type (Layer › Node type (count) › Element) so big layers scan easily. Groups
+  start collapsed; the selected element's group opens whenever it is chosen
+  anywhere (nav click, graph click, deep link, cross-layer navigate); a type
+  with one element still gets a group; groups and elements sort A–Z; the Schema
+  tree is unchanged; opening or closing a group pushes no history (local NavTree
+  state, no uiStore/router change). Done when the tree groups by type,
+  URL-synced selection, centerOnSelect and reveal-the-selection still work, and
+  npm test / test:types / tsc are clean."
+created: 2026-11-19T17:47:43.200Z
+modified: 2026-11-19T17:50:11.891Z
+status: committed
+baseSnapshot: sha256:46237e8537fe5ba005184fab818d6e10f7f5dc3f48f5a56e05b62a87096d37ee
+origin:
+  kind: plan
+stats:
+  additions: 15
+  modifications: 1
+  deletions: 0
+lastSequence: 17
+unstaged:
+  - sequence: 0
+    removedAt: 16
+    change:
+      type: add
+      elementId: product.feature.nav-tree-type-groups
+      layerName: product
+      after:
+        id: e1aff2db-327f-4b05-8797-430a8add7c32
+        path: product.feature.nav-tree-type-groups
+        spec_node_id: product.feature
+        type: feature
+        layer_id: product
+        name: Nav Tree Type Groups
+        description: The left rail's Model tree groups each layer's elements under their
+          node type with a count (Layer › Node type (n) › Element). Groups start
+          collapsed and sort A–Z by type label, elements A–Z inside; a type with
+          one element still gets a group. The selected element's group opens
+          wherever it was chosen. Opening a group pushes no history. The Schema
+          tree is unchanged.
+        attributes:
+          priority: medium
+          status: planned
+          size: s
+        metadata:
+          created_at: 2026-11-19T17:47:57.267Z
+          updated_at: 2026-11-19T17:47:57.267Z
+          version: 1
+      timestamp: 2026-11-19T17:47:57.301Z
+    rewritten: true

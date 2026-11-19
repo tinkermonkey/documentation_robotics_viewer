@@ -1,0 +1,283 @@
+- type: add
+  elementId: product.feature.nav-tree-type-groups
+  layerName: product
+  after:
+    id: e1aff2db-327f-4b05-8797-430a8add7c32
+    path: product.feature.nav-tree-type-groups
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Nav Tree Type Groups
+    description: The left rail's Model tree groups each layer's elements under their
+      node type with a count (Layer › Node type (n) › Element). Groups start
+      collapsed and sort A–Z by type label, elements A–Z inside; a type with one
+      element still gets a group. The selected element's group opens wherever it
+      was chosen. Opening a group pushes no history. The Schema tree is
+      unchanged.
+    attributes:
+      priority: medium
+      status: planned
+      size: s
+    metadata:
+      created_at: 2026-11-19T17:47:57.267Z
+      updated_at: 2026-11-19T17:47:57.267Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: realizes
+        other_spec_node_id: ux.view
+        reason: The nav tree is shell chrome in the left rail, not a view; the model has
+          no UX element for the rail, and the feature is realized by the
+          nav-tree component and its grouping service.
+        decided_by: agent
+        decided_at: 2026-11-19T17:48:21.827Z
+        changeset: changeset-1795110463195-az6w0eh20
+  timestamp: 2026-11-19T17:48:21.834Z
+  sequenceNumber: 0
+- type: add
+  elementId: application.applicationservice.nav-tree-groups
+  layerName: application
+  after:
+    id: 5b117791-acda-41f6-8666-8c6159bdda4e
+    path: application.applicationservice.nav-tree-groups
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Nav Tree Groups
+    description: "Pure transform for the nav tree: a layer's model elements grouped
+      by node type, each group with its type key, label (the spec's type title,
+      else the type id) and count, groups and elements sorted A–Z; plus the
+      group key holding a given element, so the tree can open it."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-19T17:47:57.291Z
+      updated_at: 2026-11-19T17:47:57.291Z
+      version: 1
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 1
+- type: relationship-add
+  elementId: product.feature.nav-tree-type-groups::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.nav-tree-type-groups
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 2
+- type: relationship-add
+  elementId: product.feature.nav-tree-type-groups::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.nav-tree-type-groups
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: product.feature.nav-tree-type-groups::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.nav-tree-type-groups
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: application.applicationservice.nav-tree-groups::realizes::product.feature.nav-tree-type-groups
+  layerName: application
+  after:
+    source: application.applicationservice.nav-tree-groups
+    target: product.feature.nav-tree-type-groups
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.nav-tree-groups::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.nav-tree-groups
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:47:57.301Z
+  sequenceNumber: 6
+- type: update
+  elementId: application.applicationcomponent.nav-tree
+  layerName: application
+  before:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with the spec's layers (in the order the spec gives) and
+      their elements or node types (or the changesets). Reveals the current
+      selection, scrolling it into view after any navigation, including a deep
+      link whose element rows only appear once the model or changesets load."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata: &a3
+      created_at: 2026-11-12T13:44:46.089Z
+      updated_at: 2026-11-12T13:44:46.089Z
+      version: 1
+  after:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with the spec's layers (in the order the spec gives). A
+      Model layer opens onto its node types (count, A–Z, collapsed), each
+      holding its elements (A–Z); a Schema layer lists its node types;
+      Changesets lists the changesets. Opening a type group is local tree state
+      and pushes no history. Reveals the current selection, opening its type
+      group and scrolling it into view after any navigation, including a deep
+      link whose element rows only appear once the model or changesets load."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-19T17:47:57.497Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted
+  layerName: testing
+  after:
+    id: e63fc27f-0627-4964-bbde-a47d1a6bc0ee
+    path: testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: Groups A–Z by type label, elements A–Z inside, a single-element
+        type still grouped; groupKeyOf names the group holding an element.
+    metadata:
+      created_at: 2026-11-19T17:48:07.767Z
+      updated_at: 2026-11-19T17:48:07.767Z
+      version: 1
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 8
+- type: add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history
+  layerName: testing
+  after:
+    id: d5a430f2-02c0-4513-a923-0758bf23356f
+    path: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree type groups > a layer opens onto collapsed groups and a group
+      opens without history
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:07.767Z
+      updated_at: 2026-11-19T17:48:07.767Z
+      version: 1
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 9
+- type: add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row
+  layerName: testing
+  after:
+    id: 298400b7-bbc0-4328-909e-c43e0b4f92f9
+    path: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree type groups > a selection made elsewhere opens its group and
+      reveals its row
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: Graph click, deep link (before and after the model loads) or
+        cross-layer navigate.
+    metadata:
+      created_at: 2026-11-19T17:48:07.767Z
+      updated_at: 2026-11-19T17:48:07.767Z
+      version: 1
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted::tests::application.applicationservice.nav-tree-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted
+    target: application.applicationservice.nav-tree-groups
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history::tests::product.feature.nav-tree-type-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history
+    target: product.feature.nav-tree-type-groups
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:07.779Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row::tests::product.feature.nav-tree-type-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row
+    target: product.feature.nav-tree-type-groups
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:21.278Z
+  sequenceNumber: 15

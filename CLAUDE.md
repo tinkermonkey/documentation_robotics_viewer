@@ -37,7 +37,8 @@ src/
 │   ├── AuthRoute.tsx          # Magic-link token capture
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
-│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx
+│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model)
+│   │   ├── TopbarSearch.tsx topbar-search.css     # type-ahead over elements + node types (data/search.ts)
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
@@ -182,6 +183,19 @@ For local dev use `dr visualize --no-auth`.
 - **Model view** — per-layer instance `GraphCanvas` (domain-colored nodes + intra-layer edges) +
   `GraphInspector` (properties, in/out + cross-layer relationships with click-to-navigate). `GraphCanvas` is
   keyed by `view:layerId:graphLayout:nodeMarginPreset` so it recenters on switch.
+- **Model view by type** (#594) — a **View** control in the Model page header (left of Layout): Graph · Lanes
+  by type · Hive by type (`uiStore.modelView`, persisted). Not a Layout value: Layout places the mixed graph,
+  while these redraw the layer's own elements grouped by node type (Layout, Inter-layer and the settings flyout
+  hide; Relations still filters the links). `data/typeBands.ts` builds the `useLayeredGraph` layering with
+  `layerBy: 'kind'`: **Heimdall's "layer" is a DR node type there**, so the code says type band and `layerId`
+  only ever means a DR layer. Bands are ordered with the least lane-skipping between linked types (exhaustive up
+  to 7 types, greedy above), named from the spec's type title with the layer word dropped and pluralized
+  ("ApplicationService" → "Services"), and titled with the full count (`.drv-type-lanes` hides Heimdall's own
+  count, which is of the nodes drawn). `ui/TypeLanesView.tsx`: `GraphCanvas layout="layer-lanes"`, a lane over
+  `BAND_CAP` (48) folds its least-linked elements into a `more:<type>` node that expands on click; selection goes
+  through `selectFromCanvas`; its `graphCanvasKey` gets a `:type-lanes` suffix so `?vp=` never crosses views.
+  `ui/TypeHiveView.tsx`: `HivePlot`, offered for 3+ types (`HIVE_MIN_TYPES`; with fewer, Hive is disabled and
+  lanes show). Heimdall still says "layer" in its own accessible names ("X, Goals layer"): an upstream gap.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
@@ -426,13 +440,25 @@ For local dev use `dr visualize --no-auth`.
   (any schema's `specVersion` as fallback; `data/serverVersions.ts` `specVersionOf`, used by `useSpec`); the
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
-  Today's dr CLI sends no `cliVersion`, so the status bar reads `cli —` until it does.
+  The API spec requires `cliVersion` since 2026-11-19; an older dr CLI sends none, so the status bar reads `cli —` there.
+- **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: spec
+  title + count, A–Z, a single-element type still grouped), each holding its elements (A–Z); Schema is
+  unchanged. Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
+  opening one pushes no history. The selected element's group opens on every selection change (nav, graph,
+  deep link, cross-layer), and the reveal effect re-runs when it does. E2E `openLayer` opens the first group.
+- **Topbar search** (`ui/TopbarSearch.tsx`, `data/search.ts`) — type-ahead over `/api/model` elements and
+  `/api/spec` node types; `/` (outside a field) or ⌘K / Ctrl+K focuses it. Tiers: exact > prefix > word start >
+  substring > fuzzy (in order, few fragments, offered only when fewer than 5 names match better); the best 50
+  are grouped by layer, the group holding the best match first. An ARIA 1.2 combobox (`aria-activedescendant`,
+  listbox of `role=group`s, each option `aria-label`led whole since the highlight splits its text); the popup
+  reuses Heimdall's `command-palette__*` classes (CommandPalette itself is a modal with text-only labels).
+  An element goes through `navigateToElement`, a node type through `navigateToSpecNode`, as the nav tree does.
 - **Light/dark canvas** toggle in the topbar. **Light is the default** (`uiStore`'s `canvasDark: false`, #596),
   and **DrBot starts closed** at any width (`chatOpen: false`, #597) — both apply only on a first-ever visit; a
   persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
   (DrBot open/closed) and the DrBot panel's size / dock state, and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
-  `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a
+  `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`), the Model `modelView` and the inspector's `inspectorFollow` survive a
   reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
   see its `partialize`). Navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*) is
   deliberately EXCLUDED from persistence — that's the URL router's job instead (below), so the two

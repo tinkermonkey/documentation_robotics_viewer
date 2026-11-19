@@ -1,0 +1,136 @@
+/*
+ * TopbarSearch — the search box sits in the (always dark) shell, so it uses
+ * --shell-* tokens; its results popup floats over the canvas and reuses
+ * Heimdall's command-palette classes, which use --canvas-* tokens and flip
+ * with the light/dark canvas toggle.
+ */
+
+.drv-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 0 1 360px;
+  min-width: 160px;
+}
+
+.drv-search__icon {
+  position: absolute;
+  left: 10px;
+  color: rgb(var(--shell-fg-3));
+  pointer-events: none;
+}
+
+.drv-search__input {
+  width: 100%;
+  height: 32px;
+  padding: 0 32px 0 30px;
+  border-radius: 7px;
+  border: 1px solid rgb(var(--shell-border));
+  background: rgb(var(--shell-surface));
+  color: rgb(var(--shell-fg-1));
+  font-family: inherit;
+  font-size: 12.5px;
+  outline: none;
+  transition: border-color 0.12s;
+}
+
+.drv-search__input::placeholder {
+  color: rgb(var(--shell-fg-3));
+}
+
+.drv-search__input:focus-visible,
+.drv-search__input:focus {
+  border-color: rgb(var(--accent-primary));
+  box-shadow: 0 0 0 2px rgb(var(--accent-primary) / 0.25);
+}
+
+.drv-search__hint {
+  position: absolute;
+  right: 8px;
+  min-width: 18px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgb(var(--shell-border-2));
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 14px;
+  text-align: center;
+  color: rgb(var(--shell-fg-2));
+  pointer-events: none;
+}
+
+/* The popup: CommandPalette's panel, anchored under the input instead of centred in a backdrop. */
+.command-palette.drv-search__popup {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: max(100%, 440px);
+  max-width: min(560px, calc(100vw - 32px));
+  max-height: min(440px, calc(100vh - 120px));
+  overflow-y: auto;
+  z-index: 1000;
+  background: rgb(var(--canvas-bg-2));
+  /* CommandPalette's slideDown fades the panel in; a type-ahead opens on every keystroke, so show it at once. */
+  animation: none;
+}
+
+.command-palette.drv-search__popup[hidden] {
+  display: none;
+}
+
+.drv-search__group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.drv-search__item {
+  padding: 7px 16px;
+}
+
+.drv-search__swatch {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+}
+
+.drv-search__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drv-search__name mark {
+  background: rgb(var(--accent-primary) / 0.32);
+  /* Not `inherit`: an unselected row's muted text over the amber falls under 4.5:1 on the dark canvas. */
+  color: rgb(var(--canvas-fg-1));
+  font-weight: 600;
+  border-radius: 2px;
+}
+
+.drv-search__type {
+  flex: none;
+  max-width: 40%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.command-palette__item--selected .drv-search__type,
+.drv-search__item:hover .drv-search__type {
+  /* The row's overlay lifts the background; --canvas-fg-3 on it lands at 4.49:1 on the dark canvas. */
+  color: rgb(var(--canvas-fg-2));
+}
+
+.drv-search__more {
+  padding: 8px 16px 10px;
+  border-top: 1px solid rgb(var(--canvas-border));
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
+}

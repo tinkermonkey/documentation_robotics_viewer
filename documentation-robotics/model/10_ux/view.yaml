@@ -132,3 +132,36 @@ ux.view.dr-bot-chat-drawer:
     created_at: 2026-11-12T13:45:15.984Z
     updated_at: 2026-11-12T13:45:15.984Z
     version: 1
+ux.view.topbar-search:
+  id: ae4906cb-fd0c-4849-a373-f8c4fdcf3145
+  path: ux.view.topbar-search
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Topbar Search
+  description: The search box in the topbar and its results popup, an overlay
+    below it listing matches grouped by layer.
+  attributes:
+    type: overlay
+    routable: false
+  accepted_gaps:
+    - direction: incoming
+      predicate: maps-to
+      other_spec_node_id: navigation.route
+      reason: The search lives in the shell's topbar on every route; no route maps to
+        it. It only drives navigation (navigateToElement / navigateToSpecNode)
+        through the existing section/view route.
+      decided_by: agent
+      decided_at: 2026-11-19T17:49:18.573Z
+      changeset: changeset-1795110469962-utn017csw
+    - direction: outgoing
+      predicate: composes
+      other_spec_node_id: ux.subview
+      reason: A single input with a results popup; it has no sub-views of its own.
+      decided_by: agent
+      decided_at: 2026-11-19T17:49:18.872Z
+      changeset: changeset-1795110469962-utn017csw
+  metadata:
+    created_at: 2026-11-19T17:48:18.607Z
+    updated_at: 2026-11-19T17:48:18.607Z
+    version: 1

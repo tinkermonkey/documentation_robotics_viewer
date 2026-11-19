@@ -17,7 +17,7 @@
  * viewport is dropped. A tagless three-number param is still accepted.
  */
 import type { GraphViewport } from '@tinkermonkey/heimdall-ui';
-import type { GraphLayout, NodeDisplay, NodeMarginPreset, ViewKind } from './uiStore';
+import type { GraphLayout, ModelView, NodeDisplay, NodeMarginPreset, ViewKind } from './uiStore';
 
 export interface ScopedViewport extends GraphViewport {
   scope: string;
@@ -30,12 +30,18 @@ export interface GraphCanvasKeyInput {
   nodeMarginPreset: NodeMarginPreset;
   nodeDisplay: NodeDisplay;
   showInterLayerNodes: boolean;
+  /** Model view only. Optional so a key from before #594 reads as 'graph'. */
+  modelView?: ModelView;
 }
 
 /** Identity of the Model/Schema GraphCanvas: any change remounts it and
  *  re-runs its layout, so a viewport from another key doesn't apply. */
 export function graphCanvasKey(s: GraphCanvasKeyInput): string {
-  return `${s.view}:${s.layerId}:${s.graphLayout}:${s.nodeMarginPreset}:${s.nodeDisplay}:${s.showInterLayerNodes}`;
+  const base = `${s.view}:${s.layerId}:${s.graphLayout}:${s.nodeMarginPreset}:${s.nodeDisplay}:${s.showInterLayerNodes}`;
+  // The by-type views lay out the same layer another way: their viewports
+  // must never apply to the mixed graph (or each other). 'graph' keeps the
+  // old key so existing ?vp= links stay valid.
+  return s.view === 'model' && s.modelView && s.modelView !== 'graph' ? `${base}:${s.modelView}` : base;
 }
 
 /** Rounds to what the URL can carry: 0.1 world px for the centre, 4

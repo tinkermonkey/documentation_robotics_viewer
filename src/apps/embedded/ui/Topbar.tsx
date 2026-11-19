@@ -1,7 +1,8 @@
 /**
  * Topbar — 54px dark shell header.
  *
- * Brand mark (amber gradient square + wordmark) · spacer · light/dark canvas
+ * Brand mark (amber gradient square + wordmark) · element / node-type search
+ * (`TopbarSearch`, `/` or ⌘K) · spacer · light/dark canvas
  * SegmentedControl (bound to uiStore.canvasDark) · DrBot launcher (amber pulse
  * dot, bound to uiStore.chatOpen; the floating DrBot panel hangs under it and
  * Escape in the panel returns focus here) · connection status (pulse dot + label fed by
@@ -11,6 +12,7 @@
 import { SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { DRBOT_LAUNCHER_TESTID } from './chatAnchor';
+import { TopbarSearch } from './TopbarSearch';
 import { useConnectionStore, type ConnectionState } from '../stores/connectionStore';
 
 const CONNECTION_META: Record<
@@ -53,7 +55,7 @@ export function Topbar() {
       }}
     >
       {/* brand mark */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
         <div
           style={{
             width: 24,
@@ -99,6 +101,8 @@ export function Topbar() {
           </span>
         </div>
       </div>
+
+      <TopbarSearch />
 
       <div style={{ flex: 1 }} />
 

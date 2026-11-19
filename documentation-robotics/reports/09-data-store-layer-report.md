@@ -266,4 +266,4 @@ File-based document store holding the architecture model as YAML files under doc
 
 ---
 
-Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0

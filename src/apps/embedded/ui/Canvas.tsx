@@ -105,7 +105,7 @@ import {
   type GraphNodeHierarchyMeta,
   type GraphEdgeData,
 } from '@tinkermonkey/heimdall-ui';
-import { useUiStore, type GraphLayout, type NodeMarginPreset, type NodeDisplay } from './uiStore';
+import { useUiStore, type GraphLayout, type ModelView, type NodeMarginPreset, type NodeDisplay } from './uiStore';
 import { layerColor, layerLabel, layerStandard } from './domain';
 import { PageView, usePageData } from './PageView';
 import { Inspector } from './Inspector';
@@ -119,12 +119,15 @@ import { edgeTooltipAnchorRect } from './edgeTooltipAnchor';
 import { useEdgeInteraction } from './useEdgeInteraction';
 import { useViewportHistory } from './useViewportHistory';
 import { graphCanvasKey } from './graphViewport';
+import { TypeLanesView } from './TypeLanesView';
+import { HIVE_MIN_TYPES, TypeHiveView } from './TypeHiveView';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import {
   buildModelIndex,
   nodesWithCardData,
   edgesForLayer as modelEdgesForLayer,
+  nodesForLayer as modelNodesForLayer,
   edgeMetadata,
   interLayerNodesAndEdges,
   filterStructuralInterLayer,
@@ -142,6 +145,28 @@ const MODE_OPTIONS = [
   { value: 'graph', label: 'graph' },
   { value: 'page', label: 'page' },
 ];
+
+/** The Model view's View control (#594). "type" is a DR node type; the UI
+ *  never calls these groups layers. */
+const MODEL_VIEW_OPTIONS: { value: ModelView; label: string }[] = [
+  { value: 'graph', label: 'Graph' },
+  { value: 'type-lanes', label: 'Lanes by type' },
+  { value: 'type-hive', label: 'Hive by type' },
+];
+
+/** Hive by type needs HIVE_MIN_TYPES node types; a layer with fewer shows lanes. */
+function effectiveModelView(modelView: ModelView, typeCount: number): ModelView {
+  return modelView === 'type-hive' && typeCount < HIVE_MIN_TYPES ? 'type-lanes' : modelView;
+}
+
+/** Distinct node types among a layer's elements. */
+function useLayerTypeCount(layerId: string | null): number {
+  const { derived: model } = useModel();
+  return useMemo(
+    () => (layerId ? new Set((model.nodesByLayer[layerId] ?? []).map((n) => n.type)).size : 0),
+    [model, layerId],
+  );
+}
 
 const LAYOUT_OPTIONS = [
   { value: 'force-clustered', label: 'Clustered' },
@@ -196,19 +221,39 @@ function GraphHeaderControls() {
   const showInterLayerNodes = useUiStore((s) => s.showInterLayerNodes);
   const toggleShowInterLayerNodes = useUiStore((s) => s.toggleShowInterLayerNodes);
   const view = useUiStore((s) => s.view);
+  const layerId = useUiStore((s) => s.layerId);
+  const modelView = useUiStore((s) => s.modelView);
+  const setModelView = useUiStore((s) => s.setModelView);
+  const typeCount = useLayerTypeCount(view === 'model' ? layerId : null);
+  const shownView = view === 'model' ? effectiveModelView(modelView, typeCount) : 'graph';
 
   return (
     <div
       style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px 16px' }}
       data-testid="graph-header-controls"
     >
-      <GraphControl label="Layout" testId="graph-layout-control" inline>
-        <SegmentedControl
-          value={graphLayout}
-          onChange={(v) => setGraphLayout(v as GraphLayout)}
-          options={LAYOUT_OPTIONS}
-        />
-      </GraphControl>
+      {view === 'model' && (
+        <GraphControl label="View" testId="model-view-control" inline>
+          <SegmentedControl
+            value={shownView}
+            onChange={(v) => setModelView(v as ModelView)}
+            options={MODEL_VIEW_OPTIONS.map((o) =>
+              o.value === 'type-hive' && typeCount < HIVE_MIN_TYPES ? { ...o, disabled: true } : o,
+            )}
+            aria-label="View"
+          />
+        </GraphControl>
+      )}
+      {/* Layout places the mixed graph; the by-type views lay themselves out. */}
+      {shownView === 'graph' && (
+        <GraphControl label="Layout" testId="graph-layout-control" inline>
+          <SegmentedControl
+            value={graphLayout}
+            onChange={(v) => setGraphLayout(v as GraphLayout)}
+            options={LAYOUT_OPTIONS}
+          />
+        </GraphControl>
+      )}
       <GraphControl label="Relations" testId="graph-relations-control" inline>
         <SegmentedControl
           value={showAllRelations ? 'all' : 'structural'}
@@ -218,8 +263,8 @@ function GraphHeaderControls() {
           options={RELATIONS_OPTIONS}
         />
       </GraphControl>
-      {/* Foreign (other-layer) nodes only exist on the Model graph. */}
-      {view === 'model' && (
+      {/* Foreign (other-layer) nodes only exist on the Model's mixed graph. */}
+      {view === 'model' && shownView === 'graph' && (
         <GraphControl label="Inter-layer" testId="graph-inter-layer-control" inline>
           <SegmentedControl
             value={showInterLayerNodes ? 'on' : 'off'}
@@ -509,15 +554,6 @@ export function Canvas() {
   // Viewport history (?vp=) — see useViewportHistory. The key is also
   // GraphCanvas's React key, so a viewport only ever applies to the canvas
   // it was recorded on.
-  const canvasKey = graphCanvasKey({
-    view,
-    layerId,
-    graphLayout,
-    nodeMarginPreset,
-    nodeDisplay,
-    showInterLayerNodes,
-  });
-  const viewportHistoryProps = useViewportHistory(canvasKey);
 
   // The node last selected by clicking it in the graph, with the navSeq at the
   // time. While that click is still the current selection, centerOnSelect is
@@ -544,6 +580,34 @@ export function Canvas() {
   const isSpec = view === 'spec';
 
   const index = useMemo(() => buildModelIndex(model), [model]);
+
+  // Model view only: Graph, Lanes by type or Hive by type (#594).
+  const modelView = useUiStore((s) => s.modelView);
+  const typeCount = useLayerTypeCount(!isSpec ? layerId : null);
+  const shownView: ModelView = isSpec ? 'graph' : effectiveModelView(modelView, typeCount);
+  const byType = shownView !== 'graph';
+  // The by-type views draw only the layer's own elements and their links (the
+  // Relations control still applies), never inter-layer neighbours.
+  const typeNodes = useMemo(
+    () => (byType && layerId ? modelNodesForLayer(model, layerId) : []),
+    [byType, model, layerId],
+  );
+  const typeEdges = useMemo(() => {
+    if (!byType || !layerId) return [];
+    const all = modelEdgesForLayer(model, layerId, index);
+    return showAllRelations ? all : all.filter(isStructuralEdge);
+  }, [byType, model, layerId, index, showAllRelations]);
+
+  const canvasKey = graphCanvasKey({
+    view,
+    layerId,
+    graphLayout,
+    nodeMarginPreset,
+    nodeDisplay,
+    showInterLayerNodes,
+    modelView: shownView,
+  });
+  const viewportHistoryProps = useViewportHistory(canvasKey);
 
   // Compute inter-layer data once upstream when enabled in Model view.
   // Returns foreignNodes, crossEdges, and foreignNodeIds (for render/click dispatch).
@@ -853,6 +917,31 @@ export function Canvas() {
               <CanvasEmptyState message={noContentMessage} />
             ) : (
               <>
+                {shownView === 'type-lanes' ? (
+                  <TypeLanesView
+                    layerId={layerId}
+                    nodes={typeNodes}
+                    edges={typeEdges}
+                    spec={spec.byLayer[layerId]}
+                    selectedId={selectedId}
+                    centerOnSelect={centerOnSelect}
+                    onSelect={selectFromCanvas}
+                    onBackgroundClick={() => selectLayer(layerId)}
+                    fullscreenContainerRef={canvasAreaRef}
+                    viewportProps={viewportHistoryProps}
+                    canvasKey={canvasKey}
+                  />
+                ) : shownView === 'type-hive' ? (
+                  <TypeHiveView
+                    layerId={layerId}
+                    nodes={typeNodes}
+                    edges={typeEdges}
+                    spec={spec.byLayer[layerId]}
+                    selectedId={selectedId}
+                    onSelect={selectFromCanvas}
+                    onClear={() => selectLayer(layerId)}
+                  />
+                ) : (
                 <GraphCanvas
                   key={canvasKey}
                   nodes={nodes}
@@ -888,9 +977,11 @@ export function Canvas() {
                     height: '100%',
                   }}
                 />
+                )}
                 {/* Floats over the graph itself (top-left) — same card
-                    language as the built-in bottom-left GraphToolbar. */}
-                <GraphControls />
+                    language as the built-in bottom-left GraphToolbar. Its
+                    settings only apply to the mixed graph. */}
+                {!byType && <GraphControls />}
                 {dwelledEdgeId && edgeTooltipContent && (
                   <TooltipCard
                     key={dwelledEdgeId}

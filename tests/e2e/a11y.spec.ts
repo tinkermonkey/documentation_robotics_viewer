@@ -195,3 +195,47 @@ test.describe('accessibility (axe / WCAG 2.1 AA) — page view mode', () => {
     }
   }
 });
+
+test.describe('accessibility (axe / WCAG 2.1 AA) — topbar search open', () => {
+  for (const tone of TONES) {
+    test(`topbar search with results open — ${tone} canvas: zero serious/critical violations`, async ({
+      page,
+    }, testInfo) => {
+      await gotoView(page, ROUTES.model);
+      await expect(page.getByTestId('canvas')).toBeVisible();
+      await setTone(page, tone);
+
+      // Open it the keyboard way, then type a query with several groups of results.
+      await page.keyboard.press('/');
+      const input = page.getByRole('combobox', { name: 'Search elements and node types' });
+      await expect(input).toBeFocused();
+      await input.fill('model');
+      await expect(page.getByRole('listbox', { name: 'Search results' })).toBeVisible();
+      await expect(page.getByRole('option').first()).toBeVisible();
+      await page.keyboard.press('ArrowDown');
+
+      const results = await new AxeBuilder({ page })
+        .include('[data-testid="topbar-search"]')
+        .withTags(WCAG_TAGS)
+        .analyze();
+      const seriousOrCritical = results.violations.filter(
+        (v) => v.impact === 'serious' || v.impact === 'critical',
+      );
+
+      await testInfo.attach(`axe-topbar-search-${tone}.json`, {
+        body: JSON.stringify(seriousOrCritical, null, 2),
+        contentType: 'application/json',
+      });
+
+      // Name each failing node, so a CI failure says what to fix without the attachment.
+      const summary = seriousOrCritical
+        .map(
+          (v) =>
+            `${v.id} (${v.impact}) × ${v.nodes.length}: ` +
+            v.nodes.map((n) => `${n.target.join(' ')} [${n.any[0]?.message ?? n.failureSummary}]`).join(' | '),
+        )
+        .join('; ');
+      expect(seriousOrCritical, `unexpected serious/critical violations: ${summary}`).toEqual([]);
+    });
+  }
+});

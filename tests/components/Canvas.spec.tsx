@@ -1050,3 +1050,66 @@ describe('Canvas — Inter-layer nodes control', () => {
   });
 
 });
+
+describe('Canvas — Model view by type (#594)', () => {
+  beforeEach(() => {
+    useUiStore.setState({ modelView: 'graph' });
+  });
+
+  it('model view control switches between graph lanes and hive and persists', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<Canvas />);
+    useUiStore.getState().setView('model');
+    useUiStore.getState().selectLayer('motivation');
+    const control = await screen.findByTestId('model-view-control');
+    expect(within(control).getAllByRole('radio').map((r) => r.textContent?.trim())).toEqual([
+      'Graph',
+      'Lanes by type',
+      'Hive by type',
+    ]);
+    expect(within(control).getByRole('radio', { name: 'Graph' })).toBeChecked();
+
+    await user.click(within(control).getByRole('radio', { name: 'Lanes by type' }));
+    expect(useUiStore.getState().modelView).toBe('type-lanes');
+    await waitFor(() => expect(lastGraphCanvasProps?.layout).toBe('layer-lanes'));
+    expect(screen.getByTestId('type-lanes-view')).toHaveAttribute(
+      'aria-label',
+      'Motivation by type: 20 elements in 6 types',
+    );
+    // Layout, Inter-layer and the settings flyout only apply to the mixed graph;
+    // Relations still filters the links.
+    expect(screen.queryByTestId('graph-layout-control')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('graph-inter-layer-control')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('graph-controls')).not.toBeInTheDocument();
+    expect(screen.getByTestId('graph-relations-control')).toBeInTheDocument();
+    // The lanes' toolbar sits bottom-left too, clear of the Inspector drawer.
+    expect(lastGraphCanvasProps?.toolbarPosition).toBe('bottom-left');
+
+    await user.click(within(screen.getByTestId('model-view-control')).getByRole('radio', { name: 'Hive by type' }));
+    expect(await screen.findByTestId('type-hive-view')).toBeInTheDocument();
+    expect(useUiStore.getState().modelView).toBe('type-hive');
+    const stored = JSON.parse(localStorage.getItem('dr-viewer-ui-preferences') ?? '{}');
+    expect(stored.state.modelView).toBe('type-hive');
+
+    // A layer with fewer than 3 types can't make a hive: lanes, with Hive disabled.
+    act(() => useUiStore.getState().selectLayer('data-model'));
+    expect(await screen.findByTestId('type-lanes-view')).toBeInTheDocument();
+    const narrow = screen.getByTestId('model-view-control');
+    expect(within(narrow).getByRole('radio', { name: 'Hive by type' })).toBeDisabled();
+    expect(within(narrow).getByRole('radio', { name: 'Lanes by type' })).toBeChecked();
+
+    // Back to the graph: Layout returns.
+    await user.click(within(narrow).getByRole('radio', { name: 'Graph' }));
+    expect(await screen.findByTestId('graph-layout-control')).toBeInTheDocument();
+  });
+
+  it('offers no View control in the Schema view', async () => {
+    renderWithProviders(<Canvas />);
+    useUiStore.setState({ modelView: 'type-lanes' });
+    useUiStore.getState().setView('spec');
+    useUiStore.getState().selectLayer('motivation');
+    expect(await screen.findByTestId('graph-layout-control')).toBeInTheDocument();
+    expect(screen.queryByTestId('model-view-control')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('type-lanes-view')).not.toBeInTheDocument();
+  });
+});

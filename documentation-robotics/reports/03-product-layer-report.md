@@ -16,11 +16,11 @@ Product features, capabilities, personas, and milestones.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 26    |
-| Intra-Layer Relationships | 44    |
-| Inter-Layer Relationships | 49    |
-| Inbound Relationships     | 33    |
-| Outbound Relationships    | 16    |
+| Elements                  | 28    |
+| Intra-Layer Relationships | 51    |
+| Inter-Layer Relationships | 58    |
+| Inbound Relationships     | 40    |
+| Outbound Relationships    | 18    |
 
 **Cross-Layer References**:
 
@@ -40,12 +40,14 @@ flowchart LR
     product_feature_element_annotations["Element Annotations"]
     product_feature_model_graph_view["Model Graph View"]
     product_feature_model_view_by_type["Model View by Type"]
+    product_feature_nav_tree_type_groups["Nav Tree Type Groups"]
     product_feature_page_view["Page View"]
     product_feature_per_change_review["Per-Change Review"]
     product_feature_schema_graph_view["Schema Graph View"]
     product_feature_tier1_mode_and_routing["Tier1 Mode And Routing"]
     product_feature_tier1_spend_panel["Tier1 Spend Panel"]
     product_feature_tier1_warming_progress["Tier1 Warming Progress"]
+    product_feature_topbar_search["Topbar Search"]
     product_persona_architecture_reviewer["Architecture Reviewer"]
     product_persona_model_author["Model Author"]
     product_softwarecapability_changeset_review["Changeset Review"]
@@ -76,6 +78,9 @@ flowchart LR
     product_feature_model_view_by_type -->|realizes| product_softwarecapability_model_visualization
     product_feature_model_view_by_type -->|serves| product_persona_architecture_reviewer
     product_feature_model_view_by_type -->|serves| product_persona_model_author
+    product_feature_nav_tree_type_groups -->|realizes| product_softwarecapability_model_visualization
+    product_feature_nav_tree_type_groups -->|serves| product_persona_architecture_reviewer
+    product_feature_nav_tree_type_groups -->|serves| product_persona_model_author
     product_feature_page_view -->|realizes| product_softwarecapability_model_visualization
     product_feature_page_view -->|serves| product_persona_architecture_reviewer
     product_feature_per_change_review -->|realizes| product_softwarecapability_changeset_review
@@ -90,6 +95,10 @@ flowchart LR
     product_feature_tier1_warming_progress -->|depends-on| product_feature_tier1_spend_panel
     product_feature_tier1_warming_progress -->|realizes| product_softwarecapability_changeset_review
     product_feature_tier1_warming_progress -->|serves| product_persona_model_author
+    product_feature_topbar_search -->|realizes| product_softwarecapability_model_visualization
+    product_feature_topbar_search -->|realizes| product_softwarecapability_schema_exploration
+    product_feature_topbar_search -->|serves| product_persona_architecture_reviewer
+    product_feature_topbar_search -->|serves| product_persona_model_author
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_apply_the_kept_changes
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_check_the_reach
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_decide_each_change
@@ -146,7 +155,9 @@ flowchart TB
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.chat-service`                                                                                 | `product.softwarecapability.model-chat`                            | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                | `product.feature.cross-layer-follow`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                        | `product.softwarecapability.model-visualization`                   | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.nav-tree-groups`                                                                              | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                            | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                 | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                         | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.type-bands`                                                                                   | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`                                                                              | `product.softwarecapability.model-annotation`                      | `product`    | `realizes`   | many-to-many | medium   |
@@ -159,6 +170,8 @@ flowchart TB
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                                                                                            | `motivation.requirement.viewer-covers-every-spec-layer`            | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-view-by-type`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.per-change-review`                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own`       | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.find-anything-by-name`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.persona.references.business.businessrole`                   | `product.persona.architecture-reviewer`                                                                                       | `business.businessrole.architecture-reviewer`                      | `business`   | `references` | many-to-many | medium   |
 | `product.persona.references.motivation.stakeholder`                  | `product.persona.architecture-reviewer`                                                                                       | `motivation.stakeholder.architecture-team`                         | `motivation` | `references` | many-to-many | medium   |
 | `product.persona.references.business.businessrole`                   | `product.persona.model-author`                                                                                                | `business.businessrole.model-author`                               | `business`   | `references` | many-to-many | medium   |
@@ -171,10 +184,14 @@ flowchart TB
 | `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`        | `motivation` | `supports`   | many-to-many | medium   |
 | `product.userworkflow.realizes.business.businessprocess`             | `product.userworkflow.review-a-staged-changeset`                                                                              | `business.businessprocess.changeset-review-flow`                   | `business`   | `realizes`   | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                | `product.feature.model-view-by-type`                               | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`           | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                  | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `product.feature.tier1-mode-and-routing`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `product.feature.tier1-mode-and-routing`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                          | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-mode-and-routing`                           | `product`    | `realizes`   | many-to-many | medium   |
@@ -185,6 +202,7 @@ flowchart TB
 | `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-graph-view`                                 | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.schema-view`                                                                                                         | `product.feature.schema-graph-view`                                | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.topbar-search`                                                                                                       | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 
 ## Element Reference
 
@@ -384,6 +402,33 @@ See one DR layer's elements grouped by node type: lanes (one per type, linked ty
 | intra-layer | `product.persona.architecture-reviewer`                                                        | `serves`    | outbound  |
 | intra-layer | `product.persona.model-author`                                                                 | `serves`    | outbound  |
 
+### Nav Tree Type Groups {#nav-tree-type-groups}
+
+**ID**: `product.feature.nav-tree-type-groups`
+
+**Type**: `feature`
+
+The left rail's Model tree groups each layer's elements under their node type with a count (Layer › Node type (n) › Element). Groups start collapsed and sort A–Z by type label, elements A–Z inside; a type with one element still gets a group. The selected element's group opens wherever it was chosen. Opening a group pushes no history. The Schema tree is unchanged.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | medium  |
+| size     | s       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                     | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-groups`                                                                    | `realizes` | inbound   |
+| inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history` | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`        | `tests`    | inbound   |
+| intra-layer | `product.softwarecapability.model-visualization`                                                                    | `realizes` | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                                             | `serves`   | outbound  |
+| intra-layer | `product.persona.model-author`                                                                                      | `serves`   | outbound  |
+
 ### Page View {#page-view}
 
 **ID**: `product.feature.page-view`
@@ -542,6 +587,37 @@ While Tier 1 warms up (a codebase_index job filling the answer cache), the Tier 
 | intra-layer | `product.softwarecapability.changeset-review`                                                        | `realizes`   | outbound  |
 | intra-layer | `product.persona.model-author`                                                                       | `serves`     | outbound  |
 
+### Topbar Search {#topbar-search}
+
+**ID**: `product.feature.topbar-search`
+
+**Type**: `feature`
+
+Find an element or a Schema node type by name from the topbar: type-ahead results grouped by layer (swatch, name, type, the match highlighted); choosing one goes there as the nav tree does. `/` or ⌘K/Ctrl+K focuses it.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | medium  |
+| size     | m       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                               | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.search-index`                                                                                 | `realizes`  | inbound   |
+| inter-layer | `motivation.requirement.find-anything-by-name`                                                                                | `satisfies` | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                | `satisfies` | outbound  |
+| inter-layer | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `tests`     | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `tests`     | inbound   |
+| inter-layer | `ux.view.topbar-search`                                                                                                       | `realizes`  | inbound   |
+| intra-layer | `product.softwarecapability.model-visualization`                                                                              | `realizes`  | outbound  |
+| intra-layer | `product.softwarecapability.schema-exploration`                                                                               | `realizes`  | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                                                       | `serves`    | outbound  |
+| intra-layer | `product.persona.model-author`                                                                                                | `serves`    | outbound  |
+
 ### Architecture Reviewer {#architecture-reviewer}
 
 **ID**: `product.persona.architecture-reviewer`
@@ -570,8 +646,10 @@ Reads a DR model and the changesets proposed against it, decides each change, an
 | intra-layer | `product.feature.element-annotations`            | `serves`     | inbound   |
 | intra-layer | `product.feature.model-graph-view`               | `serves`     | inbound   |
 | intra-layer | `product.feature.model-view-by-type`             | `serves`     | inbound   |
+| intra-layer | `product.feature.nav-tree-type-groups`           | `serves`     | inbound   |
 | intra-layer | `product.feature.page-view`                      | `serves`     | inbound   |
 | intra-layer | `product.feature.per-change-review`              | `serves`     | inbound   |
+| intra-layer | `product.feature.topbar-search`                  | `serves`     | inbound   |
 | intra-layer | `product.userworkflow.review-a-staged-changeset` | `serves`     | inbound   |
 
 ### Model Author {#model-author}
@@ -598,10 +676,12 @@ Builds and evolves the DR model with the dr CLI and its agents; uses the viewer 
 | intra-layer | `product.feature.dr-bot-chat-drawer`      | `serves`     | inbound   |
 | intra-layer | `product.feature.model-graph-view`        | `serves`     | inbound   |
 | intra-layer | `product.feature.model-view-by-type`      | `serves`     | inbound   |
+| intra-layer | `product.feature.nav-tree-type-groups`    | `serves`     | inbound   |
 | intra-layer | `product.feature.schema-graph-view`       | `serves`     | inbound   |
 | intra-layer | `product.feature.tier1-mode-and-routing`  | `serves`     | inbound   |
 | intra-layer | `product.feature.tier1-spend-panel`       | `serves`     | inbound   |
 | intra-layer | `product.feature.tier1-warming-progress`  | `serves`     | inbound   |
+| intra-layer | `product.feature.topbar-search`           | `serves`     | inbound   |
 
 ### Changeset Review {#changeset-review}
 
@@ -699,7 +779,9 @@ Render a DR model layer by layer as a navigable graph or as pages, with relation
 | intra-layer | `product.feature.cross-layer-follow`                         | `realizes` | inbound   |
 | intra-layer | `product.feature.model-graph-view`                           | `realizes` | inbound   |
 | intra-layer | `product.feature.model-view-by-type`                         | `realizes` | inbound   |
+| intra-layer | `product.feature.nav-tree-type-groups`                       | `realizes` | inbound   |
 | intra-layer | `product.feature.page-view`                                  | `realizes` | inbound   |
+| intra-layer | `product.feature.topbar-search`                              | `realizes` | inbound   |
 
 ### Schema Exploration {#schema-exploration}
 
@@ -722,6 +804,7 @@ Show the DR spec's node types and allowed relationships per layer.
 | inter-layer | `application.applicationservice.spec-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `supports` | outbound  |
 | intra-layer | `product.feature.schema-graph-view`                         | `realizes` | inbound   |
+| intra-layer | `product.feature.topbar-search`                             | `realizes` | inbound   |
 
 ### Review a Staged Changeset {#review-a-staged-changeset}
 
@@ -844,4 +927,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0

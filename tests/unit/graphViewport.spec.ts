@@ -30,6 +30,15 @@ describe('graphCanvasKey', () => {
     expect(graphCanvasKey({ ...base, showInterLayerNodes: false })).not.toBe(k);
     expect(graphCanvasKey({ ...base })).toBe(k);
   });
+
+  it('gives each Model by-type view its own key, and keeps the old key for the graph', () => {
+    const k = graphCanvasKey(base);
+    expect(graphCanvasKey({ ...base, modelView: 'graph' })).toBe(k);
+    expect(graphCanvasKey({ ...base, modelView: 'type-lanes' })).not.toBe(k);
+    expect(graphCanvasKey({ ...base, modelView: 'type-hive' })).not.toBe(graphCanvasKey({ ...base, modelView: 'type-lanes' }));
+    // The Schema view has no by-type views.
+    expect(graphCanvasKey({ ...base, view: 'spec', modelView: 'type-lanes' })).toBe(graphCanvasKey({ ...base, view: 'spec' }));
+  });
 });
 
 describe('viewport ?vp= param', () => {

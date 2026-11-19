@@ -9,7 +9,7 @@
  * A subset of fields persist to localStorage (see `partialize` below) — the
  * canvas theme, DrBot's open/closed state, panel size and dock state, and the graph
  * layout/display settings (graphLayout/showClusterBoundaries/
- * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes), and the
+ * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes/modelView), and the
  * Model inspector's follow depth (inspectorFollow). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
@@ -37,6 +37,10 @@ export type PageFocus = 'layer' | 'node';
 export type GraphLayout = 'force-clustered' | 'organic' | 'orthogonal';
 export type NodeMarginPreset = 'tight' | 'default' | 'wide';
 export type NodeDisplay = 'card' | 'pill';
+/** What the Model view's graph mode draws (#594): the mixed graph (Layout
+ *  applies), or the layer's elements grouped by node type as lanes or a hive.
+ *  "type" here is a DR node type; Heimdall calls these bands "layers". */
+export type ModelView = 'graph' | 'type-lanes' | 'type-hive';
 
 interface UiState {
   view: ViewKind;
@@ -137,6 +141,9 @@ interface UiState {
   /** Whether to show directly-linked foreign (other-layer) nodes on the Model
    *  graph. Defaults to true. Only meaningful in the Model view. */
   showInterLayerNodes: boolean;
+  /** Model view only: Graph, Lanes by type or Hive by type. Defaults to
+   *  'graph'. Persisted like the layout. */
+  modelView: ModelView;
   /** How many layers past the direct links the Model inspector follows the
    *  selection's reach (0 = direct links only). Defaults to 1. */
   inspectorFollow: FollowDepth;
@@ -225,6 +232,7 @@ interface UiState {
   setNodeMarginPreset: (preset: NodeMarginPreset) => void;
   setNodeDisplay: (nodeDisplay: NodeDisplay) => void;
   toggleShowInterLayerNodes: () => void;
+  setModelView: (modelView: ModelView) => void;
   setInspectorFollow: (inspectorFollow: FollowDepth) => void;
   setGraphViewport: (graphViewport: ScopedViewport | null) => void;
 }
@@ -301,6 +309,7 @@ export const useUiStore = create<UiState>()(
       nodeMarginPreset: 'default',
       nodeDisplay: 'card',
       showInterLayerNodes: true,
+      modelView: 'graph',
       inspectorFollow: 1,
 
       // A view change opens that view's section alone (the nav is an
@@ -507,6 +516,8 @@ export const useUiStore = create<UiState>()(
       toggleShowInterLayerNodes: () =>
         set((s) => ({ showInterLayerNodes: !s.showInterLayerNodes })),
 
+      setModelView: (modelView) => set({ modelView }),
+
       setInspectorFollow: (inspectorFollow) => set({ inspectorFollow }),
 
       setGraphViewport: (graphViewport) => set({ graphViewport }),
@@ -530,6 +541,7 @@ export const useUiStore = create<UiState>()(
         nodeMarginPreset: state.nodeMarginPreset,
         nodeDisplay: state.nodeDisplay,
         showInterLayerNodes: state.showInterLayerNodes,
+        modelView: state.modelView,
         inspectorFollow: state.inspectorFollow,
       }),
       // Re-sync body.dark-canvas once hydration lands — covers both "restored
@@ -561,6 +573,7 @@ const VALID_NODE_MARGIN_PRESETS: ReadonlySet<NodeMarginPreset> = new Set([
   'wide',
 ]);
 const VALID_NODE_DISPLAYS: ReadonlySet<NodeDisplay> = new Set(['card', 'pill']);
+const VALID_MODEL_VIEWS: ReadonlySet<ModelView> = new Set(['graph', 'type-lanes', 'type-hive']);
 
 /** Guards the one place untyped external data (a previous app version's
  *  persisted shape, a hand-edited localStorage value) enters these two
@@ -577,6 +590,7 @@ const VALID_NODE_DISPLAYS: ReadonlySet<NodeDisplay> = new Set(['card', 'pill']);
   if (!VALID_NODE_MARGIN_PRESETS.has(hydrated.nodeMarginPreset)) fixes.nodeMarginPreset = 'default';
   if (!VALID_NODE_DISPLAYS.has(hydrated.nodeDisplay)) fixes.nodeDisplay = 'card';
   if (typeof hydrated.showInterLayerNodes !== 'boolean') fixes.showInterLayerNodes = true;
+  if (!VALID_MODEL_VIEWS.has(hydrated.modelView)) fixes.modelView = 'graph';
   if (!FOLLOW_DEPTHS.includes(hydrated.inspectorFollow)) fixes.inspectorFollow = 1;
   const panelSize = clampPanelSize(hydrated.chatPanelSize);
   if (panelSize.width !== hydrated.chatPanelSize?.width || panelSize.height !== hydrated.chatPanelSize?.height) {

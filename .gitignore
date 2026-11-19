@@ -171,3 +171,6 @@ vite.config.ts.timestamp-*
 # caches, per-machine analyzer status). Machine-local and rewritten on every
 # index; the spec pin (.dr/spec, .dr/manifest.json) stays tracked.
 .dr/analyzers/
+
+# DR: which changeset is active is per-checkout state, never shared
+documentation-robotics/changesets/.active
