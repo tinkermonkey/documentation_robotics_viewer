@@ -105,3 +105,39 @@ motivation.requirement.viewer-covers-every-spec-layer:
     created_at: 2026-11-17T22:03:39.519Z
     updated_at: 2026-11-17T22:03:39.519Z
     version: 1
+motivation.requirement.drift-shows-before-apply:
+  id: 1fb145fb-601e-4923-9678-7b97da97c40e
+  path: motivation.requirement.drift-shows-before-apply
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Drift shows before Apply
+  description: A reviewer learns that a changeset's base changed under it before
+    reviewing and before confirming Apply, not from the commit's refusal; drift
+    that doesn't block (content-free, a verification record, a settled
+    changeset) is never shown as a problem.
+  attributes:
+    requirementType: functional
+    priority: high
+  metadata:
+    created_at: 2026-11-18T20:17:56.261Z
+    updated_at: 2026-11-18T20:17:56.261Z
+    version: 1
+motivation.requirement.only-the-servers-allowed-moves-are-offered:
+  id: 283499d0-d88e-4983-bb47-7124e1d39ba6
+  path: motivation.requirement.only-the-servers-allowed-moves-are-offered
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Only the server's allowed moves are offered
+  description: "The viewer offers Apply and Discard for a changeset only when the
+    dr CLI's actions allow them, and treats each changeset by its declared
+    purpose: a verification record is never offered as a plan to apply. An older
+    dr CLI that sends no purpose or actions keeps today's behaviour."
+  attributes:
+    requirementType: functional
+    priority: high
+  metadata:
+    created_at: 2026-11-18T19:25:24.476Z
+    updated_at: 2026-11-18T19:25:24.476Z
+    version: 1

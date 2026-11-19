@@ -18,9 +18,9 @@ User interface components, screens, and user experience elements.
 | ------------------------- | ----- |
 | Elements                  | 17    |
 | Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 27    |
+| Inter-Layer Relationships | 29    |
 | Inbound Relationships     | 3     |
-| Outbound Relationships    | 24    |
+| Outbound Relationships    | 26    |
 
 **Cross-Layer References**:
 
@@ -105,6 +105,8 @@ flowchart TB
 | `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
 | `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -207,7 +209,7 @@ The Changesets view's Impact tab: layer lanes of what the changed elements reach
 
 **Type**: `subview`
 
-The Changesets view with no changeset open: staged changesets waiting on you or on DrBot, then the history.
+The Changesets view with no changeset open: changesets sorted by purpose and what they need (waiting on you or on DrBot, ready to land as built, verification records paired with their plan), then the history with each one's purpose.
 
 #### Attributes
 
@@ -268,7 +270,7 @@ The page mode of the Model and Schema views (#/model/page): a layer, node type o
 
 **Type**: `subview`
 
-Tier 1 state and this month's spend, above the inbox history.
+Tier 1 state and this month's spend, above the inbox history; while warming, the fill's progress; the mode (stages without the agent / suggests only) and, for OpenRouter, where card text may go.
 
 #### Attributes
 
@@ -387,6 +389,8 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 | inter-layer | `technology.systemsoftware.heimdall-ui`                      | `depends-on` | outbound  |
 | inter-layer | `product.feature.changeset-inbox`                            | `realizes`   | outbound  |
 | inter-layer | `product.feature.per-change-review`                          | `realizes`   | outbound  |
+| inter-layer | `product.feature.tier1-mode-and-routing`                     | `realizes`   | outbound  |
+| inter-layer | `product.feature.tier1-warming-progress`                     | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.changeset`                          | `references` | outbound  |
 | inter-layer | `motivation.requirement.each-review-change-reads-on-its-own` | `satisfies`  | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`               | `satisfies`  | outbound  |
@@ -505,4 +509,4 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0

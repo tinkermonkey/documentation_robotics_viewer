@@ -1,0 +1,535 @@
+- type: update
+  elementId: application.applicationcomponent.changeset-review-panel
+  layerName: application
+  before:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      The summary card's Apply is enabled with changes still undecided (it reads
+      \"Apply N, M undecided as kept\" and says so under the card); it waits
+      only on an undecided blocked delete, an ask or a drop conflict, and Keep
+      the other N stays for recording verdicts."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+          symbol: ChangesetReviewPanel
+    metadata: &a3
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  after:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      The summary card's Apply is enabled with changes still undecided (it reads
+      \"Apply N, M undecided as kept\" and says so under the card); it waits
+      only on an undecided blocked delete, an ask or a drop conflict, and Keep
+      the other N stays for recording verdicts. Apply and Discard are offered
+      only when the server's actions allow them (a verification record gets
+      Discard, never Apply); a refused commit of a verification record is
+      explained inline. When the server reports drift that blocks a commit, the
+      summary card warns before Apply (which stays enabled) and the Apply
+      confirm dialog says the drift refusal is the expected outcome; the 409
+      after confirm is the result."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-19T14:18:25.598Z
+  sequenceNumber: 0
+- type: update
+  elementId: application.applicationcomponent.changeset-inbox
+  layerName: application
+  before:
+    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
+    path: application.applicationcomponent.changeset-inbox
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Inbox
+    description: "The Changesets view's landing page when no changeset is open,
+      sorted by what each changeset needs from you: plans and DrBot's changes
+      waiting on you or on DrBot (with review progress), changesets extracted
+      from the code ready to land as built, verification records each paired
+      with the plan it verifies (never applied), then the history with each
+      changeset's purpose. Hosts the Tier 1 panel above the history."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetInbox.tsx
+          symbol: ChangesetInbox
+    metadata: &a6
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
+    path: application.applicationcomponent.changeset-inbox
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Inbox
+    description: "The Changesets view's landing page when no changeset is open,
+      sorted by what each changeset needs from you: plans and DrBot's changes
+      waiting on you or on DrBot (with review progress and, for a plan whose
+      base drift blocks a commit, a 'Base changed since this was staged' badge),
+      changesets extracted from the code ready to land as built, verification
+      records each paired with the plan it verifies (never applied), then the
+      history with each changeset's purpose. Hosts the Tier 1 panel above the
+      history."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-19T14:18:25.832Z
+  sequenceNumber: 1
+- type: update
+  elementId: application.applicationcomponent.changeset-canvas
+  layerName: application
+  before:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the op-coded change list and a Changes /
+      Impact switch. A changeset the server no longer has (a discard deletes it)
+      shows as gone, with a way back to the inbox."
+    attributes: &a7
+      type: internal
+    source_reference: &a8
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: &a9
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the op-coded change list and a Changes /
+      Impact switch. Its header carries the 'Base changed since this was staged'
+      badge when the base drift blocks a commit. A changeset the server no
+      longer has (a discard deletes it) shows as gone, with a way back to the
+      inbox."
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-19T14:18:26.022Z
+  sequenceNumber: 2
+- type: update
+  elementId: application.applicationservice.use-changesets
+  layerName: application
+  before:
+    id: cf6d77ed-cd1b-4d0a-9cb5-ab22b9f0a202
+    path: application.applicationservice.use-changesets
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useChangesets
+    description: React Query hooks over GET /api/changesets and /api/changesets/:id
+      (with each changeset's purpose, allowed actions, the plan a verification
+      record verifies and, in the detail, what its extraction read), Apply
+      (commit) and Discard with their refusal messages, including the 409 for a
+      verification record; useLiveChangesetUpdates refetches on
+      changesets.updated.
+    attributes: &a10
+      serviceType: synchronous
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useChangesets.ts
+          symbol: useChangesets
+    metadata: &a12
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: cf6d77ed-cd1b-4d0a-9cb5-ab22b9f0a202
+    path: application.applicationservice.use-changesets
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useChangesets
+    description: React Query hooks over GET /api/changesets and /api/changesets/:id
+      (with each changeset's purpose, allowed actions and base drift, validated;
+      the plan a verification record verifies and, in the detail, what its
+      extraction read), Apply (commit) and Discard with their refusal messages,
+      including the 409 for a verification record; useLiveChangesetUpdates
+      refetches on changesets.updated, which the server also sends after a model
+      reload, so drift stays current.
+    attributes: *a10
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-11-19T14:18:26.308Z
+  sequenceNumber: 3
+- type: update
+  elementId: data-model.objectschema.changeset-detail
+  layerName: data-model
+  before:
+    id: dd4dcaa6-6174-4072-bcc9-b8a67fa4618e
+    path: data-model.objectschema.changeset-detail
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: ChangesetDetail
+    description: "GET /api/changesets/:id's body: the changeset with its changes,
+      revision, unstaged tombstones, review and delete blockers, its purpose
+      (plan, chat, bootstrap, reconcile, verification), its allowed actions
+      (commit, discard), and for a verification record the plan it verifies and
+      its scope (since, codeCommit)."
+    attributes: &a13
+      type: object
+    source_reference: &a14
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useChangesets.ts
+          symbol: ChangesetDetail
+    metadata: &a15
+      created_at: 2026-11-18T16:27:42.056Z
+      updated_at: 2026-11-18T16:27:42.056Z
+      version: 1
+  after:
+    id: dd4dcaa6-6174-4072-bcc9-b8a67fa4618e
+    path: data-model.objectschema.changeset-detail
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: ChangesetDetail
+    description: "GET /api/changesets/:id's body: the changeset with its changes,
+      revision, unstaged tombstones, review and delete blockers, its purpose
+      (plan, chat, bootstrap, reconcile, verification), its allowed actions
+      (commit, discard), for a verification record the plan it verifies and its
+      scope (since, codeCommit), and its base drift (state, blocksCommit,
+      message; when the base's hash changed, warnings, baseIndex, the staged
+      changes the base now overlaps and baseChanges)."
+    attributes: *a13
+    source_reference: *a14
+    metadata: *a15
+  timestamp: 2026-11-19T14:18:26.558Z
+  sequenceNumber: 4
+- type: update
+  elementId: api.operation.commit-changeset
+  layerName: api
+  before:
+    id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
+    path: api.operation.commit-changeset
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Commit Changeset
+    description: Applies a staged changeset to the base model (the viewer's Apply).
+      404 unknown, 409 not staged, model drifted, or a verification record
+      (never landed), 422 failed validation, body { error }.
+    attributes: &a16
+      operationId: commitChangeset
+      summary: Apply a staged changeset to the model
+      tags: Changesets
+      http_method: POST
+      http_path: /api/changesets/{changesetId}/commit
+    source_reference: &a17
+      provenance: extracted
+      locations:
+        - file: docs/api-spec.yaml
+          symbol: POST /api/changesets/{changesetId}/commit
+    metadata: &a18
+      created_at: 2026-11-12T13:42:29.415Z
+      updated_at: 2026-11-12T13:42:29.415Z
+      version: 1
+  after:
+    id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
+    path: api.operation.commit-changeset
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Commit Changeset
+    description: "Applies a staged changeset to the base model (the viewer's Apply).
+      404 unknown, 409 not staged, a verification record (never landed), or base
+      drift (the route takes no force: a drifted changeset lands only through
+      changeset_commit with force), 422 failed validation, body { error }."
+    attributes: *a16
+    source_reference: *a17
+    metadata: *a18
+  timestamp: 2026-11-19T14:18:26.774Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.changeset-purpose::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-purpose
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: application.applicationservice.changeset-purpose::serves::application.applicationcomponent.changeset-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-purpose
+    target: application.applicationcomponent.changeset-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it::tests::application.applicationcomponent.changeset-inspector
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it
+    target: application.applicationcomponent.changeset-inspector
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.changeset-drift::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-drift
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.use-changesets::depends-on::application.applicationservice.changeset-drift
+  layerName: application
+  after:
+    source: application.applicationservice.use-changesets
+    target: application.applicationservice.changeset-drift
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-inbox::uses::application.applicationcomponent.drift-notice
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-inbox
+    target: application.applicationcomponent.drift-notice
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-canvas::uses::application.applicationcomponent.drift-notice
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-canvas
+    target: application.applicationcomponent.drift-notice
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-review-panel::uses::application.applicationcomponent.drift-notice
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-review-panel
+    target: application.applicationcomponent.drift-notice
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector::tests::application.applicationcomponent.changeset-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
+    target: application.applicationcomponent.changeset-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift::tests::application.applicationcomponent.changeset-inbox
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
+    target: application.applicationcomponent.changeset-inbox
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationcomponent.drift-notice::accesses::data-model.objectschema.changeset-detail
+  layerName: application
+  after:
+    source: application.applicationcomponent.drift-notice
+    target: data-model.objectschema.changeset-detail
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person::tests::application.applicationcomponent.changeset-review-panel
+  layerName: testing
+  after:
+    source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T14:18:40.039Z
+  sequenceNumber: 26

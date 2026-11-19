@@ -16,15 +16,15 @@ Product features, capabilities, personas, and milestones.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 23    |
-| Intra-Layer Relationships | 35    |
-| Inter-Layer Relationships | 33    |
-| Inbound Relationships     | 20    |
+| Elements                  | 25    |
+| Intra-Layer Relationships | 41    |
+| Inter-Layer Relationships | 43    |
+| Inbound Relationships     | 30    |
 | Outbound Relationships    | 13    |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [UX](./10-ux-layer-report.md)
+- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Testing](./13-testing-layer-report.md), [UX](./10-ux-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -42,7 +42,9 @@ flowchart LR
     product_feature_page_view["Page View"]
     product_feature_per_change_review["Per-Change Review"]
     product_feature_schema_graph_view["Schema Graph View"]
+    product_feature_tier1_mode_and_routing["Tier1 Mode And Routing"]
     product_feature_tier1_spend_panel["Tier1 Spend Panel"]
+    product_feature_tier1_warming_progress["Tier1 Warming Progress"]
     product_persona_architecture_reviewer["Architecture Reviewer"]
     product_persona_model_author["Model Author"]
     product_softwarecapability_changeset_review["Changeset Review"]
@@ -76,8 +78,14 @@ flowchart LR
     product_feature_per_change_review -->|serves| product_persona_architecture_reviewer
     product_feature_schema_graph_view -->|realizes| product_softwarecapability_schema_exploration
     product_feature_schema_graph_view -->|serves| product_persona_model_author
+    product_feature_tier1_mode_and_routing -->|depends-on| product_feature_tier1_spend_panel
+    product_feature_tier1_mode_and_routing -->|realizes| product_softwarecapability_changeset_review
+    product_feature_tier1_mode_and_routing -->|serves| product_persona_model_author
     product_feature_tier1_spend_panel -->|realizes| product_softwarecapability_changeset_review
     product_feature_tier1_spend_panel -->|serves| product_persona_model_author
+    product_feature_tier1_warming_progress -->|depends-on| product_feature_tier1_spend_panel
+    product_feature_tier1_warming_progress -->|realizes| product_softwarecapability_changeset_review
+    product_feature_tier1_warming_progress -->|serves| product_persona_model_author
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_apply_the_kept_changes
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_check_the_reach
     product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_decide_each_change
@@ -115,47 +123,58 @@ flowchart TB
   application --> product
   product --> business
   product --> motivation
+  testing --> product
   ux --> product
   class product current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                      | Source Node                                                | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                              | `product.feature.tier1-spend-panel`                          | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`     | `product.feature.per-change-review`                          | `product`    | `exposes`    | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.change-origin-helpers`     | `product.feature.change-origin-badges`                       | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.changeset-impact-analysis` | `product.feature.changeset-impact-tab`                       | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.changeset-review-model`    | `product.softwarecapability.changeset-review`                | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.chat-service`              | `product.softwarecapability.model-chat`                      | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`             | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`     | `product.softwarecapability.model-visualization`             | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`         | `product.feature.page-view`                                  | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`      | `product.softwarecapability.schema-exploration`              | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`           | `product.softwarecapability.model-annotation`                | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-changeset-review`      | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                 | `product.feature.tier1-spend-panel`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                         | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.per-change-review`                        | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.persona.references.business.businessrole`                   | `product.persona.architecture-reviewer`                    | `business.businessrole.architecture-reviewer`                | `business`   | `references` | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                  | `product.persona.architecture-reviewer`                    | `motivation.stakeholder.architecture-team`                   | `motivation` | `references` | many-to-many | medium   |
-| `product.persona.references.business.businessrole`                   | `product.persona.model-author`                             | `business.businessrole.model-author`                         | `business`   | `references` | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                  | `product.persona.model-author`                             | `motivation.stakeholder.development-team`                    | `motivation` | `references` | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.changeset-review`              | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-annotation`              | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-chat`                    | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.realizes.business.businessfunction`      | `product.softwarecapability.model-visualization`           | `business.businessfunction.cross-layer-reference-resolution` | `business`   | `realizes`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-visualization`           | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.schema-exploration`            | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `product.userworkflow.realizes.business.businessprocess`             | `product.userworkflow.review-a-staged-changeset`           | `business.businessprocess.changeset-review-flow`             | `business`   | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                  | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                  | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.dr-bot-chat-drawer`                               | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                 | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                 | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                       | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.schema-view`                                      | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
+| Relationship ID                                                      | Source Node                                                                                                                   | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-mode-and-routing`                     | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-spend-panel`                          | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-warming-progress`                     | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                        | `product.feature.per-change-review`                          | `product`    | `exposes`    | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.change-origin-helpers`                                                                        | `product.feature.change-origin-badges`                       | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.changeset-impact-analysis`                                                                    | `product.feature.changeset-impact-tab`                       | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.changeset-review-model`                                                                       | `product.softwarecapability.changeset-review`                | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.chat-service`                                                                                 | `product.softwarecapability.model-chat`                      | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                        | `product.softwarecapability.model-visualization`             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                            | `product.feature.page-view`                                  | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                         | `product.softwarecapability.schema-exploration`              | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`                                                                              | `product.softwarecapability.model-annotation`                | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-changeset-review`                                                                         | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-spend-panel`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                                                                                            | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.per-change-review`                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.persona.references.business.businessrole`                   | `product.persona.architecture-reviewer`                                                                                       | `business.businessrole.architecture-reviewer`                | `business`   | `references` | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                  | `product.persona.architecture-reviewer`                                                                                       | `motivation.stakeholder.architecture-team`                   | `motivation` | `references` | many-to-many | medium   |
+| `product.persona.references.business.businessrole`                   | `product.persona.model-author`                                                                                                | `business.businessrole.model-author`                         | `business`   | `references` | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                  | `product.persona.model-author`                                                                                                | `motivation.stakeholder.development-team`                    | `motivation` | `references` | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.changeset-review`                                                                                 | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-annotation`                                                                                 | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-chat`                                                                                       | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.realizes.business.businessfunction`      | `product.softwarecapability.model-visualization`                                                                              | `business.businessfunction.cross-layer-reference-resolution` | `business`   | `realizes`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-visualization`                                                                              | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `product.userworkflow.realizes.business.businessprocess`             | `product.userworkflow.review-a-staged-changeset`                                                                              | `business.businessprocess.changeset-review-flow`             | `business`   | `realizes`   | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `product.feature.tier1-mode-and-routing`                     | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `product.feature.tier1-mode-and-routing`                     | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                          | `product.feature.tier1-warming-progress`                     | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                | `product.feature.tier1-warming-progress`                     | `product`    | `tests`      | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.dr-bot-chat-drawer`                                                                                                  | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.schema-view`                                                                                                         | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
 
 ## Element Reference
 
@@ -212,7 +231,7 @@ What a changeset reaches outside itself, as layer lanes, before Apply.
 
 **Type**: `feature`
 
-Staged changesets waiting on you or on DrBot, with review progress, then the history.
+Changesets sorted by what they need from you: plans and DrBot's changes waiting on you or on DrBot (with review progress), extracted changes ready to land as built, verification records paired with the plan they verify, then the history.
 
 #### Attributes
 
@@ -399,13 +418,42 @@ Per-layer node-type graph with predicates and cardinality.
 | intra-layer | `product.softwarecapability.schema-exploration` | `realizes` | outbound  |
 | intra-layer | `product.persona.model-author`                  | `serves`   | outbound  |
 
+### Tier1 Mode And Routing {#tier1-mode-and-routing}
+
+**ID**: `product.feature.tier1-mode-and-routing`
+
+**Type**: `feature`
+
+The Tier 1 panel says whether Tier 1 stages changes without the agent or only suggests them (with the server's reason), and, for OpenRouter, which upstreams may receive card text, with no fallbacks, no data collection and zero data retention when set.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | low     |
+| size     | s       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                               | Predicate    | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `api.operation.get-api-tier1`                                                                                                 | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.use-tier1`                                                                                    | `realizes`   | inbound   |
+| inter-layer | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `tests`      | inbound   |
+| inter-layer | `ux.view.changesets-view`                                                                                                     | `realizes`   | inbound   |
+| intra-layer | `product.feature.tier1-spend-panel`                                                                                           | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.changeset-review`                                                                                 | `realizes`   | outbound  |
+| intra-layer | `product.persona.model-author`                                                                                                | `serves`     | outbound  |
+
 ### Tier1 Spend Panel {#tier1-spend-panel}
 
 **ID**: `product.feature.tier1-spend-panel`
 
 **Type**: `feature`
 
-Tier 1's state and this month's spend against the cap, in the changeset inbox.
+Tier 1's state and this month's spend against the cap, in the changeset inbox. The warming progress and the mode and routing rows build on it.
 
 #### Attributes
 
@@ -416,12 +464,43 @@ Tier 1's state and this month's spend against the cap, in the changeset inbox.
 
 #### Relationships
 
-| Type        | Related Element                               | Predicate  | Direction |
-| ----------- | --------------------------------------------- | ---------- | --------- |
-| inter-layer | `api.operation.get-api-tier1`                 | `exposes`  | inbound   |
-| inter-layer | `application.applicationservice.use-tier1`    | `realizes` | inbound   |
-| intra-layer | `product.softwarecapability.changeset-review` | `realizes` | outbound  |
-| intra-layer | `product.persona.model-author`                | `serves`   | outbound  |
+| Type        | Related Element                               | Predicate    | Direction |
+| ----------- | --------------------------------------------- | ------------ | --------- |
+| inter-layer | `api.operation.get-api-tier1`                 | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.use-tier1`    | `realizes`   | inbound   |
+| intra-layer | `product.feature.tier1-mode-and-routing`      | `depends-on` | inbound   |
+| intra-layer | `product.softwarecapability.changeset-review` | `realizes`   | outbound  |
+| intra-layer | `product.persona.model-author`                | `serves`     | outbound  |
+| intra-layer | `product.feature.tier1-warming-progress`      | `depends-on` | inbound   |
+
+### Tier1 Warming Progress {#tier1-warming-progress}
+
+**ID**: `product.feature.tier1-warming-progress`
+
+**Type**: `feature`
+
+While Tier 1 warms up (a codebase_index job filling the answer cache), the Tier 1 panel shows how many cards are done out of the total (or that the cards are still being built), when the fill started, about how long it has left and what it has cost so far, and refreshes until the fill ends.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | low     |
+| size     | s       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                                      | Predicate    | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `api.operation.get-api-tier1`                                                                        | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.use-tier1`                                                           | `realizes`   | inbound   |
+| inter-layer | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`       | `tests`      | inbound   |
+| inter-layer | `ux.view.changesets-view`                                                                            | `realizes`   | inbound   |
+| intra-layer | `product.feature.tier1-spend-panel`                                                                  | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.changeset-review`                                                        | `realizes`   | outbound  |
+| intra-layer | `product.persona.model-author`                                                                       | `serves`     | outbound  |
 
 ### Architecture Reviewer {#architecture-reviewer}
 
@@ -478,7 +557,9 @@ Builds and evolves the DR model with the dr CLI and its agents; uses the viewer 
 | intra-layer | `product.feature.dr-bot-chat-drawer`      | `serves`     | inbound   |
 | intra-layer | `product.feature.model-graph-view`        | `serves`     | inbound   |
 | intra-layer | `product.feature.schema-graph-view`       | `serves`     | inbound   |
+| intra-layer | `product.feature.tier1-mode-and-routing`  | `serves`     | inbound   |
 | intra-layer | `product.feature.tier1-spend-panel`       | `serves`     | inbound   |
+| intra-layer | `product.feature.tier1-warming-progress`  | `serves`     | inbound   |
 
 ### Changeset Review {#changeset-review}
 
@@ -504,7 +585,9 @@ Review a staged changeset change by change, see what it reaches, and apply or di
 | intra-layer | `product.feature.changeset-impact-tab`                  | `realizes` | inbound   |
 | intra-layer | `product.feature.changeset-inbox`                       | `realizes` | inbound   |
 | intra-layer | `product.feature.per-change-review`                     | `realizes` | inbound   |
+| intra-layer | `product.feature.tier1-mode-and-routing`                | `realizes` | inbound   |
 | intra-layer | `product.feature.tier1-spend-panel`                     | `realizes` | inbound   |
+| intra-layer | `product.feature.tier1-warming-progress`                | `realizes` | inbound   |
 
 ### Model Annotation {#model-annotation}
 
@@ -718,4 +801,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0

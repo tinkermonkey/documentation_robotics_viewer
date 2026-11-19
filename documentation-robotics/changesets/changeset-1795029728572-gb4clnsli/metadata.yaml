@@ -3,8 +3,8 @@ name: apply-undecided-and-footer-versions
 description: Let Apply land undecided changes as kept, and show the real spec
   and CLI versions in the footer (#573)
 created: 2026-11-18T19:22:08.576Z
-modified: 2026-11-18T19:29:38.515Z
-status: staged
+modified: 2026-11-19T13:49:26.653Z
+status: committed
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
@@ -12,7 +12,7 @@ stats:
   additions: 33
   modifications: 6
   deletions: 6
-lastSequence: 55
+lastSequence: 56
 unstaged:
   - sequence: 6
     removedAt: 39

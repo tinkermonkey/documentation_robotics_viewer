@@ -18,9 +18,9 @@ Infrastructure, platforms, systems, and technology components.
 | ------------------------- | ----- |
 | Elements                  | 29    |
 | Intra-Layer Relationships | 25    |
-| Inter-Layer Relationships | 14    |
+| Inter-Layer Relationships | 15    |
 | Inbound Relationships     | 2     |
-| Outbound Relationships    | 12    |
+| Outbound Relationships    | 13    |
 
 **Cross-Layer References**:
 
@@ -124,6 +124,7 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-impact-view`            | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.drift-notice`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
@@ -364,6 +365,7 @@ DOM implementation for Vitest component tests.
 | inter-layer | `application.applicationcomponent.change-neighbourhood`   | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.changeset-impact-view`  | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.changeset-review-panel` | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.drift-notice`           | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.graph-canvas`           | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.review-parts`           | `serves`     | outbound  |
 | inter-layer | `ux.view.changesets-view`                                 | `depends-on` | inbound   |
@@ -733,4 +735,4 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T14:13:02.627Z | Model Version: 0.1.0

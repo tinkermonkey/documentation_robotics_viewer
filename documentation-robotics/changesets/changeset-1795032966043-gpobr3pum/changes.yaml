@@ -98,50 +98,6 @@
   timestamp: 2026-11-18T20:17:32.150Z
   sequenceNumber: 4
 - type: relationship-add
-  elementId: application.applicationservice.changeset-drift::serves::application.applicationcomponent.changeset-review-panel
-  layerName: application
-  after:
-    source: application.applicationservice.changeset-drift
-    target: application.applicationcomponent.changeset-review-panel
-    predicate: serves
-    layer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:32.150Z
-  sequenceNumber: 5
-- type: relationship-add
-  elementId: application.applicationservice.use-changesets::depends-on::application.applicationservice.changeset-drift
-  layerName: application
-  after:
-    source: application.applicationservice.use-changesets
-    target: application.applicationservice.changeset-drift
-    predicate: depends-on
-    layer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:32.150Z
-  sequenceNumber: 6
-- type: relationship-add
-  elementId: application.applicationcomponent.changeset-inbox::uses::application.applicationcomponent.drift-notice
-  layerName: application
-  after:
-    source: application.applicationcomponent.changeset-inbox
-    target: application.applicationcomponent.drift-notice
-    predicate: uses
-    layer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:32.150Z
-  sequenceNumber: 7
-- type: relationship-add
-  elementId: application.applicationcomponent.changeset-canvas::uses::application.applicationcomponent.drift-notice
-  layerName: application
-  after:
-    source: application.applicationcomponent.changeset-canvas
-    target: application.applicationcomponent.drift-notice
-    predicate: uses
-    layer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:32.150Z
-  sequenceNumber: 8
-- type: relationship-add
   elementId: application.applicationcomponent.changeset-inspector::uses::application.applicationcomponent.drift-notice
   layerName: application
   after:
@@ -152,17 +108,6 @@
     category: structural
   timestamp: 2026-11-18T20:17:32.150Z
   sequenceNumber: 9
-- type: relationship-add
-  elementId: application.applicationcomponent.changeset-review-panel::uses::application.applicationcomponent.drift-notice
-  layerName: application
-  after:
-    source: application.applicationcomponent.changeset-review-panel
-    target: application.applicationcomponent.drift-notice
-    predicate: uses
-    layer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:32.150Z
-  sequenceNumber: 10
 - type: add
   elementId: motivation.requirement.drift-shows-before-apply
   layerName: motivation
@@ -516,18 +461,6 @@
   timestamp: 2026-11-18T20:17:56.272Z
   sequenceNumber: 29
 - type: relationship-add
-  elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector::tests::application.applicationcomponent.changeset-canvas
-  layerName: testing
-  after:
-    source: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
-    target: application.applicationcomponent.changeset-canvas
-    predicate: tests
-    layer: testing
-    targetLayer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:56.272Z
-  sequenceNumber: 30
-- type: relationship-add
   elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector::tests::application.applicationcomponent.changeset-inspector
   layerName: testing
   after:
@@ -552,18 +485,6 @@
   timestamp: 2026-11-18T20:17:56.272Z
   sequenceNumber: 34
 - type: relationship-add
-  elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply::tests::application.applicationcomponent.changeset-review-panel
-  layerName: testing
-  after:
-    source: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
-    target: application.applicationcomponent.changeset-review-panel
-    predicate: tests
-    layer: testing
-    targetLayer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:56.272Z
-  sequenceNumber: 35
-- type: relationship-add
   elementId: testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview::tests::application.applicationcomponent.changeset-inspector
   layerName: testing
   after:
@@ -575,155 +496,6 @@
     category: structural
   timestamp: 2026-11-18T20:17:56.272Z
   sequenceNumber: 36
-- type: relationship-add
-  elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift::tests::application.applicationcomponent.changeset-review-panel
-  layerName: testing
-  after:
-    source: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
-    target: application.applicationcomponent.changeset-review-panel
-    predicate: tests
-    layer: testing
-    targetLayer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:56.272Z
-  sequenceNumber: 37
-- type: relationship-add
-  elementId: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift::tests::application.applicationcomponent.changeset-inbox
-  layerName: testing
-  after:
-    source: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
-    target: application.applicationcomponent.changeset-inbox
-    predicate: tests
-    layer: testing
-    targetLayer: application
-    category: structural
-  timestamp: 2026-11-18T20:17:56.272Z
-  sequenceNumber: 38
-- type: update
-  elementId: application.applicationservice.use-changesets
-  layerName: application
-  before:
-    id: cf6d77ed-cd1b-4d0a-9cb5-ab22b9f0a202
-    path: application.applicationservice.use-changesets
-    spec_node_id: application.applicationservice
-    type: applicationservice
-    layer_id: application
-    name: useChangesets
-    description: React Query hooks over GET /api/changesets and /api/changesets/:id,
-      Apply (commit) and Discard with their refusal messages;
-      useLiveChangesetUpdates refetches on changesets.updated.
-    attributes: &a1
-      serviceType: synchronous
-    source_reference: &a2
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/data/useChangesets.ts
-          symbol: useChangesets
-    metadata: &a3
-      created_at: 2026-11-18T16:26:33.167Z
-      updated_at: 2026-11-18T16:26:33.167Z
-      version: 1
-  after:
-    id: cf6d77ed-cd1b-4d0a-9cb5-ab22b9f0a202
-    path: application.applicationservice.use-changesets
-    spec_node_id: application.applicationservice
-    type: applicationservice
-    layer_id: application
-    name: useChangesets
-    description: React Query hooks over GET /api/changesets and /api/changesets/:id
-      (each changeset's purpose, actions and base drift, validated), Apply
-      (commit) and Discard with their refusal messages; useLiveChangesetUpdates
-      refetches on changesets.updated, which the server also sends after a model
-      reload, so drift stays current.
-    attributes: *a1
-    source_reference: *a2
-    metadata: *a3
-  timestamp: 2026-11-18T20:18:10.831Z
-  sequenceNumber: 40
-- type: update
-  elementId: data-model.objectschema.changeset-detail
-  layerName: data-model
-  before:
-    id: dd4dcaa6-6174-4072-bcc9-b8a67fa4618e
-    path: data-model.objectschema.changeset-detail
-    spec_node_id: data-model.objectschema
-    type: objectschema
-    layer_id: data-model
-    name: ChangesetDetail
-    description: "GET /api/changesets/:id's body: the changeset with its changes,
-      revision, unstaged tombstones, review and delete blockers."
-    attributes: &a4
-      type: object
-    source_reference: &a5
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/data/useChangesets.ts
-          symbol: ChangesetDetail
-    metadata: &a6
-      created_at: 2026-11-18T16:27:42.056Z
-      updated_at: 2026-11-18T16:27:42.056Z
-      version: 1
-  after:
-    id: dd4dcaa6-6174-4072-bcc9-b8a67fa4618e
-    path: data-model.objectschema.changeset-detail
-    spec_node_id: data-model.objectschema
-    type: objectschema
-    layer_id: data-model
-    name: ChangesetDetail
-    description: "GET /api/changesets/:id's body: the changeset with its changes,
-      revision, unstaged tombstones, review, delete blockers, purpose / actions,
-      and its base drift (state, blocksCommit, message; when the base's hash
-      changed, warnings, baseIndex, the staged changes the base now overlaps and
-      baseChanges)."
-    attributes: *a4
-    source_reference: *a5
-    metadata: *a6
-  timestamp: 2026-11-18T20:18:11.045Z
-  sequenceNumber: 41
-- type: update
-  elementId: api.operation.commit-changeset
-  layerName: api
-  before:
-    id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
-    path: api.operation.commit-changeset
-    spec_node_id: api.operation
-    type: operation
-    layer_id: api
-    name: Commit Changeset
-    description: Applies a staged changeset to the base model (the viewer's Apply).
-      404 unknown, 409 not staged or model drifted, 422 failed validation, body
-      { error }.
-    attributes: &a7
-      operationId: commitChangeset
-      summary: Apply a staged changeset to the model
-      tags: Changesets
-      http_method: POST
-      http_path: /api/changesets/{changesetId}/commit
-    source_reference: &a8
-      provenance: extracted
-      locations:
-        - file: docs/api-spec.yaml
-          symbol: POST /api/changesets/{changesetId}/commit
-    metadata: &a9
-      created_at: 2026-11-12T13:42:29.415Z
-      updated_at: 2026-11-12T13:42:29.415Z
-      version: 1
-  after:
-    id: ab726869-07fa-4ff4-8d3a-3689e43e6fe2
-    path: api.operation.commit-changeset
-    spec_node_id: api.operation
-    type: operation
-    layer_id: api
-    name: Commit Changeset
-    description: "Applies a staged changeset to the base model (the viewer's Apply).
-      404 unknown, 409 not staged, a verification record, or base drift (the
-      route takes no force: a drifted changeset lands only through
-      changeset_commit with force), 422 failed validation, body { error }."
-    attributes: *a7
-    source_reference: *a8
-    metadata: *a9
-  timestamp: 2026-11-18T20:18:11.243Z
-  sequenceNumber: 42
 - type: update
   elementId: api.operation.list-changesets
   layerName: api
@@ -735,18 +507,18 @@
     layer_id: api
     name: List Changesets
     description: Returns registry of all available changesets with summaries
-    attributes: &a10
+    attributes: &a1
       operationId: listChangesets
       summary: List all changesets
       tags: Changesets
       http_method: GET
       http_path: /api/changesets
-    source_reference: &a11
+    source_reference: &a2
       provenance: extracted
       locations:
         - file: docs/api-spec.yaml
           symbol: GET /api/changesets
-    metadata: &a12
+    metadata: &a3
       created_at: 2026-03-20T12:57:43.877Z
       updated_at: 2026-03-20T12:57:43.878Z
       version: 1
@@ -760,9 +532,9 @@
     description: Returns registry of all available changesets with summaries, each
       with its base drift (state, blocksCommit, message), checked on the read
       with no commit attempt.
-    attributes: *a10
-    source_reference: *a11
-    metadata: *a12
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
   timestamp: 2026-11-18T20:18:11.448Z
   sequenceNumber: 43
 - type: update
@@ -777,18 +549,18 @@
     name: Get Changeset Details
     description: Returns detailed changeset including all element changes with
       before/after states
-    attributes: &a13
+    attributes: &a4
       operationId: getChangeset
       summary: Get changeset by ID
       tags: Changesets
       http_method: GET
       http_path: /api/changesets/{changesetId}
-    source_reference: &a14
+    source_reference: &a5
       provenance: extracted
       locations:
         - file: docs/api-spec.yaml
           symbol: GET /api/changesets/{changesetId}
-    metadata: &a15
+    metadata: &a6
       created_at: 2026-03-20T12:57:46.588Z
       updated_at: 2026-03-20T12:57:46.588Z
       version: 1
@@ -802,9 +574,9 @@
     description: Returns detailed changeset including all element changes with
       before/after states, and its base drift with what changed in the base
       (overlaps, base changes) when the base's hash changed.
-    attributes: *a13
-    source_reference: *a14
-    metadata: *a15
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
   timestamp: 2026-11-18T20:18:11.651Z
   sequenceNumber: 44
 - type: update
@@ -820,14 +592,14 @@
     description: "The Changesets view's right pane: status, blast radius,
       added/modified/deleted counts, and Apply / Discard (behind confirmation)
       for a staged changeset."
-    attributes: &a16
+    attributes: &a7
       type: internal
-    source_reference: &a17
+    source_reference: &a8
       provenance: extracted
       locations:
         - file: src/apps/embedded/ui/ChangesetInspector.tsx
           symbol: ChangesetInspector
-    metadata: &a18
+    metadata: &a9
       created_at: 2026-11-12T13:44:46.091Z
       updated_at: 2026-11-12T13:44:46.091Z
       version: 1
@@ -842,141 +614,11 @@
       base-drift section (what the base changed under the changeset), blast
       radius, added/modified/deleted counts, and Apply / Discard (behind
       confirmation) for a staged changeset."
-    attributes: *a16
-    source_reference: *a17
-    metadata: *a18
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
   timestamp: 2026-11-18T20:18:11.848Z
   sequenceNumber: 45
-- type: update
-  elementId: application.applicationcomponent.changeset-review-panel
-  layerName: application
-  before:
-    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
-    path: application.applicationcomponent.changeset-review-panel
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Review Panel
-    description: "A changeset's Review tab: the summary card, the Show / Group by /
-      Decided by controls and the per-change rows. Columns are labelled (#,
-      Change, Element or link, What it says, Your decision); a change chip
-      carries a glyph (+ element, + link, ~ update, − delete) and the decision
-      is an outlined pill in its own column; a link row is a chain [source]
-      —predicate→ [target] with a dashed end for an element this changeset
-      adds."
-    attributes: &a19
-      type: internal
-    source_reference: &a20
-      provenance: manual
-      locations:
-        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
-          symbol: ChangesetReviewPanel
-    metadata: &a21
-      created_at: 2026-11-17T22:03:39.519Z
-      updated_at: 2026-11-17T22:03:39.519Z
-      version: 1
-  after:
-    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
-    path: application.applicationcomponent.changeset-review-panel
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Review Panel
-    description: "A changeset's Review tab: the summary card, the Show / Group by /
-      Decided by controls and the per-change rows. Columns are labelled (#,
-      Change, Element or link, What it says, Your decision); a change chip
-      carries a glyph (+ element, + link, ~ update, − delete) and the decision
-      is an outlined pill in its own column; a link row is a chain [source]
-      —predicate→ [target] with a dashed end for an element this changeset adds.
-      When the server reports drift that blocks a commit, the summary card says
-      so and holds Apply before its confirm dialog; the 409 after confirm stays
-      the backstop."
-    attributes: *a19
-    source_reference: *a20
-    metadata: *a21
-  timestamp: 2026-11-18T20:18:21.196Z
-  sequenceNumber: 46
-- type: update
-  elementId: application.applicationcomponent.changeset-inbox
-  layerName: application
-  before:
-    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
-    path: application.applicationcomponent.changeset-inbox
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Inbox
-    description: "The Changesets view's landing page when no changeset is open:
-      staged changesets waiting on you and waiting on DrBot, each with review
-      progress, then applied and discarded ones. Hosts the Tier 1 panel above
-      the history."
-    attributes: &a22
-      type: internal
-    source_reference: &a23
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/ui/ChangesetInbox.tsx
-          symbol: ChangesetInbox
-    metadata: &a24
-      created_at: 2026-11-18T16:26:33.166Z
-      updated_at: 2026-11-18T16:26:33.166Z
-      version: 1
-  after:
-    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
-    path: application.applicationcomponent.changeset-inbox
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Inbox
-    description: "The Changesets view's landing page when no changeset is open:
-      staged changesets waiting on you and waiting on DrBot, each with review
-      progress and, for a plan whose base drift blocks a commit, a 'Base changed
-      since this was staged' badge, then applied and discarded ones. Hosts the
-      Tier 1 panel above the history."
-    attributes: *a22
-    source_reference: *a23
-    metadata: *a24
-  timestamp: 2026-11-18T20:18:21.405Z
-  sequenceNumber: 47
-- type: update
-  elementId: application.applicationcomponent.changeset-canvas
-  layerName: application
-  before:
-    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
-    path: application.applicationcomponent.changeset-canvas
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Canvas
-    description: "The Changesets view's main pane: the op-coded change list with
-      side-by-side diffs, and a Changes / Impact switch."
-    attributes: &a25
-      type: internal
-    source_reference: &a26
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
-          symbol: ChangesetCanvas
-    metadata: &a27
-      created_at: 2026-11-12T13:44:46.091Z
-      updated_at: 2026-11-12T13:44:46.091Z
-      version: 1
-  after:
-    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
-    path: application.applicationcomponent.changeset-canvas
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Canvas
-    description: "The Changesets view's main pane: the op-coded change list with
-      side-by-side diffs, and a Changes / Impact switch. Its header carries the
-      'Base changed since this was staged' badge when the base drift blocks a
-      commit."
-    attributes: *a25
-    source_reference: *a26
-    metadata: *a27
-  timestamp: 2026-11-18T20:18:21.607Z
-  sequenceNumber: 48
 - type: relationship-add
   elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector::tests::business.businessservice.changeset-review
   layerName: testing
@@ -1025,18 +667,6 @@
     category: structural
   timestamp: 2026-11-18T20:18:29.295Z
   sequenceNumber: 52
-- type: relationship-add
-  elementId: application.applicationcomponent.drift-notice::accesses::data-model.objectschema.changeset-detail
-  layerName: application
-  after:
-    source: application.applicationcomponent.drift-notice
-    target: data-model.objectschema.changeset-detail
-    predicate: accesses
-    layer: application
-    targetLayer: data-model
-    category: structural
-  timestamp: 2026-11-18T20:18:29.295Z
-  sequenceNumber: 53
 - type: relationship-add
   elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift::tests::application.applicationcomponent.changeset-inspector
   layerName: testing
@@ -1121,58 +751,6 @@
     category: structural
   timestamp: 2026-11-18T20:27:58.177Z
   sequenceNumber: 61
-- type: update
-  elementId: application.applicationcomponent.changeset-review-panel
-  layerName: application
-  before:
-    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
-    path: application.applicationcomponent.changeset-review-panel
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Review Panel
-    description: "A changeset's Review tab: the summary card, the Show / Group by /
-      Decided by controls and the per-change rows. Columns are labelled (#,
-      Change, Element or link, What it says, Your decision); a change chip
-      carries a glyph (+ element, + link, ~ update, − delete) and the decision
-      is an outlined pill in its own column; a link row is a chain [source]
-      —predicate→ [target] with a dashed end for an element this changeset adds.
-      When the server reports drift that blocks a commit, the summary card says
-      so and holds Apply before its confirm dialog; the 409 after confirm stays
-      the backstop."
-    attributes: &a28
-      type: internal
-    source_reference: &a29
-      provenance: manual
-      locations:
-        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
-          symbol: ChangesetReviewPanel
-    metadata: &a30
-      created_at: 2026-11-17T22:03:39.519Z
-      updated_at: 2026-11-17T22:03:39.519Z
-      version: 1
-  after:
-    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
-    path: application.applicationcomponent.changeset-review-panel
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Changeset Review Panel
-    description: "A changeset's Review tab: the summary card, the Show / Group by /
-      Decided by controls and the per-change rows. Columns are labelled (#,
-      Change, Element or link, What it says, Your decision); a change chip
-      carries a glyph (+ element, + link, ~ update, − delete) and the decision
-      is an outlined pill in its own column; a link row is a chain [source]
-      —predicate→ [target] with a dashed end for an element this changeset adds.
-      When the server reports drift that blocks a commit, the summary card warns
-      before Apply (which stays enabled) and the Apply confirm dialog says the
-      drift refusal is the expected outcome; the 409 after confirm is the
-      result."
-    attributes: *a28
-    source_reference: *a29
-    metadata: *a30
-  timestamp: 2026-11-18T20:32:29.918Z
-  sequenceNumber: 76
 - type: add
   elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person
   layerName: testing
@@ -1198,18 +776,6 @@
       version: 1
   timestamp: 2026-11-18T20:33:10.443Z
   sequenceNumber: 84
-- type: relationship-add
-  elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person::tests::application.applicationcomponent.changeset-review-panel
-  layerName: testing
-  after:
-    source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person
-    target: application.applicationcomponent.changeset-review-panel
-    predicate: tests
-    layer: testing
-    targetLayer: application
-    category: structural
-  timestamp: 2026-11-18T20:33:10.443Z
-  sequenceNumber: 85
 - type: relationship-add
   elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person::tests::application.applicationcomponent.drift-notice
   layerName: testing

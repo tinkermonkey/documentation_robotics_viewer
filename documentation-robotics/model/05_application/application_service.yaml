@@ -101,26 +101,6 @@ application.applicationservice.json-rpc-handler:
     created_at: 2026-03-20T12:56:09.063Z
     updated_at: 2026-03-20T12:56:09.063Z
     version: 1
-application.applicationservice.embedded-data-loader:
-  id: 13b1a5ff-1cea-4ca0-b557-81f4629f2736
-  path: application.applicationservice.embedded-data-loader
-  spec_node_id: application.applicationservice
-  type: applicationservice
-  layer_id: application
-  name: Embedded Data Loader
-  description: Coordinates data loading for the embedded app; selects between DR
-    CLI server, GitHub, or local file sources based on connection state
-  attributes:
-    serviceType: asynchronous
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/apps/embedded/services/embeddedDataLoader.ts
-        symbol: embeddedDataLoader
-  metadata:
-    created_at: 2026-03-20T12:56:15.772Z
-    updated_at: 2026-03-20T12:56:15.772Z
-    version: 1
 application.applicationservice.error-tracker:
   id: 9e5ef4a3-c7cb-48bd-a7c4-f1b9de5506ad
   path: application.applicationservice.error-tracker
@@ -347,7 +327,12 @@ application.applicationservice.changeset-review-model:
     since-your-review diff and the apply plan. A link item carries each end's
     name, type, layer and whether this changeset adds it (replacing the 'new
     source' / 'new target' / 'both ends new' chips); an element item counts its
-    new links out and in."
+    new links out and in. Apply needs a decision only where one is required
+    (#573): canApply holds while a blocked delete is undecided, a change waits
+    on DrBot or a drop conflicts, and otherwise undecided changes land as kept
+    (apply.undecided lists them); ready still means every change has a verdict.
+    The commit body is unchanged: drop names only dropped changes,
+    deleteBlockedLinks only kept blocked deletes."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -408,7 +393,10 @@ application.applicationservice.use-spec:
   layer_id: application
   name: useSpec
   description: "React Query hook over GET /api/spec: per-layer node schemas and
-    relationship schemas, with the layer order derived from them."
+    relationship schemas, with the layer order derived from them. Its version is
+    the spec version from the manifest schema's specVersion (a layer schema's as
+    fallback), not the response's own version field (the API's 0.1.0); empty
+    when the server sends none."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -427,9 +415,13 @@ application.applicationservice.use-changesets:
   type: applicationservice
   layer_id: application
   name: useChangesets
-  description: React Query hooks over GET /api/changesets and /api/changesets/:id,
-    Apply (commit) and Discard with their refusal messages;
-    useLiveChangesetUpdates refetches on changesets.updated.
+  description: React Query hooks over GET /api/changesets and /api/changesets/:id
+    (with each changeset's purpose, allowed actions and base drift, validated;
+    the plan a verification record verifies and, in the detail, what its
+    extraction read), Apply (commit) and Discard with their refusal messages,
+    including the 409 for a verification record; useLiveChangesetUpdates
+    refetches on changesets.updated, which the server also sends after a model
+    reload, so drift stays current.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -492,7 +484,8 @@ application.applicationservice.use-tier1:
   name: useTier1
   description: React Query hook over GET /api/tier1; treats 404/405/501 or a
     non-Tier1Status body as unavailable and asks again on inbox mount,
-    changesets.updated and window focus.
+    changesets.updated and window focus, and every few seconds while Tier 1 is
+    warming so the fill's progress moves without a reload.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -684,4 +677,80 @@ application.applicationservice.use-hover-dwell:
   metadata:
     created_at: 2026-11-18T16:26:33.167Z
     updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationservice.use-cli-version:
+  id: dee6f57a-624a-4375-8ff2-5f156c5bc374
+  path: application.applicationservice.use-cli-version
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useCliVersion
+  description: "React Query hook over GET /health: the dr CLI version serving the
+    viewer when /health sends one as cliVersion, else undefined so the status
+    bar shows —. Never /health's version, which is the API's own (0.1.0). Pure
+    helpers specVersionOf (spec manifest) and cliVersionOf live beside it in
+    data/serverVersions.ts."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/serverVersions.ts
+        symbol: useCliVersion
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+application.applicationservice.changeset-drift:
+  id: 5fd8124e-faf2-4a50-ac5e-428a95c7db35
+  path: application.applicationservice.changeset-drift
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Drift
+  description: "Reads a changeset's base drift from the dr CLI's changeset
+    endpoints (drift on GET /api/changesets and /api/changesets/:id): state
+    (none, content-free, drifted, not-applicable, unknown), blocksCommit and the
+    server's message, and on the detail the overlaps and what changed in the
+    base (counts, per-layer, cut lists with truncated). Validated from the wire
+    like tier1.ts: malformed values are dropped, an older dr CLI's missing drift
+    reads as none known. driftTone says whether drift is a problem to warn about
+    (blocks a commit), a quiet note (content-free), unchecked (unknown) or
+    nothing to show."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesetDrift.ts
+        symbol: src.apps.embedded.data.changesetDrift
+  metadata:
+    created_at: 2026-11-18T20:17:32.126Z
+    updated_at: 2026-11-18T20:17:32.126Z
+    version: 1
+application.applicationservice.changeset-purpose:
+  id: c07e59bd-8554-4d4e-82be-7bfd40a8bdc4
+  path: application.applicationservice.changeset-purpose
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Purpose
+  description: "Reads a changeset's purpose (plan, chat, bootstrap, reconcile,
+    verification) and allowed actions (commit, discard) from the dr CLI's
+    /api/changesets and /api/changesets/:id, keeping only known values; answers
+    whether Apply or Discard is offered (from actions, or a staged status on an
+    older dr CLI that sends none); names each purpose and its lifecycle; and
+    sorts the inbox by what each changeset needs: plans and chat to review,
+    bootstrap/reconcile to land as built, verification records paired with the
+    plan they verify, then history."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/changesetPurpose.ts
+        symbol: inboxGroups
+  metadata:
+    created_at: 2026-11-18T19:24:40.393Z
+    updated_at: 2026-11-18T19:24:40.393Z
     version: 1

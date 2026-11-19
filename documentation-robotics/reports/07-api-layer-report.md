@@ -18,9 +18,9 @@ REST APIs, operations, endpoints, and API integrations.
 | ------------------------- | ----- |
 | Elements                  | 37    |
 | Intra-Layer Relationships | 35    |
-| Inter-Layer Relationships | 46    |
+| Inter-Layer Relationships | 45    |
 | Inbound Relationships     | 1     |
-| Outbound Relationships    | 45    |
+| Outbound Relationships    | 44    |
 
 **Cross-Layer References**:
 
@@ -105,34 +105,36 @@ flowchart TB
 | `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
 | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                              | `application` | `realizes`   | unknown      | unknown  |
 | `8630981b-236c-47ed-b99b-e977c56bdc63-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `8630981b-236c-47ed-b99b-e977c56bdc63`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.commit-changeset`                       | `application.applicationfunction.changeset-store`                   | `application` | `realizes`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                       | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                       | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                       | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.create-annotation-reply`                | `application.applicationfunction.annotation-store`                  | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation`                      | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.discard-changeset`                      | `application.applicationfunction.changeset-store`                   | `application` | `realizes`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                      | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                      | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                      | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-annotation`                         | `application.applicationfunction.annotation-store`                  | `application` | `realizes`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-annotation`                         | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                         | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-annotations`                        | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-mode-and-routing`                            | `product`     | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-spend-panel`                                 | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-warming-progress`                            | `product`     | `exposes`    | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-api-tier1`                          | `application.applicationservice.use-tier1`                          | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                          | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.get-layer`                              | `application.applicationfunction.layer-store`                       | `application` | `realizes`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-architecture-model`                 | `application.applicationservice.use-model`                          | `application` | `references` | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-layer`                              | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                              | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.list-annotation-replies`                | `application.applicationfunction.annotation-store`                  | `application` | `realizes`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.list-changesets`                        | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                                                | `api.operation.put-api-changesets-changeset-id-review` | `product.feature.per-change-review`                                 | `product`     | `exposes`    | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.put-api-changesets-changeset-id-review` | `application.applicationservice.use-changeset-review`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-changesets-changeset-id-review` | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.realizes.application.applicationfunction`                               | `api.operation.replace-annotation`                     | `application.applicationfunction.annotation-store`                  | `application` | `realizes`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                     | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                     | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
 | `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `realizes`   | many-to-many | medium   |
@@ -140,11 +142,8 @@ flowchart TB
 | `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                 | `b7775f1a-2418-4c7a-84aa-997efd658a97`                              | `application` | `references` | unknown      | unknown  |
 | `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123`  | `b66b613e-27b6-4d90-909f-3aa81570de15`                 | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
 | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2`  | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                 | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-realizes-3b08f432-72aa-4df6-978c-d76d3312f72b`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                 | `3b08f432-72aa-4df6-978c-d76d3312f72b`                              | `application` | `realizes`   | unknown      | unknown  |
 | `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
 | `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123`  | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                 | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `f952fcc0-7c42-4586-a306-a5f2f94a3068-realizes-f1edef84-1298-486c-b347-f47c3b0f9712`   | `f952fcc0-7c42-4586-a306-a5f2f94a3068`                 | `f1edef84-1298-486c-b347-f47c3b0f9712`                              | `application` | `realizes`   | unknown      | unknown  |
-| `ff16c609-618e-4dd9-b477-12e17c000df8-realizes-71f9eb72-20e1-4ae6-be30-425c11e59edb`   | `ff16c609-618e-4dd9-b477-12e17c000df8`                 | `71f9eb72-20e1-4ae6-be30-425c11e59edb`                              | `application` | `realizes`   | unknown      | unknown  |
 | `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `technology.technologyservice.serves.api.openapidocument`                              | `technology.technologyservice.dr-cli-rest-server`      | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
 
@@ -202,7 +201,7 @@ Root OpenAPI 3.0 document describing the Documentation Robotics Visualization Se
 
 **Type**: `operation`
 
-Applies a staged changeset to the base model (the viewer's Apply). 404 unknown, 409 not staged or model drifted, 422 failed validation, body \{ error \}.
+Applies a staged changeset to the base model (the viewer's Apply). 404 unknown, 409 not staged, a verification record (never landed), or base drift (the route takes no force: a drifted changeset lands only through changeset_commit with force), 422 failed validation, body \{ error \}.
 
 #### Attributes
 
@@ -218,8 +217,8 @@ Applies a staged changeset to the base model (the viewer's Apply). 404 unknown, 
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.changeset-store`     | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.changeset-commit-path`                  | `composes`   | inbound   |
@@ -244,9 +243,10 @@ Creates a new annotation on a model element
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate | Direction |
-| ----------- | --------------------------------------- | --------- | --------- |
-| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`    | outbound  |
+| Type        | Related Element                                  | Predicate    | Direction |
+| ----------- | ------------------------------------------------ | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-annotations` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`          | `uses`       | outbound  |
 
 ### Create Annotation Reply {#create-annotation-reply}
 
@@ -270,8 +270,8 @@ Adds a reply to an annotation thread.
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.annotation-store`    | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-annotations`      | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.annotation-replies-path`                | `composes`   | inbound   |
@@ -306,7 +306,7 @@ Deletes an existing annotation
 
 **Type**: `operation`
 
-Discards a staged changeset without touching the model (the viewer's Discard).
+Discards a staged changeset without touching the model (the viewer's Discard): deletes it with its folder, so it leaves GET /api/changesets and GET /api/changesets/:id answers 404 afterwards.
 
 #### Attributes
 
@@ -322,8 +322,8 @@ Discards a staged changeset without touching the model (the viewer's Discard).
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.changeset-store`     | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.changeset-discard-path`                 | `composes`   | inbound   |
@@ -350,7 +350,6 @@ Returns one annotation by id.
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.annotation-store`    | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
@@ -376,10 +375,11 @@ Returns annotations optionally filtered by elementId query param
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate  | Direction |
-| ----------- | --------------------------------------- | ---------- | --------- |
-| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`     | outbound  |
-| intra-layer | `api.pathitem.annotations-path`         | `composes` | inbound   |
+| Type        | Related Element                                  | Predicate    | Direction |
+| ----------- | ------------------------------------------------ | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-annotations` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`          | `uses`       | outbound  |
+| intra-layer | `api.pathitem.annotations-path`                  | `composes`   | inbound   |
 
 ### GET /api/tier1 {#get-api-tier1}
 
@@ -403,7 +403,9 @@ Tier 1's state for the served checkout, provider and model, credential sources (
 
 | Type        | Related Element                               | Predicate    | Direction |
 | ----------- | --------------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.tier1-mode-and-routing`      | `exposes`    | outbound  |
 | inter-layer | `product.feature.tier1-spend-panel`           | `exposes`    | outbound  |
+| inter-layer | `product.feature.tier1-warming-progress`      | `exposes`    | outbound  |
 | inter-layer | `application.applicationservice.use-tier1`    | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy` | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`       | `uses`       | outbound  |
@@ -429,10 +431,11 @@ Returns full architecture model from documentation-robotics/model/ including all
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate  | Direction |
-| ----------- | --------------------------------------- | ---------- | --------- |
-| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`     | outbound  |
-| intra-layer | `api.pathitem.model-path`               | `composes` | inbound   |
+| Type        | Related Element                            | Predicate    | Direction |
+| ----------- | ------------------------------------------ | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-model` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`    | `uses`       | outbound  |
+| intra-layer | `api.pathitem.model-path`                  | `composes`   | inbound   |
 
 ### Get Changeset Details {#get-changeset-details}
 
@@ -440,7 +443,7 @@ Returns full architecture model from documentation-robotics/model/ including all
 
 **Type**: `operation`
 
-Returns detailed changeset including all element changes with before/after states
+Returns detailed changeset including all element changes with before/after states, and its base drift with what changed in the base (overlaps, base changes) when the base's hash changed.
 
 #### Attributes
 
@@ -480,7 +483,6 @@ Returns one layer of the model with its elements.
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.layer-store`         | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
@@ -556,8 +558,8 @@ Returns the reply thread of an annotation; the Inspector's annotation thread rea
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.annotation-store`    | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-annotations`      | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.annotation-replies-path`                | `composes`   | inbound   |
@@ -568,7 +570,7 @@ Returns the reply thread of an annotation; the Inspector's annotation thread rea
 
 **Type**: `operation`
 
-Returns registry of all available changesets with summaries
+Returns registry of all available changesets with summaries, each with its base drift (state, blocksCommit, message), checked on the read with no commit attempt.
 
 #### Attributes
 
@@ -582,10 +584,11 @@ Returns registry of all available changesets with summaries
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate  | Direction |
-| ----------- | --------------------------------------- | ---------- | --------- |
-| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`     | outbound  |
-| intra-layer | `api.pathitem.changesets-path`          | `composes` | inbound   |
+| Type        | Related Element                                 | Predicate    | Direction |
+| ----------- | ----------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-changesets` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`         | `uses`       | outbound  |
+| intra-layer | `api.pathitem.changesets-path`                  | `composes`   | inbound   |
 
 ### PUT /api/changesets/\{changesetId\}/review {#put-api-changesets-changesetid-review}
 
@@ -637,7 +640,6 @@ Replaces an annotation's content and tags (PUT form of Update Annotation).
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationfunction.annotation-store`    | `realizes`   | outbound  |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
@@ -1047,4 +1049,4 @@ Token as ?token= query param; used for WebSocket connection authentication where
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T14:20:09.790Z | Model Version: 0.1.0

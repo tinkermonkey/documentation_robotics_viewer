@@ -2176,26 +2176,6 @@ testing.testcasesketch.review-deciding-changes-dr-cli-with-review-shows-a-link-c
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
-testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb:
-  id: 193da10c-fadb-45c8-9dcf-751c8ca7b629
-  path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-holds-apply-until-f279befb
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: review — deciding changes (dr CLI with review) > summarises what needs a
-    decision and holds Apply until every change has one
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/components/ChangesetReview.spec.tsx
-        symbol: review — deciding changes (dr CLI with review) > summarises what needs a
-          decision and holds Apply until every change has one
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
 testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f:
   id: d8058a20-9c59-46d3-beca-7f8c548fd6a9
   path: testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f
@@ -6234,24 +6214,6 @@ testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-exp
       - file: tests/e2e/shell.spec.ts
         symbol: shell > nav rail shows the 3 sections and, when Model is expanded, 12
           layers with API counts
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
-testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count:
-  id: 68769c31-dc31-4085-b929-474688b5d576
-  path: testing.testcasesketch.shell-statusbar-shows-the-spec-version-and-the-rel-count
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: shell > statusbar shows the spec version and the rel count
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/e2e/shell.spec.ts
-        symbol: shell > statusbar shows the spec version and the rel count
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
@@ -14863,4 +14825,874 @@ testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-c
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
+    version: 1
+testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one:
+  id: fad63660-348f-4a31-bc61-503901bbe4c5
+  path: testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: toTier1Status > keeps a well-formed warming object and drops a malformed one
+  attributes:
+    status: automated
+    implementationFormat: automated
+    description: The spec's warming example keeps jobId, startedAt, cards, costUsd
+      and etaSeconds; cards null stays null; a warming without jobId or with
+      done above total is dropped, and the rest of the status still reads.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/tier1.spec.ts
+        symbol: toTier1Status > keeps a well-formed warming object and drops a malformed
+          one
+  metadata:
+    created_at: 2026-11-18T18:31:44.021Z
+    updated_at: 2026-11-18T18:31:44.021Z
+    version: 1
+testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams:
+  id: 898eccea-7b09-4606-9bd8-d139a2adab98
+  path: testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: toTier1Status > keeps mode only as suggest or stage, and routing's string
+    upstreams
+  attributes:
+    status: automated
+    implementationFormat: automated
+    description: mode other than suggest/stage is dropped (modeReason kept only as a
+      string); routing keeps only string upstreams, and is dropped without any.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/tier1.spec.ts
+        symbol: toTier1Status > keeps mode only as suggest or stage, and routing's
+          string upstreams
+  metadata:
+    created_at: 2026-11-18T18:31:44.048Z
+    updated_at: 2026-11-18T18:31:44.048Z
+    version: 1
+testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far:
+  id: 137ce243-e4bf-4c6c-9b02-442a7c577d5a
+  path: testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — warming > shows the fill's progress, time left and cost so far
+  attributes:
+    status: automated
+    implementationFormat: automated
+    description: "With the spec's warming example: a progress bar at 1,388 of 4,071
+      cards, about 8 min left, and $1.94 so far."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — warming > shows the fill's progress, time left and cost so
+          far
+  metadata:
+    created_at: 2026-11-18T18:31:44.060Z
+    updated_at: 2026-11-18T18:31:44.060Z
+    version: 1
+testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null:
+  id: 1bb263af-1fc3-40be-9223-b0f0c90a4a1c
+  path: testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — warming > says the cards are still being built while cards is
+    null
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — warming > says the cards are still being built while cards
+          is null
+  metadata:
+    created_at: 2026-11-18T18:31:44.060Z
+    updated_at: 2026-11-18T18:31:44.060Z
+    version: 1
+testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on:
+  id: af502a14-fb97-4bfe-bf4e-81dcd51b9f86
+  path: testing.testcasesketch.tier1panel-warming-refetches-while-warming-and-stops-once-tier-1-is-on
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — warming > refetches while warming and stops once Tier 1 is on
+  attributes:
+    status: automated
+    implementationFormat: automated
+    description: useTier1 polls GET /api/tier1 only while the state is warming; once
+      the body reads on, no further requests are made.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — warming > refetches while warming and stops once Tier 1 is
+          on
+  metadata:
+    created_at: 2026-11-18T18:31:44.060Z
+    updated_at: 2026-11-18T18:31:44.060Z
+    version: 1
+testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why:
+  id: a0ac831b-b793-4c07-b2c4-e03c509a6106
+  path: testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — mode and routing > says whether Tier 1 stages without the
+    agent, and why
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — mode and routing > says whether Tier 1 stages without the
+          agent, and why
+  metadata:
+    created_at: 2026-11-18T18:31:44.062Z
+    updated_at: 2026-11-18T18:31:44.062Z
+    version: 1
+testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection:
+  id: af556d24-69f3-4aa7-80d5-2100a397d274
+  path: testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — mode and routing > lists OpenRouter's allowed upstreams, no
+    fallbacks and no data collection
+  attributes:
+    status: automated
+    implementationFormat: automated
+    description: "With the spec's openRouter example: a cloudflare chip, 'no
+      fallbacks · no data collection', and 'zero data retention' only when zdr
+      is set."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — mode and routing > lists OpenRouter's allowed upstreams, no
+          fallbacks and no data collection
+  metadata:
+    created_at: 2026-11-18T18:31:44.063Z
+    updated_at: 2026-11-18T18:31:44.063Z
+    version: 1
+testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed:
+  id: 950347a8-f52d-45b5-98c1-0f54c09e47a1
+  path: testing.testcasesketch.tier1panel-warming-gives-the-servers-reason-when-the-warming-object-is-malformed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — warming > gives the server's reason when the warming object
+    is malformed
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — warming > gives the server's reason when the warming object
+          is malformed
+  metadata:
+    created_at: 2026-11-18T18:48:50.736Z
+    updated_at: 2026-11-18T18:48:50.736Z
+    version: 1
+testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers:
+  id: a27b5863-0dab-41ec-8431-40521bde62e3
+  path: testing.testcasesketch.tier1panel-mode-and-routing-shows-no-routing-row-for-other-providers
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Tier1Panel — mode and routing > shows no routing row for other providers
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/Tier1Panel.spec.tsx
+        symbol: Tier1Panel — mode and routing > shows no routing row for other providers
+  metadata:
+    created_at: 2026-11-18T18:48:50.736Z
+    updated_at: 2026-11-18T18:48:50.736Z
+    version: 1
+testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done:
+  id: a8969644-237c-4bce-b196-0d2ff02b09d6
+  path: testing.testcasesketch.warming-words-a-duration-and-the-share-of-cards-done
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: warming > words a duration and the share of cards done
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/tier1.spec.ts
+        symbol: warming > words a duration and the share of cards done
+  metadata:
+    created_at: 2026-11-18T18:48:50.736Z
+    updated_at: 2026-11-18T18:48:50.736Z
+    version: 1
+testing.testcasesketch.warming-polls-only-while-warming:
+  id: 78fab573-cabf-41d6-ad66-06ca4cde30d5
+  path: testing.testcasesketch.warming-polls-only-while-warming
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: warming > polls only while warming
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/tier1.spec.ts
+        symbol: warming > polls only while warming
+  metadata:
+    created_at: 2026-11-18T18:48:50.737Z
+    updated_at: 2026-11-18T18:48:50.737Z
+    version: 1
+testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided:
+  id: 0c0ad04f-ef81-4b2b-8c20-c63f296cc91a
+  path: testing.testcasesketch.build-review-model-lets-apply-land-undecided-changes-as-kept-the-body-drops-and-deletes-only-what-was-decided
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildReviewModel > lets Apply land undecided changes as kept; the body
+    drops and deletes only what was decided
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetReview.spec.ts
+        symbol: buildReviewModel > lets Apply land undecided changes as kept; the body
+          drops and deletes only what was decided
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided:
+  id: 2ce7263a-76be-4d0b-b1a4-90acb327f754
+  path: testing.testcasesketch.build-review-model-holds-apply-while-a-blocked-delete-is-undecided
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildReviewModel > holds Apply while a blocked delete is undecided
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetReview.spec.ts
+        symbol: buildReviewModel > holds Apply while a blocked delete is undecided
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept:
+  id: 941be69c-5fa0-4a75-b3ef-c8a55967f6f4
+  path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-summarises-what-needs-a-decision-and-offers-apply-with-the-undecided-landing-as-kept
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — deciding changes (dr CLI with review) > summarises what needs a
+    decision and offers Apply with the undecided landing as kept
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — deciding changes (dr CLI with review) > summarises what needs a
+          decision and offers Apply with the undecided landing as kept
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to:
+  id: b32bc3cb-4318-4e74-ba0d-1e2f61e714e6
+  path: testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — Apply > applies with changes undecided, says how many land as
+    kept, and drops nothing it wasn't told to
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — Apply > applies with changes undecided, says how many land as
+          kept, and drops nothing it wasn't told to
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided:
+  id: 59856441-8399-4fc8-b7ab-94d6bd8a5330
+  path: testing.testcasesketch.review-a-delete-still-in-use-holds-apply-while-the-blocked-delete-is-undecided
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — a delete still in use > holds Apply while the blocked delete is
+    undecided
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — a delete still in use > holds Apply while the blocked delete is
+          undecided
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version:
+  id: 0dbf92be-9726-417e-88f1-9ab241c122e7
+  path: testing.testcasesketch.server-versions-reads-the-spec-version-from-the-spec-manifest-not-the-responses-version
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: serverVersions > reads the spec version from the spec manifest, not the
+    response's version
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/serverVersions.spec.ts
+        symbol: serverVersions > reads the spec version from the spec manifest, not the
+          response's version
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis:
+  id: efb93b88-bf0d-4e5e-bf42-78e3e8a82c23
+  path: testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: serverVersions > never takes /health's API version for the CLI's
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/serverVersions.spec.ts
+        symbol: serverVersions > never takes /health's API version for the CLI's
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports:
+  id: 4e860192-e800-47d0-9e47-383fc9add229
+  path: testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: shell footer > shows the spec manifest's version and the CLI version
+    /health reports
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ShellFooter.spec.tsx
+        symbol: shell footer > shows the spec manifest's version and the CLI version
+          /health reports
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version:
+  id: 4a4b3fd0-a2b8-46c8-b7ec-6b722c585494
+  path: testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: shell footer > shows — when the server sends no spec or CLI version
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ShellFooter.spec.tsx
+        symbol: shell footer > shows — when the server sends no spec or CLI version
+  metadata:
+    created_at: 2026-11-18T19:23:31.214Z
+    updated_at: 2026-11-18T19:23:31.214Z
+    version: 1
+testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version:
+  id: 39ab5520-cbaa-42ba-9708-fff9e8a8f5c5
+  path: testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: shell > statusbar shows the rel count and the CLI version; the rail the
+    spec version
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/shell.spec.ts
+        symbol: shell > statusbar shows the rel count and the CLI version; the rail the
+          spec version
+  metadata:
+    created_at: 2026-11-18T19:27:42.248Z
+    updated_at: 2026-11-18T19:27:42.248Z
+    version: 1
+testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift:
+  id: c9d811bc-0b06-4f71-ba13-dc9b4bb7739d
+  path: testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetDrift > reads the summary and drops a malformed drift
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetDrift.spec.ts
+        symbol: changesetDrift > reads the summary and drops a malformed drift
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli:
+  id: 30a4ffa5-3e90-4956-980d-423b6502a563
+  path: testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetDrift > reads no drift from an older dr CLI
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetDrift.spec.ts
+        symbol: changesetDrift > reads no drift from an older dr CLI
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.changeset-drift-keeps-the-details-overlaps-and-base-changes-dropping-malformed-entries:
+  id: 0b350428-6aa0-4f39-a03f-975e987311d9
+  path: testing.testcasesketch.changeset-drift-keeps-the-details-overlaps-and-base-changes-dropping-malformed-entries
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetDrift > keeps the detail's overlaps and base changes, dropping
+    malformed entries
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetDrift.spec.ts
+        symbol: changesetDrift > keeps the detail's overlaps and base changes, dropping
+          malformed entries
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one:
+  id: 0b56822a-2a9d-4a1f-8d6b-097eae728ec4
+  path: testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetDrift > tells a blocking drift from a quiet note and an unchecked
+    one
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetDrift.spec.ts
+        symbol: changesetDrift > tells a blocking drift from a quiet note and an
+          unchecked one
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector:
+  id: 49c2151e-9f41-449b-8627-7ed01e76488a
+  path: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > badges a drifted plan in the canvas header
+    and the inspector
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > badges a drifted plan in the canvas header
+          and the inspector
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift:
+  id: 1d7caefe-5795-464e-a732-431ae37102d1
+  path: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > shows no drift badge on a verification
+    record or on content-free drift
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > shows no drift badge on a verification
+          record or on content-free drift
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply:
+  id: 7c83b652-83cb-48cc-82c3-454ee19addf7
+  path: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > says plainly when drift could not be
+    checked, without holding Apply
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > says plainly when drift could not be
+          checked, without holding Apply
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview:
+  id: a06ddca3-b9e4-48f9-9537-621812027386
+  path: testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > lists what the base changed under the
+    changeset in the inspector overview
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > lists what the base changed under the
+          changeset in the inspector overview
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift:
+  id: fa1c5cbc-ddf1-4da9-b71d-41c89f36eaa9
+  path: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > keeps Apply and the 409 backstop on an older
+    dr CLI without drift
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > keeps Apply and the 409 backstop on an
+          older dr CLI without drift
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift:
+  id: aaff1679-965e-481e-9762-415c41dfd879
+  path: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > badges a drifted plan on its card, and not a record or
+    content-free drift
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > badges a drifted plan on its card, and not a record or
+          content-free drift
+  metadata:
+    created_at: 2026-11-18T20:17:56.262Z
+    updated_at: 2026-11-18T20:17:56.262Z
+    version: 1
+testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person:
+  id: e4ea77b9-c40a-4149-9adc-69ef68386b38
+  path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-in-the-confirm-dialog-leaving-apply-to-the-person
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — drift before Apply > explains the drift on the summary card and
+    in the confirm dialog, leaving Apply to the person
+  attributes:
+    status: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — drift before Apply > explains the drift on the summary card and
+          in the confirm dialog, leaving Apply to the person
+  metadata:
+    created_at: 2026-11-18T20:33:10.417Z
+    updated_at: 2026-11-18T20:33:10.417Z
+    version: 1
+testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one:
+  id: 4a6f3711-bd74-4b95-8205-77a8388a554e
+  path: testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetPurpose > reads a known purpose and ignores an unknown one
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetPurpose.spec.ts
+        symbol: changesetPurpose > reads a known purpose and ignores an unknown one
+  metadata:
+    created_at: 2026-11-18T19:24:40.393Z
+    updated_at: 2026-11-18T19:24:40.393Z
+    version: 1
+testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli:
+  id: a4d19a8a-5e42-45f0-8658-bd268d21de29
+  path: testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetPurpose > keeps known actions, drops unknown ones, and reads no
+    array as an older dr CLI
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetPurpose.spec.ts
+        symbol: changesetPurpose > keeps known actions, drops unknown ones, and reads no
+          array as an older dr CLI
+  metadata:
+    created_at: 2026-11-18T19:24:40.393Z
+    updated_at: 2026-11-18T19:24:40.393Z
+    version: 1
+testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli:
+  id: 6a94387c-c3af-4d38-8f05-2afb60cf02ea
+  path: testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetPurpose > offers Apply and Discard from the server's actions, or
+    from a staged status on an older dr CLI
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetPurpose.spec.ts
+        symbol: changesetPurpose > offers Apply and Discard from the server's actions,
+          or from a staged status on an older dr CLI
+  metadata:
+    created_at: 2026-11-18T19:24:40.393Z
+    updated_at: 2026-11-18T19:24:40.393Z
+    version: 1
+testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan:
+  id: d2c0983b-4626-4685-a9b5-e1da06120a67
+  path: testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changesetPurpose > sorts the inbox by purpose and pairs each verification
+    record with its plan
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetPurpose.spec.ts
+        symbol: changesetPurpose > sorts the inbox by purpose and pairs each
+          verification record with its plan
+  metadata:
+    created_at: 2026-11-18T19:24:40.393Z
+    updated_at: 2026-11-18T19:24:40.393Z
+    version: 1
+testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan:
+  id: 243c6adc-b3f7-4372-8213-e4e7d8750698
+  path: testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > keeps a verification record out of Waiting on you and
+    pairs it with its plan
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > keeps a verification record out of Waiting on you and
+          pairs it with its plan
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history:
+  id: 0a313a16-c716-46f3-9c4b-508657eb35c1
+  path: testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > shows each changeset's purpose in the history
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > shows each changeset's purpose in the history
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply:
+  id: b6388d96-162d-429f-b42d-cbd478a3bf74
+  path: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — purpose and actions > offers a verification record Discard but no
+    Apply
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — purpose and actions > offers a verification record Discard but
+          no Apply
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift:
+  id: 2ec29bba-7021-41b1-b297-fbf290c0e9c1
+  path: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — purpose and actions > explains a refused commit of a verification
+    record inline, not as drift
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — purpose and actions > explains a refused commit of a
+          verification record inline, not as drift
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions:
+  id: f61e1651-d917-4cb5-93e8-af8801d314e3
+  path: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — purpose and actions > keeps Apply and Discard on an older dr CLI
+    that sends no actions
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — purpose and actions > keeps Apply and Discard on an older dr
+          CLI that sends no actions
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read:
+  id: 92a2dbd4-19f6-4816-9fc5-3e665b3dfcfd
+  path: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — purpose > leads a verification record with the plan it
+    verifies and what extraction read
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: ChangesetCanvas — purpose > leads a verification record with the plan it
+          verifies and what extraction read
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
+    version: 1
+testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it:
+  id: 535f58fa-0b69-4805-9525-04e54f402d0c
+  path: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — purpose > says a changeset is gone when the server no
+    longer has it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: ChangesetCanvas — purpose > says a changeset is gone when the server no
+          longer has it
+  metadata:
+    created_at: 2026-11-18T19:24:40.394Z
+    updated_at: 2026-11-18T19:24:40.394Z
     version: 1

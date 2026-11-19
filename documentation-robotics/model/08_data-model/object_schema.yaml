@@ -427,7 +427,9 @@ data-model.objectschema.tier1status:
   name: Tier1Status
   description: "GET /api/tier1's body: Tier 1 state, provider and model,
     credential sources (never values), this month's spend against the cap,
-    per-source spend, cache, warnings and reason."
+    per-source spend, cache, warnings and reason; the warming fill's progress
+    (state warming), mode and modeReason (stage or suggest), and OpenRouter's
+    routing. toTier1Status keeps each field only in its documented type."
   attributes:
     type: object
   source_reference:
@@ -467,7 +469,12 @@ data-model.objectschema.changeset-detail:
   layer_id: data-model
   name: ChangesetDetail
   description: "GET /api/changesets/:id's body: the changeset with its changes,
-    revision, unstaged tombstones, review and delete blockers."
+    revision, unstaged tombstones, review and delete blockers, its purpose
+    (plan, chat, bootstrap, reconcile, verification), its allowed actions
+    (commit, discard), for a verification record the plan it verifies and its
+    scope (since, codeCommit), and its base drift (state, blocksCommit, message;
+    when the base's hash changed, warnings, baseIndex, the staged changes the
+    base now overlaps and baseChanges)."
   attributes:
     type: object
   source_reference:

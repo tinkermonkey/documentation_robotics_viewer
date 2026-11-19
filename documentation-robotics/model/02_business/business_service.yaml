@@ -83,9 +83,10 @@ business.businessservice.model-annotation:
   description: Collaborative annotation of architecture model elements with
     comments and markup
   source_reference:
-    provenance: extracted
+    provenance: manual
     locations:
-      - file: src/apps/embedded/stores/annotationStore.ts
+      - file: src/apps/embedded/data/useAnnotations.ts
+        symbol: useAnnotations
   metadata:
     created_at: 2026-03-20T13:40:28.290Z
     updated_at: 2026-03-20T13:40:28.290Z
