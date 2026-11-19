@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 7
+      requirement: 8
       stakeholder: 3
   business:
     order: 2
@@ -39,7 +39,7 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
-      feature: 14
+      feature: 15
       persona: 2
       softwarecapability: 5
       userworkflow: 1
@@ -65,11 +65,11 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 34
+      applicationcomponent: 35
       applicationfunction: 5
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 36
+      applicationservice: 37
   technology:
     order: 6
     name: Technology
@@ -120,7 +120,7 @@ layers:
       subview: 6
       uxapplication: 1
       uxspec: 2
-      view: 6
+      view: 7
   navigation:
     order: 11
     name: Navigation
@@ -154,7 +154,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 804
+      testcasesketch: 809
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -193,6 +193,9 @@ changeset_history:
     action: committed
   - name: nav-tree-by-type
     committed_at: 2026-11-19T17:50:11.905Z
+    action: committed
+  - name: topbar-search
+    committed_at: 2026-11-19T17:52:01.219Z
     action: committed
 reconciled:
   changeset: model-sync-2026-11-18

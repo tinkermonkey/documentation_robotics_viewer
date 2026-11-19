@@ -141,3 +141,20 @@ motivation.requirement.only-the-servers-allowed-moves-are-offered:
     created_at: 2026-11-18T19:25:24.476Z
     updated_at: 2026-11-18T19:25:24.476Z
     version: 1
+motivation.requirement.find-anything-by-name:
+  id: f628ffc2-1cd9-44f4-8441-6b77b37bbfa4
+  path: motivation.requirement.find-anything-by-name
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Find anything by name
+  description: From any view, a person can reach any model element or spec node
+    type by typing part of its name, without knowing its layer or browsing the
+    nav tree, using the keyboard alone.
+  attributes:
+    requirementType: functional
+    priority: medium
+  metadata:
+    created_at: 2026-11-19T17:48:57.905Z
+    updated_at: 2026-11-19T17:48:57.905Z
+    version: 1

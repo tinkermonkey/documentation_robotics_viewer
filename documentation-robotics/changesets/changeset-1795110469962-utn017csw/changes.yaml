@@ -1,0 +1,689 @@
+- type: add
+  elementId: product.feature.topbar-search
+  layerName: product
+  after:
+    id: f1fb0937-e859-49da-9abf-fd181fa286e7
+    path: product.feature.topbar-search
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Topbar Search
+    description: "Find an element or a Schema node type by name from the topbar:
+      type-ahead results grouped by layer (swatch, name, type, the match
+      highlighted); choosing one goes there as the nav tree does. `/` or
+      ⌘K/Ctrl+K focuses it."
+    attributes:
+      priority: medium
+      status: planned
+      size: m
+    metadata:
+      created_at: 2026-11-19T17:48:18.561Z
+      updated_at: 2026-11-19T17:48:18.561Z
+      version: 1
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 0
+- type: add
+  elementId: application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    id: 2078f0ab-e262-4220-a853-9c6054878630
+    path: application.applicationcomponent.topbar-search
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Topbar Search
+    description: "The topbar's search box: an ARIA 1.2 combobox with a listbox popup
+      of results grouped by layer (group headers, layer swatch, name, type,
+      highlighted match). Arrow keys move the active option
+      (aria-activedescendant), Enter chooses, Escape clears then closes,
+      Home/End jump. `/` (when not typing in a field) and ⌘K/Ctrl+K focus it. An
+      element result calls uiStore.navigateToElement; a node-type result calls
+      navigateToSpecNode. Styled from Heimdall's command-palette classes and
+      canvas/shell tokens."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-19T17:48:18.602Z
+      updated_at: 2026-11-19T17:48:18.602Z
+      version: 1
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 1
+- type: add
+  elementId: ux.view.topbar-search
+  layerName: ux
+  after:
+    id: ae4906cb-fd0c-4849-a373-f8c4fdcf3145
+    path: ux.view.topbar-search
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Topbar Search
+    description: The search box in the topbar and its results popup, an overlay
+      below it listing matches grouped by layer.
+    attributes:
+      type: overlay
+      routable: false
+    metadata:
+      created_at: 2026-11-19T17:48:18.607Z
+      updated_at: 2026-11-19T17:48:18.607Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: maps-to
+        other_spec_node_id: navigation.route
+        reason: The search lives in the shell's topbar on every route; no route maps to
+          it. It only drives navigation (navigateToElement / navigateToSpecNode)
+          through the existing section/view route.
+        decided_by: agent
+        decided_at: 2026-11-19T17:49:18.573Z
+        changeset: changeset-1795110469962-utn017csw
+      - direction: outgoing
+        predicate: composes
+        other_spec_node_id: ux.subview
+        reason: A single input with a results popup; it has no sub-views of its own.
+        decided_by: agent
+        decided_at: 2026-11-19T17:49:18.872Z
+        changeset: changeset-1795110469962-utn017csw
+  timestamp: 2026-11-19T17:49:18.879Z
+  sequenceNumber: 2
+- type: relationship-add
+  elementId: product.feature.topbar-search::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: product.feature.topbar-search::realizes::product.softwarecapability.schema-exploration
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: product.softwarecapability.schema-exploration
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: product.feature.topbar-search::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: product.feature.topbar-search::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationcomponent.topbar::composes::application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    source: application.applicationcomponent.topbar
+    target: application.applicationcomponent.topbar-search
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: application.applicationcomponent.topbar-search::assigned-to::application.applicationfunction.ui-store
+  layerName: application
+  after:
+    source: application.applicationcomponent.topbar-search
+    target: application.applicationfunction.ui-store
+    predicate: assigned-to
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: application.applicationservice.use-model::serves::application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    source: application.applicationservice.use-model
+    target: application.applicationcomponent.topbar-search
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: application.applicationservice.use-spec::serves::application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    source: application.applicationservice.use-spec
+    target: application.applicationcomponent.topbar-search
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationservice.layer-domain-palette::serves::application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    source: application.applicationservice.layer-domain-palette
+    target: application.applicationcomponent.topbar-search
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: ux.view.topbar-search::realizes::product.feature.topbar-search
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: product.feature.topbar-search
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:18.644Z
+  sequenceNumber: 12
+- type: add
+  elementId: application.applicationservice.search-index
+  layerName: application
+  after:
+    id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+    path: application.applicationservice.search-index
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Search Index
+    description: "Pure, React-free search over the loaded /api/model elements and
+      /api/spec node types (data/search.ts): builds a lower-cased index once per
+      payload, ranks exact > prefix > word-prefix > substring > in-order fuzzy
+      (subsequence) matches, caps the results, groups them by layer in
+      LAYER_ORDER and returns the matched character ranges for highlighting.
+      Stays fast on a large model: one pass over the index per keystroke, no
+      allocation for a candidate that fails."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 13
+- type: add
+  elementId: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges
+  layerName: testing
+  after:
+    id: 57c0d042-90d1-4100-9de6-b42975c25479
+    path: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: search index > ranks exact, prefix, word-prefix, substring then fuzzy
+      matches and returns highlight ranges
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 14
+- type: add
+  elementId: testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them
+  layerName: testing
+  after:
+    id: 3348552d-5e7f-44cf-b602-3759a24555d5
+    path: testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: search index > groups results by layer in spec order and caps them
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 15
+- type: add
+  elementId: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+  layerName: testing
+  after:
+    id: a5618102-15f5-4cf8-8cff-850747b0182b
+    path: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: topbar search > typing lists grouped results and Enter on an element
+      navigates as a nav-tree leaf does
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 16
+- type: add
+  elementId: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view
+  layerName: testing
+  after:
+    id: b3344aea-d6b3-4b8d-b03c-412aae7474a6
+    path: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: topbar search > a node-type result opens it in the Schema view
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 17
+- type: add
+  elementId: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+  layerName: testing
+  after:
+    id: db6cbc14-6bc9-4030-b64c-cab98def4ed1
+    path: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "topbar search > keyboard: slash and Cmd-K focus it, arrows move
+      aria-activedescendant, Escape closes"
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.search-index::serves::application.applicationcomponent.topbar-search
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: application.applicationcomponent.topbar-search
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.search-index::realizes::product.feature.topbar-search
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: product.feature.topbar-search
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges::tests::application.applicationservice.search-index
+  layerName: testing
+  after:
+    source: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges
+    target: application.applicationservice.search-index
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them::tests::application.applicationservice.search-index
+  layerName: testing
+  after:
+    source: testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them
+    target: application.applicationservice.search-index
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does::tests::application.applicationcomponent.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+    target: application.applicationcomponent.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view::tests::application.applicationcomponent.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view
+    target: application.applicationcomponent.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes::tests::application.applicationcomponent.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+    target: application.applicationcomponent.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does::tests::product.feature.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+    target: product.feature.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes::tests::ux.view.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+    target: ux.view.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-19T17:48:37.428Z
+  sequenceNumber: 27
+- type: update
+  elementId: application.applicationcomponent.topbar
+  layerName: application
+  before:
+    id: 07b53e9c-ba44-46ec-8204-6a3010dcfa6d
+    path: application.applicationcomponent.topbar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Topbar
+    description: "The shell's top bar: title, connection state, light/dark canvas
+      toggle and the DrBot drawer toggle."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Topbar.tsx
+          symbol: Topbar
+    metadata: &a3
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 07b53e9c-ba44-46ec-8204-6a3010dcfa6d
+    path: application.applicationcomponent.topbar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Topbar
+    description: "The shell's top bar: title, the element and node-type search box,
+      connection state, light/dark canvas toggle and the DrBot drawer toggle."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-19T17:48:40.898Z
+  sequenceNumber: 28
+- type: add
+  elementId: motivation.requirement.find-anything-by-name
+  layerName: motivation
+  after:
+    id: f628ffc2-1cd9-44f4-8441-6b77b37bbfa4
+    path: motivation.requirement.find-anything-by-name
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Find anything by name
+    description: From any view, a person can reach any model element or spec node
+      type by typing part of its name, without knowing its layer or browsing the
+      nav tree, using the keyboard alone.
+    attributes:
+      requirementType: functional
+      priority: medium
+    metadata:
+      created_at: 2026-11-19T17:48:57.905Z
+      updated_at: 2026-11-19T17:48:57.905Z
+      version: 1
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: product.feature.topbar-search::satisfies::motivation.requirement.find-anything-by-name
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: motivation.requirement.find-anything-by-name
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: product.feature.topbar-search::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.topbar-search
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: ux.view.topbar-search::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: ux.view.topbar-search::supports::motivation.goal.ensure-accessible-architecture-views
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: motivation.goal.ensure-accessible-architecture-views
+    predicate: supports
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.topbar-search
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.topbar-search
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: application.applicationservice.search-index::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.search-index::realizes::business.businessservice.schema-exploration
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: business.businessservice.schema-exploration
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does::satisfies::motivation.requirement.find-anything-by-name
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+    target: motivation.requirement.find-anything-by-name
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view::tests::product.feature.topbar-search
+  layerName: testing
+  after:
+    source: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view
+    target: product.feature.topbar-search
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T17:48:57.918Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: motivation.requirement.find-anything-by-name::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.find-anything-by-name
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: ux.view.topbar-search::references::business.businessobject.architecture-model
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: business.businessobject.architecture-model
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: ux.view.topbar-search::serves::business.businessrole.architecture-reviewer
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: business.businessrole.architecture-reviewer
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: ux.view.topbar-search::serves::business.businessrole.model-author
+  layerName: ux
+  after:
+    source: ux.view.topbar-search
+    target: business.businessrole.model-author
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: application.applicationservice.search-index::depends-on::application.applicationservice.layer-domain-palette
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: application.applicationservice.layer-domain-palette
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.search-index
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.search-index
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:49:18.152Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: application.applicationservice.search-index::satisfies::motivation.requirement.find-anything-by-name
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: motivation.requirement.find-anything-by-name
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T17:49:27.318Z
+  sequenceNumber: 48

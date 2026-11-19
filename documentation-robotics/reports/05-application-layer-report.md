@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 77    |
-| Intra-Layer Relationships | 166   |
-| Inter-Layer Relationships | 913   |
-| Inbound Relationships     | 851   |
-| Outbound Relationships    | 59    |
+| Elements                  | 80    |
+| Intra-Layer Relationships | 174   |
+| Inter-Layer Relationships | 923   |
+| Inbound Relationships     | 860   |
+| Outbound Relationships    | 63    |
 
 **Cross-Layer References**:
 
@@ -66,12 +66,13 @@ Application components, services, and interactions.
 | `application.applicationcomponent.rich-tooltip`                  | `applicationcomponent` | 2             |
 | `application.applicationcomponent.status-bar`                    | `applicationcomponent` | 3             |
 | `application.applicationcomponent.tier1-panel`                   | `applicationcomponent` | 2             |
-| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 2             |
+| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 3             |
+| `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 6             |
 | `application.applicationfunction.auth-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
 | `application.applicationfunction.local-review-store`             | `applicationfunction`  | 1             |
-| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 2             |
+| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 3             |
 | `application.applicationinterface.dr-cli-rest-interface`         | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
@@ -90,7 +91,7 @@ Application components, services, and interactions.
 | `application.applicationservice.generated-api-client`            | `applicationservice`   | 13            |
 | `application.applicationservice.graph-viewport-key`              | `applicationservice`   | 1             |
 | `application.applicationservice.json-rpc-handler`                | `applicationservice`   | 4             |
-| `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 5             |
+| `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 7             |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
 | `application.applicationservice.model-graph-transform`           | `applicationservice`   | 9             |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 1             |
@@ -98,6 +99,7 @@ Application components, services, and interactions.
 | `application.applicationservice.page-data-builder`               | `applicationservice`   | 4             |
 | `application.applicationservice.predicate-definitions`           | `applicationservice`   | 2             |
 | `application.applicationservice.relationship-derivation`         | `applicationservice`   | 3             |
+| `application.applicationservice.search-index`                    | `applicationservice`   | 2             |
 | `application.applicationservice.spec-graph-transform`            | `applicationservice`   | 3             |
 | `application.applicationservice.structural-predicate-classifier` | `applicationservice`   | 1             |
 | `application.applicationservice.use-annotations`                 | `applicationservice`   | 2             |
@@ -106,8 +108,8 @@ Application components, services, and interactions.
 | `application.applicationservice.use-cli-version`                 | `applicationservice`   | 2             |
 | `application.applicationservice.use-edge-interaction`            | `applicationservice`   | 1             |
 | `application.applicationservice.use-hover-dwell`                 | `applicationservice`   | 1             |
-| `application.applicationservice.use-model`                       | `applicationservice`   | 11            |
-| `application.applicationservice.use-spec`                        | `applicationservice`   | 7             |
+| `application.applicationservice.use-model`                       | `applicationservice`   | 12            |
+| `application.applicationservice.use-spec`                        | `applicationservice`   | 8             |
 | `application.applicationservice.use-tier1`                       | `applicationservice`   | 3             |
 | `application.applicationservice.use-viewport-history`            | `applicationservice`   | 2             |
 | `application.applicationservice.web-socket-client`               | `applicationservice`   | 4             |
@@ -209,6 +211,10 @@ flowchart TB
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.model-graph-transform`                                                                                                   | `product.softwarecapability.model-visualization`                    | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.nav-tree-groups`                                                                                                         | `product.feature.nav-tree-type-groups`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.page-data-builder`                                                                                                       | `product.feature.page-view`                                         | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.schema-exploration`                       | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.search-index`                                                                                                            | `product.feature.topbar-search`                                     | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.search-index`                                                                                                            | `motivation.requirement.find-anything-by-name`                      | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.spec-graph-transform`                                                                                                    | `business.businessservice.schema-exploration`                       | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.spec-graph-transform`                                                                                                    | `product.softwarecapability.schema-exploration`                     | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-annotations`                                                                                                         | `business.businessservice.model-annotation`                         | `business`    | `realizes`   | many-to-many | medium   |
@@ -861,6 +867,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.schema-for-layer-returns-undefined-for-an-unknown-layer`                                                                         | `application.applicationservice.spec-graph-transform`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -995,6 +1003,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                              | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `application.applicationcomponent.rich-tooltip`                     | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -1060,6 +1071,7 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.layered-reach`                      | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.model-graph-transform`              | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.predicate-definitions`              | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.search-index`                       | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.structural-predicate-classifier`    | `application` | `covers`     | many-to-many | medium   |
 
 ## Element Reference
@@ -2225,7 +2237,7 @@ Read-only card in the changeset inbox showing Tier 1's state (on, warming, cappe
 
 **Type**: `applicationcomponent`
 
-The shell's top bar: title, connection state, light/dark canvas toggle and the DrBot drawer toggle.
+The shell's top bar: title, the element and node-type search box, connection state, light/dark canvas toggle and the DrBot drawer toggle.
 
 #### Attributes
 
@@ -2235,10 +2247,39 @@ The shell's top bar: title, connection state, light/dark canvas toggle and the D
 
 #### Relationships
 
-| Type        | Related Element                              | Predicate  | Direction |
-| ----------- | -------------------------------------------- | ---------- | --------- |
-| intra-layer | `application.applicationcomponent.app-shell` | `composes` | inbound   |
-| intra-layer | `application.applicationservice.use-model`   | `serves`   | inbound   |
+| Type        | Related Element                                  | Predicate  | Direction |
+| ----------- | ------------------------------------------------ | ---------- | --------- |
+| intra-layer | `application.applicationcomponent.app-shell`     | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.topbar-search` | `composes` | outbound  |
+| intra-layer | `application.applicationservice.use-model`       | `serves`   | inbound   |
+
+### Topbar Search {#topbar-search}
+
+**ID**: `application.applicationcomponent.topbar-search`
+
+**Type**: `applicationcomponent`
+
+The topbar's search box: an ARIA 1.2 combobox with a listbox popup of results grouped by layer (group headers, layer swatch, name, type, highlighted match). Arrow keys move the active option (aria-activedescendant), Enter chooses, Escape clears then closes, Home/End jump. `/` (when not typing in a field) and ⌘K/Ctrl+K focus it. An element result calls uiStore.navigateToElement; a node-type result calls navigateToSpecNode. Styled from Heimdall's command-palette classes and canvas/shell tokens.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                               | Predicate     | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
+| inter-layer | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `tests`       | inbound   |
+| intra-layer | `application.applicationcomponent.topbar`                                                                                     | `composes`    | inbound   |
+| intra-layer | `application.applicationfunction.ui-store`                                                                                    | `assigned-to` | outbound  |
+| intra-layer | `application.applicationservice.layer-domain-palette`                                                                         | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.search-index`                                                                                 | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-model`                                                                                    | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-spec`                                                                                     | `serves`      | inbound   |
 
 ### Auth Store {#auth-store}
 
@@ -2374,6 +2415,7 @@ Zustand store for UI state: view, layer, selection, changeset, graph/page mode, 
 | inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`      | `tests`       | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `assigned-to` | inbound   |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                                                           | `assigned-to` | inbound   |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                                                      | `assigned-to` | inbound   |
 
 ### DR CLI REST Interface {#dr-cli-rest-interface}
 
@@ -3007,29 +3049,31 @@ The layer slug → colour, label and order map every view draws layers with, cov
 
 #### Relationships
 
-| Type        | Related Element                                                                                        | Predicate   | Direction |
-| ----------- | ------------------------------------------------------------------------------------------------------ | ----------- | --------- |
-| inter-layer | `business.businessservice.architecture-model-visualization`                                            | `realizes`  | outbound  |
-| inter-layer | `motivation.requirement.viewer-covers-every-spec-layer`                                                | `satisfies` | outbound  |
-| inter-layer | `testing.testcasesketch.is-layer-slug-narrows-valid-slugs-and-rejects-unknown-ones`                    | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-color-falls-back-to-gray-for-unknown-empty-null-slugs`                   | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-color-layer-colors-domain-colorss`                                       | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-color-returns-a-distinct-hex-color-for-every-one-of-the-13-slugs`        | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-label-layer-labels-domain-labelss`                                       | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-label-renders-the-known-special-case-labels`                             | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-label-returns-empty-string-for-null-undefined`                           | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-label-title-cases-an-unknown-hyphenated-slug-as-a-fallback`              | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-order-has-no-duplicates`                                                 | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-order-has-the-13-spec-layers-product-third`                              | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-order-matches-the-spec-manifest-order-derived-from-the-api-spec-fixture` | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-standard-resolves-the-inspiring-standard-for-a-known-slug`               | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.layer-standard-returns-empty-string-for-unknown-slugs`                         | `tests`     | inbound   |
-| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                      | `covers`    | inbound   |
-| intra-layer | `application.applicationcomponent.app-shell`                                                           | `serves`    | outbound  |
-| intra-layer | `application.applicationcomponent.changeset-impact-view`                                               | `serves`    | outbound  |
-| intra-layer | `application.applicationcomponent.graph-canvas`                                                        | `serves`    | outbound  |
-| intra-layer | `application.applicationcomponent.nav-tree`                                                            | `serves`    | outbound  |
-| intra-layer | `application.applicationcomponent.review-parts`                                                        | `serves`    | outbound  |
+| Type        | Related Element                                                                                        | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `business.businessservice.architecture-model-visualization`                                            | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.viewer-covers-every-spec-layer`                                                | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.is-layer-slug-narrows-valid-slugs-and-rejects-unknown-ones`                    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-color-falls-back-to-gray-for-unknown-empty-null-slugs`                   | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-color-layer-colors-domain-colorss`                                       | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-color-returns-a-distinct-hex-color-for-every-one-of-the-13-slugs`        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-label-layer-labels-domain-labelss`                                       | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-label-renders-the-known-special-case-labels`                             | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-label-returns-empty-string-for-null-undefined`                           | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-label-title-cases-an-unknown-hyphenated-slug-as-a-fallback`              | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-order-has-no-duplicates`                                                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-order-has-the-13-spec-layers-product-third`                              | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-order-matches-the-spec-manifest-order-derived-from-the-api-spec-fixture` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-standard-resolves-the-inspiring-standard-for-a-known-slug`               | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.layer-standard-returns-empty-string-for-unknown-slugs`                         | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                      | `covers`     | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                                           | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-impact-view`                                               | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.graph-canvas`                                                        | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.nav-tree`                                                            | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.review-parts`                                                        | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                       | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.search-index`                                                          | `depends-on` | inbound   |
 
 ### Layered Reach {#layered-reach}
 
@@ -3338,6 +3382,34 @@ Derives a selected element's inbound/outbound relationship links (including cros
 | intra-layer | `application.applicationcomponent.edge-inspector`                                                                             | `serves`   | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                           | `serves`   | outbound  |
 
+### Search Index {#search-index}
+
+**ID**: `application.applicationservice.search-index`
+
+**Type**: `applicationservice`
+
+Pure, React-free search over the loaded /api/model elements and /api/spec node types (data/search.ts): builds a lower-cased index once per payload, ranks exact &gt; prefix &gt; word-prefix &gt; substring &gt; in-order fuzzy (subsequence) matches, caps the results, groups them by layer in LAYER_ORDER and returns the matched character ranges for highlighting. Stays fast on a large model: one pass over the index per keystroke, no allocation for a candidate that fails.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                                | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `business.businessservice.architecture-model-visualization`                                                                    | `realizes`   | outbound  |
+| inter-layer | `business.businessservice.schema-exploration`                                                                                  | `realizes`   | outbound  |
+| inter-layer | `product.feature.topbar-search`                                                                                                | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.find-anything-by-name`                                                                                 | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges` | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                              | `covers`     | inbound   |
+| intra-layer | `application.applicationservice.layer-domain-palette`                                                                          | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                                               | `serves`     | outbound  |
+
 ### Spec Graph Transform {#spec-graph-transform}
 
 **ID**: `application.applicationservice.spec-graph-transform`
@@ -3622,6 +3694,7 @@ React Query hook over GET /api/model, deriving the model graph index; useLiveMod
 | intra-layer | `application.applicationcomponent.nav-tree`                                                                                  | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.status-bar`                                                                                | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.topbar`                                                                                    | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                                             | `serves`     | outbound  |
 
 ### useSpec {#usespec}
 
@@ -3652,6 +3725,7 @@ React Query hook over GET /api/spec: per-layer node schemas and relationship sch
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                          | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.neighborhood-graph-view`                                                                            | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.page-view`                                                                                          | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                                                      | `serves`     | outbound  |
 
 ### useTier1 {#usetier1}
 
@@ -3744,4 +3818,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-19T17:50:11.927Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:37:41.788Z | Model Version: 0.1.0

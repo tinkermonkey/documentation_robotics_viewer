@@ -243,3 +243,22 @@ product.feature.nav-tree-type-groups:
     created_at: 2026-11-19T17:47:57.267Z
     updated_at: 2026-11-19T17:47:57.267Z
     version: 1
+product.feature.topbar-search:
+  id: f1fb0937-e859-49da-9abf-fd181fa286e7
+  path: product.feature.topbar-search
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Topbar Search
+  description: "Find an element or a Schema node type by name from the topbar:
+    type-ahead results grouped by layer (swatch, name, type, the match
+    highlighted); choosing one goes there as the nav tree does. `/` or ⌘K/Ctrl+K
+    focuses it."
+  attributes:
+    priority: medium
+    status: planned
+    size: m
+  metadata:
+    created_at: 2026-11-19T17:48:18.561Z
+    updated_at: 2026-11-19T17:48:18.561Z
+    version: 1

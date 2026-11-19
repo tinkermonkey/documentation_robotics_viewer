@@ -1,0 +1,80 @@
+id: changeset-1795110469962-utn017csw
+name: topbar-search
+description: "A type-ahead search in the topbar over the loaded model's elements
+  and the spec's node types. Prefix and fuzzy matching with the match
+  highlighted. Results are grouped by layer with the layer swatch, name and
+  type. Choosing an element navigates as a nav-tree leaf does
+  (navigateToElement: history push, centering); choosing a node type opens it in
+  the Schema view (navigateToSpecNode). `/` and ⌘K/Ctrl+K focus it. It is an
+  ARIA 1.2 combobox (WCAG 2.1 AA). Done when issue #595 is met, tested and
+  verified live."
+created: 2026-11-19T17:47:49.967Z
+modified: 2026-11-19T17:52:01.155Z
+status: committed
+baseSnapshot: sha256:46237e8537fe5ba005184fab818d6e10f7f5dc3f48f5a56e05b62a87096d37ee
+origin:
+  kind: plan
+stats:
+  additions: 46
+  modifications: 1
+  deletions: 0
+lastSequence: 49
+unstaged:
+  - sequence: 2
+    removedAt: 46
+    change:
+      type: add
+      elementId: ux.view.topbar-search
+      layerName: ux
+      after:
+        id: ae4906cb-fd0c-4849-a373-f8c4fdcf3145
+        path: ux.view.topbar-search
+        spec_node_id: ux.view
+        type: view
+        layer_id: ux
+        name: Topbar Search
+        description: The search box in the topbar and its results popup, an overlay
+          below it listing matches grouped by layer.
+        attributes:
+          type: overlay
+          routable: false
+        metadata:
+          created_at: 2026-11-19T17:48:18.607Z
+          updated_at: 2026-11-19T17:48:18.607Z
+          version: 1
+      timestamp: 2026-11-19T17:48:18.644Z
+    rewritten: true
+  - sequence: 2
+    removedAt: 47
+    change:
+      type: add
+      elementId: ux.view.topbar-search
+      layerName: ux
+      after:
+        id: ae4906cb-fd0c-4849-a373-f8c4fdcf3145
+        path: ux.view.topbar-search
+        spec_node_id: ux.view
+        type: view
+        layer_id: ux
+        name: Topbar Search
+        description: The search box in the topbar and its results popup, an overlay
+          below it listing matches grouped by layer.
+        attributes:
+          type: overlay
+          routable: false
+        metadata:
+          created_at: 2026-11-19T17:48:18.607Z
+          updated_at: 2026-11-19T17:48:18.607Z
+          version: 1
+        accepted_gaps:
+          - direction: incoming
+            predicate: maps-to
+            other_spec_node_id: navigation.route
+            reason: The search lives in the shell's topbar on every route; no route maps to
+              it. It only drives navigation (navigateToElement /
+              navigateToSpecNode) through the existing section/view route.
+            decided_by: agent
+            decided_at: 2026-11-19T17:49:18.573Z
+            changeset: changeset-1795110469962-utn017csw
+      timestamp: 2026-11-19T17:49:18.579Z
+    rewritten: true
