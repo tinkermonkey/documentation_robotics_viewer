@@ -902,7 +902,7 @@ export interface paths {
         };
         /**
          * Get changesets
-         * @description Retrieve a list of all changesets
+         * @description Retrieve a list of all changesets. Each carries its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and whether that blocks a commit. GET /api/changesets/:id adds what changed.
          */
         get: {
             parameters: {
@@ -947,6 +947,7 @@ export interface paths {
                                     verifies?: string;
                                     /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
                                     actions: ("commit" | "discard")[];
+                                    drift: components["schemas"]["ChangesetDriftSummary"];
                                     /** @description The changeset's nextSequenceNumber */
                                     revision?: number;
                                     review?: {
@@ -981,7 +982,7 @@ export interface paths {
         };
         /**
          * Get changeset
-         * @description Retrieve a specific changeset with all its changes
+         * @description Retrieve a specific changeset with all its changes, and its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it, whether that blocks a commit and, when the base's hash changed, the staged changes the base now overlaps and what was added, removed or changed in the base.
          */
         get: {
             parameters: {
@@ -1041,6 +1042,7 @@ export interface paths {
                             };
                             /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record, none once committed or discarded */
                             actions: ("commit" | "discard")[];
+                            drift: components["schemas"]["ChangesetDrift"];
                             /** @description Unstaged and rewritten changes (tombstones), oldest first */
                             unstaged: {
                                 /** @description The sequence number the change had */
@@ -1537,6 +1539,95 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). The changeset's own endpoint adds what changed */
+        ChangesetDriftSummary: {
+            /**
+             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @enum {string}
+             */
+            state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
+            /** @description True when POST /api/changesets/:id/commit would be refused for drift (409). Only ever true in state drifted */
+            blocksCommit: boolean;
+            /** @description What the state means for this changeset, in a sentence or two. Names no CLI command */
+            message: string;
+        };
+        /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). warnings, baseIndex, overlapping and baseChanges are present only when the base's hash changed (states content-free and drifted) */
+        ChangesetDrift: {
+            /**
+             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @enum {string}
+             */
+            state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
+            /** @description True when POST /api/changesets/:id/commit would be refused for drift (409). Only ever true in state drifted */
+            blocksCommit: boolean;
+            /** @description What the state means for this changeset, in a sentence or two. Names no CLI command */
+            message: string;
+            /** @description What could not be told: no base index recorded, an unreadable one, a failed comparison. Empty when everything could be. It never restates overlapping */
+            warnings?: string[];
+            /**
+             * @description Whether the changeset recorded which elements and relationships the base had when it was created. Without one, baseChanges is absent
+             * @enum {string}
+             */
+            baseIndex?: "recorded" | "not-recorded" | "unreadable";
+            /** @description The staged changes the base now overlaps. With a base index these are what blocks a commit: a base change not listed here does not */
+            overlapping?: {
+                elements: {
+                    /** @description The element (dotted id) */
+                    id: string;
+                    /**
+                     * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content changed; removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
+                     * @enum {string}
+                     */
+                    reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
+                }[];
+                relationships: {
+                    /** @description Source element (dotted id) */
+                    source: string;
+                    predicate: string;
+                    /** @description Target element (dotted id) */
+                    target: string;
+                    /**
+                     * @description already-in-base and already-removed as for elements; endpoint-changed-in-base and endpoint-removed-in-base: a staged relationship change with an end on a base element that changed or was removed
+                     * @enum {string}
+                     */
+                    reason: "already-in-base" | "already-removed" | "endpoint-changed-in-base" | "endpoint-removed-in-base";
+                    /** @description For the endpoint reasons: the ends the base changed or removed */
+                    endpoints?: string[];
+                }[];
+            };
+            /** @description What changed in the base since the changeset was created (dotted ids); needs a base index */
+            baseChanges?: {
+                /** @description Exact, also when the lists are cut */
+                counts: {
+                    elementsAdded: number;
+                    elementsRemoved: number;
+                    elementsChanged: number;
+                    relationshipsAdded: number;
+                    relationshipsRemoved: number;
+                };
+                elementsAdded: string[];
+                elementsRemoved: string[];
+                elementsChanged: string[];
+                relationshipsAdded: {
+                    /** @description Source element (dotted id) */
+                    source: string;
+                    predicate: string;
+                    /** @description Target element (dotted id) */
+                    target: string;
+                }[];
+                relationshipsRemoved: {
+                    /** @description Source element (dotted id) */
+                    source: string;
+                    predicate: string;
+                    /** @description Target element (dotted id) */
+                    target: string;
+                }[];
+                /** @description The layers the base changed in: those of every element added, removed or changed and of both ends of every relationship added or removed. Never cut */
+                layers: string[];
+                /** @description True when a list was cut at 50 entries */
+                truncated: boolean;
+            };
+        };
         /** @description Who decided this change (codebase_extract only); absent on changes staged otherwise and in older changesets */
         ChangeOrigin: {
             /**

@@ -87,6 +87,8 @@ import {
 } from '../data/changesetReview';
 import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
 import { canDo } from '../data/changesetPurpose';
+import { driftBlocksCommit } from '../data/changesetDrift';
+import { DriftApplyNote } from './DriftNotice';
 
 // ─── Rows ─────────────────────────────────────────────────────────────────────
 
@@ -424,6 +426,8 @@ function SummaryCard({
   // The moves the server allows (a verification record: Discard only).
   const canApply = canDo(detail, 'commit');
   const canDiscard = canDo(detail, 'discard');
+  // The server reports drift that blocks a commit: Apply stays open, but says so before and in its dialog.
+  const driftWarns = canApply && driftBlocksCommit(detail.drift);
 
   // "Keep the other N": undecided changes, except blocked deletes (keeping
   // one deletes its links too, which wants its own look).
@@ -596,6 +600,7 @@ function SummaryCard({
         aria-valuemax={counts.total}
         aria-valuenow={counts.decided}
       />
+      {canApply && <DriftApplyNote drift={detail.drift} />}
       {local && (
         <p className="drv-note" style={{ margin: 0 }} data-testid="review-local-note">
           This dr CLI doesn&apos;t keep review verdicts or leave changes out, so they&apos;re kept in this browser
@@ -622,6 +627,7 @@ function SummaryCard({
         plan={model.apply}
         pairs={model.pairs}
         local={local}
+        driftWarning={driftWarns}
       />
       <ConfirmDialog
         isOpen={confirming === 'discard'}

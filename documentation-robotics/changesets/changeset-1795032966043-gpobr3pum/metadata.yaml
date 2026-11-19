@@ -1,0 +1,499 @@
+id: changeset-1795032966043-gpobr3pum
+name: drift-before-apply
+description: Show a changeset's base drift before review and before Apply, from
+  the server's drift report (#576)
+created: 2026-11-18T20:16:06.055Z
+modified: 2026-11-18T20:33:10.452Z
+status: staged
+baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
+origin:
+  kind: plan
+stats:
+  additions: 53
+  modifications: 10
+  deletions: 0
+lastSequence: 88
+unstaged:
+  - sequence: 1
+    removedAt: 62
+    change:
+      type: add
+      elementId: application.applicationcomponent.drift-notice
+      layerName: application
+      after:
+        id: 84b29574-1d05-4995-80f1-2fd471364cf1
+        path: application.applicationcomponent.drift-notice
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Drift Notice
+        description: "How a changeset's base drift reads in the Changesets view: the
+          'Base changed since this was staged' badge (inbox card, canvas header,
+          inspector) for a plan whose drift blocks a commit, the summary card's
+          Apply note (what changed, ask DrBot to restage; the viewer can't land
+          it anyway, the commit route takes no force), and the inspector
+          overview's drift section (message, the staged changes the base now
+          overlaps, per-layer base change counts, a cut list said as cut).
+          Content-free drift is a quiet note, unknown says it couldn't be
+          checked, a verification record or settled changeset only shows the
+          server's message."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-18T20:17:32.127Z
+          updated_at: 2026-11-18T20:17:32.127Z
+          version: 1
+      timestamp: 2026-11-18T20:17:32.150Z
+    rewritten: true
+  - sequence: 0
+    removedAt: 63
+    change:
+      type: add
+      elementId: application.applicationservice.changeset-drift
+      layerName: application
+      after:
+        id: 5fd8124e-faf2-4a50-ac5e-428a95c7db35
+        path: application.applicationservice.changeset-drift
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Changeset Drift
+        description: "Reads a changeset's base drift from the dr CLI's changeset
+          endpoints (drift on GET /api/changesets and /api/changesets/:id):
+          state (none, content-free, drifted, not-applicable, unknown),
+          blocksCommit and the server's message, and on the detail the overlaps
+          and what changed in the base (counts, per-layer, cut lists with
+          truncated). Validated from the wire like tier1.ts: malformed values
+          are dropped, an older dr CLI's missing drift reads as none known.
+          driftTone says whether drift is a problem (blocks a commit), a quiet
+          note (content-free), unchecked (unknown) or nothing to show."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-18T20:17:32.126Z
+          updated_at: 2026-11-18T20:17:32.126Z
+          version: 1
+      timestamp: 2026-11-18T20:17:32.150Z
+    rewritten: true
+  - sequence: 12
+    removedAt: 64
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift
+      layerName: testing
+      after:
+        id: c9d811bc-0b06-4f71-ba13-dc9b4bb7739d
+        path: testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetDrift > reads the summary and drops a malformed drift
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 13
+    removedAt: 65
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli
+      layerName: testing
+      after:
+        id: 30a4ffa5-3e90-4956-980d-423b6502a563
+        path: testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetDrift > reads no drift from an older dr CLI
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 14
+    removedAt: 66
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-drift-keeps-the-details-overlaps-and-base-changes-dropping-malformed-entries
+      layerName: testing
+      after:
+        id: 0b350428-6aa0-4f39-a03f-975e987311d9
+        path: testing.testcasesketch.changeset-drift-keeps-the-details-overlaps-and-base-changes-dropping-malformed-entries
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetDrift > keeps the detail's overlaps and base changes, dropping
+          malformed entries
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 15
+    removedAt: 67
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one
+      layerName: testing
+      after:
+        id: 0b56822a-2a9d-4a1f-8d6b-097eae728ec4
+        path: testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changesetDrift > tells a blocking drift from a quiet note and an unchecked
+          one
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 22
+    removedAt: 68
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
+      layerName: testing
+      after:
+        id: aaff1679-965e-481e-9762-415c41dfd879
+        path: testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetInbox > badges a drifted plan on its card, and not a record or
+          content-free drift
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 16
+    removedAt: 69
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
+      layerName: testing
+      after:
+        id: 49c2151e-9f41-449b-8627-7ed01e76488a
+        path: testing.testcasesketch.review-drift-before-apply-badges-a-drifted-plan-in-the-canvas-header-and-the-inspector
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > badges a drifted plan in the canvas header
+          and the inspector
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 17
+    removedAt: 70
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+      layerName: testing
+      after:
+        id: 0537a5c0-07ae-4edd-aa28-d7b85520381d
+        path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > explains the drift on the summary card and
+          holds Apply before the confirm dialog
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 21
+    removedAt: 71
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+      layerName: testing
+      after:
+        id: fa1c5cbc-ddf1-4da9-b71d-41c89f36eaa9
+        path: testing.testcasesketch.review-drift-before-apply-keeps-apply-and-the-409-backstop-on-an-older-dr-cli-without-drift
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > keeps Apply and the 409 backstop on an older
+          dr CLI without drift
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 20
+    removedAt: 72
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview
+      layerName: testing
+      after:
+        id: a06ddca3-b9e4-48f9-9537-621812027386
+        path: testing.testcasesketch.review-drift-before-apply-lists-what-the-base-changed-under-the-changeset-in-the-inspector-overview
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > lists what the base changed under the
+          changeset in the inspector overview
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 19
+    removedAt: 73
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+      layerName: testing
+      after:
+        id: 7c83b652-83cb-48cc-82c3-454ee19addf7
+        path: testing.testcasesketch.review-drift-before-apply-says-plainly-when-drift-could-not-be-checked-without-holding-apply
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > says plainly when drift could not be
+          checked, without holding Apply
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 18
+    removedAt: 74
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
+      layerName: testing
+      after:
+        id: 1d7caefe-5795-464e-a732-431ae37102d1
+        path: testing.testcasesketch.review-drift-before-apply-shows-no-drift-badge-on-a-verification-record-or-on-content-free-drift
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > shows no drift badge on a verification
+          record or on content-free drift
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+      timestamp: 2026-11-18T20:17:56.272Z
+    rewritten: true
+  - sequence: 17
+    removedAt: 75
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+      layerName: testing
+      after:
+        id: 0537a5c0-07ae-4edd-aa28-d7b85520381d
+        path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > explains the drift on the summary card and
+          holds Apply before the confirm dialog
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: tests/components/ChangesetReview.spec.tsx
+              symbol: review — drift before Apply > explains the drift on the summary card and
+                holds Apply before the confirm dialog
+      timestamp: 2026-11-18T20:28:29.558Z
+    rewritten: true
+  - sequence: 1
+    removedAt: 77
+    change:
+      type: add
+      elementId: application.applicationcomponent.drift-notice
+      layerName: application
+      after:
+        id: 84b29574-1d05-4995-80f1-2fd471364cf1
+        path: application.applicationcomponent.drift-notice
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Drift Notice
+        description: "How a changeset's base drift reads in the Changesets view: the
+          'Base changed since this was staged' badge (inbox card, canvas header,
+          inspector) for a plan whose drift blocks a commit, the summary card's
+          Apply note (what changed, ask DrBot to restage; the viewer can't land
+          it anyway, the commit route takes no force), and the inspector
+          overview's drift section (message, the staged changes the base now
+          overlaps, per-layer base change counts, a cut list said as cut).
+          Content-free drift is a quiet note, unknown says it couldn't be
+          checked, a verification record or settled changeset only shows the
+          server's message."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-18T20:17:32.127Z
+          updated_at: 2026-11-18T20:17:32.127Z
+          version: 1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/ui/DriftNotice.tsx
+              symbol: src.apps.embedded.ui.DriftNotice
+      timestamp: 2026-11-18T20:27:59.751Z
+    rewritten: true
+  - sequence: 0
+    removedAt: 78
+    change:
+      type: add
+      elementId: application.applicationservice.changeset-drift
+      layerName: application
+      after:
+        id: 5fd8124e-faf2-4a50-ac5e-428a95c7db35
+        path: application.applicationservice.changeset-drift
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Changeset Drift
+        description: "Reads a changeset's base drift from the dr CLI's changeset
+          endpoints (drift on GET /api/changesets and /api/changesets/:id):
+          state (none, content-free, drifted, not-applicable, unknown),
+          blocksCommit and the server's message, and on the detail the overlaps
+          and what changed in the base (counts, per-layer, cut lists with
+          truncated). Validated from the wire like tier1.ts: malformed values
+          are dropped, an older dr CLI's missing drift reads as none known.
+          driftTone says whether drift is a problem (blocks a commit), a quiet
+          note (content-free), unchecked (unknown) or nothing to show."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-18T20:17:32.126Z
+          updated_at: 2026-11-18T20:17:32.126Z
+          version: 1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/changesetDrift.ts
+              symbol: src.apps.embedded.data.changesetDrift
+      timestamp: 2026-11-18T20:27:59.751Z
+    rewritten: true
+  - sequence: 17
+    removedAt: 79
+    change:
+      type: add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+      layerName: testing
+      after:
+        id: 0537a5c0-07ae-4edd-aa28-d7b85520381d
+        path: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: review — drift before Apply > explains the drift on the summary card and
+          in the confirm dialog, leaving Apply to the person
+        attributes:
+          status: automated
+        metadata:
+          created_at: 2026-11-18T20:17:56.262Z
+          updated_at: 2026-11-18T20:17:56.262Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: tests/components/ChangesetReview.spec.tsx
+              symbol: review — drift before Apply > explains the drift on the summary card and
+                in the confirm dialog, leaving Apply to the person
+      timestamp: 2026-11-18T20:32:29.627Z
+  - sequence: 32
+    removedAt: 80
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.changeset-review-panel
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 33
+    removedAt: 81
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.drift-notice
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.drift-notice
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 39
+    removedAt: 82
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::business.businessservice.changeset-review
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: business.businessservice.changeset-review
+        predicate: tests
+        layer: testing
+        targetLayer: business
+        category: structural
+      timestamp: 2026-11-18T20:17:56.272Z
+  - sequence: 54
+    removedAt: 83
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-drift-before-apply-explains-the-drift-on-the-summary-card-and-holds-apply-before-the-confirm-dialog
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T20:27:58.177Z

@@ -17,6 +17,10 @@
  * next: a verification record leads with the plan it verifies and what its
  * extraction read; a plan names its verification records.
  *
+ * A plan whose base drifted under it (the server would refuse to apply it)
+ * carries a "Base changed since this was staged" badge in the header, the
+ * server's message as its tooltip (`DriftNotice`).
+ *
  * A changeset the server no longer has (404: a current dr CLI deletes a
  * changeset it discards) shows as gone, with a way back to the inbox. A
  * discard from this page goes back to the inbox itself, with a toast.
@@ -49,6 +53,7 @@ import { ChangesetImpactView } from './ChangesetImpactView';
 import { ChangesetReviewPanel } from './ChangesetReviewPanel';
 import { ChangesetInbox } from './ChangesetInbox';
 import { ErrorBoundary } from './ErrorBoundary';
+import { DriftBadge } from './DriftNotice';
 
 /** Status → swatch color (committed/discarded = emerald, staged = amber). */
 function statusColor(status: string): string {
@@ -179,6 +184,7 @@ export function ChangesetCanvas() {
   const origin = originLabel(detail?.origin ?? summaryEntry?.origin);
   const purpose = detail?.purpose ?? summaryEntry?.purpose;
   const verifies = detail?.verifies ?? summaryEntry?.verifies;
+  const drift = detail?.drift ?? summaryEntry?.drift;
   const plan = verifies ? registry.list.find((c) => c.id === verifies) : undefined;
   const records = changesetId ? recordsOf(changesetId, registry.list) : [];
   // A current dr CLI deletes a discarded changeset: the detail answers 404 from then on.
@@ -223,6 +229,7 @@ export function ChangesetCanvas() {
           idChip={status}
           actions={
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+              <DriftBadge drift={drift} />
               <Button
                 variant="ghost"
                 size="sm"

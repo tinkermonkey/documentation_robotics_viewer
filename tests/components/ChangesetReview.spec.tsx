@@ -53,6 +53,8 @@ interface ServeOptions {
   scope?: { since: string; codeCommit?: string };
   /** A discard deletes the changeset: GET answers 404 afterwards (a current dr CLI). */
   deleteOnDiscard?: boolean;
+  /** The detail's base drift (a dr CLI that reports it); omitted, an older dr CLI. */
+  drift?: unknown;
 }
 
 interface Server {
@@ -61,6 +63,9 @@ interface Server {
   discards: number;
   review: () => ChangesetReview;
 }
+
+const NO_DRIFT = { state: 'none', blocksCommit: false, message: 'The base model has not changed since this changeset was created.' };
+const SETTLED_DRIFT = { state: 'not-applicable', blocksCommit: false, message: 'Base drift does not apply to this changeset.' };
 
 function keepAll(except: Record<number, 'drop' | 'ask'> = {}): ChangesetReview {
   const decisions: ChangesetReview['decisions'] = {};
@@ -87,6 +92,12 @@ function serve(opts: ServeOptions = {}): Server {
             ...(opts.actions ? { actions: status === 'staged' ? opts.actions : [] } : {}),
             ...(opts.verifies ? { verifies: opts.verifies } : {}),
             ...(opts.scope ? { scope: opts.scope } : {}),
+            // A dr CLI that sends actions also reports drift (required there); an older one sends neither.
+            ...(opts.drift !== undefined
+              ? { drift: opts.drift }
+              : opts.actions
+                ? { drift: status === 'staged' && opts.purpose !== 'verification' ? NO_DRIFT : SETTLED_DRIFT }
+                : {}),
           }),
     ),
     http.put('*/api/changesets/:id/review', async ({ request }) => {
@@ -798,8 +809,8 @@ describe('ChangesetCanvas — purpose', () => {
         HttpResponse.json({
           version: '1.0.0',
           changesets: {
-            [ID]: { name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 38, purpose: 'verification', verifies: 'cs-plan', actions: ['discard'] },
-            'cs-plan': { name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 12, purpose: 'plan', actions: ['commit', 'discard'] },
+            [ID]: { name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 38, purpose: 'verification', verifies: 'cs-plan', actions: ['discard'], drift: SETTLED_DRIFT },
+            'cs-plan': { name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 12, purpose: 'plan', actions: ['commit', 'discard'], drift: NO_DRIFT },
           },
         }),
       ),
@@ -894,5 +905,157 @@ describe('changesetActionErrorMessage', () => {
       'Internal Server Error',
     );
     expect(changesetActionErrorMessage(new Error('Network down'))).toBe('Network down');
+  });
+});
+
+describe('review — drift before Apply', () => {
+  const DRIFTED_MESSAGE = 'The base model changed since this changeset was created, so a commit is refused for drift.';
+  const DRIFTED = {
+    state: 'drifted',
+    blocksCommit: true,
+    message: DRIFTED_MESSAGE,
+    warnings: ['Could not compare one relationship.'],
+    baseIndex: 'recorded',
+    overlapping: {
+      elements: [{ id: 'application.applicationservice.use-changesets', reason: 'changed-in-base' }],
+      relationships: [{ source: 'api.operation.one', predicate: 'references', target: 'api.operation.two', reason: 'endpoint-removed-in-base', endpoints: ['api.operation.two'] }],
+    },
+    baseChanges: {
+      counts: { elementsAdded: 2, elementsRemoved: 0, elementsChanged: 61, relationshipsAdded: 1, relationshipsRemoved: 0 },
+      elementsAdded: ['api.operation.one', 'api.operation.two'],
+      elementsRemoved: [],
+      elementsChanged: ['application.applicationservice.use-changesets'],
+      relationshipsAdded: [{ source: 'api.operation.one', predicate: 'references', target: 'api.operation.two' }],
+      relationshipsRemoved: [],
+      layers: ['application', 'api'],
+      truncated: true,
+    },
+  };
+  const PLAN = { purpose: 'plan', actions: ['commit', 'discard'] };
+
+  it('badges a drifted plan in the canvas header and the inspector', async () => {
+    serve({ ...PLAN, drift: DRIFTED });
+    renderReview();
+    await screen.findByTestId('review-summary');
+    // Header + inspector overview, before any change is decided.
+    await waitFor(() => expect(screen.getAllByTestId('drift-badge')).toHaveLength(2));
+    for (const badge of screen.getAllByTestId('drift-badge')) {
+      expect(badge).toHaveTextContent('Base changed since this was staged');
+      expect(badge).toHaveAttribute('title', DRIFTED_MESSAGE);
+    }
+    expect(screen.getByTestId('drift-section')).toHaveTextContent(DRIFTED_MESSAGE);
+  });
+
+  it('explains the drift on the summary card and in the confirm dialog, leaving Apply to the person', async () => {
+    const server = serve({
+      ...PLAN,
+      review: keepAll(),
+      drift: DRIFTED,
+      commitError: { status: 409, body: { error: 'Base model has drifted since changeset creation: what this changeset was staged against changed in the base. Nothing was written.' } },
+    });
+    const user = userEvent.setup();
+    renderReview();
+    // Before any dialog.
+    const note = await screen.findByTestId('drift-apply-note');
+    expect(note).toHaveTextContent(DRIFTED_MESSAGE);
+    expect(note).toHaveTextContent('The server will likely refuse the commit');
+    expect(note).toHaveTextContent('Ask DrBot to restage it');
+    expect(note).toHaveTextContent('the apply route takes no force');
+    // Apply stays open: the person decides.
+    const apply = screen.getByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(apply.getAttribute('title') ?? '').not.toMatch(/refuse/);
+    await user.click(apply);
+    const confirm = await screen.findByTestId('apply-confirm');
+    expect(within(confirm).getByTestId('apply-confirm-drift')).toHaveTextContent(
+      'The server will most likely refuse this apply for drift',
+    );
+    // The 409 is the expected result, handled as before.
+    await user.click(within(confirm).getByTestId('apply-confirm-button'));
+    expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent(
+      'Nothing was written. The model changed after this was staged.',
+    );
+    expect(server.commits).toHaveLength(1);
+  });
+
+  it('shows no drift badge on a verification record or on content-free drift', async () => {
+    serve({
+      purpose: 'verification',
+      actions: ['discard'],
+      verifies: 'cs-plan',
+      drift: { state: 'not-applicable', blocksCommit: false, message: "A verification record is never landed, so base drift does not apply to it. Its plan 'add-export' has landed." },
+    });
+    const record = renderReview();
+    await screen.findByTestId('review-summary');
+    await waitFor(() => expect(screen.getByTestId('drift-section')).toHaveTextContent("Its plan 'add-export' has landed."));
+    expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('drift-apply-note')).not.toBeInTheDocument();
+    record.unmount();
+
+    serve({
+      ...PLAN,
+      review: keepAll(),
+      drift: { state: 'content-free', blocksCommit: false, message: 'The base changed, but nothing this changeset was staged against did.' },
+    });
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('drift-apply-note')).not.toBeInTheDocument();
+    // A quiet line in the inspector, not a warning.
+    const quiet = screen.getByTestId('drift-section');
+    expect(quiet).toHaveTextContent('nothing this changeset was staged against did');
+    expect(quiet).not.toHaveClass('drv-alert');
+  });
+
+  it('says plainly when drift could not be checked, without holding Apply', async () => {
+    serve({
+      ...PLAN,
+      review: keepAll(),
+      drift: { state: 'unknown', blocksCommit: false, message: 'No base snapshot was recorded for this changeset, so drift cannot be checked.' },
+    });
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(screen.getByTestId('drift-apply-note')).toHaveTextContent("Drift couldn't be checked: No base snapshot was recorded");
+    expect(screen.getByTestId('drift-apply-note')).not.toHaveTextContent('held');
+    // Unchecked drift never blocks a commit: the note must not say the server refuses it.
+    expect(screen.getByTestId('drift-apply-note')).not.toHaveTextContent('refuse');
+    expect(screen.getByTestId('drift-section')).toHaveTextContent("Drift couldn't be checked.");
+    expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
+  });
+
+  it('lists what the base changed under the changeset in the inspector overview', async () => {
+    serve({ ...PLAN, drift: DRIFTED });
+    renderReview();
+    const overlaps = await screen.findByTestId('drift-overlaps');
+    expect(overlaps).toHaveTextContent('application.applicationservice.use-changesets: the base changed it');
+    expect(overlaps).toHaveTextContent('api.operation.one —references→ api.operation.two: the base removed an end (api.operation.two)');
+    const changes = screen.getByTestId('drift-base-changes');
+    expect(changes).toHaveTextContent('elements: 2 added, 61 changed · links: 1 added');
+    const layers = within(changes).getAllByRole('listitem').map((li) => li.textContent);
+    expect(layers).toEqual(['Application1 element', 'API2 elements']);
+    expect(screen.getByTestId('drift-truncated')).toHaveTextContent('cut at 50');
+    expect(screen.getByTestId('drift-section')).toHaveTextContent('Could not compare one relationship.');
+  });
+
+  it('keeps Apply and the 409 backstop on an older dr CLI without drift', async () => {
+    serve({
+      review: keepAll(),
+      commitError: { status: 409, body: { error: 'Base model has drifted since changeset creation. Nothing was written.' } },
+    });
+    const user = userEvent.setup();
+    renderReview();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    expect(screen.queryByTestId('drift-badge')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('drift-apply-note')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('drift-section')).not.toBeInTheDocument();
+    await user.click(apply);
+    expect(within(await screen.findByTestId('apply-confirm')).queryByTestId('apply-confirm-drift')).not.toBeInTheDocument();
+    await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
+    expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent(
+      'Nothing was written. The model changed after this was staged.',
+    );
   });
 });

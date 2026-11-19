@@ -81,14 +81,17 @@ describe('ChangesetInbox', () => {
       'cs-plan': {
         name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 12,
         purpose: 'plan', actions: ['commit', 'discard'], review: { decided: 0, total: 12, asked: 0 },
+        drift: { state: 'none', blocksCommit: false, message: 'The base model has not changed since this changeset was created.' },
       },
       'cs-rec': {
         name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 9,
         purpose: 'verification', verifies: 'cs-plan', actions: ['discard'], review: { decided: 0, total: 9, asked: 0 },
+        drift: { state: 'not-applicable', blocksCommit: false, message: 'A verification record is never landed, so base drift does not apply to it.' },
       },
       'cs-boot': {
         name: 'extract-abc', status: 'staged', created: '2026-11-17T11:00:00Z', changes_count: 40,
         purpose: 'bootstrap', actions: ['commit', 'discard'], review: { decided: 0, total: 40, asked: 0 },
+        drift: { state: 'none', blocksCommit: false, message: 'The base model has not changed since this changeset was created.' },
       },
     });
     const user = userEvent.setup();
@@ -118,6 +121,7 @@ describe('ChangesetInbox', () => {
       'cs-c': {
         name: 'landed-plan', status: 'committed', created: '2026-11-12T09:00:00Z', changes_count: 4,
         purpose: 'plan', actions: [],
+        drift: { state: 'not-applicable', blocksCommit: false, message: 'The changeset is committed, so base drift no longer applies to it.' },
       },
       'cs-d': { name: 'older', status: 'committed', created: '2026-11-10T09:00:00Z', changes_count: 2 },
     });
@@ -139,5 +143,44 @@ describe('ChangesetInbox', () => {
     await waitFor(() => expect(card).toHaveTextContent('27 need a decision'));
     expect(within(card).getByRole('progressbar', { name: 'legacy: 3 of 30 decided' })).toBeInTheDocument();
     expect(within(card).getByRole('button', { name: 'Continue review of legacy' })).toBeInTheDocument();
+  });
+
+  it('badges a drifted plan on its card, and not a record or content-free drift', async () => {
+    const drifted = 'The base model changed since this changeset was created, so a commit is refused for drift.';
+    serveList({
+      'cs-drifted': {
+        name: 'add-export', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 6, purpose: 'plan',
+        actions: ['commit', 'discard'], drift: { state: 'drifted', blocksCommit: true, message: drifted },
+      },
+      'cs-quiet': {
+        name: 'wire-orphans', status: 'staged', created: '2026-11-18T09:00:00Z', changes_count: 3, purpose: 'plan',
+        actions: ['commit', 'discard'],
+        drift: { state: 'content-free', blocksCommit: false, message: 'Another changeset landed; nothing this one touches changed.' },
+      },
+      'cs-record': {
+        name: 'add-export-as-built', status: 'staged', created: '2026-11-18T11:00:00Z', changes_count: 6,
+        purpose: 'verification', verifies: 'cs-drifted', actions: ['discard'],
+        drift: { state: 'not-applicable', blocksCommit: false, message: 'A verification record is never landed.' },
+      },
+      // A malformed drift is dropped, not rendered.
+      'cs-odd': {
+        name: 'odd', status: 'staged', created: '2026-11-18T08:00:00Z', changes_count: 1,
+        drift: { state: 'drifted', blocksCommit: 'yes' },
+      },
+    });
+    renderInbox();
+
+    const onYou = await screen.findByTestId('inbox-on-you');
+    const card = (await within(onYou).findByText('add-export')).closest('article')!;
+    expect(within(card).getByTestId('drift-badge')).toHaveTextContent('Base changed since this was staged');
+    expect(within(card).getByTestId('inbox-drift-message')).toHaveTextContent(drifted);
+
+    const quiet = within(onYou).getByText('wire-orphans').closest('article')!;
+    expect(within(quiet).queryByTestId('drift-badge')).not.toBeInTheDocument();
+    const odd = within(onYou).getByText('odd').closest('article')!;
+    expect(within(odd).queryByTestId('drift-badge')).not.toBeInTheDocument();
+    const record = screen.getByText('add-export-as-built').closest('article')!;
+    expect(within(record).queryByTestId('drift-badge')).not.toBeInTheDocument();
+    expect(screen.getAllByTestId('drift-badge')).toHaveLength(1);
   });
 });
