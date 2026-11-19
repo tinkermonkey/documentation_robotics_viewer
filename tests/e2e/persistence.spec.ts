@@ -41,7 +41,9 @@ test.describe('localStorage persistence', () => {
 
   test('DrBot open/closed state persists across a reload', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    const chatToggle = page.getByRole('button', { name: 'DrBot' });
+    // The launcher by its testid: with the panel open, a role/name lookup for
+    // "DrBot" also finds the panel's own "Dock DrBot…" / "Close DrBot…" buttons.
+    const chatToggle = page.getByTestId('topbar-drbot-toggle');
     // DrBot starts closed on a first visit at any width (#597).
     await expect(chatToggle).toHaveAttribute('aria-pressed', 'false');
 
@@ -50,6 +52,7 @@ test.describe('localStorage persistence', () => {
 
     await page.reload();
     await expect(page.getByTestId('app-shell')).toBeVisible();
-    await expect(page.getByRole('button', { name: 'DrBot' })).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByTestId('topbar-drbot-toggle')).toHaveAttribute('aria-pressed', 'true');
+    await expect(page.getByRole('dialog', { name: 'DrBot' })).toBeVisible();
   });
 });

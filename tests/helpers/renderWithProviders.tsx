@@ -28,9 +28,8 @@ export function createTestQueryClient(): QueryClient {
 }
 
 /**
- * Restore `uiStore` to its documented initial state. `chatOpen`/`wide` seed
- * from the viewport in production; in tests we pin them to `false` for
- * determinism (happy-dom's default innerWidth is below the 1300px threshold).
+ * Restore `uiStore` to its documented initial state (DrBot closed, floating at
+ * its default size, nothing in the Inspector drawer).
  */
 export function resetUiStore(): void {
   useUiStore.setState({
@@ -41,7 +40,13 @@ export function resetUiStore(): void {
     changeSeq: null,
     canvasDark: false,
     chatOpen: false,
-    wide: false,
+    chatPanelSize: { width: 440, height: 640 },
+    chatDocked: false,
+    chatDockWidth: 420,
+    chatDockCollapsed: false,
+    chatCoversDrawer: false,
+    inspectorWidth: 320,
+    inspectorHasContent: false,
     mode: 'graph',
     focus: 'layer',
     expandedSections: new Set<string>(['model']),

@@ -26,7 +26,7 @@ test.describe('chat', () => {
     // Open the drawer (it starts closed on a first visit).
     const drawer = page.getByTestId('chat-drawer');
     if (!(await drawer.isVisible())) {
-      await page.getByRole('button', { name: /DrBot/ }).click();
+      await page.getByTestId('topbar-drbot-toggle').click();
     }
     await expect(drawer).toBeVisible();
 

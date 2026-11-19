@@ -46,7 +46,7 @@ const GREETING_TEXT =
  * Seed the design's DrBot greeting into the chat store once, on first mount,
  * when the thread is empty. Mirrors the design's `componentDidMount` seeding so
  * the drawer opens with an intro instead of a blank thread. Lives on AppShell
- * (always mounted) rather than ChatDrawer (mounts only when `chatOpen`), so the
+ * (always mounted) rather than ChatDrawer (renders only when `chatOpen`), so the
  * greeting is present the moment the drawer first opens. Guarded on empty
  * messages so it never duplicates after a conversation has started.
  */
@@ -158,7 +158,8 @@ export function AppShell() {
         {/* Model + Schema: live graph (Inspector drawer inside it). Changesets: diff list + detail column. */}
         {isChangesets ? <ChangesetCanvas /> : <Canvas />}
         {isChangesets && hasChangeset && <ChangesetInspector />}
-        {/* DrBot chat: persistent 4th column when wide, absolute overlay otherwise. */}
+        {/* DrBot: a floating panel over the view's area (fixed, anchored via
+            useChatAnchor), or, docked, a column / rail tab at the row's end. */}
         <ChatDrawer />
       </div>
       <StatusBar />

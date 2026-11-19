@@ -7,7 +7,7 @@
  * in React Query (see `data/`); connection state lives in `connectionStore`.
  *
  * A subset of fields persist to localStorage (see `partialize` below) — the
- * canvas theme, the DrBot drawer's open/closed state, and the graph
+ * canvas theme, DrBot's open/closed state, panel size and dock state, and the graph
  * layout/display settings (graphLayout/showClusterBoundaries/
  * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes/modelView), and the
  * Model inspector's follow depth (inspectorFollow). Navigation state (view/layerId/
@@ -20,6 +20,13 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ScopedViewport } from './graphViewport';
 import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
+import {
+  CHAT_DOCK_DEFAULT_WIDTH,
+  CHAT_PANEL_DEFAULT,
+  clampDockWidth,
+  clampPanelSize,
+  type ChatPanelSize,
+} from './chatPanelLayout';
 
 export type ViewKind = 'model' | 'spec' | 'changesets';
 export type CanvasMode = 'graph' | 'page';
@@ -71,7 +78,23 @@ interface UiState {
   impactFocus: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
-  wide: boolean;
+  /** The floating DrBot panel's size (#597), persisted; see chatPanelLayout. */
+  chatPanelSize: ChatPanelSize;
+  /** DrBot docked as a column instead of floating (opt-in), persisted. */
+  chatDocked: boolean;
+  chatDockWidth: number;
+  /** The docked column folded to its rail tab, persisted. */
+  chatDockCollapsed: boolean;
+  /** True while the floating panel takes the Inspector drawer's place (a
+   *  narrow graph area); the drawer stays closed until DrBot closes. Written
+   *  by ChatDrawer, read by Inspector. Not persisted. */
+  chatCoversDrawer: boolean;
+  /** The Inspector drawer's width (its own left-edge handle resizes it), shared
+   *  so the DrBot panel can step left of it. Not persisted. */
+  inspectorWidth: number;
+  /** Whether the Inspector drawer has something to show (written by Inspector
+   *  while mounted). Not persisted. */
+  inspectorHasContent: boolean;
   /** Main-panel mode for Model/Schema: the live graph, or the page-view detail scaffold. */
   mode: CanvasMode;
   /** Bumped by every deliberate navigation action (navigateToElement,
@@ -188,12 +211,21 @@ interface UiState {
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
   toggleCanvasDark: () => void;
+  /** Topbar launcher: opens DrBot, expands a collapsed dock, or closes it. */
   toggleChat: () => void;
+  openChat: () => void;
+  closeChat: () => void;
+  setChatPanelSize: (size: ChatPanelSize) => void;
+  setChatDocked: (docked: boolean) => void;
+  setChatDockWidth: (width: number) => void;
+  setChatDockCollapsed: (collapsed: boolean) => void;
+  setChatCoversDrawer: (covers: boolean) => void;
+  setInspectorWidth: (width: number) => void;
+  setInspectorHasContent: (hasContent: boolean) => void;
   /** Toggle a nav section's expanded state and activate its view. */
   toggleSection: (sectionId: string) => void;
   /** Toggle a layer row's expanded state under a section. */
   toggleLayer: (sectionId: string, layerId: string) => void;
-  setWide: (wide: boolean) => void;
   setGraphLayout: (layout: GraphLayout) => void;
   toggleClusterBoundaries: () => void;
   toggleShowAllRelations: () => void;
@@ -205,8 +237,8 @@ interface UiState {
   setGraphViewport: (graphViewport: ScopedViewport | null) => void;
 }
 
-const initialWide =
-  typeof window !== 'undefined' ? window.innerWidth >= 1300 : false;
+/** The Inspector drawer's initial width in px (it was a fixed 320px sidebar). */
+export const DEFAULT_INSPECTOR_WIDTH = 320;
 
 /** The nav's expanded sections with only `section` open. */
 function onlySection(section: string): Set<string> {
@@ -258,7 +290,13 @@ export const useUiStore = create<UiState>()(
       // toggleCanvasDark / toggleChat persists and overrides these.
       canvasDark: false,
       chatOpen: false,
-      wide: initialWide,
+      chatPanelSize: CHAT_PANEL_DEFAULT,
+      chatDocked: false,
+      chatDockWidth: CHAT_DOCK_DEFAULT_WIDTH,
+      chatDockCollapsed: false,
+      chatCoversDrawer: false,
+      inspectorWidth: DEFAULT_INSPECTOR_WIDTH,
+      inspectorHasContent: false,
       mode: 'graph',
       navSeq: 0,
       graphViewport: null,
@@ -397,7 +435,21 @@ export const useUiStore = create<UiState>()(
           return { canvasDark };
         }),
 
-      toggleChat: () => set((s) => ({ chatOpen: !s.chatOpen })),
+      toggleChat: () =>
+        set((s) => {
+          // A collapsed dock is open but out of sight: the launcher expands it.
+          if (s.chatOpen && s.chatDocked && s.chatDockCollapsed) return { chatDockCollapsed: false };
+          return s.chatOpen ? { chatOpen: false } : { chatOpen: true, chatDockCollapsed: false };
+        }),
+      openChat: () => set({ chatOpen: true, chatDockCollapsed: false }),
+      closeChat: () => set({ chatOpen: false }),
+      setChatPanelSize: (size) => set({ chatPanelSize: clampPanelSize(size) }),
+      setChatDocked: (chatDocked) => set({ chatDocked, chatDockCollapsed: false }),
+      setChatDockWidth: (width) => set({ chatDockWidth: clampDockWidth(width) }),
+      setChatDockCollapsed: (chatDockCollapsed) => set({ chatDockCollapsed }),
+      setChatCoversDrawer: (chatCoversDrawer) => set({ chatCoversDrawer }),
+      setInspectorWidth: (inspectorWidth) => set({ inspectorWidth }),
+      setInspectorHasContent: (inspectorHasContent) => set({ inspectorHasContent }),
 
       toggleSection: (sectionId) =>
         set((s) => {
@@ -449,8 +501,6 @@ export const useUiStore = create<UiState>()(
           };
         }),
 
-      setWide: (wide) => set({ wide }),
-
       setGraphLayout: (graphLayout) => set({ graphLayout }),
 
       toggleClusterBoundaries: () =>
@@ -481,6 +531,10 @@ export const useUiStore = create<UiState>()(
       partialize: (state) => ({
         canvasDark: state.canvasDark,
         chatOpen: state.chatOpen,
+        chatPanelSize: state.chatPanelSize,
+        chatDocked: state.chatDocked,
+        chatDockWidth: state.chatDockWidth,
+        chatDockCollapsed: state.chatDockCollapsed,
         graphLayout: state.graphLayout,
         showClusterBoundaries: state.showClusterBoundaries,
         showAllRelations: state.showAllRelations,
@@ -538,15 +592,12 @@ const VALID_MODEL_VIEWS: ReadonlySet<ModelView> = new Set(['graph', 'type-lanes'
   if (typeof hydrated.showInterLayerNodes !== 'boolean') fixes.showInterLayerNodes = true;
   if (!VALID_MODEL_VIEWS.has(hydrated.modelView)) fixes.modelView = 'graph';
   if (!FOLLOW_DEPTHS.includes(hydrated.inspectorFollow)) fixes.inspectorFollow = 1;
+  const panelSize = clampPanelSize(hydrated.chatPanelSize);
+  if (panelSize.width !== hydrated.chatPanelSize?.width || panelSize.height !== hydrated.chatPanelSize?.height) {
+    fixes.chatPanelSize = panelSize;
+  }
+  if (clampDockWidth(hydrated.chatDockWidth) !== hydrated.chatDockWidth) fixes.chatDockWidth = clampDockWidth(hydrated.chatDockWidth);
+  if (typeof hydrated.chatDocked !== 'boolean') fixes.chatDocked = false;
+  if (typeof hydrated.chatDockCollapsed !== 'boolean') fixes.chatDockCollapsed = false;
   if (Object.keys(fixes).length > 0) useUiStore.setState(fixes);
-}
-
-/** Keep `wide` in sync with the viewport for the chat-drawer overlay threshold. */
-if (typeof window !== 'undefined') {
-  window.addEventListener('resize', () => {
-    const wide = window.innerWidth >= 1300;
-    if (wide !== useUiStore.getState().wide) {
-      useUiStore.getState().setWide(wide);
-    }
-  });
 }

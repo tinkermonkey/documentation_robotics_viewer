@@ -18,7 +18,13 @@ function reset() {
       changesetId: null,
       canvasDark: false,
       chatOpen: false,
-      wide: false,
+      chatPanelSize: { width: 440, height: 640 },
+      chatDocked: false,
+      chatDockWidth: 420,
+      chatDockCollapsed: false,
+      chatCoversDrawer: false,
+      inspectorWidth: 320,
+      inspectorHasContent: false,
       mode: 'graph',
       focus: 'layer',
       expandedSections: new Set<string>(['model']),
@@ -64,6 +70,10 @@ describe('uiStore — localStorage persistence', () => {
     get().setNodeDisplay('pill');
     get().toggleShowInterLayerNodes();
     get().setInspectorFollow(2);
+    get().setChatPanelSize({ width: 500, height: 700 });
+    get().setChatDocked(true);
+    get().setChatDockWidth(480);
+    get().setChatDockCollapsed(true);
 
     const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
     expect(stored.state).toMatchObject({
@@ -76,7 +86,15 @@ describe('uiStore — localStorage persistence', () => {
       nodeMarginPreset: 'wide',
       nodeDisplay: 'pill',
       showInterLayerNodes: false, // reset() started at true; one toggle -> false
+      chatPanelSize: { width: 500, height: 700 },
+      chatDocked: true,
+      chatDockWidth: 480,
+      chatDockCollapsed: true,
     });
+    // Layout state DrBot and the Inspector share at runtime is not a preference.
+    expect(stored.state).not.toHaveProperty('chatCoversDrawer');
+    expect(stored.state).not.toHaveProperty('inspectorWidth');
+    expect(stored.state).not.toHaveProperty('inspectorHasContent');
   });
 
   it('does NOT persist navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*)', () => {
@@ -316,7 +334,7 @@ describe('toggleLayer', () => {
   });
 });
 
-describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
+describe('selectLayer / selectChangeset / toggleChat', () => {
   it('selectLayer clears selection and expands the layer under the active view', () => {
     useUiStore.setState({ view: 'model', selectedId: 'old' });
     get().selectLayer('technology');
@@ -332,12 +350,34 @@ describe('selectLayer / selectChangeset / toggleChat / setWide', () => {
     expect(get().expandedSections.has('changesets')).toBe(true);
   });
 
-  it('toggleChat flips chatOpen; setWide sets the responsive seed', () => {
+  it('toggleChat flips chatOpen', () => {
     expect(get().chatOpen).toBe(false);
     get().toggleChat();
     expect(get().chatOpen).toBe(true);
-    get().setWide(true);
-    expect(get().wide).toBe(true);
+    get().toggleChat();
+    expect(get().chatOpen).toBe(false);
+  });
+
+  it('toggleChat expands a collapsed dock instead of closing it (#597)', () => {
+    get().openChat();
+    get().setChatDocked(true);
+    get().setChatDockCollapsed(true);
+    get().toggleChat();
+    expect(get().chatOpen).toBe(true);
+    expect(get().chatDockCollapsed).toBe(false);
+    get().toggleChat();
+    expect(get().chatOpen).toBe(false);
+  });
+
+  it('clamps the panel size and the dock width to their limits (#597)', () => {
+    get().setChatPanelSize({ width: 2000, height: 100 });
+    expect(get().chatPanelSize).toEqual({ width: 820, height: 360 });
+    get().setChatPanelSize({ width: 10, height: 700 });
+    expect(get().chatPanelSize).toEqual({ width: 340, height: 700 });
+    get().setChatDockWidth(9000);
+    expect(get().chatDockWidth).toBe(760);
+    get().setChatDockWidth(0);
+    expect(get().chatDockWidth).toBe(320);
   });
 });
 
@@ -720,7 +760,6 @@ describe('first-visit defaults vs a persisted choice (#596, #597)', () => {
     vi.resetModules();
     const fresh = await import('@/apps/embedded/ui/uiStore');
     const state = fresh.useUiStore.getState();
-    expect(state.wide).toBe(true);
     expect(state.canvasDark).toBe(false);
     expect(state.chatOpen).toBe(false);
     expect(document.body.classList.contains('dark-canvas')).toBe(false);
@@ -737,5 +776,21 @@ describe('first-visit defaults vs a persisted choice (#596, #597)', () => {
     expect(state.canvasDark).toBe(true);
     expect(state.chatOpen).toBe(true);
     expect(document.body.classList.contains('dark-canvas')).toBe(true);
+  });
+
+  it('a persisted DrBot size out of range or malformed is brought back within limits (#597)', async () => {
+    localStorage.setItem(
+      PERSIST_KEY,
+      JSON.stringify({
+        state: { chatPanelSize: { width: 5000, height: 'tall' }, chatDockWidth: 'x', chatDocked: 'yes' },
+        version: 1,
+      }),
+    );
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    const state = fresh.useUiStore.getState();
+    expect(state.chatPanelSize).toEqual({ width: 820, height: 640 });
+    expect(state.chatDockWidth).toBe(420);
+    expect(state.chatDocked).toBe(false);
   });
 });
