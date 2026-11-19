@@ -125,9 +125,12 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
 }
 
 /**
- * Leave a nav-tree layer expanded and selected, and return its element rows:
- * for Model, those of the layer's first (A–Z) node-type group, opened here
- * (#592: groups start collapsed); for Schema, the layer's node-type rows. Clicking a layer row TOGGLES it (and selects the layer when expanding),
+ * Leave a nav-tree layer expanded and selected, and return its first element
+ * row: for Model, the first element of the layer's first (A–Z) node-type
+ * group, opened here (#592: groups start collapsed); for Schema, the layer's
+ * first node-type row.
+ *
+ * Clicking a layer row TOGGLES it (and selects the layer when expanding),
  * and the app's default selection may have already expanded it, so a blind
  * click could collapse it instead. `label` is the layer's display label
  * (e.g. 'Data Model', 'APM'). The same label appears under Model and Schema
@@ -159,5 +162,5 @@ export async function openLayer(
   const group = first.locator('.drv-nav-group');
   if ((await group.getAttribute('aria-expanded')) !== 'true') await group.click();
   await expect(group).toHaveAttribute('aria-expanded', 'true');
-  return first.locator('.drv-nav-l3');
+  return first.locator('.drv-nav-l3').first();
 }
