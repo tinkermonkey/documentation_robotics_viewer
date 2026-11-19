@@ -105,6 +105,20 @@ body.dark-canvas {
   left: 38px;
 }
 
+/* level-4 (Model element under its type group, #592) rows */
+.nav-item.drv-nav-l3 {
+  padding-left: 70px;
+}
+
+.nav-item.drv-nav-l3 .nav-item__label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+}
+
+.nav-item.drv-nav-l3.nav-item--active::before {
+  left: 54px;
+}
+
 /* nav-tree custom scrollbar (matches design .drv-scroll) */
 .drv-scroll::-webkit-scrollbar {
   width: 10px;

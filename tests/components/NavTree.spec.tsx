@@ -20,6 +20,11 @@ import { renderWithProviders } from '../helpers/renderWithProviders';
 import model from '../fixtures/model.json';
 import changesets from '../fixtures/changesets.json';
 
+/** Open a Model type group (#592) by its `<layer>.<type>` key. */
+async function openGroup(user: ReturnType<typeof userEvent.setup>, key: string) {
+  await user.click(await screen.findByTestId(`nav-type-group-${key}`));
+}
+
 /** Per-layer model element counts from the raw fixture, keyed by slug. */
 function modelCountsByLayer(): Record<string, number> {
   const counts: Record<string, number> = {};
@@ -69,7 +74,7 @@ describe('NavTree — Model layers', () => {
     await waitFor(() => {
       const layerRows = document
         .querySelector('[data-testid="nav-tree"]')!
-        .querySelectorAll('.nav-item--depth-1:not(.drv-nav-l2)');
+        .querySelectorAll('.nav-item--depth-1:not(.drv-nav-l2):not(.drv-nav-l3)');
       expect(layerRows.length).toBe(LAYER_ORDER.length);
     });
   });
@@ -102,6 +107,7 @@ describe('NavTree — Model layers', () => {
     // Expand the motivation layer row.
     const motivationRow = screen.getAllByText('Motivation')[0].closest('button')!;
     await user.click(motivationRow);
+    await openGroup(user, 'motivation.goal');
 
     // A known motivation element name appears as a leaf.
     expect(
@@ -143,6 +149,7 @@ describe('NavTree — clicks drive the uiStore', () => {
 
     await screen.findByText('Motivation');
     await user.click(screen.getAllByText('Motivation')[0].closest('button')!);
+    await openGroup(user, 'motivation.goal');
 
     const leaf = await screen.findByText('Visualize Multi-Layer Architecture Models');
     await user.click(leaf);
@@ -207,6 +214,7 @@ describe('NavTree — clicks drive the uiStore', () => {
     // Expand motivation layer and click one of its leaves.
     const motivationRow = screen.getAllByText('Motivation')[0].closest('button')!;
     await user.click(motivationRow);
+    await openGroup(user, 'motivation.goal');
     const motivationLeaf = await screen.findByText('Visualize Multi-Layer Architecture Models');
     await user.click(motivationLeaf);
 
@@ -300,6 +308,87 @@ describe('NavTree — reveals the selection', () => {
       expect(screen.queryByText(node.name)).not.toBeInTheDocument();
 
       await waitFor(() => expect(scrolled[scrolled.length - 1] ?? '').toContain(node.name));
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+    }
+  });
+});
+
+describe('NavTree — type groups (#592)', () => {
+  const goals = model.nodes.filter((n) => n.layer_id === 'motivation' && n.type === 'goal');
+
+  it('a layer opens onto collapsed groups and a group opens without history', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+
+    await user.click((await screen.findAllByText('Motivation'))[0].closest('button')!);
+    const goal = await screen.findByTestId('nav-type-group-motivation.goal');
+
+    // One group per type, A–Z by the spec's title, each with its count; all collapsed.
+    const groups = screen
+      .getByTestId('nav-tree')
+      .querySelectorAll<HTMLButtonElement>('.drv-nav-group');
+    const labels = [...groups].map((g) => g.querySelector('.nav-item__label')!.textContent);
+    expect(labels).toEqual(['Constraint', 'Driver', 'Goal', 'Principle', 'Requirement', 'Stakeholder']);
+    for (const g of groups) expect(g).toHaveAttribute('aria-expanded', 'false');
+    expect(goal).toHaveAccessibleName(`Goal, ${goals.length} elements`);
+    expect(within(goal).getByText(String(goals.length))).toBeInTheDocument();
+    expect(screen.queryByText(goals[0].name)).not.toBeInTheDocument();
+
+    // Opening a group shows its elements A–Z and touches neither the
+    // navigation state nor the browser history.
+    const before = { ...useUiStore.getState() };
+    const historyLength = window.history.length;
+    await user.click(goal);
+    expect(goal).toHaveAttribute('aria-expanded', 'true');
+    const leaves = [...screen.getByTestId('nav-tree').querySelectorAll('.drv-nav-l3')].map(
+      (l) => l.textContent,
+    );
+    expect(leaves).toEqual(goals.map((n) => n.name).sort((a, b) => a.localeCompare(b)));
+    const after = useUiStore.getState();
+    expect(after.layerId).toBe(before.layerId);
+    expect(after.selectedId).toBe(before.selectedId);
+    expect(after.navSeq).toBe(before.navSeq);
+    expect(window.history.length).toBe(historyLength);
+
+    // And it closes again.
+    await user.click(goal);
+    expect(goal).toHaveAttribute('aria-expanded', 'false');
+    expect(screen.queryByText(goals[0].name)).not.toBeInTheDocument();
+  });
+
+  it('a type with a single element still gets its own group', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    await user.click((await screen.findAllByText('Security'))[0].closest('button')!);
+    expect(await screen.findByTestId('nav-type-group-security.role')).toHaveAccessibleName(/, 1 element$/);
+  });
+
+  it('a selection made elsewhere opens its group and reveals its row', async () => {
+    const scrolled: string[] = [];
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = function (this: HTMLElement) {
+      scrolled.push(this.textContent ?? '');
+    };
+    try {
+      const user = userEvent.setup();
+      renderWithProviders(<NavTree />);
+      await screen.findByText('Motivation');
+      const target = goals[0];
+
+      // A cross-layer navigate (or graph click, deep link) — not a nav click.
+      act(() => useUiStore.getState().navigateToElement(target.id, 'motivation'));
+      const group = await screen.findByTestId('nav-type-group-motivation.goal');
+      await waitFor(() => expect(group).toHaveAttribute('aria-expanded', 'true'));
+      const row = screen.getByText(target.name).closest('button')!;
+      expect(row).toHaveClass('nav-item--active');
+      await waitFor(() => expect(scrolled[scrolled.length - 1] ?? '').toContain(target.name));
+
+      // Closing it sticks until the next selection, which opens it again.
+      await user.click(group);
+      expect(group).toHaveAttribute('aria-expanded', 'false');
+      act(() => useUiStore.getState().navigateToElement(goals[1].id, 'motivation'));
+      await waitFor(() => expect(group).toHaveAttribute('aria-expanded', 'true'));
     } finally {
       HTMLElement.prototype.scrollIntoView = original;
     }

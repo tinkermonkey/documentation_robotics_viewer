@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 805   |
+| Elements                  | 808   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 914   |
+| Inter-Layer Relationships | 919   |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 914   |
+| Outbound Relationships    | 919   |
 
 **Cross-Layer References**:
 
@@ -425,6 +425,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-model-leaf-navigates-to-that-element-with-full-c1acae56`                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-schema-leaf-navigates-to-that-node-type-with-full-5867a3be`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-the-schema-section-switches-the-view-to-spec`                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted`                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-each-model-layer-row-shows-its-live-element-count`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-expands-a-layer-to-reveal-its-element-leaves`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-expands-the-model-section-into-12-layer-rows`                                                              | `testcasesketch`      | 0             |
@@ -434,6 +435,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-schema-layer-counts-come-from-spec-node-types-data-model-9b436e7e`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets`                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd`                    | `testcasesketch`      | 0             |
@@ -1280,6 +1283,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-model-leaf-navigates-to-that-element-with-full-c1acae56`                           | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-schema-leaf-navigates-to-that-node-type-with-full-5867a3be`                        | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-the-schema-section-switches-the-view-to-spec`                                        | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted`                                                             | `application.applicationservice.nav-tree-groups`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-each-model-layer-row-shows-its-live-element-count`                                                         | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-expands-a-layer-to-reveal-its-element-leaves`                                                              | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-expands-the-model-section-into-12-layer-rows`                                                              | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
@@ -1289,6 +1293,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-schema-layer-counts-come-from-spec-node-types-data-model-9b436e7e`                      | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets`                                                            | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets`                                      | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `product.feature.nav-tree-type-groups`                           | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `application.applicationcomponent.nav-tree`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `product.feature.nav-tree-type-groups`                           | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`                         | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`                      | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd`                    | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
@@ -8884,6 +8892,26 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
 
+### Nav Tree Groups &gt; groups a layer's elements by type with counts, sorted {#nav-tree-groups-groups-a-layer-s-elements-by-type-with-counts-sorted}
+
+**ID**: `testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                                                                              |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| description          | Groups A–Z by type label, elements A–Z inside, a single-element type still grouped; groupKeyOf names the group holding an element. |
+| implementationFormat | automated                                                                                                                          |
+| status               | draft                                                                                                                              |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-groups` | `tests`   | outbound  |
+
 ### NavTree — Model layers &gt; each Model layer row shows its live element count {#navtree-model-layers-each-model-layer-row-shows-its-live-element-count}
 
 **ID**: `testing.testcasesketch.nav-tree-model-layers-each-model-layer-row-shows-its-live-element-count`
@@ -9045,6 +9073,47 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                             | Predicate | Direction |
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+
+### NavTree type groups &gt; a layer opens onto collapsed groups and a group opens without history {#navtree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history}
+
+**ID**: `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+| inter-layer | `product.feature.nav-tree-type-groups`      | `tests`   | outbound  |
+
+### NavTree type groups &gt; a selection made elsewhere opens its group and reveals its row {#navtree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row}
+
+**ID**: `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                              |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| description          | Graph click, deep link (before and after the model loads) or cross-layer navigate. |
+| implementationFormat | automated                                                                          |
+| status               | draft                                                                              |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+| inter-layer | `product.feature.nav-tree-type-groups`      | `tests`   | outbound  |
 
 ### navigateToElement — cross-layer navigation &gt; same-layer navigation keeps the expandedLayers set untouched {#navigatetoelement-cross-layer-navigation-same-layer-navigation-keeps-the-expandedlayers-set-untouched}
 
@@ -16434,4 +16503,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-19T14:20:09.790Z | Model Version: 0.1.0
+Generated: 2026-11-19T17:50:11.927Z | Model Version: 0.1.0
