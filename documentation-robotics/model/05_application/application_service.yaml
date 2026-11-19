@@ -754,3 +754,23 @@ application.applicationservice.changeset-purpose:
     created_at: 2026-11-18T19:24:40.393Z
     updated_at: 2026-11-18T19:24:40.393Z
     version: 1
+application.applicationservice.search-index:
+  id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+  path: application.applicationservice.search-index
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Search Index
+  description: "Pure, React-free search over the loaded /api/model elements and
+    /api/spec node types (data/search.ts): builds a lower-cased index once per
+    payload, ranks exact > prefix > word-prefix > substring > in-order fuzzy
+    (subsequence) matches, caps the results, groups them by layer in LAYER_ORDER
+    and returns the matched character ranges for highlighting. Stays fast on a
+    large model: one pass over the index per keystroke, no allocation for a
+    candidate that fails."
+  attributes:
+    serviceType: synchronous
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1

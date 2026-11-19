@@ -38,6 +38,7 @@ src/
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
 │   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx
+│   │   ├── TopbarSearch.tsx topbar-search.css     # type-ahead over elements + node types (data/search.ts)
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
@@ -405,6 +406,13 @@ For local dev use `dr visualize --no-auth`.
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
   Today's dr CLI sends no `cliVersion`, so the status bar reads `cli —` until it does.
+- **Topbar search** (`ui/TopbarSearch.tsx`, `data/search.ts`) — type-ahead over `/api/model` elements and
+  `/api/spec` node types; `/` (outside a field) or ⌘K / Ctrl+K focuses it. Tiers: exact > prefix > word start >
+  substring > fuzzy (in order, few fragments, offered only when fewer than 5 names match better); the best 50
+  are grouped by layer, the group holding the best match first. An ARIA 1.2 combobox (`aria-activedescendant`,
+  listbox of `role=group`s, each option `aria-label`led whole since the highlight splits its text); the popup
+  reuses Heimdall's `command-palette__*` classes (CommandPalette itself is a modal with text-only labels).
+  An element goes through `navigateToElement`, a node type through `navigateToSpecNode`, as the nav tree does.
 - **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
   applies only on a first-ever visit; a persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`

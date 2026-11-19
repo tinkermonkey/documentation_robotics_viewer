@@ -516,8 +516,8 @@ application.applicationcomponent.topbar:
   type: applicationcomponent
   layer_id: application
   name: Topbar
-  description: "The shell's top bar: title, connection state, light/dark canvas
-    toggle and the DrBot drawer toggle."
+  description: "The shell's top bar: title, the element and node-type search box,
+    connection state, light/dark canvas toggle and the DrBot drawer toggle."
   attributes:
     type: internal
   source_reference:
@@ -743,4 +743,25 @@ application.applicationcomponent.drift-notice:
   metadata:
     created_at: 2026-11-18T20:17:32.127Z
     updated_at: 2026-11-18T20:17:32.127Z
+    version: 1
+application.applicationcomponent.topbar-search:
+  id: 2078f0ab-e262-4220-a853-9c6054878630
+  path: application.applicationcomponent.topbar-search
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Topbar Search
+  description: "The topbar's search box: an ARIA 1.2 combobox with a listbox popup
+    of results grouped by layer (group headers, layer swatch, name, type,
+    highlighted match). Arrow keys move the active option
+    (aria-activedescendant), Enter chooses, Escape clears then closes, Home/End
+    jump. `/` (when not typing in a field) and ⌘K/Ctrl+K focus it. An element
+    result calls uiStore.navigateToElement; a node-type result calls
+    navigateToSpecNode. Styled from Heimdall's command-palette classes and
+    canvas/shell tokens."
+  attributes:
+    type: internal
+  metadata:
+    created_at: 2026-11-19T17:48:18.602Z
+    updated_at: 2026-11-19T17:48:18.602Z
     version: 1

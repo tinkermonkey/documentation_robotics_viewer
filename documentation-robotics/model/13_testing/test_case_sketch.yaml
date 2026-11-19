@@ -15696,3 +15696,76 @@ testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-th
     created_at: 2026-11-18T19:24:40.394Z
     updated_at: 2026-11-18T19:24:40.394Z
     version: 1
+testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges:
+  id: 57c0d042-90d1-4100-9de6-b42975c25479
+  path: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: search index > ranks exact, prefix, word-prefix, substring then fuzzy
+    matches and returns highlight ranges
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1
+testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them:
+  id: 3348552d-5e7f-44cf-b602-3759a24555d5
+  path: testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: search index > groups results by layer in spec order and caps them
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1
+testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does:
+  id: a5618102-15f5-4cf8-8cff-850747b0182b
+  path: testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: topbar search > typing lists grouped results and Enter on an element
+    navigates as a nav-tree leaf does
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1
+testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view:
+  id: b3344aea-d6b3-4b8d-b03c-412aae7474a6
+  path: testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: topbar search > a node-type result opens it in the Schema view
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1
+testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes:
+  id: db6cbc14-6bc9-4030-b64c-cab98def4ed1
+  path: testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "topbar search > keyboard: slash and Cmd-K focus it, arrows move
+    aria-activedescendant, Escape closes"
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-19T17:48:37.422Z
+    version: 1

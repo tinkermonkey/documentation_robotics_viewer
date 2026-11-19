@@ -16,15 +16,15 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 805   |
+| Elements                  | 810   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 914   |
+| Inter-Layer Relationships | 925   |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 914   |
+| Outbound Relationships    | 925   |
 
 **Cross-Layer References**:
 
-- **Downstream layers**: [Application](./05-application-layer-report.md), [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Product](./03-product-layer-report.md), [Security](./04-security-layer-report.md)
+- **Downstream layers**: [Application](./05-application-layer-report.md), [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Product](./03-product-layer-report.md), [Security](./04-security-layer-report.md), [UX](./10-ux-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -633,6 +633,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.schema-for-layer-returns-undefined-for-an-unknown-layer`                                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `testcasesketch`      | 0             |
@@ -766,6 +768,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `testcasesketch`      | 0             |
@@ -863,6 +868,7 @@ flowchart TB
   testing --> navigation
   testing --> product
   testing --> security
+  testing --> ux
   class testing current
 ```
 
@@ -1557,6 +1563,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.schema-for-layer-returns-undefined-for-an-unknown-layer`                                                                         | `application.applicationservice.spec-graph-transform`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `application.applicationcomponent.graph-canvas`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `application.applicationcomponent.graph-canvas`                  | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `application.applicationservice.search-index`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `application.applicationservice.search-index`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
@@ -1697,6 +1705,14 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                          | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                              | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `application.applicationcomponent.rich-tooltip`                  | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `application.applicationcomponent.topbar-search`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `product.feature.topbar-search`                                  | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `motivation.requirement.wcag-21-aa-compliance`                   | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `application.applicationcomponent.topbar-search`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `ux.view.topbar-search`                                          | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `motivation.requirement.find-anything-by-name`                   | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `product.feature.topbar-search`                                  | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                       | `application` | `tests`     | many-to-many | medium   |
@@ -1783,6 +1799,7 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.layered-reach`                   | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.model-graph-transform`           | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.predicate-definitions`           | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.search-index`                    | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.structural-predicate-classifier` | `application` | `covers`    | many-to-many | medium   |
 
 ## Element Reference
@@ -12700,6 +12717,44 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
 
+### search index &gt; groups results by layer in spec order and caps them {#search-index-groups-results-by-layer-in-spec-order-and-caps-them}
+
+**ID**: `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
+
+### search index &gt; ranks exact, prefix, word-prefix, substring then fuzzy matches and returns highlight ranges {#search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges}
+
+**ID**: `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
+
 ### selectEdge / setHighlightedEdgeId — edge selection (mutually exclusive with node) &gt; a node selection clears a prior edge selection, and vice versa (round trip) {#selectedge-sethighlightededgeid-edge-selection-mutually-exclusive-with-node-a-node-selection-clears-a-prior-edge-selection-and-vice-versa-round-trip}
 
 **ID**: `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`
@@ -15120,6 +15175,68 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.rich-tooltip` | `tests`   | outbound  |
 
+### topbar search &gt; a node-type result opens it in the Schema view {#topbar-search-a-node-type-result-opens-it-in-the-schema-view}
+
+**ID**: `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`   | outbound  |
+| inter-layer | `product.feature.topbar-search`                  | `tests`   | outbound  |
+
+### topbar search &gt; keyboard: slash and Cmd-K focus it, arrows move aria-activedescendant, Escape closes {#topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes}
+
+**ID**: `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate   | Direction |
+| ----------- | ------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`   | `satisfies` | outbound  |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
+| inter-layer | `ux.view.topbar-search`                          | `tests`     | outbound  |
+
+### topbar search &gt; typing lists grouped results and Enter on an element navigates as a nav-tree leaf does {#topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does}
+
+**ID**: `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate   | Direction |
+| ----------- | ------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.find-anything-by-name`   | `satisfies` | outbound  |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
+| inter-layer | `product.feature.topbar-search`                  | `tests`     | outbound  |
+
 ### uiStore — default state &gt; defaults canvasDark to true (dark mode on first visit) {#uistore-default-state-defaults-canvasdark-to-true-dark-mode-on-first-visit}
 
 **ID**: `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`
@@ -16428,10 +16545,11 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 | inter-layer | `application.applicationservice.layered-reach`                     | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.model-graph-transform`             | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.predicate-definitions`             | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.search-index`                      | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.structural-predicate-classifier`   | `covers`   | outbound  |
 | intra-layer | `testing.testcoveragemodel.viewer-test-coverage-model`             | `composes` | inbound   |
 | intra-layer | `testing.coveragerequirement.all-partitions-unit-test-requirement` | `composes` | outbound  |
 
 ---
 
-Generated: 2026-11-19T14:20:09.790Z | Model Version: 0.1.0
+Generated: 2026-11-19T17:52:01.279Z | Model Version: 0.1.0

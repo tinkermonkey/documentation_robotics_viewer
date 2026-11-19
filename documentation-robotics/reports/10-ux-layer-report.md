@@ -16,15 +16,15 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 17    |
-| Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 29    |
-| Inbound Relationships     | 3     |
-| Outbound Relationships    | 26    |
+| Elements                  | 18    |
+| Intra-Layer Relationships | 16    |
+| Inter-Layer Relationships | 36    |
+| Inbound Relationships     | 4     |
+| Outbound Relationships    | 32    |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [Navigation](./11-navigation-layer-report.md)
+- **Upstream layers**: [Navigation](./11-navigation-layer-report.md), [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Product](./03-product-layer-report.md), [Technology](./06-technology-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -49,6 +49,7 @@ flowchart LR
     ux_view_inspector_drawer["Inspector Drawer"]
     ux_view_model_view["Model View"]
     ux_view_schema_view["Schema View"]
+    ux_view_topbar_search["Topbar Search"]
     ux_statepattern_authentication_flow_pattern -->|specializes| ux_statepattern_data_loading_pattern
     ux_uxapplication_embedded_architecture_viewer -->|aggregates| ux_uxspec_architecture_exploration_spec
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_changesets_view
@@ -56,6 +57,7 @@ flowchart LR
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_inspector_drawer
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_model_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_schema_view
+    ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_topbar_search
     ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
     ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
@@ -86,6 +88,7 @@ flowchart TB
   apm["APM"]
   testing["Testing"]
   navigation --> ux
+  testing --> ux
   ux --> business
   ux --> motivation
   ux --> product
@@ -95,37 +98,44 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                | Source Node                                    | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
-| ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`      | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                      | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                      | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.dr-bot-chat-drawer`                   | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                   | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                     | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                           | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.model-view`                           | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.model-view`                           | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                           | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                           | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                           | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.schema-view`                          | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                          | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                          | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| Relationship ID                                | Source Node                                                                                                              | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `ux.view.topbar-search`                                      | `ux`         | `tests`      | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`                                                                                | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                                                                                          | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                                                                                                | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                                                                                                | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                                                                                                | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                                                                                                | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                                                                                                | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                                                                                                | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.dr-bot-chat-drawer`                                                                                             | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                                                                                             | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                                                                                               | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                                                                                               | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                                                                                               | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                                                                                                     | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.model-view`                                                                                                     | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.model-view`                                                                                                     | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                                                                                                     | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                                                                                                     | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                                                                                                     | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.schema-view`                                                                                                    | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                                                                                                    | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                                                                                                    | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.topbar-search`                                                                                                  | `product.feature.topbar-search`                              | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.topbar-search`                                                                                                  | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.topbar-search`                                                                                                  | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.topbar-search`                                                                                                  | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.topbar-search`                                                                                                  | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.topbar-search`                                                                                                  | `motivation.goal.ensure-accessible-architecture-views`       | `motivation` | `supports`   | many-to-many | medium   |
 
 ## Element Reference
 
@@ -323,6 +333,7 @@ The viewer's main experience: browse the model and the spec layer by layer as gr
 | intra-layer | `ux.view.inspector-drawer`                              | `aggregates` | outbound  |
 | intra-layer | `ux.view.model-view`                                    | `aggregates` | outbound  |
 | intra-layer | `ux.view.schema-view`                                   | `aggregates` | outbound  |
+| intra-layer | `ux.view.topbar-search`                                 | `aggregates` | outbound  |
 
 ### Authentication Spec {#authentication-spec}
 
@@ -507,6 +518,34 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 | intra-layer | `ux.uxspec.architecture-exploration-spec`      | `aggregates` | inbound   |
 | intra-layer | `ux.subview.page-view`                         | `composes`   | outbound  |
 
+### Topbar Search {#topbar-search}
+
+**ID**: `ux.view.topbar-search`
+
+**Type**: `view`
+
+The search box in the topbar and its results popup, an overlay below it listing matches grouped by layer.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| routable | false   |
+| type     | overlay |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                          | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `tests`      | inbound   |
+| inter-layer | `product.feature.topbar-search`                                                                                          | `realizes`   | outbound  |
+| inter-layer | `business.businessobject.architecture-model`                                                                             | `references` | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                           | `satisfies`  | outbound  |
+| inter-layer | `business.businessrole.architecture-reviewer`                                                                            | `serves`     | outbound  |
+| inter-layer | `business.businessrole.model-author`                                                                                     | `serves`     | outbound  |
+| inter-layer | `motivation.goal.ensure-accessible-architecture-views`                                                                   | `supports`   | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                                                | `aggregates` | inbound   |
+
 ---
 
-Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0
+Generated: 2026-11-19T17:52:01.279Z | Model Version: 0.1.0
