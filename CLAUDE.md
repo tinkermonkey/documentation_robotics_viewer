@@ -182,6 +182,19 @@ For local dev use `dr visualize --no-auth`.
 - **Model view** — per-layer instance `GraphCanvas` (domain-colored nodes + intra-layer edges) +
   `GraphInspector` (properties, in/out + cross-layer relationships with click-to-navigate). `GraphCanvas` is
   keyed by `view:layerId:graphLayout:nodeMarginPreset` so it recenters on switch.
+- **Model view by type** (#594) — a **View** control in the Model page header (left of Layout): Graph · Lanes
+  by type · Hive by type (`uiStore.modelView`, persisted). Not a Layout value: Layout places the mixed graph,
+  while these redraw the layer's own elements grouped by node type (Layout, Inter-layer and the settings flyout
+  hide; Relations still filters the links). `data/typeBands.ts` builds the `useLayeredGraph` layering with
+  `layerBy: 'kind'`: **Heimdall's "layer" is a DR node type there**, so the code says type band and `layerId`
+  only ever means a DR layer. Bands are ordered with the least lane-skipping between linked types (exhaustive up
+  to 7 types, greedy above), named from the spec's type title with the layer word dropped and pluralized
+  ("ApplicationService" → "Services"), and titled with the full count (`.drv-type-lanes` hides Heimdall's own
+  count, which is of the nodes drawn). `ui/TypeLanesView.tsx`: `GraphCanvas layout="layer-lanes"`, a lane over
+  `BAND_CAP` (48) folds its least-linked elements into a `more:<type>` node that expands on click; selection goes
+  through `selectFromCanvas`; its `graphCanvasKey` gets a `:type-lanes` suffix so `?vp=` never crosses views.
+  `ui/TypeHiveView.tsx`: `HivePlot`, offered for 3+ types (`HIVE_MIN_TYPES`; with fewer, Hive is disabled and
+  lanes show). Heimdall still says "layer" in its own accessible names ("X, Goals layer"): an upstream gap.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
@@ -430,7 +443,7 @@ For local dev use `dr visualize --no-auth`.
   persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
   (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
-  `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a
+  `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`), the Model `modelView` and the inspector's `inspectorFollow` survive a
   reload via localStorage (key `PERSIST_KEY` = `dr-viewer-ui-preferences`,
   see its `partialize`). Navigation state (view/layerId/selectedId/changesetId/mode/focus/expanded*) is
   deliberately EXCLUDED from persistence — that's the URL router's job instead (below), so the two

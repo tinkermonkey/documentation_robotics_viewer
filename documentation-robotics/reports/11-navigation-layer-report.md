@@ -352,4 +352,4 @@ Landing route at path /#/; accepts optional ?token= search parameter; renders Au
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0

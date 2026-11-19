@@ -1,0 +1,378 @@
+- type: add
+  elementId: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+  layerName: motivation
+  after:
+    id: 2d527d0b-8c90-460f-bc63-6868eefdee07
+    path: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: DrBot opens without reflowing the canvas
+    description: Opening DrBot must not resize the canvas, wrap the page header or
+      cover the Inspector drawer or the graph toolbar while there is room for
+      both.
+    attributes:
+      requirementType: non-functional
+      priority: medium
+      documentation: "Acceptance: with the Inspector open at 1440px wide, opening
+        DrBot leaves the canvas width and the page header unchanged and the
+        panel sits left of the drawer; on a window too narrow for both, the
+        panel takes the drawer's place until DrBot closes. Source: issue #597."
+    metadata:
+      created_at: 2026-11-19T18:03:06.730Z
+      updated_at: 2026-11-19T18:03:06.730Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: satisfies
+        other_spec_node_id: application.applicationservice
+        reason: A layout requirement met by the DrBot panel component and the feature;
+          no data service is involved.
+        decided_by: agent
+        decided_at: 2026-11-19T18:03:19.619Z
+        changeset: changeset-1795111363578-veav9pv4c
+  timestamp: 2026-11-19T18:03:19.627Z
+  sequenceNumber: 0
+- type: add
+  elementId: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer
+  layerName: testing
+  after:
+    id: 9cbcde56-5d83-449d-bd85-9341d76f9d4c
+    path: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: drbot panel steps left of an open inspector drawer
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "Inspector open at 1440px: the panel's right edge is left of the
+        drawer, the canvas width and header row count are unchanged."
+    metadata:
+      created_at: 2026-11-19T18:03:06.734Z
+      updated_at: 2026-11-19T18:03:06.734Z
+      version: 1
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 1
+- type: add
+  elementId: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit
+  layerName: testing
+  after:
+    id: c7e0970c-732b-4c69-8391-ed2d349ba321
+    path: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: drbot panel takes the drawer's place when both don't fit
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: At 1000px with the Inspector open, the panel overlays the drawer's
+        place and never the nav rail; the drawer returns when DrBot closes.
+    metadata:
+      created_at: 2026-11-19T18:03:06.734Z
+      updated_at: 2026-11-19T18:03:06.734Z
+      version: 1
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher
+  layerName: testing
+  after:
+    id: 43a3a662-05a8-41cc-983a-807bf0cb88a2
+    path: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: escape inside the drbot panel closes it and returns focus to the launcher
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "Focus in the composer, Escape: the panel closes, focus lands on
+        the topbar DrBot button, the thread is still there on reopen. Escape on
+        the canvas does not close the panel."
+    metadata:
+      created_at: 2026-11-19T18:03:06.734Z
+      updated_at: 2026-11-19T18:03:06.734Z
+      version: 1
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 3
+- type: add
+  elementId: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column
+  layerName: testing
+  after:
+    id: c532562a-d61b-4421-b3ce-080baf586566
+    path: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: drbot panel resizes from its edge and docks as a column
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: Dragging or arrowing the separator resizes within 340–820px and the
+        size survives a reload; Dock turns it into a resizable column that
+        collapses to a rail tab.
+    metadata:
+      created_at: 2026-11-19T18:03:06.734Z
+      updated_at: 2026-11-19T18:03:06.734Z
+      version: 1
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: product.feature.dr-bot-chat-drawer::satisfies::motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+  layerName: product
+  after:
+    source: product.feature.dr-bot-chat-drawer
+    target: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: product.feature.dr-bot-chat-drawer::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.dr-bot-chat-drawer
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationcomponent.chat-drawer::uses::application.applicationcomponent.inspector-drawer
+  layerName: application
+  after:
+    source: application.applicationcomponent.chat-drawer
+    target: application.applicationcomponent.inspector-drawer
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer::tests::application.applicationcomponent.chat-drawer
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer
+    target: application.applicationcomponent.chat-drawer
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer::satisfies::motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer
+    target: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit::tests::application.applicationcomponent.chat-drawer
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit
+    target: application.applicationcomponent.chat-drawer
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit::satisfies::motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit
+    target: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher::tests::ux.view.dr-bot-chat-drawer
+  layerName: testing
+  after:
+    source: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher
+    target: ux.view.dr-bot-chat-drawer
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: testing
+  after:
+    source: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column::tests::application.applicationcomponent.chat-drawer
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column
+    target: application.applicationcomponent.chat-drawer
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column::accesses::data-store.collection.ui-preferences
+  layerName: testing
+  after:
+    source: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column
+    target: data-store.collection.ui-preferences
+    predicate: accesses
+    layer: testing
+    targetLayer: data-store
+    category: structural
+  timestamp: 2026-11-19T18:03:06.744Z
+  sequenceNumber: 15
+- type: update
+  elementId: application.applicationcomponent.chat-drawer
+  layerName: application
+  before:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: The 372px DrBot drawer frame (persistent at 1300px and wider, an
+      overlay below) that hosts the chat panel.
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatDrawer.tsx
+          symbol: ChatDrawer
+    metadata: &a3
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: "The DrBot panel frame that hosts the chat panel: a floating,
+      resizable, non-modal panel anchored to the topbar DrBot launcher at the
+      graph area's top-right, stepping left of an open Inspector drawer (taking
+      its place when both don't fit), or, after Dock, a resizable column that
+      collapses to a rail tab. Escape inside closes it and returns focus to the
+      launcher; size and docked state persist with the UI preferences."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-19T18:03:06.973Z
+  sequenceNumber: 16
+- type: update
+  elementId: ux.view.dr-bot-chat-drawer
+  layerName: ux
+  before:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: persistent
+      at 1300px and wider, an overlay below."
+    attributes:
+      type: drawer
+      routable: false
+    source_reference: &a4
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata: &a5
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  after:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: a floating
+      non-modal panel under the topbar launcher that never reflows the canvas,
+      with an opt-in docked column."
+    attributes:
+      type: panel
+      routable: false
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-11-19T18:03:07.279Z
+  sequenceNumber: 17
+- type: update
+  elementId: product.feature.dr-bot-chat-drawer
+  layerName: product
+  before:
+    id: 458f50bb-0a12-4ae8-9c5f-395172589e17
+    path: product.feature.dr-bot-chat-drawer
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: DrBot Chat Drawer
+    description: Streaming chat with DrBot that carries the current view and
+      selection as context.
+    attributes: &a6
+      priority: high
+      status: delivered
+    metadata: &a7
+      created_at: 2026-11-18T16:29:24.511Z
+      updated_at: 2026-11-18T16:29:24.511Z
+      version: 1
+  after:
+    id: 458f50bb-0a12-4ae8-9c5f-395172589e17
+    path: product.feature.dr-bot-chat-drawer
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: DrBot Chat Drawer
+    description: Streaming chat with DrBot that carries the current view and
+      selection as context, in a floating panel that leaves the canvas and the
+      Inspector in place (or a docked column, by choice).
+    attributes: *a6
+    metadata: *a7
+  timestamp: 2026-11-19T18:03:07.479Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:03:12.904Z
+  sequenceNumber: 19

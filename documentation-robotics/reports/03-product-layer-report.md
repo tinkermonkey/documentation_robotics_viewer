@@ -16,11 +16,11 @@ Product features, capabilities, personas, and milestones.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 27    |
-| Intra-Layer Relationships | 48    |
-| Inter-Layer Relationships | 52    |
-| Inbound Relationships     | 37    |
-| Outbound Relationships    | 15    |
+| Elements                  | 28    |
+| Intra-Layer Relationships | 51    |
+| Inter-Layer Relationships | 58    |
+| Inbound Relationships     | 40    |
+| Outbound Relationships    | 18    |
 
 **Cross-Layer References**:
 
@@ -39,6 +39,7 @@ flowchart LR
     product_feature_dr_bot_chat_drawer["DrBot Chat Drawer"]
     product_feature_element_annotations["Element Annotations"]
     product_feature_model_graph_view["Model Graph View"]
+    product_feature_model_view_by_type["Model View by Type"]
     product_feature_nav_tree_type_groups["Nav Tree Type Groups"]
     product_feature_page_view["Page View"]
     product_feature_per_change_review["Per-Change Review"]
@@ -74,6 +75,9 @@ flowchart LR
     product_feature_model_graph_view -->|realizes| product_softwarecapability_model_visualization
     product_feature_model_graph_view -->|serves| product_persona_architecture_reviewer
     product_feature_model_graph_view -->|serves| product_persona_model_author
+    product_feature_model_view_by_type -->|realizes| product_softwarecapability_model_visualization
+    product_feature_model_view_by_type -->|serves| product_persona_architecture_reviewer
+    product_feature_model_view_by_type -->|serves| product_persona_model_author
     product_feature_nav_tree_type_groups -->|realizes| product_softwarecapability_model_visualization
     product_feature_nav_tree_type_groups -->|serves| product_persona_architecture_reviewer
     product_feature_nav_tree_type_groups -->|serves| product_persona_model_author
@@ -139,60 +143,66 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                      | Source Node                                                                                                                   | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-mode-and-routing`                     | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-spend-panel`                          | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-warming-progress`                     | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                        | `product.feature.per-change-review`                          | `product`    | `exposes`    | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.change-origin-helpers`                                                                        | `product.feature.change-origin-badges`                       | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.changeset-impact-analysis`                                                                    | `product.feature.changeset-impact-tab`                       | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.changeset-review-model`                                                                       | `product.softwarecapability.changeset-review`                | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.chat-service`                                                                                 | `product.softwarecapability.model-chat`                      | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                        | `product.softwarecapability.model-visualization`             | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.nav-tree-groups`                                                                              | `product.feature.nav-tree-type-groups`                       | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                            | `product.feature.page-view`                                  | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                 | `product.feature.topbar-search`                              | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                         | `product.softwarecapability.schema-exploration`              | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`                                                                              | `product.softwarecapability.model-annotation`                | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-changeset-review`                                                                         | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-spend-panel`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                                                                                            | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.per-change-review`                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.find-anything-by-name`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.persona.references.business.businessrole`                   | `product.persona.architecture-reviewer`                                                                                       | `business.businessrole.architecture-reviewer`                | `business`   | `references` | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                  | `product.persona.architecture-reviewer`                                                                                       | `motivation.stakeholder.architecture-team`                   | `motivation` | `references` | many-to-many | medium   |
-| `product.persona.references.business.businessrole`                   | `product.persona.model-author`                                                                                                | `business.businessrole.model-author`                         | `business`   | `references` | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                  | `product.persona.model-author`                                                                                                | `motivation.stakeholder.development-team`                    | `motivation` | `references` | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.changeset-review`                                                                                 | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-annotation`                                                                                 | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-chat`                                                                                       | `motivation.goal.accelerate-architecture-documentation`      | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.realizes.business.businessfunction`      | `product.softwarecapability.model-visualization`                                                                              | `business.businessfunction.cross-layer-reference-resolution` | `business`   | `realizes`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-visualization`                                                                              | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `product.userworkflow.realizes.business.businessprocess`             | `product.userworkflow.review-a-staged-changeset`                                                                              | `business.businessprocess.changeset-review-flow`             | `business`   | `realizes`   | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`           | `product.feature.nav-tree-type-groups`                       | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                  | `product.feature.nav-tree-type-groups`                       | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `product.feature.tier1-mode-and-routing`                     | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `product.feature.tier1-mode-and-routing`                     | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                          | `product.feature.tier1-warming-progress`                     | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                | `product.feature.tier1-warming-progress`                     | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `product.feature.topbar-search`                              | `product`    | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `product.feature.topbar-search`                              | `product`    | `tests`      | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.dr-bot-chat-drawer`                                                                                                  | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.schema-view`                                                                                                         | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`                                   | `ux.view.topbar-search`                                                                                                       | `product.feature.topbar-search`                              | `product`    | `realizes`   | many-to-many | medium   |
+| Relationship ID                                                      | Source Node                                                                                                                   | Dest Node                                                          | Dest Layer   | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-mode-and-routing`                           | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-spend-panel`                                | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                 | `product.feature.tier1-warming-progress`                           | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                        | `product.feature.per-change-review`                                | `product`    | `exposes`    | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.change-origin-helpers`                                                                        | `product.feature.change-origin-badges`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.changeset-impact-analysis`                                                                    | `product.feature.changeset-impact-tab`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.changeset-review-model`                                                                       | `product.softwarecapability.changeset-review`                      | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.chat-service`                                                                                 | `product.softwarecapability.model-chat`                            | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                | `product.feature.cross-layer-follow`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                        | `product.softwarecapability.model-visualization`                   | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.nav-tree-groups`                                                                              | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                            | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                 | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                         | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.type-bands`                                                                                   | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`                                                                              | `product.softwarecapability.model-annotation`                      | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-changeset-review`                                                                         | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-mode-and-routing`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-spend-panel`                                | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                    | `product.feature.tier1-warming-progress`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.dr-bot-chat-drawer`                                                                                          | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.dr-bot-chat-drawer`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                                                                                            | `motivation.requirement.viewer-covers-every-spec-layer`            | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-view-by-type`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.per-change-review`                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own`       | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.find-anything-by-name`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.topbar-search`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.persona.references.business.businessrole`                   | `product.persona.architecture-reviewer`                                                                                       | `business.businessrole.architecture-reviewer`                      | `business`   | `references` | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                  | `product.persona.architecture-reviewer`                                                                                       | `motivation.stakeholder.architecture-team`                         | `motivation` | `references` | many-to-many | medium   |
+| `product.persona.references.business.businessrole`                   | `product.persona.model-author`                                                                                                | `business.businessrole.model-author`                               | `business`   | `references` | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                  | `product.persona.model-author`                                                                                                | `motivation.stakeholder.development-team`                          | `motivation` | `references` | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.changeset-review`                                                                                 | `motivation.goal.accelerate-architecture-documentation`            | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-annotation`                                                                                 | `motivation.goal.enable-real-time-collaboration`                   | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-chat`                                                                                       | `motivation.goal.accelerate-architecture-documentation`            | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.realizes.business.businessfunction`      | `product.softwarecapability.model-visualization`                                                                              | `business.businessfunction.cross-layer-reference-resolution`       | `business`   | `realizes`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.model-visualization`                                                                              | `motivation.goal.visualize-multi-layer-architecture-models`        | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`        | `motivation` | `supports`   | many-to-many | medium   |
+| `product.userworkflow.realizes.business.businessprocess`             | `product.userworkflow.review-a-staged-changeset`                                                                              | `business.businessprocess.changeset-review-flow`                   | `business`   | `realizes`   | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                | `product.feature.model-view-by-type`                               | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`           | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                  | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `product.feature.tier1-mode-and-routing`                           | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `product.feature.tier1-mode-and-routing`                           | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                          | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-mode-and-routing`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.tier1-warming-progress`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.dr-bot-chat-drawer`                                                                                                  | `product.feature.dr-bot-chat-drawer`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.cross-layer-follow`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.inspector-drawer`                                                                                                    | `product.feature.element-annotations`                              | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-graph-view`                                 | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.model-view`                                                                                                          | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.schema-view`                                                                                                         | `product.feature.schema-graph-view`                                | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.topbar-search`                                                                                                       | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 
 ## Element Reference
 
@@ -297,7 +307,7 @@ The inspector's Followed across layers section: the selection's reach past its d
 
 **Type**: `feature`
 
-Streaming chat with DrBot that carries the current view and selection as context.
+Streaming chat with DrBot that carries the current view and selection as context, in a floating panel that leaves the canvas and the Inspector in place (or a docked column, by choice).
 
 #### Attributes
 
@@ -308,11 +318,13 @@ Streaming chat with DrBot that carries the current view and selection as context
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate  | Direction |
-| ----------- | --------------------------------------- | ---------- | --------- |
-| inter-layer | `ux.view.dr-bot-chat-drawer`            | `realizes` | inbound   |
-| intra-layer | `product.softwarecapability.model-chat` | `realizes` | outbound  |
-| intra-layer | `product.persona.model-author`          | `serves`   | outbound  |
+| Type        | Related Element                                                    | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `satisfies` | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                     | `satisfies` | outbound  |
+| inter-layer | `ux.view.dr-bot-chat-drawer`                                       | `realizes`  | inbound   |
+| intra-layer | `product.softwarecapability.model-chat`                            | `realizes`  | outbound  |
+| intra-layer | `product.persona.model-author`                                     | `serves`    | outbound  |
 
 ### Element Annotations {#element-annotations}
 
@@ -361,6 +373,34 @@ Per-layer instance graph with Clustered, Organic and Orthogonal layouts, card or
 | intra-layer | `product.softwarecapability.model-visualization`        | `realizes`  | outbound  |
 | intra-layer | `product.persona.architecture-reviewer`                 | `serves`    | outbound  |
 | intra-layer | `product.persona.model-author`                          | `serves`    | outbound  |
+
+### Model View by Type {#model-view-by-type}
+
+**ID**: `product.feature.model-view-by-type`
+
+**Type**: `feature`
+
+See one DR layer's elements grouped by node type: lanes (one per type, linked types adjacent) or a hive (one axis per type), chosen in the Model view's View control beside Layout.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | medium  |
+| size     | m       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                                | Predicate   | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.type-bands`                                                    | `realizes`  | inbound   |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                 | `satisfies` | outbound  |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`     | inbound   |
+| inter-layer | `ux.view.model-view`                                                                           | `realizes`  | inbound   |
+| intra-layer | `product.softwarecapability.model-visualization`                                               | `realizes`  | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                        | `serves`    | outbound  |
+| intra-layer | `product.persona.model-author`                                                                 | `serves`    | outbound  |
 
 ### Nav Tree Type Groups {#nav-tree-type-groups}
 
@@ -605,6 +645,7 @@ Reads a DR model and the changesets proposed against it, decides each change, an
 | intra-layer | `product.feature.cross-layer-follow`             | `serves`     | inbound   |
 | intra-layer | `product.feature.element-annotations`            | `serves`     | inbound   |
 | intra-layer | `product.feature.model-graph-view`               | `serves`     | inbound   |
+| intra-layer | `product.feature.model-view-by-type`             | `serves`     | inbound   |
 | intra-layer | `product.feature.nav-tree-type-groups`           | `serves`     | inbound   |
 | intra-layer | `product.feature.page-view`                      | `serves`     | inbound   |
 | intra-layer | `product.feature.per-change-review`              | `serves`     | inbound   |
@@ -634,6 +675,7 @@ Builds and evolves the DR model with the dr CLI and its agents; uses the viewer 
 | inter-layer | `motivation.stakeholder.development-team` | `references` | outbound  |
 | intra-layer | `product.feature.dr-bot-chat-drawer`      | `serves`     | inbound   |
 | intra-layer | `product.feature.model-graph-view`        | `serves`     | inbound   |
+| intra-layer | `product.feature.model-view-by-type`      | `serves`     | inbound   |
 | intra-layer | `product.feature.nav-tree-type-groups`    | `serves`     | inbound   |
 | intra-layer | `product.feature.schema-graph-view`       | `serves`     | inbound   |
 | intra-layer | `product.feature.tier1-mode-and-routing`  | `serves`     | inbound   |
@@ -736,6 +778,7 @@ Render a DR model layer by layer as a navigable graph or as pages, with relation
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`  | `supports` | outbound  |
 | intra-layer | `product.feature.cross-layer-follow`                         | `realizes` | inbound   |
 | intra-layer | `product.feature.model-graph-view`                           | `realizes` | inbound   |
+| intra-layer | `product.feature.model-view-by-type`                         | `realizes` | inbound   |
 | intra-layer | `product.feature.nav-tree-type-groups`                       | `realizes` | inbound   |
 | intra-layer | `product.feature.page-view`                                  | `realizes` | inbound   |
 | intra-layer | `product.feature.topbar-search`                              | `realizes` | inbound   |
@@ -884,4 +927,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-19T18:37:41.788Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0

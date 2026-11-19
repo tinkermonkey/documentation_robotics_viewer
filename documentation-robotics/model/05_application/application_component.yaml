@@ -9,11 +9,12 @@ application.applicationcomponent.graph-canvas:
     mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a user-chosen
     layout (Clustered force-clustered, Organic default, or Orthogonal), keyed by
     view:layerId:graphLayout:nodeMarginPreset so it re-lays out and recenters on
-    any of those changes. Inter-layer (foreign) neighbours render as pills with
-    a dashed border and faded swatch, at full text contrast, and navigate to
-    their home layer on click. Replaced the old React Flow-based GraphViewer +
-    pluggable Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June
-    2026 Heimdall UX rebuild.
+    any of those changes. In the Model view a View control beside Layout
+    (uiStore.modelView, persisted) swaps the mixed graph for the Type Lanes View
+    or Type Hive View; Layout, Boundaries, Node margin and Display apply to the
+    mixed graph only. Inter-layer (foreign) neighbours render as pills with a
+    dashed border and faded swatch, at full text contrast, and navigate to their
+    home layer on click.
   attributes:
     type: internal
   source_reference:
@@ -437,8 +438,12 @@ application.applicationcomponent.chat-drawer:
   type: applicationcomponent
   layer_id: application
   name: Chat Drawer
-  description: The 372px DrBot drawer frame (persistent at 1300px and wider, an
-    overlay below) that hosts the chat panel.
+  description: "The DrBot panel frame that hosts the chat panel: a floating,
+    resizable, non-modal panel anchored to the topbar DrBot launcher at the
+    graph area's top-right, stepping left of an open Inspector drawer (taking
+    its place when both don't fit), or, after Dock, a resizable column that
+    collapses to a rail tab. Escape inside closes it and returns focus to the
+    launcher; size and docked state persist with the UI preferences."
   attributes:
     type: internal
   source_reference:
@@ -794,4 +799,56 @@ application.applicationcomponent.topbar-search:
   metadata:
     created_at: 2026-11-19T17:48:18.602Z
     updated_at: 2026-11-19T17:48:18.602Z
+    version: 1
+application.applicationcomponent.type-lanes-view:
+  id: d9dfab8d-7f54-4ba4-a743-fb5b0542de73
+  path: application.applicationcomponent.type-lanes-view
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Type Lanes View
+  description: GraphCanvas layout="layer-lanes" over useLayeredGraph with the type
+    bands layering. Lanes ordered by the type bands service, large lanes capped
+    with a "+N more" row; toolbar bottom-left, fitView, centerOnSelect and
+    selection through the Canvas's selectFromCanvas.
+  attributes:
+    type: internal
+  accepted_gaps:
+    - direction: outgoing
+      predicate: uses
+      other_spec_node_id: application.applicationcomponent
+      reason: Renders Heimdall's GraphCanvas lanes directly; selection goes through
+        the Canvas's selectFromCanvas and the UI store, not through another
+        viewer component.
+      decided_by: agent
+      decided_at: 2026-11-19T18:02:22.414Z
+      changeset: changeset-1795111279160-shbw81238
+  metadata:
+    created_at: 2026-11-19T18:01:36.767Z
+    updated_at: 2026-11-19T18:01:36.767Z
+    version: 1
+application.applicationcomponent.type-hive-view:
+  id: 4d4dfc1d-5b46-4b00-acda-4af147bce72c
+  path: application.applicationcomponent.type-hive-view
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Type Hive View
+  description: HivePlot over useLayeredGraph with the type bands layering; the k
+    busiest per axis labelled; selection shared with the Inspector drawer.
+  attributes:
+    type: internal
+  accepted_gaps:
+    - direction: outgoing
+      predicate: uses
+      other_spec_node_id: application.applicationcomponent
+      reason: Renders Heimdall's HivePlot directly; selection goes through the
+        Canvas's selectFromCanvas and the UI store, not through another viewer
+        component.
+      decided_by: agent
+      decided_at: 2026-11-19T18:02:22.628Z
+      changeset: changeset-1795111279160-shbw81238
+  metadata:
+    created_at: 2026-11-19T18:01:36.768Z
+    updated_at: 2026-11-19T18:01:36.768Z
     version: 1

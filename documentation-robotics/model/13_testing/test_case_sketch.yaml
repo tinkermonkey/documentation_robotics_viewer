@@ -15847,3 +15847,118 @@ testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-mo
     created_at: 2026-11-19T17:48:37.422Z
     updated_at: 2026-11-19T17:48:37.422Z
     version: 1
+testing.testcasesketch.type-bands-order-linked-types-next-to-each-other:
+  id: d74cf484-e4e8-47eb-8eca-6cd633f57d26
+  path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands order linked types next to each other
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: "Motivation fixture: requirements, goals and principles come out
+      adjacent; the order has the least lane-skipping."
+  metadata:
+    created_at: 2026-11-19T18:01:36.770Z
+    updated_at: 2026-11-19T18:01:36.770Z
+    version: 1
+testing.testcasesketch.type-bands-name-types-without-the-layer-prefix:
+  id: d4e1111e-45e5-4481-952a-63ab1cb4f7db
+  path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands name types without the layer prefix
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: applicationservice in application reads Services; band ids stay the
+      raw type.
+  metadata:
+    created_at: 2026-11-19T18:01:36.783Z
+    updated_at: 2026-11-19T18:01:36.783Z
+    version: 1
+testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists:
+  id: aaf22589-2409-4856-ad15-f157a5eb5fa7
+  path: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: model view control switches between graph lanes and hive and persists
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: Choosing Lanes by type renders the lanes, keeps the selection in
+      the Inspector, survives a reload; Hive is disabled for a layer with fewer
+      than 3 types.
+  metadata:
+    created_at: 2026-11-19T18:01:36.783Z
+    updated_at: 2026-11-19T18:01:36.783Z
+    version: 1
+testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer:
+  id: 9cbcde56-5d83-449d-bd85-9341d76f9d4c
+  path: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel steps left of an open inspector drawer
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: "Inspector open at 1440px: the panel's right edge is left of the
+      drawer, the canvas width and header row count are unchanged."
+  metadata:
+    created_at: 2026-11-19T18:03:06.734Z
+    updated_at: 2026-11-19T18:03:06.734Z
+    version: 1
+testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit:
+  id: c7e0970c-732b-4c69-8391-ed2d349ba321
+  path: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel takes the drawer's place when both don't fit
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: At 1000px with the Inspector open, the panel overlays the drawer's
+      place and never the nav rail; the drawer returns when DrBot closes.
+  metadata:
+    created_at: 2026-11-19T18:03:06.734Z
+    updated_at: 2026-11-19T18:03:06.734Z
+    version: 1
+testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher:
+  id: 43a3a662-05a8-41cc-983a-807bf0cb88a2
+  path: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: escape inside the drbot panel closes it and returns focus to the launcher
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: "Focus in the composer, Escape: the panel closes, focus lands on
+      the topbar DrBot button, the thread is still there on reopen. Escape on
+      the canvas does not close the panel."
+  metadata:
+    created_at: 2026-11-19T18:03:06.734Z
+    updated_at: 2026-11-19T18:03:06.734Z
+    version: 1
+testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column:
+  id: c532562a-d61b-4421-b3ce-080baf586566
+  path: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel resizes from its edge and docks as a column
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: Dragging or arrowing the separator resizes within 340–820px and the
+      size survives a reload; Dock turns it into a resizable column that
+      collapses to a rail tab.
+  metadata:
+    created_at: 2026-11-19T18:03:06.734Z
+    updated_at: 2026-11-19T18:03:06.734Z
+    version: 1

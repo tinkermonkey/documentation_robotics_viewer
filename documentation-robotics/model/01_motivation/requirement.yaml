@@ -158,3 +158,33 @@ motivation.requirement.find-anything-by-name:
     created_at: 2026-11-19T17:48:57.905Z
     updated_at: 2026-11-19T17:48:57.905Z
     version: 1
+motivation.requirement.dr-bot-opens-without-reflowing-the-canvas:
+  id: 2d527d0b-8c90-460f-bc63-6868eefdee07
+  path: motivation.requirement.dr-bot-opens-without-reflowing-the-canvas
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: DrBot opens without reflowing the canvas
+  description: Opening DrBot must not resize the canvas, wrap the page header or
+    cover the Inspector drawer or the graph toolbar while there is room for
+    both.
+  attributes:
+    requirementType: non-functional
+    priority: medium
+    documentation: "Acceptance: with the Inspector open at 1440px wide, opening
+      DrBot leaves the canvas width and the page header unchanged and the panel
+      sits left of the drawer; on a window too narrow for both, the panel takes
+      the drawer's place until DrBot closes. Source: issue #597."
+  accepted_gaps:
+    - direction: incoming
+      predicate: satisfies
+      other_spec_node_id: application.applicationservice
+      reason: A layout requirement met by the DrBot panel component and the feature;
+        no data service is involved.
+      decided_by: agent
+      decided_at: 2026-11-19T18:03:19.619Z
+      changeset: changeset-1795111363578-veav9pv4c
+  metadata:
+    created_at: 2026-11-19T18:03:06.730Z
+    updated_at: 2026-11-19T18:03:06.730Z
+    version: 1

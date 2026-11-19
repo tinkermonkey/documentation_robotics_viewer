@@ -16,10 +16,10 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 23    |
-| Intra-Layer Relationships | 29    |
-| Inter-Layer Relationships | 51    |
-| Inbound Relationships     | 51    |
+| Elements                  | 24    |
+| Intra-Layer Relationships | 30    |
+| Inter-Layer Relationships | 57    |
+| Inbound Relationships     | 57    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
@@ -43,6 +43,7 @@ flowchart LR
     motivation_principle_core_app_architectural_separation["Core-App Architectural Separation"]
     motivation_principle_read_first_always["Read First, Always"]
     motivation_principle_zustand_only_state_management["Zustand-Only State Management"]
+    motivation_requirement_dr_bot_opens_without_reflowing_the_canvas["DrBot opens without reflowing the canvas"]
     motivation_requirement_dr_cli_server_integration["DR CLI Server Integration"]
     motivation_requirement_drift_shows_before_apply["Drift shows before Apply"]
     motivation_requirement_each_review_change_reads_on_its_own["Each review change reads on its own"]
@@ -69,6 +70,7 @@ flowchart LR
     motivation_principle_core_app_architectural_separation -->|influence| motivation_goal_visualize_multi_layer_architecture_models
     motivation_principle_read_first_always -->|influence| motivation_goal_accelerate_architecture_documentation
     motivation_principle_zustand_only_state_management -->|influence| motivation_requirement_dr_cli_server_integration
+    motivation_requirement_dr_bot_opens_without_reflowing_the_canvas -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_dr_cli_server_integration -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_drift_shows_before_apply -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_each_review_change_reads_on_its_own -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
@@ -146,7 +148,10 @@ flowchart TB
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                        | `ef84b64d-883c-4471-9b56-a58574bac2b9`                              | `motivation` | `supports`   | unknown      | unknown  |
 | `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                                                        | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                                                                                        | `731285cc-dc15-4c64-a342-a933ce00bd61`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                                                          | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-graph-view`                                                                                            | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-view-by-type`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.per-change-review`                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.topbar-search`                                                                                               | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.topbar-search`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -157,6 +162,9 @@ flowchart TB
 | `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-chat`                                                                                       | `motivation.goal.accelerate-architecture-documentation`             | `motivation` | `supports`   | many-to-many | medium   |
 | `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-visualization`                                                                              | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
 | `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                   | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                               | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                            | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`      | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.architecture-exploration-spec`                                                                                     | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -376,6 +384,7 @@ Provide interactive, navigable visualization of the DR spec's multi-layer archit
 | intra-layer | `motivation.driver.architecture-documentation-complexity`           | `influence` | inbound   |
 | intra-layer | `motivation.principle.core-app-architectural-separation`            | `influence` | outbound  |
 | intra-layer | `motivation.principle.core-app-architectural-separation`            | `influence` | inbound   |
+| intra-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.dr-cli-server-integration`                  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.drift-shows-before-apply`                   | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.each-review-change-reads-on-its-own`        | `realizes`  | inbound   |
@@ -447,6 +456,31 @@ All global state managed via Zustand stores; no Redux, no React Context for stat
 | ----------- | -------------------------------------------------- | ----------- | --------- |
 | intra-layer | `motivation.goal.enable-real-time-collaboration`   | `influence` | inbound   |
 | intra-layer | `motivation.requirement.dr-cli-server-integration` | `influence` | outbound  |
+
+### DrBot opens without reflowing the canvas {#drbot-opens-without-reflowing-the-canvas}
+
+**ID**: `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`
+
+**Type**: `requirement`
+
+Opening DrBot must not resize the canvas, wrap the page header or cover the Inspector drawer or the graph toolbar while there is room for both.
+
+#### Attributes
+
+| Name            | Value                                                                                                                                                                                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| documentation   | Acceptance: with the Inspector open at 1440px wide, opening DrBot leaves the canvas width and the page header unchanged and the panel sits left of the drawer; on a window too narrow for both, the panel takes the drawer's place until DrBot closes. Source: issue #597. |
+| priority        | medium                                                                                                                                                                                                                                                                     |
+| requirementType | non-functional                                                                                                                                                                                                                                                             |
+
+#### Relationships
+
+| Type        | Related Element                                                                 | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `product.feature.dr-bot-chat-drawer`                                            | `satisfies` | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`     | `satisfies` | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit` | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                     | `realizes`  | outbound  |
 
 ### DR CLI Server Integration {#dr-cli-server-integration}
 
@@ -635,7 +669,10 @@ All interactive components must pass axe-core automated accessibility testing an
 
 | Type        | Related Element                                                                                                          | Predicate         | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------ | ----------------- | --------- |
+| inter-layer | `product.feature.dr-bot-chat-drawer`                                                                                     | `satisfies`       | inbound   |
+| inter-layer | `product.feature.model-view-by-type`                                                                                     | `satisfies`       | inbound   |
 | inter-layer | `product.feature.topbar-search`                                                                                          | `satisfies`       | inbound   |
+| inter-layer | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                       | `satisfies`       | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `satisfies`       | inbound   |
 | inter-layer | `ux.view.changesets-view`                                                                                                | `satisfies`       | inbound   |
 | inter-layer | `ux.view.model-view`                                                                                                     | `satisfies`       | inbound   |
@@ -713,4 +750,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-19T18:37:41.788Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0

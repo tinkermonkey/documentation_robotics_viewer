@@ -771,3 +771,10 @@ body.dark-canvas {
   background: rgb(var(--canvas-bg-2));
   color: rgb(var(--canvas-fg-1));
 }
+
+/* Model view › Lanes by type (#594): the lane title already says the type's
+   full count ("Requirements · 8"); Heimdall's own count is of the nodes drawn,
+   which a capped lane ("+N more") undercounts. */
+.drv-type-lanes .graph-lane__title tspan {
+  display: none;
+}

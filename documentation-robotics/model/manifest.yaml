@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.5.0
 spec_version: 0.13.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-19T17:50:11.907Z
+updated: 2026-11-19T18:25:17.607Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 8
+      requirement: 9
       stakeholder: 3
   business:
     order: 2
@@ -39,7 +39,7 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
-      feature: 15
+      feature: 16
       persona: 2
       softwarecapability: 5
       userworkflow: 1
@@ -65,11 +65,11 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 35
+      applicationcomponent: 37
       applicationfunction: 5
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 37
+      applicationservice: 38
   technology:
     order: 6
     name: Technology
@@ -117,7 +117,7 @@ layers:
     enabled: true
     elements:
       statepattern: 2
-      subview: 6
+      subview: 8
       uxapplication: 1
       uxspec: 2
       view: 7
@@ -154,7 +154,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 809
+      testcasesketch: 816
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -196,6 +196,12 @@ changeset_history:
     action: committed
   - name: topbar-search
     committed_at: 2026-11-19T17:52:01.219Z
+    action: committed
+  - name: model-view-by-type
+    committed_at: 2026-11-19T18:22:21.095Z
+    action: committed
+  - name: drbot-floating-panel
+    committed_at: 2026-11-19T18:25:17.607Z
     action: committed
 reconciled:
   changeset: model-sync-2026-11-18

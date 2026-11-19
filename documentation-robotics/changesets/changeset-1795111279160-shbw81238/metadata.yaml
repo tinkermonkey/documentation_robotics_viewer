@@ -1,0 +1,139 @@
+id: changeset-1795111279160-shbw81238
+name: model-view-by-type
+description: "Issue #594. Add a View control to the Model view's page header
+  (Graph · Lanes by type · Hive by type) so a DR layer's elements can be seen
+  grouped by node type. Lanes: one GraphCanvas layer-lanes lane per node type,
+  ordered so linked types sit next to each other, with a \"+N more\" row cap on
+  large lanes. Hive: one HivePlot axis per type, disabled under 3 types. Both
+  share the selection with the Inspector drawer and get their own viewport key
+  scope. A View control, not a Layout value; the mixed graph stays. In the UI
+  and code \"layer\" only ever means a DR layer: type groups are type bands
+  (data/typeBands.ts, layerBy 'kind'). Done: both views work on every layer, the
+  choice persists, tests cover ordering, naming and the accessible names
+  (heimdall-ui still says \"layer\" in its own labels: upstream gap, out of
+  scope). Design:
+  https://github.com/tinkermonkey/documentation_robotics_viewer/issues/594#issu\
+  ecomment-7017525918"
+created: 2026-11-19T18:01:19.167Z
+modified: 2026-11-19T18:22:21.077Z
+status: committed
+baseSnapshot: sha256:46237e8537fe5ba005184fab818d6e10f7f5dc3f48f5a56e05b62a87096d37ee
+origin:
+  kind: plan
+stats:
+  additions: 36
+  modifications: 3
+  deletions: 0
+lastSequence: 43
+unstaged:
+  - sequence: 3
+    removedAt: 38
+    change:
+      type: add
+      elementId: application.applicationcomponent.type-lanes-view
+      layerName: application
+      after:
+        id: d9dfab8d-7f54-4ba4-a743-fb5b0542de73
+        path: application.applicationcomponent.type-lanes-view
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Type Lanes View
+        description: GraphCanvas layout="layer-lanes" over useLayeredGraph with the type
+          bands layering. Lanes ordered by the type bands service, large lanes
+          capped with a "+N more" row; toolbar bottom-left, fitView,
+          centerOnSelect and selection through the Canvas's selectFromCanvas.
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-19T18:01:36.767Z
+          updated_at: 2026-11-19T18:01:36.767Z
+          version: 1
+      timestamp: 2026-11-19T18:01:36.798Z
+    rewritten: true
+  - sequence: 4
+    removedAt: 39
+    change:
+      type: add
+      elementId: application.applicationcomponent.type-hive-view
+      layerName: application
+      after:
+        id: 4d4dfc1d-5b46-4b00-acda-4af147bce72c
+        path: application.applicationcomponent.type-hive-view
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Type Hive View
+        description: HivePlot over useLayeredGraph with the type bands layering; the k
+          busiest per axis labelled; selection shared with the Inspector drawer.
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-19T18:01:36.768Z
+          updated_at: 2026-11-19T18:01:36.768Z
+          version: 1
+      timestamp: 2026-11-19T18:01:36.798Z
+    rewritten: true
+  - sequence: 23
+    removedAt: 40
+    change:
+      type: add
+      elementId: application.applicationservice.type-bands
+      layerName: application
+      after:
+        id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+        path: application.applicationservice.type-bands
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Type Bands
+        description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+          'kind') for one DR layer's elements; band order with the least
+          lane-skipping between linked types; plural display names without the
+          layer prefix (shared with the nav tree's type helper); the row cap for
+          large lanes. Where it meets Heimdall, Heimdall's 'layer' is our node
+          type; layerId only ever means a DR layer."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-19T18:01:46.735Z
+          updated_at: 2026-11-19T18:01:46.735Z
+          version: 1
+      timestamp: 2026-11-19T18:01:46.756Z
+    rewritten: true
+  - sequence: 23
+    removedAt: 41
+    change:
+      type: add
+      elementId: application.applicationservice.type-bands
+      layerName: application
+      after:
+        id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+        path: application.applicationservice.type-bands
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Type Bands
+        description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+          'kind') for one DR layer's elements; band order with the least
+          lane-skipping between linked types; plural display names without the
+          layer prefix (shared with the nav tree's type helper); the row cap for
+          large lanes. Where it meets Heimdall, Heimdall's 'layer' is our node
+          type; layerId only ever means a DR layer."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-19T18:01:46.735Z
+          updated_at: 2026-11-19T18:01:46.735Z
+          version: 1
+        accepted_gaps:
+          - direction: incoming
+            predicate: depends-on
+            other_spec_node_id: application.applicationservice
+            reason: Only the two by-type view components call it; no other data service
+              builds on the type bands.
+            decided_by: agent
+            decided_at: 2026-11-19T18:02:22.848Z
+            changeset: changeset-1795111279160-shbw81238
+      timestamp: 2026-11-19T18:02:22.854Z
+    rewritten: true

@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 80    |
-| Intra-Layer Relationships | 174   |
-| Inter-Layer Relationships | 923   |
-| Inbound Relationships     | 860   |
-| Outbound Relationships    | 63    |
+| Elements                  | 83    |
+| Intra-Layer Relationships | 184   |
+| Inter-Layer Relationships | 933   |
+| Inbound Relationships     | 869   |
+| Outbound Relationships    | 64    |
 
 **Cross-Layer References**:
 
@@ -44,13 +44,13 @@ Application components, services, and interactions.
 | `application.applicationcomponent.changeset-inbox`               | `applicationcomponent` | 5             |
 | `application.applicationcomponent.changeset-inspector`           | `applicationcomponent` | 9             |
 | `application.applicationcomponent.changeset-review-panel`        | `applicationcomponent` | 10            |
-| `application.applicationcomponent.chat-drawer`                   | `applicationcomponent` | 3             |
+| `application.applicationcomponent.chat-drawer`                   | `applicationcomponent` | 4             |
 | `application.applicationcomponent.chat-panel`                    | `applicationcomponent` | 6             |
 | `application.applicationcomponent.drift-notice`                  | `applicationcomponent` | 5             |
 | `application.applicationcomponent.edge-inspector`                | `applicationcomponent` | 5             |
 | `application.applicationcomponent.error-boundary`                | `applicationcomponent` | 1             |
-| `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 15            |
-| `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 12            |
+| `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 17            |
+| `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 13            |
 | `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 4             |
 | `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 1             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 2             |
@@ -68,6 +68,8 @@ Application components, services, and interactions.
 | `application.applicationcomponent.tier1-panel`                   | `applicationcomponent` | 2             |
 | `application.applicationcomponent.topbar`                        | `applicationcomponent` | 3             |
 | `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 6             |
+| `application.applicationcomponent.type-hive-view`                | `applicationcomponent` | 4             |
+| `application.applicationcomponent.type-lanes-view`               | `applicationcomponent` | 5             |
 | `application.applicationfunction.auth-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
@@ -89,11 +91,11 @@ Application components, services, and interactions.
 | `application.applicationservice.error-tracker`                   | `applicationservice`   | 4             |
 | `application.applicationservice.exception-classifier`            | `applicationservice`   | 2             |
 | `application.applicationservice.generated-api-client`            | `applicationservice`   | 13            |
-| `application.applicationservice.graph-viewport-key`              | `applicationservice`   | 1             |
+| `application.applicationservice.graph-viewport-key`              | `applicationservice`   | 2             |
 | `application.applicationservice.json-rpc-handler`                | `applicationservice`   | 4             |
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 7             |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
-| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 9             |
+| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 11            |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 1             |
 | `application.applicationservice.neighborhood-graph`              | `applicationservice`   | 1             |
 | `application.applicationservice.page-data-builder`               | `applicationservice`   | 4             |
@@ -102,6 +104,7 @@ Application components, services, and interactions.
 | `application.applicationservice.search-index`                    | `applicationservice`   | 2             |
 | `application.applicationservice.spec-graph-transform`            | `applicationservice`   | 3             |
 | `application.applicationservice.structural-predicate-classifier` | `applicationservice`   | 1             |
+| `application.applicationservice.type-bands`                      | `applicationservice`   | 4             |
 | `application.applicationservice.use-annotations`                 | `applicationservice`   | 2             |
 | `application.applicationservice.use-changeset-review`            | `applicationservice`   | 7             |
 | `application.applicationservice.use-changesets`                  | `applicationservice`   | 6             |
@@ -217,6 +220,7 @@ flowchart TB
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.search-index`                                                                                                            | `motivation.requirement.find-anything-by-name`                      | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.spec-graph-transform`                                                                                                    | `business.businessservice.schema-exploration`                       | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.spec-graph-transform`                                                                                                    | `product.softwarecapability.schema-exploration`                     | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.type-bands`                                                                                                              | `product.feature.model-view-by-type`                                | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-annotations`                                                                                                         | `business.businessservice.model-annotation`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.use-annotations`                                                                                                         | `product.softwarecapability.model-annotation`                       | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                      | `application.applicationservice.use-changeset-review`                                                                                                    | `business.businessobject.changeset`                                 | `business`    | `accesses`   | many-to-many | medium   |
@@ -249,6 +253,8 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.type-hive-view`                   | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.type-lanes-view`                  | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                                                                                                              | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                                                                                                        | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `application.applicationcomponent.app-shell`                        | `application` | `tests`      | many-to-many | medium   |
@@ -436,6 +442,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-composes-layer-id-type-slugname`                                                                                       | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-drops-dots-in-the-name-segment-2-1-21`                                                                                 | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-matches-slugify-name-for-the-name-segment-on-every-fixture-node`                                                       | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column`                                                                         | `application.applicationcomponent.chat-drawer`                      | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                                              | `application.applicationcomponent.chat-drawer`                      | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                                                          | `application.applicationcomponent.chat-drawer`                      | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-destination-kind-badge-navigates-to-that-types-de9439b0`                       | `application.applicationcomponent.inspector-drawer`                 | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-predicate-badge-navigates-to-the-edges-source-acb06194`                        | `application.applicationcomponent.inspector-drawer`                 | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-source-kind-badge-navigates-to-that-types-schema-c007cb73`                     | `application.applicationcomponent.inspector-drawer`                 | `application` | `tests`      | many-to-many | medium   |
@@ -632,6 +641,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-node-page-data-the-intra-layer-incoming-predicate-cell-carries-edge-info-pointing-at-the-real-b753a6c1`                    | `application.applicationservice.page-data-builder`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-clicking-a-cross-layer-relationship-target-switches-layer-and-selects-the-target`                                     | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-clicking-a-node-populates-the-inspector-and-highlights-it`                                                            | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                                           | `application.applicationcomponent.type-hive-view`                   | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                                           | `application.applicationcomponent.type-lanes-view`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-graph-nodes-render-with-the-layer-domain-color-data-model-swatch-2dd4bf`                                              | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-hovering-an-edge-predicate-for-3s-explains-it-beside-the-label-not-on-top-of-it`                                      | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
@@ -1006,6 +1017,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `application.applicationservice.type-bands`                         | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `application.applicationservice.type-bands`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -1480,7 +1493,7 @@ A changeset's Review tab: the summary card, the Show / Group by / Decided by con
 
 **Type**: `applicationcomponent`
 
-The 372px DrBot drawer frame (persistent at 1300px and wider, an overlay below) that hosts the chat panel.
+The DrBot panel frame that hosts the chat panel: a floating, resizable, non-modal panel anchored to the topbar DrBot launcher at the graph area's top-right, stepping left of an open Inspector drawer (taking its place when both don't fit), or, after Dock, a resizable column that collapses to a rail tab. Escape inside closes it and returns focus to the launcher; size and docked state persist with the UI preferences.
 
 #### Attributes
 
@@ -1490,11 +1503,15 @@ The 372px DrBot drawer frame (persistent at 1300px and wider, an overlay below) 
 
 #### Relationships
 
-| Type        | Related Element                               | Predicate  | Direction |
-| ----------- | --------------------------------------------- | ---------- | --------- |
-| intra-layer | `application.applicationcomponent.app-shell`  | `composes` | inbound   |
-| intra-layer | `application.applicationcomponent.chat-panel` | `composes` | outbound  |
-| intra-layer | `application.applicationservice.chat-adapter` | `serves`   | inbound   |
+| Type        | Related Element                                                                  | Predicate  | Direction |
+| ----------- | -------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column` | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`      | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`  | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                     | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.chat-panel`                                    | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.inspector-drawer`                              | `uses`     | outbound  |
+| intra-layer | `application.applicationservice.chat-adapter`                                    | `serves`   | inbound   |
 
 ### Chat Panel {#chat-panel}
 
@@ -1614,7 +1631,7 @@ React error boundary that wraps the changeset review panel, the change inspector
 
 **Type**: `applicationcomponent`
 
-The primary graph-view component for the Model and Schema views; mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a user-chosen layout (Clustered force-clustered, Organic default, or Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it re-lays out and recenters on any of those changes. Inter-layer (foreign) neighbours render as pills with a dashed border and faded swatch, at full text contrast, and navigate to their home layer on click. Replaced the old React Flow-based GraphViewer + pluggable Dagre/ELK/D3-Force/Graphviz layout-engine registry in the June 2026 Heimdall UX rebuild.
+The primary graph-view component for the Model and Schema views; mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a user-chosen layout (Clustered force-clustered, Organic default, or Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it re-lays out and recenters on any of those changes. In the Model view a View control beside Layout (uiStore.modelView, persisted) swaps the mixed graph for the Type Lanes View or Type Hive View; Layout, Boundaries, Node margin and Display apply to the mixed graph only. Inter-layer (foreign) neighbours render as pills with a dashed border and faded swatch, at full text contrast, and navigate to their home layer on click.
 
 #### Attributes
 
@@ -1689,6 +1706,8 @@ The primary graph-view component for the Model and Schema views; mounts Heimdall
 | intra-layer | `application.applicationcomponent.model-card-node`                                                                                    | `composes` | outbound  |
 | intra-layer | `application.applicationcomponent.page-view`                                                                                          | `composes` | outbound  |
 | intra-layer | `application.applicationcomponent.pill-node`                                                                                          | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.type-hive-view`                                                                                     | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                                                                                    | `composes` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.relationship-derivation`                                                                              | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `serves`   | inbound   |
@@ -1745,6 +1764,7 @@ Selection details over the graph (Heimdall DetailDrawer + GraphInspector): eleme
 | inter-layer | `testing.testcasesketch.inspector-relationship-navigation-shows-the-rich-predicate-tooltip-on-hover-focus-of-relationship-40d419e9`   | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.inspector-stale-edge-selection-guard-clears-selected-edge-id-once-the-model-has-loaded-and-the-id-d9d8262c`   | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.inspector-stale-edge-selection-guard-leaves-a-resolvable-selected-edge-id-untouched`                          | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.chat-drawer`                                                                                        | `uses`     | inbound   |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                       | `composes` | inbound   |
 | intra-layer | `application.applicationcomponent.annotations-section`                                                                                | `composes` | outbound  |
 | intra-layer | `application.applicationcomponent.edge-inspector`                                                                                     | `composes` | outbound  |
@@ -2280,6 +2300,57 @@ The topbar's search box: an ARIA 1.2 combobox with a listbox popup of results gr
 | intra-layer | `application.applicationservice.search-index`                                                                                 | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                                    | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                                                     | `serves`      | inbound   |
+
+### Type Hive View {#type-hive-view}
+
+**ID**: `application.applicationcomponent.type-hive-view`
+
+**Type**: `applicationcomponent`
+
+HivePlot over useLayeredGraph with the type bands layering; the k busiest per axis labelled; selection shared with the Inspector drawer.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                        | `serves`   | inbound   |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.graph-canvas`                                                | `composes` | inbound   |
+| intra-layer | `application.applicationservice.type-bands`                                                    | `realizes` | outbound  |
+| intra-layer | `application.applicationservice.model-graph-transform`                                         | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.type-bands`                                                    | `serves`   | inbound   |
+
+### Type Lanes View {#type-lanes-view}
+
+**ID**: `application.applicationcomponent.type-lanes-view`
+
+**Type**: `applicationcomponent`
+
+GraphCanvas layout="layer-lanes" over useLayeredGraph with the type bands layering. Lanes ordered by the type bands service, large lanes capped with a "+N more" row; toolbar bottom-left, fitView, centerOnSelect and selection through the Canvas's selectFromCanvas.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                        | `serves`   | inbound   |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.graph-canvas`                                                | `composes` | inbound   |
+| intra-layer | `application.applicationservice.type-bands`                                                    | `realizes` | outbound  |
+| intra-layer | `application.applicationservice.graph-viewport-key`                                            | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.model-graph-transform`                                         | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.type-bands`                                                    | `serves`   | inbound   |
 
 ### Auth Store {#auth-store}
 
@@ -2999,6 +3070,7 @@ The GraphCanvas key and its scope tag, and the ?vp= format and parse, so a saved
 | inter-layer | `testing.testcasesketch.viewport-vp-param-rejects-j`                                                             | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.viewport-vp-param-round-trips-a-parsed-param-equals-the-rounded-viewport-it-came-from`   | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                | `covers`     | inbound   |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.use-viewport-history`                                                            | `depends-on` | inbound   |
 
 ### JSON-RPC Handler {#json-rpc-handler}
@@ -3199,6 +3271,8 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | intra-layer | `application.applicationcomponent.change-link-card`                                                                                  | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                      | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                                  | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.type-hive-view`                                                                                    | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                                                                                   | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.page-data-builder`                                                                                   | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                                           | `depends-on` | inbound   |
 
@@ -3487,6 +3561,32 @@ Hardcoded DR predicate category classification (isStructuralEdge) behind the Rel
 | inter-layer | `testing.testcasesketch.is-structural-predicate-treats-undefined-unknown-predicates-as-non-structural`                        | `tests`   | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                             | `covers`  | inbound   |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                               | `serves`  | outbound  |
+
+### Type Bands {#type-bands}
+
+**ID**: `application.applicationservice.type-bands`
+
+**Type**: `applicationservice`
+
+data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy 'kind') for one DR layer's elements; band order with the least lane-skipping between linked types; plural display names without the layer prefix (shared with the nav tree's type helper); the row cap for large lanes. Where it meets Heimdall, Heimdall's 'layer' is our node type; layerId only ever means a DR layer.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                           | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `product.feature.model-view-by-type`                                      | `realizes` | outbound  |
+| inter-layer | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`   | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.type-hive-view`                         | `realizes` | inbound   |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                        | `realizes` | inbound   |
+| intra-layer | `application.applicationcomponent.type-hive-view`                         | `serves`   | outbound  |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                        | `serves`   | outbound  |
 
 ### useAnnotations {#useannotations}
 
@@ -3818,4 +3918,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-19T18:37:41.788Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
