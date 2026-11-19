@@ -16,10 +16,10 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 76    |
-| Intra-Layer Relationships | 165   |
-| Inter-Layer Relationships | 906   |
-| Inbound Relationships     | 848   |
+| Elements                  | 77    |
+| Intra-Layer Relationships | 166   |
+| Inter-Layer Relationships | 909   |
+| Inbound Relationships     | 851   |
 | Outbound Relationships    | 58    |
 
 **Cross-Layer References**:
@@ -52,12 +52,13 @@ Application components, services, and interactions.
 | `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 15            |
 | `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 12            |
 | `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 4             |
+| `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 1             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 2             |
 | `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 7             |
 | `application.applicationcomponent.neighborhood-graph-view`       | `applicationcomponent` | 3             |
 | `application.applicationcomponent.node-type-badge`               | `applicationcomponent` | 5             |
 | `application.applicationcomponent.node-type-tooltip`             | `applicationcomponent` | 2             |
-| `application.applicationcomponent.page-view`                     | `applicationcomponent` | 6             |
+| `application.applicationcomponent.page-view`                     | `applicationcomponent` | 7             |
 | `application.applicationcomponent.pill-node`                     | `applicationcomponent` | 3             |
 | `application.applicationcomponent.predicate-tooltip`             | `applicationcomponent` | 4             |
 | `application.applicationcomponent.relationships-with-tooltips`   | `applicationcomponent` | 3             |
@@ -238,6 +239,7 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.drift-notice`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                                                                                                              | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                                                                                                        | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
@@ -581,6 +583,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                                                 | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `application.applicationcomponent.markdown-text`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-curates-a-fixed-properties-set-layer-type-provenance-source-no-attribute-spread`                            | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-defaults-provenance-to-authored-and-omits-source-when-no-reference`                                         | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-falls-back-to-the-file-path-when-a-location-has-only-a-file`                                                | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
@@ -741,6 +744,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`                       | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9`                    | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13`                    | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`                                 | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-a-row-without-a-target-renders-as-plain-text-not-an-interactive-row`                              | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-node-type-cell-calls-navigate-to-spec-node-using-its-own-5450ce17`                     | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-rows-fallback-cell-calls-navigate-to-element-using-the-7ea3282d`                       | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
@@ -1762,6 +1766,28 @@ The shell's left navigation column: the view switch (Model, Schema, Changesets) 
 | intra-layer | `application.applicationservice.use-model`                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                                 | `serves`   | inbound   |
 
+### Markdown Text {#markdown-text}
+
+**ID**: `application.applicationcomponent.markdown-text`
+
+**Type**: `applicationcomponent`
+
+Shared renderer for untrusted model prose (node page descriptions; changeset descriptions next, #588): wraps Heimdall's ChatMarkdownContent (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token page typography so plain text reads as a paragraph.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                                     | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                                                             | `serves`   | inbound   |
+| inter-layer | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.page-view`                                                                                        | `composes` | inbound   |
+
 ### Model Card Node {#model-card-node}
 
 **ID**: `application.applicationcomponent.model-card-node`
@@ -1922,7 +1948,7 @@ Hover card for a node type: its definition and the connections the spec allows.
 
 **Type**: `applicationcomponent`
 
-The graph/page toggle's page mode: the full record of a layer, spec node type or model element as breadcrumb, stats, facts and navigable tables, with a neighborhood graph.
+The graph/page toggle's page mode: the full record of a layer, spec node type or model element as breadcrumb, a markdown description section above the stats and facts, and navigable tables, with a neighborhood graph.
 
 #### Attributes
 
@@ -1956,10 +1982,12 @@ The graph/page toggle's page mode: the full record of a layer, spec node type or
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`    | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9` | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13` | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`              | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-a-row-without-a-target-renders-as-plain-text-not-an-interactive-row`           | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-node-type-cell-calls-navigate-to-spec-node-using-its-own-5450ce17`  | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-rows-fallback-cell-calls-navigate-to-element-using-the-7ea3282d`    | `tests`    | inbound   |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                       | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.markdown-text`                                                                                      | `composes` | outbound  |
 | intra-layer | `application.applicationcomponent.neighborhood-graph-view`                                                                            | `composes` | outbound  |
 | intra-layer | `application.applicationservice.page-data-builder`                                                                                    | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.neighborhood-graph`                                                                                   | `serves`   | inbound   |
@@ -3175,7 +3203,7 @@ The one-hop neighborhood graph of a model element or spec node type shown on its
 
 **Type**: `applicationservice`
 
-Builds the page view's records (header, breadcrumb, stats, facts, tables) for a layer, spec node type or model element.
+Builds the page view's records (header, breadcrumb, summary, markdown description, stats, facts, tables) for a layer, spec node type or model element; the description is its own field, never a fact.
 
 #### Attributes
 
@@ -3686,4 +3714,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-19T14:20:09.790Z | Model Version: 0.1.0
+Generated: 2026-11-19T17:49:06.264Z | Model Version: 0.1.0

@@ -328,3 +328,39 @@ describe('PageView — accessible structure', () => {
     expect(within(outgoing).getAllByRole('cell').length).toBeGreaterThan(0);
   });
 });
+
+describe('PageView — description section (#593)', () => {
+  it('shows the description above the stats and facts, rendered as markdown', () => {
+    renderWithProviders(
+      <PageView
+        pg={buildPageData({
+          description: 'Holds **the schema**.\n\n- one\n- two',
+          facts: [{ key: 'id', value: 'meta-model-id' }],
+        })}
+      />,
+    );
+    const section = screen.getByTestId('page-description');
+    expect(within(section).getByRole('heading', { name: 'Description' })).toBeTruthy();
+    expect(section.querySelector('strong')?.textContent).toBe('the schema');
+    expect(within(section).getAllByRole('listitem')).toHaveLength(2);
+
+    // Above the facts block, and not one of its rows.
+    const facts = screen.getByText('NODE');
+    expect(section.compareDocumentPosition(facts) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(facts.parentElement?.textContent).not.toContain('Holds');
+  });
+
+  it('shows a layer summary as plain text above the description', () => {
+    renderWithProviders(
+      <PageView pg={buildPageData({ summary: 'Data Model is layer 7 of 12.', description: 'Layer 7.' })} />,
+    );
+    const summary = screen.getByText('Data Model is layer 7 of 12.');
+    const section = screen.getByTestId('page-description');
+    expect(summary.compareDocumentPosition(section) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('shows no description section when there is no description', () => {
+    renderWithProviders(<PageView pg={buildPageData({ description: '  ' })} />);
+    expect(screen.queryByTestId('page-description')).toBeNull();
+  });
+});

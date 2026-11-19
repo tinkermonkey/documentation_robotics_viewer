@@ -720,3 +720,40 @@ body.dark-canvas {
     display: none;
   }
 }
+
+/*
+ * MarkdownText (ui/MarkdownText.tsx): Heimdall's chat markdown, set as page
+ * prose. Body text keeps the 14px / 1.6 / --canvas-fg-2 of the plain paragraph
+ * it replaced, so plain-text descriptions read as before; headings stay below
+ * the page header's own title. Link colours are Heimdall's (accent-primary-deep
+ * on the light canvas, accent-primary on the dark one — both AA).
+ */
+.drv-markdown {
+  max-width: 760px;
+  text-wrap: pretty;
+}
+.drv-markdown .chat-markdown {
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgb(var(--canvas-fg-2));
+}
+.drv-markdown :is(.chat-markdown__p, .chat-markdown__li, .chat-markdown__td) {
+  color: rgb(var(--canvas-fg-2));
+}
+.drv-markdown .chat-markdown__p {
+  margin-bottom: 12px;
+}
+.drv-markdown .chat-markdown__h1 {
+  font-size: 17px;
+}
+.drv-markdown .chat-markdown__h2 {
+  font-size: 15px;
+}
+.drv-markdown .chat-markdown__code-inline {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: rgb(var(--canvas-bg-2));
+  color: rgb(var(--canvas-fg-1));
+}

@@ -218,8 +218,9 @@ application.applicationservice.page-data-builder:
   type: applicationservice
   layer_id: application
   name: Page Data Builder
-  description: Builds the page view's records (header, breadcrumb, stats, facts,
-    tables) for a layer, spec node type or model element.
+  description: Builds the page view's records (header, breadcrumb, summary,
+    markdown description, stats, facts, tables) for a layer, spec node type or
+    model element; the description is its own field, never a fact.
   attributes:
     serviceType: synchronous
   source_reference:

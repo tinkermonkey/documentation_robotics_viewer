@@ -6,8 +6,8 @@
  *   - `specNodePageData`  — focus:'node', view:'spec'  (a spec node-type)
  *   - `modelNodePageData` — focus:'node', view:'model' (a model element)
  *
- * Each returns a `PageData`: header fields, a breadcrumb trail, a narrative
- * description, a 4-stat grid, a two-column facts list, and a set of row
+ * Each returns a `PageData`: header fields, a breadcrumb trail, an optional
+ * generated summary, the record's own (markdown) description, a 4-stat grid, a two-column facts list, and a set of row
  * tables — mirroring the design's `page()` builder, but derived from the
  * real `/api/model` + `/api/spec` shapes (see `useModel.ts` / `modelGraph.ts`
  * / `specGraph.ts`) rather than the prototype's stub dataset.
@@ -69,7 +69,7 @@ export interface PageStat {
 export interface PageFact {
   key: string;
   value: string;
-  /** true = 12px sans prose value (name/description); default = 11px mono. */
+  /** true = 12px sans prose value (name/title); default = 11px mono. */
   prose?: boolean;
 }
 
@@ -124,6 +124,16 @@ export interface PageData {
   meta: string;
   color: string;
   crumbs: PageCrumb[];
+  /**
+   * A generated one-paragraph lead in plain text (layer pages only: the
+   * layer's place in the model and its counts). Shown above `description`.
+   */
+  summary?: string;
+  /**
+   * The record's own description, from the spec or model — untrusted text
+   * that may be markdown. `PageView` renders it with `MarkdownText` in its own
+   * section above the stats and facts; it is never one of the `facts`.
+   */
   description: string;
   stats: PageStat[];
   factsTitle: string;
@@ -313,11 +323,12 @@ export function layerPageData(
     meta: `${typeCount} node types · ${relCount} relationship schemas`,
     color,
     crumbs: baseCrumbs(view, layerId, true),
-    description:
+    summary:
       `${name} is layer ${fmt(number)} of 12 in the federated model, inspired by ${standard}. ` +
       `The spec defines ${typeCount} node types and ${relCount} valid relationship schemas for ` +
       `this layer (${intraCount} within the layer, ${relCount - intraCount} to other layers); ` +
       `the loaded model holds ${elements.length} elements.`,
+    description: layer?.description ?? '',
     stats: [
       { label: 'NODE TYPES', value: typeCount, color },
       { label: 'RELATIONSHIPS', value: relCount, color: INDIGO },
@@ -329,7 +340,6 @@ export function layerPageData(
       fact('layer_id', layerId),
       fact('number', number),
       fact('name', name, true),
-      fact('description', layer?.description, true),
       fact('inspired_by.standard', standard),
       fact('inspired_by.version', layer?.inspired_by?.version),
       fact('inspired_by.url', layer?.inspired_by?.url),
