@@ -18,13 +18,13 @@ User interface components, screens, and user experience elements.
 | ------------------------- | ----- |
 | Elements                  | 17    |
 | Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 29    |
-| Inbound Relationships     | 3     |
+| Inter-Layer Relationships | 30    |
+| Inbound Relationships     | 4     |
 | Outbound Relationships    | 26    |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [Navigation](./11-navigation-layer-report.md)
+- **Upstream layers**: [Navigation](./11-navigation-layer-report.md), [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Product](./03-product-layer-report.md), [Technology](./06-technology-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -86,6 +86,7 @@ flowchart TB
   apm["APM"]
   testing["Testing"]
   navigation --> ux
+  testing --> ux
   ux --> business
   ux --> motivation
   ux --> product
@@ -95,37 +96,38 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                | Source Node                                    | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
-| ---------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route` | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`      | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                      | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                      | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                      | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                      | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                      | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                      | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.dr-bot-chat-drawer`                   | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                   | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                     | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                     | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                           | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.model-view`                           | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.model-view`                           | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                           | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                           | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                           | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.realizes.product.feature`             | `ux.view.schema-view`                          | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
-| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                          | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                          | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| Relationship ID                                | Source Node                                                                                                              | Dest Node                                                    | Dest Layer   | Predicate    | Cardinality  | Strength |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `ux.subview.page-view`                                       | `ux`         | `tests`      | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`                                                                                | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                                                                                          | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                                                                                                | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.changeset-inbox`                            | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.per-change-review`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.tier1-mode-and-routing`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.changesets-view`                                                                                                | `product.feature.tier1-warming-progress`                     | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.changesets-view`                                                                                                | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                                                                                                | `motivation.requirement.each-review-change-reads-on-its-own` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.changesets-view`                                                                                                | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.changesets-view`                                                                                                | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.changesets-view`                                                                                                | `motivation.goal.enable-real-time-collaboration`             | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.dr-bot-chat-drawer`                                                                                             | `product.feature.dr-bot-chat-drawer`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.dr-bot-chat-drawer`                                                                                             | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                                                                                               | `product.feature.cross-layer-follow`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.inspector-drawer`                                                                                               | `product.feature.element-annotations`                        | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                                                                                               | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                                                                                                     | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.model-view`                                                                                                     | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.model-view`                                                                                                     | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                                                                                                     | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.model-view`                                                                                                     | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.model-view`                                                                                                     | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.schema-view`                                                                                                    | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.schema-view`                                                                                                    | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                                                                                                    | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 
 ## Element Reference
 
@@ -259,10 +261,11 @@ The page mode of the Model and Schema views (#/model/page): a layer, node type o
 
 #### Relationships
 
-| Type        | Related Element       | Predicate  | Direction |
-| ----------- | --------------------- | ---------- | --------- |
-| intra-layer | `ux.view.model-view`  | `composes` | inbound   |
-| intra-layer | `ux.view.schema-view` | `composes` | inbound   |
+| Type        | Related Element                                                                                                          | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `tests`    | inbound   |
+| intra-layer | `ux.view.model-view`                                                                                                     | `composes` | inbound   |
+| intra-layer | `ux.view.schema-view`                                                                                                    | `composes` | inbound   |
 
 ### Tier1 Panel {#tier1-panel}
 
@@ -509,4 +512,4 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 
 ---
 
-Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0
+Generated: 2026-11-19T17:49:06.264Z | Model Version: 0.1.0

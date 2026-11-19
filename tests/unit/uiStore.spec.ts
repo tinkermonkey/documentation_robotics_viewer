@@ -47,8 +47,9 @@ describe('uiStore — default state', () => {
     expect(typeof INITIAL.navigateToElement).toBe('function');
   });
 
-  it('defaults canvasDark to true (dark mode on first visit)', () => {
-    expect(INITIAL.canvasDark).toBe(true);
+  it('defaults to a light canvas and DrBot closed on a first visit', () => {
+    expect(INITIAL.canvasDark).toBe(false);
+    expect(INITIAL.chatOpen).toBe(false);
   });
 });
 
@@ -673,4 +674,40 @@ describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLaye
       expect(fresh.useUiStore.getState().graphLayout).toBe('organic');
     },
   );
+});
+
+describe('first-visit defaults vs a persisted choice (#596, #597)', () => {
+  // Same fresh-import technique as above: re-run the module's create(persist())
+  // against whatever window/localStorage hold right now.
+  const originalWidth = window.innerWidth;
+  afterEach(() => {
+    localStorage.removeItem(PERSIST_KEY);
+    window.innerWidth = originalWidth;
+    document.body.classList.remove('dark-canvas');
+  });
+
+  it('a first visit on a wide window still gets a light canvas and DrBot closed', async () => {
+    localStorage.removeItem(PERSIST_KEY);
+    window.innerWidth = 1600;
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    const state = fresh.useUiStore.getState();
+    expect(state.wide).toBe(true);
+    expect(state.canvasDark).toBe(false);
+    expect(state.chatOpen).toBe(false);
+    expect(document.body.classList.contains('dark-canvas')).toBe(false);
+  });
+
+  it('a persisted dark canvas and open DrBot still win over the defaults', async () => {
+    localStorage.setItem(
+      PERSIST_KEY,
+      JSON.stringify({ state: { canvasDark: true, chatOpen: true }, version: 1 }),
+    );
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    const state = fresh.useUiStore.getState();
+    expect(state.canvasDark).toBe(true);
+    expect(state.chatOpen).toBe(true);
+    expect(document.body.classList.contains('dark-canvas')).toBe(true);
+  });
 });

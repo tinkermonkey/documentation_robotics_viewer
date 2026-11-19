@@ -23,7 +23,7 @@ test.describe('chat', () => {
     const available = await chatSdkAvailable(page);
     test.skip(!available, 'chat SDK unavailable (chat.status.sdk_available === false)');
 
-    // Open the drawer (default viewport is < 1300px, so it starts closed).
+    // Open the drawer (it starts closed on a first visit).
     const drawer = page.getByTestId('chat-drawer');
     if (!(await drawer.isVisible())) {
       await page.getByRole('button', { name: /DrBot/ }).click();

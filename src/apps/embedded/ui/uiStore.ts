@@ -245,10 +245,11 @@ export const useUiStore = create<UiState>()(
       changeSeq: null,
       changesetTab: 'changes',
       impactFocus: null,
-      // Dark by default (first visit, nothing persisted yet) — a later
-      // explicit choice via toggleCanvasDark persists and overrides this.
-      canvasDark: true,
-      chatOpen: initialWide,
+      // A first visit (nothing persisted yet) gets a light canvas and DrBot
+      // closed, at any width (#596, #597). A later explicit choice via
+      // toggleCanvasDark / toggleChat persists and overrides these.
+      canvasDark: false,
+      chatOpen: false,
       wide: initialWide,
       mode: 'graph',
       navSeq: 0,
@@ -478,7 +479,7 @@ export const useUiStore = create<UiState>()(
         inspectorFollow: state.inspectorFollow,
       }),
       // Re-sync body.dark-canvas once hydration lands — covers both "restored
-      // a persisted value" and "nothing was persisted, using the true
+      // a persisted value" and "nothing was persisted, using the light
       // default" (this callback fires either way).
       onRehydrateStorage: () => (state) => {
         if (state) applyCanvasDark(state.canvasDark);

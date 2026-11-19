@@ -4,8 +4,8 @@
 
 | Metric              | Value                    |
 | ------------------- | ------------------------ |
-| Total Elements      | 1095                     |
-| Total Relationships | 1490                     |
+| Total Elements      | 1098                     |
+| Total Relationships | 1495                     |
 | Populated Layers    | 13                       |
 | Last Updated        | 2026-11-19T17:50:11.907Z |
 | CLI Version         | 0.5.0                    |
@@ -67,7 +67,7 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | UX          | 17       | [10-ux-layer-report.md](./reports/10-ux-layer-report.md)                   |
 | Navigation  | 10       | [11-navigation-layer-report.md](./reports/11-navigation-layer-report.md)   |
 | APM         | 7        | [12-apm-layer-report.md](./reports/12-apm-layer-report.md)                 |
-| Testing     | 808      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
+| Testing     | 810      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
 
 ---
 
