@@ -1049,4 +1049,4 @@ Token as ?token= query param; used for WebSocket connection authentication where
 
 ---
 
-Generated: 2026-11-19T14:20:09.790Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0

@@ -755,3 +755,39 @@ application.applicationservice.changeset-purpose:
     created_at: 2026-11-18T19:24:40.393Z
     updated_at: 2026-11-18T19:24:40.393Z
     version: 1
+application.applicationservice.type-bands:
+  id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+  path: application.applicationservice.type-bands
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Type Bands
+  description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+    'kind') for one DR layer's elements; band order with the least lane-skipping
+    between linked types; plural display names without the layer prefix (shared
+    with the nav tree's type helper); the row cap for large lanes. Where it
+    meets Heimdall, Heimdall's 'layer' is our node type; layerId only ever means
+    a DR layer."
+  attributes:
+    serviceType: synchronous
+  accepted_gaps:
+    - direction: incoming
+      predicate: depends-on
+      other_spec_node_id: application.applicationservice
+      reason: Only the two by-type view components call it; no other data service
+        builds on the type bands.
+      decided_by: agent
+      decided_at: 2026-11-19T18:02:22.848Z
+      changeset: changeset-1795111279160-shbw81238
+    - direction: incoming
+      predicate: covers
+      other_spec_node_id: testing.testcoveragetarget
+      reason: Covered by its own unit test case sketches (ordering, naming); the
+        viewer models no coverage target per data service.
+      decided_by: agent
+      decided_at: 2026-11-19T18:02:23.063Z
+      changeset: changeset-1795111279160-shbw81238
+  metadata:
+    created_at: 2026-11-19T18:01:46.735Z
+    updated_at: 2026-11-19T18:01:46.735Z
+    version: 1

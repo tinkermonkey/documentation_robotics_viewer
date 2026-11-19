@@ -538,4 +538,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0

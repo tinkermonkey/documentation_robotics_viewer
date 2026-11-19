@@ -16,10 +16,10 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 22    |
-| Intra-Layer Relationships | 28    |
-| Inter-Layer Relationships | 44    |
-| Inbound Relationships     | 44    |
+| Elements                  | 23    |
+| Intra-Layer Relationships | 29    |
+| Inter-Layer Relationships | 50    |
+| Inbound Relationships     | 50    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
@@ -43,6 +43,7 @@ flowchart LR
     motivation_principle_core_app_architectural_separation["Core-App Architectural Separation"]
     motivation_principle_read_first_always["Read First, Always"]
     motivation_principle_zustand_only_state_management["Zustand-Only State Management"]
+    motivation_requirement_dr_bot_opens_without_reflowing_the_canvas["DrBot opens without reflowing the canvas"]
     motivation_requirement_dr_cli_server_integration["DR CLI Server Integration"]
     motivation_requirement_drift_shows_before_apply["Drift shows before Apply"]
     motivation_requirement_each_review_change_reads_on_its_own["Each review change reads on its own"]
@@ -68,6 +69,7 @@ flowchart LR
     motivation_principle_core_app_architectural_separation -->|influence| motivation_goal_visualize_multi_layer_architecture_models
     motivation_principle_read_first_always -->|influence| motivation_goal_accelerate_architecture_documentation
     motivation_principle_zustand_only_state_management -->|influence| motivation_requirement_dr_cli_server_integration
+    motivation_requirement_dr_bot_opens_without_reflowing_the_canvas -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_dr_cli_server_integration -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_drift_shows_before_apply -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_each_review_change_reads_on_its_own -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
@@ -114,52 +116,58 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                       | Source Node                                                | Dest Node                                                           | Dest Layer   | Predicate    | Cardinality  | Strength |
-| ------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
-| `03823476-93f8-4ab4-8c51-cd93bf459ff0-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `03823476-93f8-4ab4-8c51-cd93bf459ff0`                     | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
-| `35295e18-08a8-4ca0-ada3-40a017cb4318-realizes-462e2931-4c7c-4051-a9ac-8817c270d650`  | `35295e18-08a8-4ca0-ada3-40a017cb4318`                     | `462e2931-4c7c-4051-a9ac-8817c270d650`                              | `motivation` | `realizes`   | unknown      | unknown  |
-| `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                     | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
-| `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-drift`           | `motivation.requirement.drift-shows-before-apply`                   | `motivation` | `satisfies`  | many-to-many | medium   |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-impact-analysis` | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-purpose`         | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `motivation` | `satisfies`  | many-to-many | medium   |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-review-model`    | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`      | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
-| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-changeset-review`      | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
-| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`                     | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`              | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `realizes`   | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.annotation-id`                | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.changeset-id`                 | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
-| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.element-id`                   | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
-| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `53fad2bb-e97d-44a2-83cf-61201e992163`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9df37bbd-8ffd-4d80-899f-9437aa03282a` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `9df37bbd-8ffd-4d80-899f-9437aa03282a`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9fe1281a-2547-416f-872f-38e1b066db15` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `9fe1281a-2547-416f-872f-38e1b066db15`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `462e2931-4c7c-4051-a9ac-8817c270d650`                              | `motivation` | `supports`   | unknown      | unknown  |
-| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                     | `ef84b64d-883c-4471-9b56-a58574bac2b9`                              | `motivation` | `supports`   | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                     | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
-| `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                     | `731285cc-dc15-4c64-a342-a933ce00bd61`                              | `motivation` | `realizes`   | unknown      | unknown  |
-| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-graph-view`                         | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.per-change-review`                        | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                                   | `product.persona.architecture-reviewer`                    | `motivation.stakeholder.architecture-team`                          | `motivation` | `references` | many-to-many | medium   |
-| `product.persona.references.motivation.stakeholder`                                   | `product.persona.model-author`                             | `motivation.stakeholder.development-team`                           | `motivation` | `references` | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.changeset-review`              | `motivation.goal.accelerate-architecture-documentation`             | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-annotation`              | `motivation.goal.enable-real-time-collaboration`                    | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-chat`                    | `motivation.goal.accelerate-architecture-documentation`             | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-visualization`           | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
-| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.schema-exploration`            | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.architecture-exploration-spec`                  | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                            | `motivation.requirement.dr-cli-server-integration`                  | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                  | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                  | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`                                                    | `ux.view.changesets-view`                                  | `motivation.goal.enable-real-time-collaboration`                    | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.model-view`                                       | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.view.supports.motivation.goal`                                                    | `ux.view.model-view`                                       | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
-| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.schema-view`                                      | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| Relationship ID                                                                       | Source Node                                                                                        | Dest Node                                                           | Dest Layer   | Predicate    | Cardinality  | Strength |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
+| `03823476-93f8-4ab4-8c51-cd93bf459ff0-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `03823476-93f8-4ab4-8c51-cd93bf459ff0`                                                             | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `35295e18-08a8-4ca0-ada3-40a017cb4318-realizes-462e2931-4c7c-4051-a9ac-8817c270d650`  | `35295e18-08a8-4ca0-ada3-40a017cb4318`                                                             | `462e2931-4c7c-4051-a9ac-8817c270d650`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`                                                             | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                                                             | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                                                             | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-drift`                                                   | `motivation.requirement.drift-shows-before-apply`                   | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-impact-analysis`                                         | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-purpose`                                                 | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-review-model`                                            | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`                                              | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-changeset-review`                                              | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                             | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`                                                      | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `realizes`   | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.annotation-id`                                                        | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.changeset-id`                                                         | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.element-id`                                                           | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                                                             | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-53fad2bb-e97d-44a2-83cf-61201e992163` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `53fad2bb-e97d-44a2-83cf-61201e992163`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-6ffaff00-8bf8-4580-98ff-8d2a612a9021` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `6ffaff00-8bf8-4580-98ff-8d2a612a9021`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9df37bbd-8ffd-4d80-899f-9437aa03282a` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `9df37bbd-8ffd-4d80-899f-9437aa03282a`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-9fe1281a-2547-416f-872f-38e1b066db15` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `9fe1281a-2547-416f-872f-38e1b066db15`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-b3d7f834-dc3f-49fd-8044-8b6aca045dbe` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `b3d7f834-dc3f-49fd-8044-8b6aca045dbe`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `462e2931-4c7c-4051-a9ac-8817c270d650`                              | `motivation` | `supports`   | unknown      | unknown  |
+| `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                             | `ef84b64d-883c-4471-9b56-a58574bac2b9`                              | `motivation` | `supports`   | unknown      | unknown  |
+| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                             | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                                                             | `731285cc-dc15-4c64-a342-a933ce00bd61`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                               | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-graph-view`                                                                 | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-view-by-type`                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.per-change-review`                                                                | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                                   | `product.persona.architecture-reviewer`                                                            | `motivation.stakeholder.architecture-team`                          | `motivation` | `references` | many-to-many | medium   |
+| `product.persona.references.motivation.stakeholder`                                   | `product.persona.model-author`                                                                     | `motivation.stakeholder.development-team`                           | `motivation` | `references` | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.changeset-review`                                                      | `motivation.goal.accelerate-architecture-documentation`             | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-annotation`                                                      | `motivation.goal.enable-real-time-collaboration`                    | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-chat`                                                            | `motivation.goal.accelerate-architecture-documentation`             | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-visualization`                                                   | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
+| `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.schema-exploration`                                                    | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                        | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                    | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher` | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
+| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.architecture-exploration-spec`                                                          | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                                                                    | `motivation.requirement.dr-cli-server-integration`                  | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                                                          | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                                                          | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`                                                    | `ux.view.changesets-view`                                                                          | `motivation.goal.enable-real-time-collaboration`                    | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.model-view`                                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`                                                    | `ux.view.model-view`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.schema-view`                                                                              | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 
 ## Element Reference
 
@@ -366,6 +374,7 @@ Provide interactive, navigable visualization of the DR spec's multi-layer archit
 | intra-layer | `motivation.driver.architecture-documentation-complexity`           | `influence` | inbound   |
 | intra-layer | `motivation.principle.core-app-architectural-separation`            | `influence` | outbound  |
 | intra-layer | `motivation.principle.core-app-architectural-separation`            | `influence` | inbound   |
+| intra-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.dr-cli-server-integration`                  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.drift-shows-before-apply`                   | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.each-review-change-reads-on-its-own`        | `realizes`  | inbound   |
@@ -436,6 +445,31 @@ All global state managed via Zustand stores; no Redux, no React Context for stat
 | ----------- | -------------------------------------------------- | ----------- | --------- |
 | intra-layer | `motivation.goal.enable-real-time-collaboration`   | `influence` | inbound   |
 | intra-layer | `motivation.requirement.dr-cli-server-integration` | `influence` | outbound  |
+
+### DrBot opens without reflowing the canvas {#drbot-opens-without-reflowing-the-canvas}
+
+**ID**: `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`
+
+**Type**: `requirement`
+
+Opening DrBot must not resize the canvas, wrap the page header or cover the Inspector drawer or the graph toolbar while there is room for both.
+
+#### Attributes
+
+| Name            | Value                                                                                                                                                                                                                                                                      |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| documentation   | Acceptance: with the Inspector open at 1440px wide, opening DrBot leaves the canvas width and the page header unchanged and the panel sits left of the drawer; on a window too narrow for both, the panel takes the drawer's place until DrBot closes. Source: issue #597. |
+| priority        | medium                                                                                                                                                                                                                                                                     |
+| requirementType | non-functional                                                                                                                                                                                                                                                             |
+
+#### Relationships
+
+| Type        | Related Element                                                                 | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `product.feature.dr-bot-chat-drawer`                                            | `satisfies` | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`     | `satisfies` | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit` | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                     | `realizes`  | outbound  |
 
 ### DR CLI Server Integration {#dr-cli-server-integration}
 
@@ -598,15 +632,18 @@ All interactive components must pass axe-core automated accessibility testing an
 
 #### Relationships
 
-| Type        | Related Element                                        | Predicate         | Direction |
-| ----------- | ------------------------------------------------------ | ----------------- | --------- |
-| inter-layer | `ux.view.changesets-view`                              | `satisfies`       | inbound   |
-| inter-layer | `ux.view.model-view`                                   | `satisfies`       | inbound   |
-| inter-layer | `ux.view.schema-view`                                  | `satisfies`       | inbound   |
-| intra-layer | `motivation.constraint.type-script-strict-mode`        | `constrains`      | inbound   |
-| intra-layer | `motivation.goal.ensure-accessible-architecture-views` | `influence`       | inbound   |
-| intra-layer | `motivation.goal.ensure-accessible-architecture-views` | `realizes`        | outbound  |
-| intra-layer | `motivation.stakeholder.development-team`              | `associated-with` | inbound   |
+| Type        | Related Element                                                                                    | Predicate         | Direction |
+| ----------- | -------------------------------------------------------------------------------------------------- | ----------------- | --------- |
+| inter-layer | `product.feature.dr-bot-chat-drawer`                                                               | `satisfies`       | inbound   |
+| inter-layer | `product.feature.model-view-by-type`                                                               | `satisfies`       | inbound   |
+| inter-layer | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher` | `satisfies`       | inbound   |
+| inter-layer | `ux.view.changesets-view`                                                                          | `satisfies`       | inbound   |
+| inter-layer | `ux.view.model-view`                                                                               | `satisfies`       | inbound   |
+| inter-layer | `ux.view.schema-view`                                                                              | `satisfies`       | inbound   |
+| intra-layer | `motivation.constraint.type-script-strict-mode`                                                    | `constrains`      | inbound   |
+| intra-layer | `motivation.goal.ensure-accessible-architecture-views`                                             | `influence`       | inbound   |
+| intra-layer | `motivation.goal.ensure-accessible-architecture-views`                                             | `realizes`        | outbound  |
+| intra-layer | `motivation.stakeholder.development-team`                                                          | `associated-with` | inbound   |
 
 ### Architecture Team {#architecture-team}
 
@@ -675,4 +712,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0

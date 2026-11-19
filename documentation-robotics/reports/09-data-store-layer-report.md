@@ -18,13 +18,13 @@ Databases, data stores, and persistence mechanisms.
 | ------------------------- | ----- |
 | Elements                  | 8     |
 | Intra-Layer Relationships | 8     |
-| Inter-Layer Relationships | 4     |
-| Inbound Relationships     | 2     |
+| Inter-Layer Relationships | 5     |
+| Inbound Relationships     | 3     |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [Application](./05-application-layer-report.md)
+- **Upstream layers**: [Application](./05-application-layer-report.md), [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -71,17 +71,19 @@ flowchart TB
   testing["Testing"]
   application --> data_store
   data_store --> business
+  testing --> data_store
   class data_store current
 ```
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                  | Source Node                                          | Dest Node                                     | Dest Layer   | Predicate  | Cardinality  | Strength |
-| ---------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------- | ------------ | ---------- | ------------ | -------- |
-| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.local-review-store` | `data-store.collection.local-review-verdicts` | `data-store` | `accesses` | many-to-many | medium   |
-| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.ui-store`           | `data-store.collection.ui-preferences`        | `data-store` | `accesses` | many-to-many | medium   |
-| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.changeset-files`              | `business.businessobject.changeset`           | `business`   | `realizes` | many-to-many | medium   |
-| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.model-manifest`               | `business.businessobject.architecture-model`  | `business`   | `realizes` | many-to-many | medium   |
+| Relationship ID                                                  | Source Node                                                                      | Dest Node                                     | Dest Layer   | Predicate  | Cardinality  | Strength |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------- | ------------ | ---------- | ------------ | -------- |
+| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.local-review-store`                             | `data-store.collection.local-review-verdicts` | `data-store` | `accesses` | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-store.collection` | `application.applicationfunction.ui-store`                                       | `data-store.collection.ui-preferences`        | `data-store` | `accesses` | many-to-many | medium   |
+| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.changeset-files`                                          | `business.businessobject.changeset`           | `business`   | `realizes` | many-to-many | medium   |
+| `data-store.collection.realizes.business.businessobject`         | `data-store.collection.model-manifest`                                           | `business.businessobject.architecture-model`  | `business`   | `realizes` | many-to-many | medium   |
+| `testing.testcasesketch.accesses.data-store.collection`          | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column` | `data-store.collection.ui-preferences`        | `data-store` | `accesses` | many-to-many | medium   |
 
 ## Element Reference
 
@@ -208,10 +210,11 @@ localStorage entry dr-viewer-ui-preferences: the persisted part of the UI store 
 
 #### Relationships
 
-| Type        | Related Element                             | Predicate  | Direction |
-| ----------- | ------------------------------------------- | ---------- | --------- |
-| inter-layer | `application.applicationfunction.ui-store`  | `accesses` | inbound   |
-| intra-layer | `data-store.database.browser-local-storage` | `composes` | inbound   |
+| Type        | Related Element                                                                  | Predicate  | Direction |
+| ----------- | -------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store`                                       | `accesses` | inbound   |
+| inter-layer | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column` | `accesses` | inbound   |
+| intra-layer | `data-store.database.browser-local-storage`                                      | `composes` | inbound   |
 
 ### Browser localStorage {#browser-localstorage}
 
@@ -263,4 +266,4 @@ File-based document store holding the architecture model as YAML files under doc
 
 ---
 
-Generated: 2026-11-18T16:40:53.416Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0

@@ -1,0 +1,685 @@
+- type: add
+  elementId: product.feature.model-view-by-type
+  layerName: product
+  after:
+    id: 857f49f5-7c88-4ab2-85e1-73f405321ac8
+    path: product.feature.model-view-by-type
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: Model View by Type
+    description: "See one DR layer's elements grouped by node type: lanes (one per
+      type, linked types adjacent) or a hive (one axis per type), chosen in the
+      Model view's View control beside Layout."
+    attributes:
+      priority: medium
+      status: planned
+      size: m
+    metadata:
+      created_at: 2026-11-19T18:01:36.750Z
+      updated_at: 2026-11-19T18:01:36.750Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 0
+- type: add
+  elementId: ux.subview.lanes-by-type
+  layerName: ux
+  after:
+    id: a813c832-b9af-4524-9fa4-46536b742936
+    path: ux.subview.lanes-by-type
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Lanes by Type
+    description: "Model view, View = Lanes by type: one lane per node type in the
+      selected DR layer, titled with the plural type name and count; selection
+      shared with the Inspector drawer."
+    metadata:
+      created_at: 2026-11-19T18:01:36.765Z
+      updated_at: 2026-11-19T18:01:36.765Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 1
+- type: add
+  elementId: ux.subview.hive-by-type
+  layerName: ux
+  after:
+    id: 4cf1a9f7-56a6-4550-bb30-94135890f544
+    path: ux.subview.hive-by-type
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Hive by Type
+    description: "Model view, View = Hive by type: one axis per node type, busiest
+      elements farthest out, links as curves; offered only for layers with 3 or
+      more types."
+    metadata:
+      created_at: 2026-11-19T18:01:36.767Z
+      updated_at: 2026-11-19T18:01:36.767Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    id: d9dfab8d-7f54-4ba4-a743-fb5b0542de73
+    path: application.applicationcomponent.type-lanes-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Type Lanes View
+    description: GraphCanvas layout="layer-lanes" over useLayeredGraph with the type
+      bands layering. Lanes ordered by the type bands service, large lanes
+      capped with a "+N more" row; toolbar bottom-left, fitView, centerOnSelect
+      and selection through the Canvas's selectFromCanvas.
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-19T18:01:36.767Z
+      updated_at: 2026-11-19T18:01:36.767Z
+      version: 1
+    accepted_gaps:
+      - direction: outgoing
+        predicate: uses
+        other_spec_node_id: application.applicationcomponent
+        reason: Renders Heimdall's GraphCanvas lanes directly; selection goes through
+          the Canvas's selectFromCanvas and the UI store, not through another
+          viewer component.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:22.414Z
+        changeset: changeset-1795111279160-shbw81238
+  timestamp: 2026-11-19T18:02:22.418Z
+  sequenceNumber: 3
+- type: add
+  elementId: application.applicationcomponent.type-hive-view
+  layerName: application
+  after:
+    id: 4d4dfc1d-5b46-4b00-acda-4af147bce72c
+    path: application.applicationcomponent.type-hive-view
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Type Hive View
+    description: HivePlot over useLayeredGraph with the type bands layering; the k
+      busiest per axis labelled; selection shared with the Inspector drawer.
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-19T18:01:36.768Z
+      updated_at: 2026-11-19T18:01:36.768Z
+      version: 1
+    accepted_gaps:
+      - direction: outgoing
+        predicate: uses
+        other_spec_node_id: application.applicationcomponent
+        reason: Renders Heimdall's HivePlot directly; selection goes through the
+          Canvas's selectFromCanvas and the UI store, not through another viewer
+          component.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:22.628Z
+        changeset: changeset-1795111279160-shbw81238
+  timestamp: 2026-11-19T18:02:22.632Z
+  sequenceNumber: 4
+- type: add
+  elementId: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other
+  layerName: testing
+  after:
+    id: d74cf484-e4e8-47eb-8eca-6cd633f57d26
+    path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: type bands order linked types next to each other
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "Motivation fixture: requirements, goals and principles come out
+        adjacent; the order has the least lane-skipping."
+    metadata:
+      created_at: 2026-11-19T18:01:36.770Z
+      updated_at: 2026-11-19T18:01:36.770Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 5
+- type: add
+  elementId: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix
+  layerName: testing
+  after:
+    id: d4e1111e-45e5-4481-952a-63ab1cb4f7db
+    path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: type bands name types without the layer prefix
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: applicationservice in application reads Services; band ids stay the
+        raw type.
+    metadata:
+      created_at: 2026-11-19T18:01:36.783Z
+      updated_at: 2026-11-19T18:01:36.783Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+  layerName: testing
+  after:
+    id: aaf22589-2409-4856-ad15-f157a5eb5fa7
+    path: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: model view control switches between graph lanes and hive and persists
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: Choosing Lanes by type renders the lanes, keeps the selection in
+        the Inspector, survives a reload; Hive is disabled for a layer with
+        fewer than 3 types.
+    metadata:
+      created_at: 2026-11-19T18:01:36.783Z
+      updated_at: 2026-11-19T18:01:36.783Z
+      version: 1
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: product.feature.model-view-by-type::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.model-view-by-type
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: product.feature.model-view-by-type::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.model-view-by-type
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: product.feature.model-view-by-type::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.model-view-by-type
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: product.feature.model-view-by-type::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.model-view-by-type
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: ux.view.model-view::composes::ux.subview.lanes-by-type
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: ux.subview.lanes-by-type
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: ux.view.model-view::composes::ux.subview.hive-by-type
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: ux.subview.hive-by-type
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: application.applicationcomponent.graph-canvas::composes::application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.graph-canvas
+    target: application.applicationcomponent.type-lanes-view
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationcomponent.graph-canvas::composes::application.applicationcomponent.type-hive-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.graph-canvas
+    target: application.applicationcomponent.type-hive-view
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.model-graph-transform::serves::application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    source: application.applicationservice.model-graph-transform
+    target: application.applicationcomponent.type-lanes-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.model-graph-transform::serves::application.applicationcomponent.type-hive-view
+  layerName: application
+  after:
+    source: application.applicationservice.model-graph-transform
+    target: application.applicationcomponent.type-hive-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.type-lanes-view
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.type-lanes-view
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.type-hive-view
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.type-hive-view
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.graph-viewport-key::serves::application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    source: application.applicationservice.graph-viewport-key
+    target: application.applicationcomponent.type-lanes-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::product.feature.model-view-by-type
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: product.feature.model-view-by-type
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::ux.view.model-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: ux.view.model-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-19T18:01:36.798Z
+  sequenceNumber: 22
+- type: add
+  elementId: application.applicationservice.type-bands
+  layerName: application
+  after:
+    id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+    path: application.applicationservice.type-bands
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Type Bands
+    description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+      'kind') for one DR layer's elements; band order with the least
+      lane-skipping between linked types; plural display names without the layer
+      prefix (shared with the nav tree's type helper); the row cap for large
+      lanes. Where it meets Heimdall, Heimdall's 'layer' is our node type;
+      layerId only ever means a DR layer."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-19T18:01:46.735Z
+      updated_at: 2026-11-19T18:01:46.735Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: Only the two by-type view components call it; no other data service
+          builds on the type bands.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:22.848Z
+        changeset: changeset-1795111279160-shbw81238
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its own unit test case sketches (ordering, naming); the
+          viewer models no coverage target per data service.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:23.063Z
+        changeset: changeset-1795111279160-shbw81238
+  timestamp: 2026-11-19T18:02:23.067Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationservice.type-bands::serves::application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    source: application.applicationservice.type-bands
+    target: application.applicationcomponent.type-lanes-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:46.756Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationservice.type-bands::serves::application.applicationcomponent.type-hive-view
+  layerName: application
+  after:
+    source: application.applicationservice.type-bands
+    target: application.applicationcomponent.type-hive-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:46.756Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: application.applicationservice.type-bands::realizes::product.feature.model-view-by-type
+  layerName: application
+  after:
+    source: application.applicationservice.type-bands
+    target: product.feature.model-view-by-type
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T18:01:46.756Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other::tests::application.applicationservice.type-bands
+  layerName: testing
+  after:
+    source: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other
+    target: application.applicationservice.type-bands
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:46.756Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix::tests::application.applicationservice.type-bands
+  layerName: testing
+  after:
+    source: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix
+    target: application.applicationservice.type-bands
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:46.756Z
+  sequenceNumber: 28
+- type: update
+  elementId: ux.view.model-view
+  layerName: ux
+  before:
+    id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+    path: ux.view.model-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Model View
+    description: A layer of the model as a graph of its elements (with inter-layer
+      neighbours), or in page mode as the layer / element record.
+    attributes:
+      type: page
+      title: Model
+      routable: true
+    source_reference: &a1
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata: &a2
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  after:
+    id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+    path: ux.view.model-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Model View
+    description: A layer of the model as a graph of its elements (with inter-layer
+      neighbours), or in page mode as the layer / element record.
+    attributes:
+      type: page
+      title: Model
+      routable: true
+      description: "Per-layer instance graph with a View control in the page header:
+        Graph (the mixed graph, Layout Clustered / Organic / Orthogonal), Lanes
+        by type or Hive by type. The selection opens in the Inspector drawer in
+        every view."
+    source_reference: *a1
+    metadata: *a2
+  timestamp: 2026-11-19T18:01:47.024Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: application.applicationcomponent.type-lanes-view::realizes::application.applicationservice.type-bands
+  layerName: application
+  after:
+    source: application.applicationcomponent.type-lanes-view
+    target: application.applicationservice.type-bands
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:51.538Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationcomponent.type-hive-view::realizes::application.applicationservice.type-bands
+  layerName: application
+  after:
+    source: application.applicationcomponent.type-hive-view
+    target: application.applicationservice.type-bands
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-19T18:01:51.538Z
+  sequenceNumber: 31
+- type: update
+  elementId: ux.view.model-view
+  layerName: ux
+  before:
+    id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+    path: ux.view.model-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Model View
+    description: A layer of the model as a graph of its elements (with inter-layer
+      neighbours), or in page mode as the layer / element record.
+    attributes:
+      type: page
+      title: Model
+      routable: true
+      description: "Per-layer instance graph with a View control in the page header:
+        Graph (the mixed graph, Layout Clustered / Organic / Orthogonal), Lanes
+        by type or Hive by type. The selection opens in the Inspector drawer in
+        every view."
+    source_reference: &a3
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata: &a4
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  after:
+    id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
+    path: ux.view.model-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Model View
+    description: A layer of the model as a graph of its elements (with inter-layer
+      neighbours), or in page mode as the layer / element record. In graph mode
+      a View control in the page header picks Graph (the mixed graph, with
+      Layout), Lanes by type or Hive by type; the selection opens in the
+      Inspector drawer in every view.
+    attributes:
+      type: page
+      title: Model
+      routable: true
+    source_reference: *a3
+    metadata: *a4
+  timestamp: 2026-11-19T18:02:06.724Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: ux.view.model-view::realizes::product.feature.model-view-by-type
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: product.feature.model-view-by-type
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-19T18:02:07.111Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::application.applicationcomponent.type-lanes-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: application.applicationcomponent.type-lanes-view
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:02:07.111Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::application.applicationcomponent.type-hive-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: application.applicationcomponent.type-hive-view
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T18:02:07.111Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::ux.subview.lanes-by-type
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: ux.subview.lanes-by-type
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-19T18:02:07.111Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists::tests::ux.subview.hive-by-type
+  layerName: testing
+  after:
+    source: testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists
+    target: ux.subview.hive-by-type
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-19T18:02:07.111Z
+  sequenceNumber: 37
+- type: update
+  elementId: application.applicationcomponent.graph-canvas
+  layerName: application
+  before:
+    id: 7c84e0d3-4126-4ac7-af5d-a30f4708e031
+    path: application.applicationcomponent.graph-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Graph Canvas
+    description: The primary graph-view component for the Model and Schema views;
+      mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a
+      user-chosen layout (Clustered force-clustered, Organic default, or
+      Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it
+      re-lays out and recenters on any of those changes. Inter-layer (foreign)
+      neighbours render as pills with a dashed border and faded swatch, at full
+      text contrast, and navigate to their home layer on click. Replaced the old
+      React Flow-based GraphViewer + pluggable Dagre/ELK/D3-Force/Graphviz
+      layout-engine registry in the June 2026 Heimdall UX rebuild.
+    attributes: &a5
+      type: internal
+    source_reference: &a6
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Canvas.tsx
+          symbol: Canvas
+    metadata: &a7
+      created_at: 2026-09-19T15:17:12.908Z
+      updated_at: 2026-09-19T15:17:12.908Z
+      version: 1
+  after:
+    id: 7c84e0d3-4126-4ac7-af5d-a30f4708e031
+    path: application.applicationcomponent.graph-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Graph Canvas
+    description: The primary graph-view component for the Model and Schema views;
+      mounts Heimdall's GraphCanvas (@tinkermonkey/heimdall-ui) with a
+      user-chosen layout (Clustered force-clustered, Organic default, or
+      Orthogonal), keyed by view:layerId:graphLayout:nodeMarginPreset so it
+      re-lays out and recenters on any of those changes. In the Model view a
+      View control beside Layout (uiStore.modelView, persisted) swaps the mixed
+      graph for the Type Lanes View or Type Hive View; Layout, Boundaries, Node
+      margin and Display apply to the mixed graph only. Inter-layer (foreign)
+      neighbours render as pills with a dashed border and faded swatch, at full
+      text contrast, and navigate to their home layer on click.
+    attributes: *a5
+    source_reference: *a6
+    metadata: *a7
+  timestamp: 2026-11-19T18:02:42.440Z
+  sequenceNumber: 42

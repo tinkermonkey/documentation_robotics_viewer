@@ -151,7 +151,8 @@ product.feature.dr-bot-chat-drawer:
   layer_id: product
   name: DrBot Chat Drawer
   description: Streaming chat with DrBot that carries the current view and
-    selection as context.
+    selection as context, in a floating panel that leaves the canvas and the
+    Inspector in place (or a docked column, by choice).
   attributes:
     priority: high
     status: delivered
@@ -212,4 +213,22 @@ product.feature.tier1-mode-and-routing:
   metadata:
     created_at: 2026-11-18T18:31:43.980Z
     updated_at: 2026-11-18T18:31:43.980Z
+    version: 1
+product.feature.model-view-by-type:
+  id: 857f49f5-7c88-4ab2-85e1-73f405321ac8
+  path: product.feature.model-view-by-type
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Model View by Type
+  description: "See one DR layer's elements grouped by node type: lanes (one per
+    type, linked types adjacent) or a hive (one axis per type), chosen in the
+    Model view's View control beside Layout."
+  attributes:
+    priority: medium
+    status: planned
+    size: m
+  metadata:
+    created_at: 2026-11-19T18:01:36.750Z
+    updated_at: 2026-11-19T18:01:36.750Z
     version: 1

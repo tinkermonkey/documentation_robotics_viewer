@@ -18,9 +18,9 @@ Infrastructure, platforms, systems, and technology components.
 | ------------------------- | ----- |
 | Elements                  | 29    |
 | Intra-Layer Relationships | 25    |
-| Inter-Layer Relationships | 16    |
+| Inter-Layer Relationships | 18    |
 | Inbound Relationships     | 2     |
-| Outbound Relationships    | 14    |
+| Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
 
@@ -128,6 +128,8 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.type-hive-view`                   | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.type-lanes-view`                  | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query` | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.technologyservice.serves.api.openapidocument`           | `technology.technologyservice.dr-cli-rest-server` | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
@@ -370,6 +372,8 @@ DOM implementation for Vitest component tests.
 | inter-layer | `application.applicationcomponent.graph-canvas`           | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.markdown-text`          | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.review-parts`           | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.type-hive-view`         | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.type-lanes-view`        | `serves`     | outbound  |
 | inter-layer | `ux.view.changesets-view`                                 | `depends-on` | inbound   |
 | inter-layer | `ux.view.model-view`                                      | `depends-on` | inbound   |
 
@@ -737,4 +741,4 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 ---
 
-Generated: 2026-11-19T17:49:06.264Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0

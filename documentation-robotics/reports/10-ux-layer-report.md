@@ -16,11 +16,11 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 17    |
-| Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 30    |
-| Inbound Relationships     | 4     |
-| Outbound Relationships    | 26    |
+| Elements                  | 19    |
+| Intra-Layer Relationships | 17    |
+| Inter-Layer Relationships | 35    |
+| Inbound Relationships     | 8     |
+| Outbound Relationships    | 27    |
 
 **Cross-Layer References**:
 
@@ -38,6 +38,8 @@ flowchart LR
     ux_subview_changeset_impact_tab["Changeset Impact Tab"]
     ux_subview_changeset_inbox["Changeset Inbox"]
     ux_subview_changeset_review_list["Changeset Review List"]
+    ux_subview_hive_by_type["Hive by Type"]
+    ux_subview_lanes_by_type["Lanes by Type"]
     ux_subview_page_view["Page View"]
     ux_subview_tier1_panel["Tier1 Panel"]
     ux_uxapplication_embedded_architecture_viewer["Embedded Architecture Viewer"]
@@ -62,6 +64,8 @@ flowchart LR
     ux_view_changesets_view -->|composes| ux_subview_changeset_inbox
     ux_view_changesets_view -->|composes| ux_subview_changeset_review_list
     ux_view_changesets_view -->|composes| ux_subview_tier1_panel
+    ux_view_model_view -->|composes| ux_subview_hive_by_type
+    ux_view_model_view -->|composes| ux_subview_lanes_by_type
     ux_view_model_view -->|composes| ux_subview_page_view
     ux_view_schema_view -->|composes| ux_subview_page_view
   end
@@ -101,6 +105,10 @@ flowchart TB
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                       | `ux.view.dr-bot-chat-drawer`                                 | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                           | `ux.subview.hive-by-type`                                    | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                           | `ux.subview.lanes-by-type`                                   | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                           | `ux.view.model-view`                                         | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `ux.subview.page-view`                                       | `ux`         | `tests`      | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`                                                                                | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                                                                                          | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -121,6 +129,7 @@ flowchart TB
 | `ux.view.references.business.businessobject`   | `ux.view.inspector-drawer`                                                                                               | `business.businessobject.annotation`                         | `business`   | `references` | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware` | `ux.view.model-view`                                                                                                     | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
 | `ux.view.realizes.product.feature`             | `ux.view.model-view`                                                                                                     | `product.feature.model-graph-view`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.model-view`                                                                                                     | `product.feature.model-view-by-type`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.model-view`                                                                                                     | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.model-view`                                                                                                     | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`         | `ux.view.model-view`                                                                                                     | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
@@ -244,6 +253,36 @@ The Changesets view's Review tab: labelled columns, change chips, decision pills
 | Type        | Related Element           | Predicate  | Direction |
 | ----------- | ------------------------- | ---------- | --------- |
 | intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
+
+### Hive by Type {#hive-by-type}
+
+**ID**: `ux.subview.hive-by-type`
+
+**Type**: `subview`
+
+Model view, View = Hive by type: one axis per node type, busiest elements farthest out, links as curves; offered only for layers with 3 or more types.
+
+#### Relationships
+
+| Type        | Related Element                                                                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`    | inbound   |
+| intra-layer | `ux.view.model-view`                                                                           | `composes` | inbound   |
+
+### Lanes by Type {#lanes-by-type}
+
+**ID**: `ux.subview.lanes-by-type`
+
+**Type**: `subview`
+
+Model view, View = Lanes by type: one lane per node type in the selected DR layer, titled with the plural type name and count; selection shared with the Inspector drawer.
+
+#### Relationships
+
+| Type        | Related Element                                                                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`    | inbound   |
+| intra-layer | `ux.view.model-view`                                                                           | `composes` | inbound   |
 
 ### Page View {#page-view}
 
@@ -412,22 +451,23 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 
 **Type**: `view`
 
-The DrBot assistant, scoped to the current selection: persistent at 1300px and wider, an overlay below.
+The DrBot assistant, scoped to the current selection: a floating non-modal panel under the topbar launcher that never reflows the canvas, with an opt-in docked column.
 
 #### Attributes
 
-| Name     | Value  |
-| -------- | ------ |
-| routable | false  |
-| type     | drawer |
+| Name     | Value |
+| -------- | ----- |
+| routable | false |
+| type     | panel |
 
 #### Relationships
 
-| Type        | Related Element                           | Predicate    | Direction |
-| ----------- | ----------------------------------------- | ------------ | --------- |
-| inter-layer | `product.feature.dr-bot-chat-drawer`      | `realizes`   | outbound  |
-| inter-layer | `business.businessrole.model-author`      | `serves`     | outbound  |
-| intra-layer | `ux.uxspec.architecture-exploration-spec` | `aggregates` | inbound   |
+| Type        | Related Element                                                                                    | Predicate    | Direction |
+| ----------- | -------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher` | `tests`      | inbound   |
+| inter-layer | `product.feature.dr-bot-chat-drawer`                                                               | `realizes`   | outbound  |
+| inter-layer | `business.businessrole.model-author`                                                               | `serves`     | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                          | `aggregates` | inbound   |
 
 ### Inspector Drawer {#inspector-drawer}
 
@@ -459,7 +499,7 @@ Selection details floating over the graph; auto-hides when nothing is selected.
 
 **Type**: `view`
 
-A layer of the model as a graph of its elements (with inter-layer neighbours), or in page mode as the layer / element record.
+A layer of the model as a graph of its elements (with inter-layer neighbours), or in page mode as the layer / element record. In graph mode a View control in the page header picks Graph (the mixed graph, with Layout), Lanes by type or Hive by type; the selection opens in the Inspector drawer in every view.
 
 #### Attributes
 
@@ -471,17 +511,21 @@ A layer of the model as a graph of its elements (with inter-layer neighbours), o
 
 #### Relationships
 
-| Type        | Related Element                                             | Predicate    | Direction |
-| ----------- | ----------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `navigation.route.app-shell-sectionview-route`              | `maps-to`    | inbound   |
-| inter-layer | `technology.systemsoftware.heimdall-ui`                     | `depends-on` | outbound  |
-| inter-layer | `product.feature.model-graph-view`                          | `realizes`   | outbound  |
-| inter-layer | `business.businessobject.architecture-model`                | `references` | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`              | `satisfies`  | outbound  |
-| inter-layer | `business.businessrole.architecture-reviewer`               | `serves`     | outbound  |
-| inter-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `supports`   | outbound  |
-| intra-layer | `ux.uxspec.architecture-exploration-spec`                   | `aggregates` | inbound   |
-| intra-layer | `ux.subview.page-view`                                      | `composes`   | outbound  |
+| Type        | Related Element                                                                                | Predicate    | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `navigation.route.app-shell-sectionview-route`                                                 | `maps-to`    | inbound   |
+| inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`      | inbound   |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                        | `depends-on` | outbound  |
+| inter-layer | `product.feature.model-graph-view`                                                             | `realizes`   | outbound  |
+| inter-layer | `product.feature.model-view-by-type`                                                           | `realizes`   | outbound  |
+| inter-layer | `business.businessobject.architecture-model`                                                   | `references` | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                 | `satisfies`  | outbound  |
+| inter-layer | `business.businessrole.architecture-reviewer`                                                  | `serves`     | outbound  |
+| inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                    | `supports`   | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                      | `aggregates` | inbound   |
+| intra-layer | `ux.subview.hive-by-type`                                                                      | `composes`   | outbound  |
+| intra-layer | `ux.subview.lanes-by-type`                                                                     | `composes`   | outbound  |
+| intra-layer | `ux.subview.page-view`                                                                         | `composes`   | outbound  |
 
 ### Schema View {#schema-view}
 
@@ -512,4 +556,4 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 
 ---
 
-Generated: 2026-11-19T17:49:06.264Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0
