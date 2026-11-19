@@ -1,0 +1,19 @@
+id: changeset-1795097887016-ilbk6jm5b
+name: release-plans-merge
+description: "Land what #573, #575 and #576 each changed on the same elements,
+  which had to come out of #575 and #576 so they could land: the combined
+  descriptions of changeset-review-panel, changeset-inbox, changeset-canvas,
+  use-changesets, changeset-detail and commit-changeset, and the 21 links moved
+  out of #575 and #576. Done: every description keeps what each plan added, and
+  every moved link is in the model."
+created: 2026-11-19T14:18:07.020Z
+modified: 2026-11-19T14:20:09.760Z
+status: committed
+baseSnapshot: sha256:f22283f7978e117f6c06e2a2e97cf1ba68a54f052ec250ddc03afdcf292a0f44
+origin:
+  kind: plan
+stats:
+  additions: 21
+  modifications: 6
+  deletions: 0
+lastSequence: 26

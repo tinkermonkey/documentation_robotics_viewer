@@ -5,8 +5,8 @@ description: "Show in the inbox's Tier 1 panel how far the answer-cache fill has
   agent or only suggests them, and, for OpenRouter, which upstreams may receive
   card text. Closes #578 and #579."
 created: 2026-11-18T18:30:25.461Z
-modified: 2026-11-18T18:48:50.764Z
-status: staged
+modified: 2026-11-19T13:21:53.104Z
+status: committed
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
@@ -14,7 +14,7 @@ stats:
   additions: 40
   modifications: 5
   deletions: 0
-lastSequence: 51
+lastSequence: 52
 unstaged:
   - sequence: 2
     removedAt: 37

@@ -119,8 +119,14 @@ application.applicationcomponent.changeset-canvas:
   type: applicationcomponent
   layer_id: application
   name: Changeset Canvas
-  description: "The Changesets view's main pane: the op-coded change list with
-    side-by-side diffs, and a Changes / Impact switch."
+  description: "The Changesets view's main pane: the header names the changeset's
+    purpose and where it came from, a lifecycle line says what this kind of
+    changeset is for and what happens next (a verification record leads with the
+    plan it verifies and what extraction read; a plan names its verification
+    records), then the op-coded change list and a Changes / Impact switch. Its
+    header carries the 'Base changed since this was staged' badge when the base
+    drift blocks a commit. A changeset the server no longer has (a discard
+    deletes it) shows as gone, with a way back to the inbox."
   attributes:
     type: internal
   source_reference:
@@ -163,9 +169,10 @@ application.applicationcomponent.changeset-inspector:
   type: applicationcomponent
   layer_id: application
   name: Changeset Inspector
-  description: "The Changesets view's right pane: status, blast radius,
-    added/modified/deleted counts, and Apply / Discard (behind confirmation) for
-    a staged changeset."
+  description: "The Changesets view's right pane: status, the drift badge and
+    base-drift section (what the base changed under the changeset), blast
+    radius, added/modified/deleted counts, and Apply / Discard (behind
+    confirmation) for a staged changeset."
   attributes:
     type: internal
   source_reference:
@@ -231,7 +238,16 @@ application.applicationcomponent.changeset-review-panel:
     Change, Element or link, What it says, Your decision); a change chip carries
     a glyph (+ element, + link, ~ update, − delete) and the decision is an
     outlined pill in its own column; a link row is a chain [source] —predicate→
-    [target] with a dashed end for an element this changeset adds."
+    [target] with a dashed end for an element this changeset adds. The summary
+    card's Apply is enabled with changes still undecided (it reads \"Apply N, M
+    undecided as kept\" and says so under the card); it waits only on an
+    undecided blocked delete, an ask or a drop conflict, and Keep the other N
+    stays for recording verdicts. Apply and Discard are offered only when the
+    server's actions allow them (a verification record gets Discard, never
+    Apply); a refused commit of a verification record is explained inline. When
+    the server reports drift that blocks a commit, the summary card warns before
+    Apply (which stays enabled) and the Apply confirm dialog says the drift
+    refusal is the expected outcome; the 409 after confirm is the result."
   attributes:
     type: internal
   source_reference:
@@ -344,8 +360,10 @@ application.applicationcomponent.apply-review:
   layer_id: application
   name: Apply Review
   description: Apply confirmation (what lands, what's left out, links deleted with
-    their elements) and the applied result, landed by layer. A landed-by-layer
-    row keeps the layer name and its counts apart at any inspector width.
+    their elements, and how many undecided changes land as kept) and the applied
+    result, landed by layer, with how many changes landed without a per-change
+    decision. A landed-by-layer row keeps the layer name and its counts apart at
+    any inspector width.
   attributes:
     type: internal
   source_reference:
@@ -364,9 +382,13 @@ application.applicationcomponent.changeset-inbox:
   type: applicationcomponent
   layer_id: application
   name: Changeset Inbox
-  description: "The Changesets view's landing page when no changeset is open:
-    staged changesets waiting on you and waiting on DrBot, each with review
-    progress, then applied and discarded ones. Hosts the Tier 1 panel above the
+  description: "The Changesets view's landing page when no changeset is open,
+    sorted by what each changeset needs from you: plans and DrBot's changes
+    waiting on you or on DrBot (with review progress and, for a plan whose base
+    drift blocks a commit, a 'Base changed since this was staged' badge),
+    changesets extracted from the code ready to land as built, verification
+    records each paired with the plan it verifies (never applied), then the
+    history with each changeset's purpose. Hosts the Tier 1 panel above the
     history."
   attributes:
     type: internal
@@ -387,9 +409,12 @@ application.applicationcomponent.tier1-panel:
   layer_id: application
   name: Tier1 Panel
   description: Read-only card in the changeset inbox showing Tier 1's state (on,
-    capped, no credentials, misconfigured, off), provider and model, and this
-    month's spend against the cap, from GET /api/tier1. Hidden on an older dr
-    CLI (404).
+    warming, capped, no credentials, misconfigured, off), provider and model,
+    this month's spend against the cap, the warming fill's progress (cards done
+    of total, time left, cost so far), whether Tier 1 stages without the agent
+    or only suggests (with the server's reason), and OpenRouter's routing
+    (allowed upstreams, no fallbacks, no data collection, zero data retention),
+    from GET /api/tier1. Hidden on an older dr CLI (404).
   attributes:
     type: internal
   source_reference:
@@ -470,7 +495,9 @@ application.applicationcomponent.left-rail:
   layer_id: application
   name: Left Rail
   description: "The shell's left navigation column: the view switch (Model,
-    Schema, Changesets) above the 3-level nav tree."
+    Schema, Changesets) above the 3-level nav tree. Its footer reads SPEC
+    {version} from the spec manifest (useSpec), or — when the server sends
+    none."
   attributes:
     type: internal
   source_reference:
@@ -510,7 +537,9 @@ application.applicationcomponent.status-bar:
   layer_id: application
   name: Status Bar
   description: "The shell's bottom status bar (Heimdall Statusbar): connection,
-    model and selection status."
+    model and selection status. Its right side reads cli {version}, the version
+    GET /health reports as cliVersion, or — when the server doesn't send one
+    (never /health's API version)."
   attributes:
     type: internal
   source_reference:
@@ -686,4 +715,32 @@ application.applicationcomponent.node-type-badge:
   metadata:
     created_at: 2026-11-18T16:26:33.167Z
     updated_at: 2026-11-18T16:26:33.167Z
+    version: 1
+application.applicationcomponent.drift-notice:
+  id: 84b29574-1d05-4995-80f1-2fd471364cf1
+  path: application.applicationcomponent.drift-notice
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Drift Notice
+  description: "How a changeset's base drift reads in the Changesets view: the
+    'Base changed since this was staged' badge (inbox card, canvas header,
+    inspector) for a plan whose drift blocks a commit, the summary card's note
+    before Apply (the server will likely refuse the commit; ask DrBot to
+    restage; the viewer can't land it anyway, the commit route takes no force;
+    Apply stays enabled), and the inspector overview's drift section (message,
+    the staged changes the base now overlaps, per-layer base change counts, a
+    cut list said as cut). Content-free drift is a quiet note, unknown says it
+    couldn't be checked, a verification record or settled changeset only shows
+    the server's message."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/DriftNotice.tsx
+        symbol: src.apps.embedded.ui.DriftNotice
+  metadata:
+    created_at: 2026-11-18T20:17:32.127Z
+    updated_at: 2026-11-18T20:17:32.127Z
     version: 1

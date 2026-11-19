@@ -65,8 +65,10 @@ ux.subview.changeset-inbox:
   type: subview
   layer_id: ux
   name: Changeset Inbox
-  description: "The Changesets view with no changeset open: staged changesets
-    waiting on you or on DrBot, then the history."
+  description: "The Changesets view with no changeset open: changesets sorted by
+    purpose and what they need (waiting on you or on DrBot, ready to land as
+    built, verification records paired with their plan), then the history with
+    each one's purpose."
   attributes:
     title: Inbox
   source_reference:
@@ -85,7 +87,9 @@ ux.subview.tier1-panel:
   type: subview
   layer_id: ux
   name: Tier1 Panel
-  description: Tier 1 state and this month's spend, above the inbox history.
+  description: Tier 1 state and this month's spend, above the inbox history; while
+    warming, the fill's progress; the mode (stages without the agent / suggests
+    only) and, for OpenRouter, where card text may go.
   attributes:
     title: Tier 1
   source_reference:

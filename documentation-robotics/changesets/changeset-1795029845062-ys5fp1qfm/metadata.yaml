@@ -3,16 +3,16 @@ name: changeset-purposes-and-actions
 description: Treat changesets by purpose and render their allowed actions from
   the server, so verification records aren't offered as plans to apply (#575)
 created: 2026-11-18T19:24:05.068Z
-modified: 2026-11-18T19:33:45.070Z
-status: staged
+modified: 2026-11-19T14:16:52.749Z
+status: committed
 baseSnapshot: sha256:7118b6fec16dddf26a50b1b4dcd83b246eae26cf921133f5cd9f5925b41691f7
 origin:
   kind: plan
 stats:
-  additions: 47
-  modifications: 9
+  additions: 37
+  modifications: 8
   deletions: 0
-lastSequence: 66
+lastSequence: 70
 unstaged:
   - sequence: 10
     removedAt: 44
@@ -254,3 +254,192 @@ unstaged:
           version: 1
       timestamp: 2026-11-18T19:24:40.406Z
     rewritten: true
+  - sequence: 31
+    removedAt: 68
+    change:
+      type: update
+      elementId: application.applicationcomponent.changeset-review-panel
+      layerName: application
+      before:
+        id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+        path: application.applicationcomponent.changeset-review-panel
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Changeset Review Panel
+        description: "A changeset's Review tab: the summary card, the Show / Group by /
+          Decided by controls and the per-change rows. Columns are labelled (#,
+          Change, Element or link, What it says, Your decision); a change chip
+          carries a glyph (+ element, + link, ~ update, − delete) and the
+          decision is an outlined pill in its own column; a link row is a chain
+          [source] —predicate→ [target] with a dashed end for an element this
+          changeset adds."
+        attributes: &a1
+          type: internal
+        source_reference: &a2
+          provenance: manual
+          locations:
+            - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+              symbol: ChangesetReviewPanel
+        metadata: &a3
+          created_at: 2026-11-17T22:03:39.519Z
+          updated_at: 2026-11-17T22:03:39.519Z
+          version: 1
+      after:
+        id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+        path: application.applicationcomponent.changeset-review-panel
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Changeset Review Panel
+        description: "A changeset's Review tab: the summary card, the Show / Group by /
+          Decided by controls and the per-change rows. Columns are labelled (#,
+          Change, Element or link, What it says, Your decision); a change chip
+          carries a glyph (+ element, + link, ~ update, − delete) and the
+          decision is an outlined pill in its own column; a link row is a chain
+          [source] —predicate→ [target] with a dashed end for an element this
+          changeset adds. Apply and Discard are offered only when the server's
+          actions allow them (a verification record gets Discard, never Apply);
+          a refused commit of a verification record is explained inline."
+        attributes: *a1
+        source_reference: *a2
+        metadata: *a3
+      timestamp: 2026-11-18T19:25:02.017Z
+  - sequence: 14
+    removedAt: 69
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.changeset-purpose::serves::application.applicationcomponent.changeset-review-panel
+      layerName: application
+      after:
+        source: application.applicationservice.changeset-purpose
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: serves
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T19:24:40.406Z
+  - sequence: 25
+    removedAt: 69
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply::tests::application.applicationcomponent.changeset-review-panel
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:24:40.406Z
+  - sequence: 26
+    removedAt: 69
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift::tests::application.applicationcomponent.changeset-review-panel
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:24:40.406Z
+  - sequence: 27
+    removedAt: 69
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions::tests::application.applicationcomponent.changeset-review-panel
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+        target: application.applicationcomponent.changeset-review-panel
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:24:40.406Z
+  - sequence: 16
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.changeset-purpose::serves::application.applicationcomponent.changeset-inspector
+      layerName: application
+      after:
+        source: application.applicationservice.changeset-purpose
+        target: application.applicationcomponent.changeset-inspector
+        predicate: serves
+        layer: application
+        category: structural
+      timestamp: 2026-11-18T19:24:40.406Z
+  - sequence: 55
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:33:45.064Z
+  - sequence: 56
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:33:45.064Z
+  - sequence: 57
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:33:45.064Z
+  - sequence: 58
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.changeset-canvas-purpose-leads-a-verification-record-with-the-plan-it-verifies-and-what-extraction-read
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:33:45.064Z
+  - sequence: 59
+    removedAt: 70
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it::tests::application.applicationcomponent.changeset-inspector
+      layerName: testing
+      after:
+        source: testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-the-server-no-longer-has-it
+        target: application.applicationcomponent.changeset-inspector
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-18T19:33:45.064Z

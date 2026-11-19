@@ -76,7 +76,9 @@ api.operation.list-changesets:
   type: operation
   layer_id: api
   name: List Changesets
-  description: Returns registry of all available changesets with summaries
+  description: Returns registry of all available changesets with summaries, each
+    with its base drift (state, blocksCommit, message), checked on the read with
+    no commit attempt.
   attributes:
     operationId: listChangesets
     summary: List all changesets
@@ -100,7 +102,8 @@ api.operation.get-changeset-details:
   layer_id: api
   name: Get Changeset Details
   description: Returns detailed changeset including all element changes with
-    before/after states
+    before/after states, and its base drift with what changed in the base
+    (overlaps, base changes) when the base's hash changed.
   attributes:
     operationId: getChangeset
     summary: Get changeset by ID
@@ -352,9 +355,10 @@ api.operation.commit-changeset:
   type: operation
   layer_id: api
   name: Commit Changeset
-  description: Applies a staged changeset to the base model (the viewer's Apply).
-    404 unknown, 409 not staged or model drifted, 422 failed validation, body {
-    error }.
+  description: "Applies a staged changeset to the base model (the viewer's Apply).
+    404 unknown, 409 not staged, a verification record (never landed), or base
+    drift (the route takes no force: a drifted changeset lands only through
+    changeset_commit with force), 422 failed validation, body { error }."
   attributes:
     operationId: commitChangeset
     summary: Apply a staged changeset to the model
@@ -377,8 +381,9 @@ api.operation.discard-changeset:
   type: operation
   layer_id: api
   name: Discard Changeset
-  description: Discards a staged changeset without touching the model (the
-    viewer's Discard).
+  description: "Discards a staged changeset without touching the model (the
+    viewer's Discard): deletes it with its folder, so it leaves GET
+    /api/changesets and GET /api/changesets/:id answers 404 afterwards."
   attributes:
     operationId: discardChangeset
     summary: Discard a staged changeset

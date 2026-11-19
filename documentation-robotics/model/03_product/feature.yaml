@@ -68,8 +68,10 @@ product.feature.changeset-inbox:
   type: feature
   layer_id: product
   name: Changeset Inbox
-  description: Staged changesets waiting on you or on DrBot, with review progress,
-    then the history.
+  description: "Changesets sorted by what they need from you: plans and DrBot's
+    changes waiting on you or on DrBot (with review progress), extracted changes
+    ready to land as built, verification records paired with the plan they
+    verify, then the history."
   attributes:
     priority: high
     status: delivered
@@ -132,7 +134,8 @@ product.feature.tier1-spend-panel:
   layer_id: product
   name: Tier1 Spend Panel
   description: Tier 1's state and this month's spend against the cap, in the
-    changeset inbox.
+    changeset inbox. The warming progress and the mode and routing rows build on
+    it.
   attributes:
     priority: low
     status: delivered
@@ -171,4 +174,42 @@ product.feature.element-annotations:
   metadata:
     created_at: 2026-11-18T16:29:24.511Z
     updated_at: 2026-11-18T16:29:24.511Z
+    version: 1
+product.feature.tier1-warming-progress:
+  id: 629d530a-f2bc-49b4-90a1-a40bf1f2a3d8
+  path: product.feature.tier1-warming-progress
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Tier1 Warming Progress
+  description: While Tier 1 warms up (a codebase_index job filling the answer
+    cache), the Tier 1 panel shows how many cards are done out of the total (or
+    that the cards are still being built), when the fill started, about how long
+    it has left and what it has cost so far, and refreshes until the fill ends.
+  attributes:
+    priority: low
+    status: planned
+    size: s
+  metadata:
+    created_at: 2026-11-18T18:31:42.918Z
+    updated_at: 2026-11-18T18:31:42.918Z
+    version: 1
+product.feature.tier1-mode-and-routing:
+  id: e75f1d19-423e-4a1a-9070-a1d04d1f73cc
+  path: product.feature.tier1-mode-and-routing
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Tier1 Mode And Routing
+  description: The Tier 1 panel says whether Tier 1 stages changes without the
+    agent or only suggests them (with the server's reason), and, for OpenRouter,
+    which upstreams may receive card text, with no fallbacks, no data collection
+    and zero data retention when set.
+  attributes:
+    priority: low
+    status: planned
+    size: s
+  metadata:
+    created_at: 2026-11-18T18:31:43.980Z
+    updated_at: 2026-11-18T18:31:43.980Z
     version: 1
