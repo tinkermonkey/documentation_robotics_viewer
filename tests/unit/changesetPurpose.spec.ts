@@ -8,6 +8,7 @@ import {
   canDo,
   inboxGroups,
   purposeFields,
+  purposeLabel,
   purposeLifecycle,
   recordsOf,
   scopeLabel,
@@ -41,6 +42,13 @@ describe('changesetPurpose', () => {
     expect(purposeLifecycle(undefined)).toBeUndefined();
   });
 
+  it('reads an upgrade record: never applied, reviewed, restored from by hand, discarded', () => {
+    expect(toPurpose('upgrade-record')).toBe('upgrade-record');
+    expect(purposeLabel('upgrade-record')).toBe('upgrade record');
+    expect(purposeLifecycle('upgrade-record')).toMatch(/spec upgrade dropped.*isn't applied.*restore.*discard/);
+    expect(canDo({ status: 'staged', actions: ['discard'] }, 'commit')).toBe(false);
+  });
+
   it('keeps known actions, drops unknown ones, and reads no array as an older dr CLI', () => {
     expect(toActions(['commit', 'discard'])).toEqual(['commit', 'discard']);
     expect(toActions(['discard', 'archive'])).toEqual(['discard']);
@@ -68,6 +76,7 @@ describe('changesetPurpose', () => {
       { id: 'boot', name: 'extract-abc', status: 'staged', purpose: 'bootstrap' as const },
       { id: 'rec2', name: 'reconcile-1', status: 'staged', purpose: 'reconcile' as const },
       { id: 'chat', name: 'from-chat', status: 'staged', purpose: 'chat' as const },
+      { id: 'upg', name: 'upgrade-0.13.0-drops', status: 'staged', purpose: 'upgrade-record' as const },
       { id: 'old', name: 'no-purpose', status: 'staged' },
       { id: 'done', name: 'landed', status: 'committed', purpose: 'plan' as const },
     ];
@@ -78,6 +87,7 @@ describe('changesetPurpose', () => {
       ['rec', 'plan'],
       ['orphan', undefined],
     ]);
+    expect(g.upgrades.map((c) => c.id)).toEqual(['upg']);
     expect(g.history.map((c) => c.id)).toEqual(['done']);
     expect(recordsOf('plan', list).map((c) => c.id)).toEqual(['rec']);
   });

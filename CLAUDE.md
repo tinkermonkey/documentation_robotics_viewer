@@ -140,10 +140,13 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   `POST /api/changesets/:id/discard` (staged only; 404 unknown, 409 not staged or model drifted, 422 failed
   validation or deletes still in use — body `{ error, blockers? }`)
 - Changeset purposes (dr CLI with documentation_robotics#1188): list and detail carry `purpose`
-  (`plan | chat | bootstrap | reconcile | verification`), `actions` (`['commit','discard']` while staged,
-  `['discard']` for a verification record, `[]` once settled) and, on a record, `verifies` (the plan's id); the
+  (`plan | chat | bootstrap | reconcile | verification | upgrade-record`), `actions` (`['commit','discard']` while
+  staged, `['discard']` for a verification or upgrade record, `[]` once settled) and, on a record, `verifies` (the plan's id); the
   detail adds `scope: { since, codeCommit? }`. Commit refuses a record with a 409 naming the plan (its text
-  mentions drift: `isVerificationRecordRefusal` is checked before `isDriftError`). Discard DELETES the
+  mentions drift: `isVerificationRecordRefusal`, which matches either record, is checked before `isDriftError`).
+  An upgrade record (`dr upgrade` / project_upgrade) holds the relationships a spec migration dropped, as
+  staged relationship deletes with `origin.by: upgrade` (`rule` = the retired type); the changeset's own
+  `origin.kind` is `upgrade`. Discard DELETES the
   changeset (GET answers 404, it leaves the list), so a new server has no `discarded` history.
 - Changeset drift (dr CLI with documentation_robotics#1191): list and detail carry a required `drift`
   `{ state: none|content-free|drifted|not-applicable|unknown, blocksCommit, message }` (`blocksCommit` true only
@@ -295,9 +298,11 @@ For local dev use `dr visualize --no-auth`.
   `scope` (known values only, as `tier1.ts` does) and renders them, never inferring from names
   (`-as-built`) or descriptions. Apply and Discard (summary card) come from `canDo(cs, move)`: the server's
   `actions`, else (an older dr CLI) any staged changeset. A verification record gets Discard only (no Apply, no
-  "Keep the other N"). The inbox (`inboxGroups`): Waiting on you / on DrBot = plans, chat and changesets with
+  bulk keep). The bulk keep reads "Keep all N" before anything is decided, "Keep the other N" after, and
+  "Keep N, not the M blocked deletes" when blocked deletes are left out (`keepRestLabel`). The inbox (`inboxGroups`): Waiting on you / on DrBot = plans, chat and changesets with
   no known purpose; "Ready to land as built" = bootstrap / reconcile; "Verification records", each paired with
-  its plan (a plan's card links its records); History (with a PURPOSE column). The canvas eyebrow names the
+  its plan (a plan's card links its records); "Upgrade records" (what a spec upgrade dropped: review, restore by
+  hand in a plan, discard); History (with a PURPOSE column). The canvas eyebrow names the
   purpose, `PurposeNote` gives its lifecycle (a record leads with its plan and what extraction read), NavTree
   puts the purpose in the row's title / accessible name. A 404 detail shows `ChangesetGone`; a discard on a
   server that sends `actions` returns to the inbox with a toast (`ChangesetReviewPanel`'s `onGone`).

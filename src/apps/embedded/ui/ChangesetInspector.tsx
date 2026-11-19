@@ -322,7 +322,10 @@ export function ChangesetInspector() {
               </span>
             </div>
 
-            <DriftSection drift={detail.drift} isRecord={detail.purpose === 'verification'} />
+            <DriftSection
+              drift={detail.drift}
+              isRecord={detail.purpose === 'verification' || detail.purpose === 'upgrade-record'}
+            />
 
             <BlastRadius detail={detail} />
 
@@ -332,7 +335,9 @@ export function ChangesetInspector() {
                   ? 'Select a change to decide it: Keep, Drop or Ask DrBot. Changes you leave undecided land as kept when you apply.'
                   : detail.purpose === 'verification'
                     ? 'A verification record is never applied. Keep it as a record, or discard it.'
-                    : 'The server offers no Apply for this changeset.'}
+                    : detail.purpose === 'upgrade-record'
+                      ? 'An upgrade record is never applied. Review what the upgrade dropped, restore what you still need by hand in a plan, then discard it.'
+                      : 'The server offers no Apply for this changeset.'}
               </p>
             )}
 

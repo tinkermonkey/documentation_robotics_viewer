@@ -56,7 +56,7 @@ export interface UnstagedChange {
   change?: ChangeRecord;
 }
 
-export type OriginKind = 'chat' | 'plan' | 'extract' | 'cli';
+export type OriginKind = 'chat' | 'plan' | 'extract' | 'cli' | 'upgrade';
 export interface ChangesetOrigin {
   kind: OriginKind;
   detail?: string;
@@ -1070,6 +1070,8 @@ export function originLabel(origin: ChangesetOrigin | undefined): string | undef
       return 'extracted from the code';
     case 'cli':
       return 'staged from the dr CLI';
+    case 'upgrade':
+      return 'recorded by a spec upgrade';
     default:
       return undefined;
   }

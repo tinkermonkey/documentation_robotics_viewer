@@ -88,19 +88,21 @@ const DECIDER_LABEL: Record<KnownDecider, string> = {
   tier0: 'Tier 0',
   tier1: 'Tier 1',
   agent: 'Agent',
+  upgrade: 'Upgrade',
 };
 
 const DECIDER_TITLE: Record<KnownDecider, string> = {
   tier0: 'Decided by a Tier 0 rule',
   tier1: 'Decided by the Tier 1 decision model',
   agent: 'Decided by the agent',
+  upgrade: 'Dropped by a spec upgrade',
 };
 
 /** Fixed order of the known deciders in the filter; unknown ones follow by name. */
-const DECIDER_ORDER: string[] = ['tier0', 'tier1', 'agent'];
+const DECIDER_ORDER: string[] = ['tier0', 'tier1', 'agent', 'upgrade'];
 
 export function isKnownDecider(by: string): by is KnownDecider {
-  return by === 'tier0' || by === 'tier1' || by === 'agent';
+  return by === 'tier0' || by === 'tier1' || by === 'agent' || by === 'upgrade';
 }
 
 /**
@@ -162,7 +164,8 @@ const CONFIRMED_LABEL: Record<string, string> = {
  */
 export function originDetails(origin: ChangeOrigin): { key: string; value: string }[] {
   const rows: { key: string; value: string }[] = [];
-  if (origin.rule) rows.push({ key: 'Rule', value: origin.rule });
+  // An upgrade's `rule` names the retired relationship type and the change record that retired it.
+  if (origin.rule) rows.push({ key: origin.by === 'upgrade' ? 'Retired' : 'Rule', value: origin.rule });
   if (origin.provider) rows.push({ key: 'Provider', value: origin.provider });
   if (origin.model) rows.push({ key: 'Model', value: origin.model });
   if (origin.upstream) rows.push({ key: 'Upstream', value: origin.upstream });

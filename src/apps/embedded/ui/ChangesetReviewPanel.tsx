@@ -90,6 +90,18 @@ import { canDo } from '../data/changesetPurpose';
 import { driftBlocksCommit } from '../data/changesetDrift';
 import { DriftApplyNote } from './DriftNotice';
 
+/**
+ * The bulk keep's label: "Keep all N" before anything is decided, "Keep the
+ * other N" after. Blocked deletes are never in it (keeping one deletes its
+ * links too), so before anything is decided it says they're left out.
+ */
+export function keepRestLabel(rest: number, decided: number, blocked: number): string {
+  if (rest === 0) return 'Nothing left';
+  if (decided > 0) return `Keep the other ${rest}`;
+  if (blocked > 0) return `Keep ${rest}, not the ${plural(blocked, 'blocked delete')}`;
+  return `Keep all ${rest}`;
+}
+
 // ─── Rows ─────────────────────────────────────────────────────────────────────
 
 function ReviewRow({ item, model, outcome }: { item: ReviewItem; model: ReviewModel; outcome: ChangeOutcome | null }) {
@@ -462,7 +474,7 @@ function SummaryCard({
       onError: (err) => {
         if (isVerificationRecordRefusal(err)) {
           setError(
-            `Nothing was written. This is a verification record, which is never applied: ${changesetActionErrorMessage(err)}`,
+            `Nothing was written. This is a record, which is never applied: ${changesetActionErrorMessage(err)}`,
           );
           return;
         }
@@ -545,7 +557,7 @@ function SummaryCard({
                 onClick={() => review.decide(rest.map((i) => ({ sequence: i.seq, verdict: 'keep' })))}
                 data-testid="review-keep-rest"
               >
-                {rest.length > 0 ? `Keep the other ${rest.length}` : 'Nothing left'}
+                {keepRestLabel(rest.length, counts.decided, blockedOpen.length)}
               </Button>
               <Button
                 variant="accent"
