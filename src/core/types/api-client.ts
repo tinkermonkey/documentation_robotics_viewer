@@ -33,8 +33,10 @@ export interface paths {
                         "application/json": {
                             /** @description Server health status */
                             status: string;
-                            /** @description API version */
+                            /** @description API version (the version of this HTTP API, not of the dr CLI or the spec) */
                             version: string;
+                            /** @description Version of the dr CLI that is serving this API, e.g. "0.5.0" */
+                            cliVersion: string;
                         };
                     };
                 };
