@@ -54,10 +54,13 @@ application.applicationcomponent.nav-tree:
   layer_id: application
   name: Nav Tree
   description: "Sidebar navigation: an accordion of Model / Schema / Changesets
-    sections, each with the spec's layers (in the order the spec gives) and
-    their elements or node types (or the changesets). Reveals the current
-    selection, scrolling it into view after any navigation, including a deep
-    link whose element rows only appear once the model or changesets load."
+    sections, each with the spec's layers (in the order the spec gives). A Model
+    layer opens onto its node types (count, A–Z, collapsed), each holding its
+    elements (A–Z); a Schema layer lists its node types; Changesets lists the
+    changesets. Opening a type group is local tree state and pushes no history.
+    Reveals the current selection, opening its type group and scrolling it into
+    view after any navigation, including a deep link whose element rows only
+    appear once the model or changesets load."
   attributes:
     type: internal
   source_reference:

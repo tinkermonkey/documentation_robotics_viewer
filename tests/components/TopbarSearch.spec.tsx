@@ -12,6 +12,7 @@ import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { TopbarSearch } from '@/apps/embedded/ui/TopbarSearch';
+import { NavTree } from '@/apps/embedded/ui/NavTree';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 
@@ -59,6 +60,27 @@ describe('topbar search', () => {
     // The search clears and closes once it has taken you there.
     expect(input).toHaveValue('');
     expect(input).toHaveAttribute('aria-expanded', 'false');
+  });
+
+  it('a chosen element is revealed inside its open type group in the nav tree', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(
+      <>
+        <TopbarSearch />
+        <NavTree />
+      </>,
+    );
+    const input = screen.getByRole('combobox', { name: /search elements and node types/i });
+
+    await typeAndWait(user, input, 'wcag 2.1 aa');
+    await screen.findByRole('option', { name: /WCAG 2\.1 AA Compliance/ });
+    await user.keyboard('{Enter}');
+
+    // The requirement's type group opens and its row is the active one.
+    const group = await screen.findByTestId('nav-type-group-motivation.requirement');
+    await waitFor(() => expect(group).toHaveAttribute('aria-expanded', 'true'));
+    const row = within(screen.getByTestId('nav-tree')).getByText(WCAG.name).closest('button')!;
+    expect(row).toHaveClass('nav-item--active');
   });
 
   it('a node-type result opens it in the Schema view', async () => {

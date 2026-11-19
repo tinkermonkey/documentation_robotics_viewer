@@ -755,6 +755,23 @@ application.applicationservice.changeset-purpose:
     created_at: 2026-11-18T19:24:40.393Z
     updated_at: 2026-11-18T19:24:40.393Z
     version: 1
+application.applicationservice.nav-tree-groups:
+  id: 5b117791-acda-41f6-8666-8c6159bdda4e
+  path: application.applicationservice.nav-tree-groups
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Nav Tree Groups
+  description: "Pure transform for the nav tree: a layer's model elements grouped
+    by node type, each group with its type key, label (the spec's type title,
+    else the type id) and count, groups and elements sorted A–Z; plus the group
+    key holding a given element, so the tree can open it."
+  attributes:
+    serviceType: synchronous
+  metadata:
+    created_at: 2026-11-19T17:47:57.291Z
+    updated_at: 2026-11-19T17:47:57.291Z
+    version: 1
 application.applicationservice.search-index:
   id: 15ee056b-c277-4302-800a-4bc4bfd4f664
   path: application.applicationservice.search-index

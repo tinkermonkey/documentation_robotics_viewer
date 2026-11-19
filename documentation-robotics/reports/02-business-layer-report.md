@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 127   |
-| Inbound Relationships     | 120   |
+| Inter-Layer Relationships | 122   |
+| Inbound Relationships     | 115   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -119,8 +119,6 @@ flowchart TB
 | `application.applicationservice.serves.business.businessprocess`                      | `application.applicationservice.json-rpc-handler`                                                                                                        | `business.businessprocess.real-time-model-synchronization`   | `business`   | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.layer-domain-palette`                                                                                                    | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.model-graph-transform`                                                                                                   | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
-| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.spec-graph-transform`                                                                                                    | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.use-annotations`                                                                                                         | `business.businessservice.model-annotation`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                     | `application.applicationservice.use-changeset-review`                                                                                                    | `business.businessobject.changeset`                          | `business`   | `accesses`   | many-to-many | medium   |
@@ -222,9 +220,6 @@ flowchart TB
 | `ux.view.references.business.businessobject`                                          | `ux.view.model-view`                                                                                                                                     | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`                                                | `ux.view.model-view`                                                                                                                                     | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.references.business.businessobject`                                          | `ux.view.schema-view`                                                                                                                                    | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.references.business.businessobject`                                          | `ux.view.topbar-search`                                                                                                                                  | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`                                                | `ux.view.topbar-search`                                                                                                                                  | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
-| `ux.view.serves.business.businessrole`                                                | `ux.view.topbar-search`                                                                                                                                  | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
 
 ## Element Reference
 
@@ -280,7 +275,6 @@ The multi-layer YAML architecture model managed by DR CLI and visualized by the 
 | inter-layer | `security.secureresource.web-socket-json-rpc-channel`        | `references` | inbound   |
 | inter-layer | `ux.view.model-view`                                         | `references` | inbound   |
 | inter-layer | `ux.view.schema-view`                                        | `references` | inbound   |
-| inter-layer | `ux.view.topbar-search`                                      | `references` | inbound   |
 | intra-layer | `business.businessfunction.cross-layer-reference-resolution` | `accesses`   | inbound   |
 | intra-layer | `business.businessobject.annotation`                         | `composes`   | outbound  |
 | intra-layer | `business.businessobject.changeset`                          | `composes`   | outbound  |
@@ -371,7 +365,6 @@ Team member who uses the viewer to review, annotate, and discuss architecture mo
 | inter-layer | `product.persona.architecture-reviewer`          | `references`  | inbound   |
 | inter-layer | `ux.view.changesets-view`                        | `serves`      | inbound   |
 | inter-layer | `ux.view.model-view`                             | `serves`      | inbound   |
-| inter-layer | `ux.view.topbar-search`                          | `serves`      | inbound   |
 | intra-layer | `business.businessprocess.changeset-review-flow` | `assigned-to` | outbound  |
 
 ### Model Author {#model-author}
@@ -388,7 +381,6 @@ Architect who creates and updates the DR model via DR CLI; views results in the 
 | ----------- | ------------------------------ | ------------ | --------- |
 | inter-layer | `product.persona.model-author` | `references` | inbound   |
 | inter-layer | `ux.view.dr-bot-chat-drawer`   | `serves`     | inbound   |
-| inter-layer | `ux.view.topbar-search`        | `serves`     | inbound   |
 
 ### AI-Assisted Architecture Chat {#ai-assisted-architecture-chat}
 
@@ -419,7 +411,6 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 | ----------- | ------------------------------------------------------------ | ---------- | --------- |
 | inter-layer | `application.applicationservice.layer-domain-palette`        | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.model-graph-transform`       | `realizes` | inbound   |
-| inter-layer | `application.applicationservice.search-index`                | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.use-model`                   | `realizes` | inbound   |
 | intra-layer | `business.businessfunction.cross-layer-reference-resolution` | `realizes` | inbound   |
 | intra-layer | `business.businessprocess.real-time-model-synchronization`   | `realizes` | inbound   |
@@ -541,11 +532,10 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 | Type        | Related Element                                             | Predicate  | Direction |
 | ----------- | ----------------------------------------------------------- | ---------- | --------- |
-| inter-layer | `application.applicationservice.search-index`               | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.spec-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.use-spec`                   | `realizes` | inbound   |
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes` | outbound  |
 
 ---
 
-Generated: 2026-11-19T18:35:25.911Z | Model Version: 0.1.0
+Generated: 2026-11-19T14:16:52.940Z | Model Version: 0.1.0

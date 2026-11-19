@@ -37,7 +37,7 @@ src/
 │   ├── AuthRoute.tsx          # Magic-link token capture
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
-│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx
+│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model)
 │   │   ├── TopbarSearch.tsx topbar-search.css     # type-ahead over elements + node types (data/search.ts)
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
@@ -412,7 +412,12 @@ For local dev use `dr visualize --no-auth`.
   (any schema's `specVersion` as fallback; `data/serverVersions.ts` `specVersionOf`, used by `useSpec`); the
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
-  Today's dr CLI sends no `cliVersion`, so the status bar reads `cli —` until it does.
+  The API spec requires `cliVersion` since 2026-11-19; an older dr CLI sends none, so the status bar reads `cli —` there.
+- **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: spec
+  title + count, A–Z, a single-element type still grouped), each holding its elements (A–Z); Schema is
+  unchanged. Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
+  opening one pushes no history. The selected element's group opens on every selection change (nav, graph,
+  deep link, cross-layer), and the reveal effect re-runs when it does. E2E `openLayer` opens the first group.
 - **Topbar search** (`ui/TopbarSearch.tsx`, `data/search.ts`) — type-ahead over `/api/model` elements and
   `/api/spec` node types; `/` (outside a field) or ⌘K / Ctrl+K focuses it. Tiers: exact > prefix > word start >
   substring > fuzzy (in order, few fragments, offered only when fewer than 5 names match better); the best 50

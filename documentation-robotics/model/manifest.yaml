@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.5.0
 spec_version: 0.13.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-19T17:52:01.232Z
+updated: 2026-11-19T17:50:11.907Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -39,7 +39,7 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
-      feature: 14
+      feature: 15
       persona: 2
       softwarecapability: 5
       userworkflow: 1
@@ -69,7 +69,7 @@ layers:
       applicationfunction: 5
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 36
+      applicationservice: 37
   technology:
     order: 6
     name: Technology
@@ -154,7 +154,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 806
+      testcasesketch: 809
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -190,6 +190,9 @@ changeset_history:
     action: committed
   - name: node-page-markdown-description
     committed_at: 2026-11-19T17:49:06.238Z
+    action: committed
+  - name: nav-tree-by-type
+    committed_at: 2026-11-19T17:50:11.905Z
     action: committed
   - name: topbar-search
     committed_at: 2026-11-19T17:52:01.219Z

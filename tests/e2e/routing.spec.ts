@@ -117,13 +117,14 @@ test.describe('URL routing — left-panel selections', () => {
     await firstEdgeLabel.click();
     await expect(page).toHaveURL(/[?&]edge=[^&]+/);
 
-    // APM is already expanded and selected (an edge is selected in it).
+    // APM is already expanded and selected (an edge is selected in it); its
+    // first type group is open from openLayer.
     const firstLeaf = page
       .getByRole('button', { name: /^APM \d+$/ })
       .first()
       .locator('xpath=../following-sibling::div[1]')
-      .locator('.drv-nav-l2');
-    await firstLeaf.click();
+      .locator('.drv-nav-l3');
+    await firstLeaf.first().click();
 
     await expect(page).toHaveURL(/[?&]node=[^&]+/);
     expect(hashSearchParams(page.url()).get('edge')).toBeNull();
