@@ -16,10 +16,10 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 78    |
-| Intra-Layer Relationships | 172   |
-| Inter-Layer Relationships | 916   |
-| Inbound Relationships     | 854   |
+| Elements                  | 79    |
+| Intra-Layer Relationships | 175   |
+| Inter-Layer Relationships | 923   |
+| Inbound Relationships     | 861   |
 | Outbound Relationships    | 62    |
 
 **Cross-Layer References**:
@@ -34,7 +34,7 @@ Application components, services, and interactions.
 | Element                                                          | Type                   | Relationships |
 | ---------------------------------------------------------------- | ---------------------- | ------------- |
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
-| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 14            |
+| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 15            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 2             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 11            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 7             |
@@ -52,12 +52,13 @@ Application components, services, and interactions.
 | `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 15            |
 | `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 12            |
 | `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 4             |
+| `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 1             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 2             |
 | `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 7             |
 | `application.applicationcomponent.neighborhood-graph-view`       | `applicationcomponent` | 3             |
 | `application.applicationcomponent.node-type-badge`               | `applicationcomponent` | 5             |
 | `application.applicationcomponent.node-type-tooltip`             | `applicationcomponent` | 2             |
-| `application.applicationcomponent.page-view`                     | `applicationcomponent` | 6             |
+| `application.applicationcomponent.page-view`                     | `applicationcomponent` | 7             |
 | `application.applicationcomponent.pill-node`                     | `applicationcomponent` | 3             |
 | `application.applicationcomponent.predicate-tooltip`             | `applicationcomponent` | 4             |
 | `application.applicationcomponent.relationships-with-tooltips`   | `applicationcomponent` | 3             |
@@ -65,8 +66,8 @@ Application components, services, and interactions.
 | `application.applicationcomponent.rich-tooltip`                  | `applicationcomponent` | 2             |
 | `application.applicationcomponent.status-bar`                    | `applicationcomponent` | 3             |
 | `application.applicationcomponent.tier1-panel`                   | `applicationcomponent` | 2             |
-| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 3             |
-| `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 6             |
+| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 5             |
+| `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 7             |
 | `application.applicationfunction.auth-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
@@ -244,6 +245,7 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.drift-notice`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                                                                                                              | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                                                                                                        | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
@@ -587,6 +589,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                                                 | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `application.applicationcomponent.markdown-text`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-curates-a-fixed-properties-set-layer-type-provenance-source-no-attribute-spread`                            | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-defaults-provenance-to-authored-and-omits-source-when-no-reference`                                         | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.metadata-for-element-falls-back-to-the-file-path-when-a-location-has-only-a-file`                                                | `application.applicationservice.relationship-derivation`            | `application` | `tests`      | many-to-many | medium   |
@@ -747,6 +750,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`                       | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9`                    | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13`                    | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`                                 | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-a-row-without-a-target-renders-as-plain-text-not-an-interactive-row`                              | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-node-type-cell-calls-navigate-to-spec-node-using-its-own-5450ce17`                     | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-rows-fallback-cell-calls-navigate-to-element-using-the-7ea3282d`                       | `application.applicationcomponent.page-view`                        | `application` | `tests`      | many-to-many | medium   |
@@ -859,7 +863,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query`                                                | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better`                                                              | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.search-index-stays-fast-on-a-large-model`                                                                                        | `application.applicationservice.search-index`                       | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -996,6 +1003,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `application.applicationcomponent.rich-tooltip`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                                                      | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -1139,6 +1147,7 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | intra-layer | `application.applicationcomponent.status-bar`                                                                                    | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.topbar`                                                                                        | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-inspector`                                                                           | `uses`        | outbound  |
+| intra-layer | `application.applicationcomponent.topbar`                                                                                        | `uses`        | outbound  |
 | intra-layer | `application.applicationservice.exception-classifier`                                                                            | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                            | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                                       | `serves`      | inbound   |
@@ -1774,6 +1783,28 @@ The shell's left navigation column: the view switch (Model, Schema, Changesets) 
 | intra-layer | `application.applicationservice.use-model`                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                                 | `serves`   | inbound   |
 
+### Markdown Text {#markdown-text}
+
+**ID**: `application.applicationcomponent.markdown-text`
+
+**Type**: `applicationcomponent`
+
+Shared renderer for untrusted model prose (node page descriptions; changeset descriptions next, #588): wraps Heimdall's ChatMarkdownContent (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token page typography so plain text reads as a paragraph.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                                     | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                                                             | `serves`   | inbound   |
+| inter-layer | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.page-view`                                                                                        | `composes` | inbound   |
+
 ### Model Card Node {#model-card-node}
 
 **ID**: `application.applicationcomponent.model-card-node`
@@ -1934,7 +1965,7 @@ Hover card for a node type: its definition and the connections the spec allows.
 
 **Type**: `applicationcomponent`
 
-The graph/page toggle's page mode: the full record of a layer, spec node type or model element as breadcrumb, stats, facts and navigable tables, with a neighborhood graph.
+The graph/page toggle's page mode: the full record of a layer, spec node type or model element as breadcrumb, a markdown description section above the stats and facts, and navigable tables, with a neighborhood graph.
 
 #### Attributes
 
@@ -1968,10 +1999,12 @@ The graph/page toggle's page mode: the full record of a layer, spec node type or
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`    | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9` | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13` | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`              | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-a-row-without-a-target-renders-as-plain-text-not-an-interactive-row`           | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-node-type-cell-calls-navigate-to-spec-node-using-its-own-5450ce17`  | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.page-view-table-row-navigation-clicking-a-rows-fallback-cell-calls-navigate-to-element-using-the-7ea3282d`    | `tests`    | inbound   |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                       | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.markdown-text`                                                                                      | `composes` | outbound  |
 | intra-layer | `application.applicationcomponent.neighborhood-graph-view`                                                                            | `composes` | outbound  |
 | intra-layer | `application.applicationservice.page-data-builder`                                                                                    | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.neighborhood-graph`                                                                                   | `serves`   | inbound   |
@@ -2214,7 +2247,9 @@ The shell's top bar: title, the element and node-type search box, connection sta
 | Type        | Related Element                                  | Predicate  | Direction |
 | ----------- | ------------------------------------------------ | ---------- | --------- |
 | intra-layer | `application.applicationcomponent.app-shell`     | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`     | `uses`     | inbound   |
 | intra-layer | `application.applicationcomponent.topbar-search` | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.topbar-search` | `uses`     | outbound  |
 | intra-layer | `application.applicationservice.use-model`       | `serves`   | inbound   |
 
 ### Topbar Search {#topbar-search}
@@ -2237,9 +2272,11 @@ The topbar's search box: an ARIA 1.2 combobox with a listbox popup of results gr
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
 | inter-layer | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                           | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `tests`       | inbound   |
 | intra-layer | `application.applicationcomponent.topbar`                                                                                     | `composes`    | inbound   |
 | intra-layer | `application.applicationfunction.ui-store`                                                                                    | `assigned-to` | outbound  |
+| intra-layer | `application.applicationcomponent.topbar`                                                                                     | `uses`        | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                         | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.search-index`                                                                                 | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                                    | `serves`      | inbound   |
@@ -3219,7 +3256,7 @@ The one-hop neighborhood graph of a model element or spec node type shown on its
 
 **Type**: `applicationservice`
 
-Builds the page view's records (header, breadcrumb, stats, facts, tables) for a layer, spec node type or model element.
+Builds the page view's records (header, breadcrumb, summary, markdown description, stats, facts, tables) for a layer, spec node type or model element; the description is its own field, never a fact.
 
 #### Attributes
 
@@ -3347,7 +3384,10 @@ Pure, React-free search over the loaded /api/model elements and /api/spec node t
 | inter-layer | `product.feature.topbar-search`                                                                                                | `realizes`   | outbound  |
 | inter-layer | `motivation.requirement.find-anything-by-name`                                                                                 | `satisfies`  | outbound  |
 | inter-layer | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query`                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better`                                    | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.search-index-stays-fast-on-a-large-model`                                                              | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                              | `covers`     | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                          | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.topbar-search`                                                                               | `serves`     | outbound  |
@@ -3760,4 +3800,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-19T17:52:01.279Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:35:25.911Z | Model Version: 0.1.0

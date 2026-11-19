@@ -18,8 +18,8 @@ User interface components, screens, and user experience elements.
 | ------------------------- | ----- |
 | Elements                  | 18    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 36    |
-| Inbound Relationships     | 4     |
+| Inter-Layer Relationships | 37    |
+| Inbound Relationships     | 5     |
 | Outbound Relationships    | 32    |
 
 **Cross-Layer References**:
@@ -103,6 +103,7 @@ flowchart TB
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.changesets-view`                                    | `ux`         | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.model-view`                                         | `ux`         | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`             | `navigation.route.app-shell-sectionview-route`                                                                           | `ux.view.schema-view`                                        | `ux`         | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `ux.subview.page-view`                                       | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `ux.view.topbar-search`                                      | `ux`         | `tests`      | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`                                                                                | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                                                                                          | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -269,10 +270,11 @@ The page mode of the Model and Schema views (#/model/page): a layer, node type o
 
 #### Relationships
 
-| Type        | Related Element       | Predicate  | Direction |
-| ----------- | --------------------- | ---------- | --------- |
-| intra-layer | `ux.view.model-view`  | `composes` | inbound   |
-| intra-layer | `ux.view.schema-view` | `composes` | inbound   |
+| Type        | Related Element                                                                                                          | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `tests`    | inbound   |
+| intra-layer | `ux.view.model-view`                                                                                                     | `composes` | inbound   |
+| intra-layer | `ux.view.schema-view`                                                                                                    | `composes` | inbound   |
 
 ### Tier1 Panel {#tier1-panel}
 
@@ -548,4 +550,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-19T17:52:01.279Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:35:25.911Z | Model Version: 0.1.0

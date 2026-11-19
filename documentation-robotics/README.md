@@ -4,8 +4,8 @@
 
 | Metric              | Value                    |
 | ------------------- | ------------------------ |
-| Total Elements      | 1100                     |
-| Total Relationships | 1516                     |
+| Total Elements      | 1103                     |
+| Total Relationships | 1527                     |
 | Populated Layers    | 13                       |
 | Last Updated        | 2026-11-19T17:52:01.232Z |
 | CLI Version         | 0.5.0                    |
@@ -59,7 +59,7 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | Business    | 14       | [02-business-layer-report.md](./reports/02-business-layer-report.md)       |
 | Product     | 26       | [03-product-layer-report.md](./reports/03-product-layer-report.md)         |
 | Security    | 12       | [04-security-layer-report.md](./reports/04-security-layer-report.md)       |
-| Application | 78       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
+| Application | 79       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
 | Technology  | 29       | [06-technology-layer-report.md](./reports/06-technology-layer-report.md)   |
 | API         | 37       | [07-api-layer-report.md](./reports/07-api-layer-report.md)                 |
 | Data Model  | 28       | [08-data-model-layer-report.md](./reports/08-data-model-layer-report.md)   |
@@ -67,8 +67,8 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | UX          | 18       | [10-ux-layer-report.md](./reports/10-ux-layer-report.md)                   |
 | Navigation  | 10       | [11-navigation-layer-report.md](./reports/11-navigation-layer-report.md)   |
 | APM         | 7        | [12-apm-layer-report.md](./reports/12-apm-layer-report.md)                 |
-| Testing     | 810      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
+| Testing     | 812      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
 
 ---
 
-Generated: 2026-11-19T17:52:01.279Z | Model Version: 0.1.0
+Generated: 2026-11-19T18:35:25.911Z | Model Version: 0.1.0

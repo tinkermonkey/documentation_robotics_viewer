@@ -1,0 +1,45 @@
+id: changeset-1795110378807-ocbe9zrml
+name: node-page-markdown-description
+description: "Node pages show the description above the facts grid as its own
+  section, rendered as markdown by a shared MarkdownText component (Heimdall
+  ChatMarkdownContent: no raw HTML, canvas tokens) that #588 can reuse; plain
+  text reads as today. Long descriptions show in full (no collapse). Closes
+  #593."
+created: 2026-11-19T17:46:18.811Z
+modified: 2026-11-19T17:49:06.212Z
+status: committed
+baseSnapshot: sha256:46237e8537fe5ba005184fab818d6e10f7f5dc3f48f5a56e05b62a87096d37ee
+origin:
+  kind: plan
+stats:
+  additions: 8
+  modifications: 2
+  deletions: 0
+lastSequence: 11
+unstaged:
+  - sequence: 0
+    removedAt: 10
+    change:
+      type: add
+      elementId: application.applicationcomponent.markdown-text
+      layerName: application
+      after:
+        id: f233ec56-7e96-4488-b062-df882ffd2860
+        path: application.applicationcomponent.markdown-text
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Markdown Text
+        description: "Shared renderer for untrusted model prose (node page descriptions;
+          changeset descriptions next, #588): wraps Heimdall's
+          ChatMarkdownContent (react-markdown + GFM, no raw HTML, unsafe URLs
+          stripped) in canvas-token page typography so plain text reads as a
+          paragraph."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-19T17:46:28.982Z
+          updated_at: 2026-11-19T17:46:28.982Z
+          version: 1
+      timestamp: 2026-11-19T17:46:29.007Z
+    rewritten: true

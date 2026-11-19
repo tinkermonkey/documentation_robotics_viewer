@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-11-19T17:52:01.106Z
+# Last updated: 2026-11-19T17:49:06.178Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -8998,6 +8998,35 @@
   predicate: tests
   layer: testing
   targetLayer: application
+  category: structural
+- source: application.applicationcomponent.page-view
+  target: application.applicationcomponent.markdown-text
+  predicate: composes
+  layer: application
+  category: structural
+- source: technology.systemsoftware.heimdall-ui
+  target: application.applicationcomponent.markdown-text
+  predicate: serves
+  layer: technology
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph
+  target: application.applicationcomponent.markdown-text
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid
+  target: application.applicationcomponent.page-view
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid
+  target: ux.subview.page-view
+  predicate: tests
+  layer: testing
+  targetLayer: ux
   category: structural
 - source: product.feature.topbar-search
   target: product.softwarecapability.model-visualization

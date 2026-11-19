@@ -15696,6 +15696,36 @@ testing.testcasesketch.changeset-canvas-purpose-says-a-changeset-is-gone-when-th
     created_at: 2026-11-18T19:24:40.394Z
     updated_at: 2026-11-18T19:24:40.394Z
     version: 1
+testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph:
+  id: 4ee1c0e3-900a-4b91-b112-a0b0f9e4cd8d
+  path: testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownText renders headings, lists, code and links, shows raw HTML as
+    text, and plain text as one paragraph
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:46:37.493Z
+    updated_at: 2026-11-19T17:46:37.493Z
+    version: 1
+testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid:
+  id: d4d94afe-7ee6-40b3-a745-bad009904dd0
+  path: testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: PageView shows the description above the facts as markdown, and leaves it
+    out of the facts grid
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-19T17:46:37.493Z
+    updated_at: 2026-11-19T17:46:37.493Z
+    version: 1
 testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges:
   id: 57c0d042-90d1-4100-9de6-b42975c25479
   path: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges

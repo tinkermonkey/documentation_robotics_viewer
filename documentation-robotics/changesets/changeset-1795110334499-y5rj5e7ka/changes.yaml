@@ -1,0 +1,375 @@
+- type: update
+  elementId: application.applicationfunction.ui-store
+  layerName: application
+  before:
+    id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+    path: application.applicationfunction.ui-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: UI Store
+    description: "Zustand store for UI state: view, layer, selection, changeset,
+      graph/page mode, nav accordion, graph settings and canvas tone.
+      Preferences persist to localStorage; navigation state is the router's."
+    source_reference: &a1
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/uiStore.ts
+          symbol: useUiStore
+    metadata: &a2
+      created_at: 2026-11-12T13:44:46.094Z
+      updated_at: 2026-11-12T13:44:46.094Z
+      version: 1
+  after:
+    id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+    path: application.applicationfunction.ui-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: UI Store
+    description: "Zustand store for UI state: view, layer, selection, changeset,
+      graph/page mode, nav accordion, graph settings and canvas tone. A first
+      visit gets a light canvas and DrBot closed; preferences persist to
+      localStorage and a persisted choice wins; navigation state is the
+      router's."
+    source_reference: *a1
+    metadata: *a2
+  timestamp: 2026-11-19T17:45:46.572Z
+  sequenceNumber: 0
+- type: update
+  elementId: data-store.collection.ui-preferences
+  layerName: data-store
+  before:
+    id: f0e71b79-41d3-4f85-ae6c-121d9e7e529d
+    path: data-store.collection.ui-preferences
+    spec_node_id: data-store.collection
+    type: collection
+    layer_id: data-store
+    name: UI Preferences
+    description: "localStorage entry dr-viewer-ui-preferences: the persisted part of
+      the UI store (canvas theme, DrBot open, graph layout and display settings,
+      inspector follow depth). Navigation state is left to the URL."
+    attributes: &a3
+      collectionType: COLLECTION
+    source_reference: &a4
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/uiStore.ts
+          symbol: PERSIST_KEY
+    metadata: &a5
+      created_at: 2026-11-18T16:27:42.057Z
+      updated_at: 2026-11-18T16:27:42.057Z
+      version: 1
+  after:
+    id: f0e71b79-41d3-4f85-ae6c-121d9e7e529d
+    path: data-store.collection.ui-preferences
+    spec_node_id: data-store.collection
+    type: collection
+    layer_id: data-store
+    name: UI Preferences
+    description: "localStorage entry dr-viewer-ui-preferences: the persisted part of
+      the UI store (canvas theme, DrBot open, graph layout and display settings,
+      inspector follow depth). With no entry yet, the canvas is light and DrBot
+      is closed. Navigation state is left to the URL."
+    attributes: *a3
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-11-19T17:45:46.778Z
+  sequenceNumber: 1
+- type: update
+  elementId: application.applicationcomponent.chat-drawer
+  layerName: application
+  before:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: The 372px DrBot drawer frame (persistent at 1300px and wider, an
+      overlay below) that hosts the chat panel.
+    attributes: &a6
+      type: internal
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatDrawer.tsx
+          symbol: ChatDrawer
+    metadata: &a8
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: "The 372px DrBot drawer frame that hosts the chat panel: closed
+      until opened from the topbar (on a first visit at any width), then
+      persistent at 1300px and wider, an overlay below."
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-19T17:45:46.960Z
+  sequenceNumber: 2
+- type: update
+  elementId: ux.view.dr-bot-chat-drawer
+  layerName: ux
+  before:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: persistent
+      at 1300px and wider, an overlay below."
+    attributes: &a9
+      type: drawer
+      routable: false
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata: &a11
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  after:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: closed on a
+      first visit, opened from the topbar; once open, persistent at 1300px and
+      wider, an overlay below."
+    attributes: *a9
+    source_reference: *a10
+    metadata: *a11
+  timestamp: 2026-11-19T17:45:47.187Z
+  sequenceNumber: 3
+- type: delete
+  elementId: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+  layerName: testing
+  before:
+    id: a838989c-1794-4b5e-94f7-6e9551157009
+    path: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: uiStore — default state > defaults canvasDark to true (dark mode on first
+      visit)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: uiStore — default state > defaults canvasDark to true (dark mode on
+            first visit)
+    metadata:
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  timestamp: 2026-11-19T17:49:58.509Z
+  sequenceNumber: 8
+- type: relationship-delete
+  elementId: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit::tests::application.applicationfunction.ui-store
+  layerName: testing
+  before:
+    source: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+  timestamp: 2026-11-19T17:49:58.515Z
+  sequenceNumber: 9
+- type: delete
+  elementId: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+  layerName: testing
+  before:
+    id: 9ff4e1d8-4f08-4a0e-be2a-462fc87eeed4
+    path: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: localStorage persistence > canvas theme (dark by default) persists across
+      a reload
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/persistence.spec.ts
+          symbol: localStorage persistence > canvas theme (dark by default) persists
+            across a reload
+    metadata:
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  timestamp: 2026-11-19T17:49:58.758Z
+  sequenceNumber: 10
+- type: relationship-delete
+  elementId: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload::tests::application.applicationfunction.ui-store
+  layerName: testing
+  before:
+    source: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+  timestamp: 2026-11-19T17:49:58.769Z
+  sequenceNumber: 11
+- type: add
+  elementId: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit
+  layerName: testing
+  after:
+    id: d1d53169-99bc-4326-98f6-131726054da6
+    path: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: uiStore — default state > defaults to a light canvas and DrBot closed on a
+      first visit
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: uiStore — default state > defaults to a light canvas and DrBot closed on
+            a first visit
+    metadata:
+      created_at: 2026-11-19T17:50:11.048Z
+      updated_at: 2026-11-19T17:50:11.048Z
+      version: 1
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 12
+- type: add
+  elementId: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload
+  layerName: testing
+  after:
+    id: 684d3e85-d595-47d3-a9b0-1534b1c78923
+    path: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: localStorage persistence > canvas theme (light by default) persists across
+      a reload
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/persistence.spec.ts
+          symbol: localStorage persistence > canvas theme (light by default) persists
+            across a reload
+    metadata:
+      created_at: 2026-11-19T17:50:11.049Z
+      updated_at: 2026-11-19T17:50:11.049Z
+      version: 1
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 13
+- type: add
+  elementId: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed
+  layerName: testing
+  after:
+    id: e21a6e1d-7561-4638-87ae-9b1d43b078b8
+    path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "first-visit defaults vs a persisted choice (#596, #597) > a first visit
+      on a wide window still gets a light canvas and DrBot closed"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: "first-visit defaults vs a persisted choice (#596, #597) > a first visit
+            on a wide window still gets a light canvas and DrBot closed"
+    metadata:
+      created_at: 2026-11-19T17:50:11.049Z
+      updated_at: 2026-11-19T17:50:11.049Z
+      version: 1
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 14
+- type: add
+  elementId: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults
+  layerName: testing
+  after:
+    id: 1e4d5761-c9f4-49c4-a3f7-42a9313255d3
+    path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+      dark canvas and open DrBot still win over the defaults"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+            dark canvas and open DrBot still win over the defaults"
+    metadata:
+      created_at: 2026-11-19T17:50:11.049Z
+      updated_at: 2026-11-19T17:50:11.049Z
+      version: 1
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-19T17:50:11.062Z
+  sequenceNumber: 19

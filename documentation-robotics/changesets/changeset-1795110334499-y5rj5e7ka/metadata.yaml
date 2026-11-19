@@ -1,0 +1,104 @@
+id: changeset-1795110334499-y5rj5e7ka
+name: first-visit-defaults-light-closed-drbot
+description: "First visit (nothing in localStorage) gets a light canvas and
+  DrBot closed (#596, default half of #597); a persisted choice still wins for
+  both. Updates the UI Store, UI Preferences, Chat Drawer and DrBot view
+  descriptions and the default-state test sketches. No chat container redesign."
+created: 2026-11-19T17:45:34.504Z
+modified: 2026-11-19T17:50:11.064Z
+status: staged
+baseSnapshot: sha256:46237e8537fe5ba005184fab818d6e10f7f5dc3f48f5a56e05b62a87096d37ee
+origin:
+  kind: plan
+stats:
+  additions: 8
+  modifications: 4
+  deletions: 4
+lastSequence: 19
+unstaged:
+  - sequence: 4
+    removedAt: 7
+    change:
+      type: update
+      elementId: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+      layerName: testing
+      before:
+        id: a838989c-1794-4b5e-94f7-6e9551157009
+        path: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: uiStore — default state > defaults canvasDark to true (dark mode on first
+          visit)
+        attributes: &a1
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/unit/uiStore.spec.ts
+              symbol: uiStore — default state > defaults canvasDark to true (dark mode on
+                first visit)
+        metadata: &a2
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+      after:
+        id: a838989c-1794-4b5e-94f7-6e9551157009
+        path: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: uiStore — default state > defaults to a light canvas and DrBot closed on a
+          first visit
+        attributes: *a1
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/unit/uiStore.spec.ts
+              symbol: uiStore — default state > defaults to a light canvas and DrBot closed on
+                a first visit
+        metadata: *a2
+      timestamp: 2026-11-19T17:45:47.391Z
+  - sequence: 5
+    removedAt: 7
+    change:
+      type: update
+      elementId: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+      layerName: testing
+      before:
+        id: 9ff4e1d8-4f08-4a0e-be2a-462fc87eeed4
+        path: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: localStorage persistence > canvas theme (dark by default) persists across
+          a reload
+        attributes: &a3
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/e2e/persistence.spec.ts
+              symbol: localStorage persistence > canvas theme (dark by default) persists
+                across a reload
+        metadata: &a4
+          created_at: 2026-11-18T16:22:43.196Z
+          updated_at: 2026-11-18T16:22:43.196Z
+          version: 1
+      after:
+        id: 9ff4e1d8-4f08-4a0e-be2a-462fc87eeed4
+        path: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: localStorage persistence > canvas theme (light by default) persists across
+          a reload
+        attributes: *a3
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/e2e/persistence.spec.ts
+              symbol: localStorage persistence > canvas theme (light by default) persists
+                across a reload
+        metadata: *a4
+      timestamp: 2026-11-19T17:45:47.590Z

@@ -99,8 +99,9 @@ application.applicationcomponent.page-view:
   layer_id: application
   name: Page View
   description: "The graph/page toggle's page mode: the full record of a layer,
-    spec node type or model element as breadcrumb, stats, facts and navigable
-    tables, with a neighborhood graph."
+    spec node type or model element as breadcrumb, a markdown description
+    section above the stats and facts, and navigable tables, with a neighborhood
+    graph."
   attributes:
     type: internal
   source_reference:
@@ -743,6 +744,32 @@ application.applicationcomponent.drift-notice:
   metadata:
     created_at: 2026-11-18T20:17:32.127Z
     updated_at: 2026-11-18T20:17:32.127Z
+    version: 1
+application.applicationcomponent.markdown-text:
+  id: f233ec56-7e96-4488-b062-df882ffd2860
+  path: application.applicationcomponent.markdown-text
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Markdown Text
+  description: "Shared renderer for untrusted model prose (node page descriptions;
+    changeset descriptions next, #588): wraps Heimdall's ChatMarkdownContent
+    (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
+    page typography so plain text reads as a paragraph."
+  attributes:
+    type: internal
+  accepted_gaps:
+    - direction: incoming
+      predicate: serves
+      other_spec_node_id: application.applicationservice
+      reason: "A presentation-only leaf: callers hand it the text as a prop, no data
+        service feeds it."
+      decided_by: agent
+      decided_at: 2026-11-19T17:46:42.460Z
+      changeset: changeset-1795110378807-ocbe9zrml
+  metadata:
+    created_at: 2026-11-19T17:46:28.982Z
+    updated_at: 2026-11-19T17:46:28.982Z
     version: 1
 application.applicationcomponent.topbar-search:
   id: 2078f0ab-e262-4220-a853-9c6054878630

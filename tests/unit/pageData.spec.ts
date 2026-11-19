@@ -52,7 +52,7 @@ describe('layerPageData', () => {
     expect(layerPageData('model', 'not-a-layer', model, index, spec)).toBeNull();
   });
 
-  it('builds the header/crumbs/description from real spec + model data', () => {
+  it('builds the header/crumbs/summary/description from real spec + model data', () => {
     const pg = layerPageData('model', 'data-model', model, index, spec)!;
     expect(pg).not.toBeNull();
     expect(pg.eyebrow).toBe('LAYER 7 · JSON Schema Draft 7');
@@ -68,10 +68,13 @@ describe('layerPageData', () => {
         current: true,
       },
     ]);
-    expect(pg.description).toContain('layer 7 of 12');
-    expect(pg.description).toContain('9 node types');
-    expect(pg.description).toContain('71 valid relationship schemas for this layer (25 within the layer, 46 to other layers)');
-    expect(pg.description).toContain('34 elements');
+    expect(pg.summary).toContain('layer 7 of 12');
+    expect(pg.summary).toContain('9 node types');
+    expect(pg.summary).toContain('71 valid relationship schemas for this layer (25 within the layer, 46 to other layers)');
+    expect(pg.summary).toContain('34 elements');
+    // The layer's own spec description is the page's description (#593),
+    // shown above the facts as markdown — not the generated summary.
+    expect(pg.description).toBe('Layer 7: Data Model Layer');
   });
 
   it('carries the 4 stats in NODE TYPES / RELATIONSHIPS / ELEMENTS / LAYER order', () => {
@@ -85,14 +88,14 @@ describe('layerPageData', () => {
     expect(pg.stats.map((s) => s.value)).toEqual([9, 71, 34, '7 / 12']);
   });
 
-  it('LAYER SPEC facts read the real inspired_by + description fields', () => {
+  it('LAYER SPEC facts read the real inspired_by fields, and leave the description out (#593)', () => {
     const pg = layerPageData('model', 'data-model', model, index, spec)!;
     expect(pg.factsTitle).toBe('LAYER SPEC');
     const byKey = Object.fromEntries(pg.facts.map((f) => [f.key, f.value]));
     expect(byKey.layer_id).toBe('data-model');
     expect(byKey.number).toBe('7');
     expect(byKey.name).toBe('Data Model');
-    expect(byKey.description).toBe('Layer 7: Data Model Layer');
+    expect(byKey).not.toHaveProperty('description');
     expect(byKey['inspired_by.standard']).toBe('JSON Schema Draft 7');
     expect(byKey['inspired_by.version']).toBe('Draft 7');
     expect(byKey['inspired_by.url']).toBe('https://json-schema.org/draft-07/');

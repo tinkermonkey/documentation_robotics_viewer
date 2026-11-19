@@ -1,6 +1,7 @@
 /**
  * PageView — the page-view scaffold (design/node_pages README section 3):
- * breadcrumb, narrative description, 4-stat grid, two-column facts list, and
+ * breadcrumb, a generated summary (layer pages), the record's own description
+ * as markdown in its own section (`MarkdownText`, #593), 4-stat grid, two-column facts list, and
  * row tables that read the full record for the selected layer / spec node /
  * model element without a graph. Rows and ancestor breadcrumb segments with a
  * resolvable target are navigation links; rows/crumbs without one (e.g.
@@ -47,6 +48,7 @@
 
 import { useMemo } from 'react';
 import { useUiStore } from './uiStore';
+import { MarkdownText } from './MarkdownText';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { buildModelIndex } from '../data/modelGraph';
@@ -352,6 +354,38 @@ function StatGrid({ pg }: { pg: PageData }) {
   );
 }
 
+/**
+ * The record's own description (#593), out of the facts grid and above the
+ * stats as its own section, rendered as markdown by the shared `MarkdownText`
+ * (untrusted text: no raw HTML). Shown in full — the page scrolls, so a long
+ * description isn't collapsed. No description, no section.
+ */
+function DescriptionSection({ pg }: { pg: PageData }) {
+  if (!pg.description.trim()) return null;
+  return (
+    <section
+      aria-labelledby="page-description-heading"
+      style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+      data-testid="page-description"
+    >
+      <h2 id="page-description-heading" style={SECTION_LABEL_STYLE}>
+        Description
+      </h2>
+      <MarkdownText text={pg.description} />
+    </section>
+  );
+}
+
+const SECTION_LABEL_STYLE: React.CSSProperties = {
+  fontFamily: MONO,
+  fontSize: 10,
+  fontWeight: 400,
+  letterSpacing: '0.1em',
+  textTransform: 'uppercase',
+  color: 'rgb(var(--canvas-fg-3))',
+  margin: 0,
+};
+
 function FactsBlock({ pg }: { pg: PageData }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
@@ -560,18 +594,21 @@ export function PageView({ pg }: { pg: PageData }) {
             isSpecView={view === 'spec'}
           />
         )}
-        <p
-          style={{
-            fontSize: 14,
-            lineHeight: 1.6,
-            color: 'rgb(var(--canvas-fg-2))',
-            margin: 0,
-            maxWidth: 760,
-            textWrap: 'pretty',
-          }}
-        >
-          {pg.description}
-        </p>
+        {pg.summary && (
+          <p
+            style={{
+              fontSize: 14,
+              lineHeight: 1.6,
+              color: 'rgb(var(--canvas-fg-2))',
+              margin: 0,
+              maxWidth: 760,
+              textWrap: 'pretty',
+            }}
+          >
+            {pg.summary}
+          </p>
+        )}
+        <DescriptionSection pg={pg} />
         <StatGrid pg={pg} />
         <FactsBlock pg={pg} />
         <Tables pg={pg} spec={specRaw} onNavigate={onNavigate} />

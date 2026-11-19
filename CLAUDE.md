@@ -48,6 +48,7 @@ src/
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat
+│   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent); node pages, #588 next
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chatOpen/wide/expanded
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
@@ -183,6 +184,12 @@ For local dev use `dr visualize --no-auth`.
   keyed by `view:layerId:graphLayout:nodeMarginPreset` so it recenters on switch.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
+- **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
+  section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
+  react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
+  prose, so plain text reads as before). Shown in full, never collapsed. A layer page's generated lead is
+  `PageData.summary` (plain text, above it); the description is never a fact. Reuse `MarkdownText` for any other
+  model prose (changeset descriptions, #588).
 - **Inspector selection drawer** (`Inspector.tsx`, both Model + Schema) — a Heimdall `DetailDrawer` overlay
   floating over the graph area's right edge, not a permanent sidebar column: translucent/blurred, auto-hides
   (`open={!!metadata}`) when nothing's selected, resizable via its own left-edge handle (local `width` state,
@@ -363,7 +370,7 @@ For local dev use `dr visualize --no-auth`.
   category — sets of what's HIDDEN, empty = everything), and **Large lanes** (`groupLargeLanes`: a lane over
   `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node; clicking one expands it).
   `changesOf` maps an element to the changes touching it (Open its change).
-- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
+- **DrBot chat** — 372px drawer (closed until opened; then persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
   `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`) with a `tool_use_id`: once with
@@ -413,8 +420,9 @@ For local dev use `dr visualize --no-auth`.
   listbox of `role=group`s, each option `aria-label`led whole since the highlight splits its text); the popup
   reuses Heimdall's `command-palette__*` classes (CommandPalette itself is a modal with text-only labels).
   An element goes through `navigateToElement`, a node type through `navigateToSpecNode`, as the nav tree does.
-- **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
-  applies only on a first-ever visit; a persisted choice always wins after that.
+- **Light/dark canvas** toggle in the topbar. **Light is the default** (`uiStore`'s `canvasDark: false`, #596),
+  and **DrBot starts closed** at any width (`chatOpen: false`, #597) — both apply only on a first-ever visit; a
+  persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
   (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
   `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a
