@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.12.0] - 2026-11-19
+
+Changesets are handled by what they're for, and drift shows before you Apply. Tier 1 is visible: who decided
+each change, and the month's spend. Changeset purposes, drift and upgrade records need the `dr` CLI's next
+release (after 0.5.0). With CLI 0.5.0, every staged changeset is treated as before and the commit's 409 is the
+only drift signal. The review API and the Tier 1 panel already work with 0.5.0.
+
+### Added
+- **Who decided each change** (#572): an outlined badge under each change's chip says whether a Tier 0 rule,
+  the Tier 1 decision model, the agent or a spec upgrade decided it. Hover for the rule, provider, model and
+  probabilities. A **Decided by** filter, with counts, narrows the rows.
+- **Tier 1 panel** in the Changesets inbox (#572, #582), read-only: state, provider and model, the month's spend
+  against the cap with its reset date, where each credential comes from (never its value), and warnings.
+  While the answer cache fills, it shows progress, time left and cost so far. It also shows the mode (stage,
+  suggest or hide) and, for OpenRouter, which upstreams card text may go to.
+- **Changesets by purpose** (#585): the inbox sorts plans and DrBot's changes (Waiting on you / on DrBot),
+  changesets extracted from the code (Ready to land as built), verification records (each paired with its
+  plan) and upgrade records (#590: what a spec upgrade dropped, to review and discard). Apply and Discard
+  appear only when the server allows them, so a record offers Discard only. The history gains a Purpose
+  column.
+- **Drift before Apply** (#586): a "Base changed since this was staged" badge on the inbox card and the
+  changeset header, and the overview lists what changed in the base per layer and which staged changes it
+  overlaps, with the reason for each. Apply warns but stays enabled; the server's 409 is the result.
+- **Impact tab** (#577): Find (keyboard-driven), focus on one element, Show changes only, filters by op, layer,
+  type and link category, and large lanes folded by type.
+
+### Changed
+- **Apply lands undecided changes as kept** (#584): it waits only on an undecided delete that's still in use,
+  an ask to DrBot, a conflict between decisions, or nothing to land. The button and confirm dialog say how
+  many land without a decision.
+- **The bulk keep says what it covers** (#590): "Keep all N" before anything is decided, "Keep the other N"
+  after, and "Keep N, not the M blocked deletes" when blocked deletes are left out.
+- **Review rows and the change inspector are easier to read** (#577): labelled columns, a filled chip for the
+  change and an outlined pill for your decision, links drawn as source —predicate→ target, a layer band,
+  a link card, a wrapped neighbourhood view and an always-shown source reference.
+- **The Product layer has its own colour**, and the left rail counts layers from the spec (#577).
+- **A discarded changeset is gone** on a current CLI, which deletes it: Discard returns to the inbox with a
+  toast, and a link to one says it's gone (#585).
+
+### Fixed
+- **Applied changesets** show each change as Landed or Not applied instead of "Needs decision" (#574, #577).
+- **The footer's versions**: SPEC reads the model spec version from `/api/spec`; it showed the API's own
+  `0.1.0` for both. The CLI version shows `cli —` until a CLI sends it (#584).
+- **The landed-by-layer rows** in the Apply result no longer overlap (#577).
+
+### Removed
+- Seven pre-Heimdall stores and `embeddedDataLoader` that nothing imported, about 1,850 lines (#583).
+
 ## [0.11.0] - 2026-11-14
 
 Changesets get a review step: a verdict on each change instead of one Apply for the whole changeset. The full
