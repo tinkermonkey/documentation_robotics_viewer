@@ -46,7 +46,7 @@ test.describe('schema view', () => {
     // plus inter-layer nodes from other layers, drawn by default.
     await gotoView(page, ROUTES.model);
     const nav = page.getByTestId('nav-tree');
-    await nav.getByRole('button', { name: /^Application/ }).first().click();
+    await nav.getByRole('button', { name: /^Application \d+$/ }).first().click();
 
     const nodes = page.locator('[data-testid^="graph-node-"]');
     const ownNodes = page.locator('g[data-testid^="graph-node-"][data-domain="application"]');
@@ -63,7 +63,9 @@ test.describe('schema view', () => {
 
     // Switch to the Schema section (keeps the active layer = application). The
     // application layer schema declares 9 node types.
-    await nav.getByRole('button', { name: /^Schema/ }).first().click();
+    // Exact name: a Data Model type group ("SchemaDefinition, 3 elements", #592)
+    // also starts with "Schema" and comes first in the tree.
+    await nav.getByRole('button', { name: /^Schema \d+$/ }).click();
 
     await expect(page.getByTestId('page-header-eyebrow')).toContainText('META-MODEL');
     await expect(page.getByTestId('page-header-title')).toContainText('Application schema');

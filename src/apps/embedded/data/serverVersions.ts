@@ -7,8 +7,9 @@
  *
  * - Spec: `/api/spec`'s `schemas['manifest.json'].specVersion`, else any layer
  *   schema's `specVersion` (every bundled schema carries it).
- * - CLI: `/health`'s `cliVersion`, when the server sends one. Today's dr CLI
- *   doesn't, so the footer shows "—" rather than a made-up version.
+ * - CLI: `/health`'s `cliVersion`. The API spec now requires it, but a dr CLI
+ *   from before that change sends none, so the footer shows "—" rather than a
+ *   made-up version.
  *
  * Both return undefined when the server sends nothing usable.
  */

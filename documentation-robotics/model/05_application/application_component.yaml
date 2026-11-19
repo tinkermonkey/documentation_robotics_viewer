@@ -55,10 +55,13 @@ application.applicationcomponent.nav-tree:
   layer_id: application
   name: Nav Tree
   description: "Sidebar navigation: an accordion of Model / Schema / Changesets
-    sections, each with the spec's layers (in the order the spec gives) and
-    their elements or node types (or the changesets). Reveals the current
-    selection, scrolling it into view after any navigation, including a deep
-    link whose element rows only appear once the model or changesets load."
+    sections, each with the spec's layers (in the order the spec gives). A Model
+    layer opens onto its node types (count, A–Z, collapsed), each holding its
+    elements (A–Z); a Schema layer lists its node types; Changesets lists the
+    changesets. Opening a type group is local tree state and pushes no history.
+    Reveals the current selection, opening its type group and scrolling it into
+    view after any navigation, including a deep link whose element rows only
+    appear once the model or changesets load."
   attributes:
     type: internal
   source_reference:
@@ -522,8 +525,8 @@ application.applicationcomponent.topbar:
   type: applicationcomponent
   layer_id: application
   name: Topbar
-  description: "The shell's top bar: title, connection state, light/dark canvas
-    toggle and the DrBot drawer toggle."
+  description: "The shell's top bar: title, the element and node-type search box,
+    connection state, light/dark canvas toggle and the DrBot drawer toggle."
   attributes:
     type: internal
   source_reference:
@@ -775,6 +778,27 @@ application.applicationcomponent.markdown-text:
   metadata:
     created_at: 2026-11-19T17:46:28.982Z
     updated_at: 2026-11-19T17:46:28.982Z
+    version: 1
+application.applicationcomponent.topbar-search:
+  id: 2078f0ab-e262-4220-a853-9c6054878630
+  path: application.applicationcomponent.topbar-search
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Topbar Search
+  description: "The topbar's search box: an ARIA 1.2 combobox with a listbox popup
+    of results grouped by layer (group headers, layer swatch, name, type,
+    highlighted match). Arrow keys move the active option
+    (aria-activedescendant), Enter chooses, Escape clears then closes, Home/End
+    jump. `/` (when not typing in a field) and ⌘K/Ctrl+K focus it. An element
+    result calls uiStore.navigateToElement; a node-type result calls
+    navigateToSpecNode. Styled from Heimdall's command-palette classes and
+    canvas/shell tokens."
+  attributes:
+    type: internal
+  metadata:
+    created_at: 2026-11-19T17:48:18.602Z
+    updated_at: 2026-11-19T17:48:18.602Z
     version: 1
 application.applicationcomponent.type-lanes-view:
   id: d9dfab8d-7f54-4ba4-a743-fb5b0542de73

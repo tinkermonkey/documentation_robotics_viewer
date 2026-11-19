@@ -16,11 +16,11 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 19    |
-| Intra-Layer Relationships | 17    |
-| Inter-Layer Relationships | 35    |
-| Inbound Relationships     | 8     |
-| Outbound Relationships    | 27    |
+| Elements                  | 20    |
+| Intra-Layer Relationships | 18    |
+| Inter-Layer Relationships | 42    |
+| Inbound Relationships     | 9     |
+| Outbound Relationships    | 33    |
 
 **Cross-Layer References**:
 
@@ -51,6 +51,7 @@ flowchart LR
     ux_view_inspector_drawer["Inspector Drawer"]
     ux_view_model_view["Model View"]
     ux_view_schema_view["Schema View"]
+    ux_view_topbar_search["Topbar Search"]
     ux_statepattern_authentication_flow_pattern -->|specializes| ux_statepattern_data_loading_pattern
     ux_uxapplication_embedded_architecture_viewer -->|aggregates| ux_uxspec_architecture_exploration_spec
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_changesets_view
@@ -58,6 +59,7 @@ flowchart LR
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_inspector_drawer
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_model_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_schema_view
+    ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_topbar_search
     ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
     ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
@@ -110,6 +112,7 @@ flowchart TB
 | `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                           | `ux.subview.lanes-by-type`                                   | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                           | `ux.view.model-view`                                         | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.subview`      | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid` | `ux.subview.page-view`                                       | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`         | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `ux.view.topbar-search`                                      | `ux`         | `tests`      | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.architecture-exploration-spec`                                                                                | `motivation.requirement.viewer-covers-every-spec-layer`      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`   | `ux.uxspec.authentication-spec`                                                                                          | `motivation.requirement.dr-cli-server-integration`           | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware` | `ux.view.changesets-view`                                                                                                | `technology.systemsoftware.heimdall-ui`                      | `technology` | `depends-on` | many-to-many | medium   |
@@ -137,6 +140,12 @@ flowchart TB
 | `ux.view.realizes.product.feature`             | `ux.view.schema-view`                                                                                                    | `product.feature.schema-graph-view`                          | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`   | `ux.view.schema-view`                                                                                                    | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`     | `ux.view.schema-view`                                                                                                    | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.realizes.product.feature`             | `ux.view.topbar-search`                                                                                                  | `product.feature.topbar-search`                              | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.references.business.businessobject`   | `ux.view.topbar-search`                                                                                                  | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`     | `ux.view.topbar-search`                                                                                                  | `motivation.requirement.wcag-21-aa-compliance`               | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.topbar-search`                                                                                                  | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`         | `ux.view.topbar-search`                                                                                                  | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.supports.motivation.goal`             | `ux.view.topbar-search`                                                                                                  | `motivation.goal.ensure-accessible-architecture-views`       | `motivation` | `supports`   | many-to-many | medium   |
 
 ## Element Reference
 
@@ -365,6 +374,7 @@ The viewer's main experience: browse the model and the spec layer by layer as gr
 | intra-layer | `ux.view.inspector-drawer`                              | `aggregates` | outbound  |
 | intra-layer | `ux.view.model-view`                                    | `aggregates` | outbound  |
 | intra-layer | `ux.view.schema-view`                                   | `aggregates` | outbound  |
+| intra-layer | `ux.view.topbar-search`                                 | `aggregates` | outbound  |
 
 ### Authentication Spec {#authentication-spec}
 
@@ -554,6 +564,34 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 | intra-layer | `ux.uxspec.architecture-exploration-spec`      | `aggregates` | inbound   |
 | intra-layer | `ux.subview.page-view`                         | `composes`   | outbound  |
 
+### Topbar Search {#topbar-search}
+
+**ID**: `ux.view.topbar-search`
+
+**Type**: `view`
+
+The search box in the topbar and its results popup, an overlay below it listing matches grouped by layer.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| routable | false   |
+| type     | overlay |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                          | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `tests`      | inbound   |
+| inter-layer | `product.feature.topbar-search`                                                                                          | `realizes`   | outbound  |
+| inter-layer | `business.businessobject.architecture-model`                                                                             | `references` | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                           | `satisfies`  | outbound  |
+| inter-layer | `business.businessrole.architecture-reviewer`                                                                            | `serves`     | outbound  |
+| inter-layer | `business.businessrole.model-author`                                                                                     | `serves`     | outbound  |
+| inter-layer | `motivation.goal.ensure-accessible-architecture-views`                                                                   | `supports`   | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                                                | `aggregates` | inbound   |
+
 ---
 
-Generated: 2026-11-19T18:28:15.734Z | Model Version: 0.1.0
+Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
