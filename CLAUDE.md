@@ -362,7 +362,7 @@ For local dev use `dr visualize --no-auth`.
   category — sets of what's HIDDEN, empty = everything), and **Large lanes** (`groupLargeLanes`: a lane over
   `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node; clicking one expands it).
   `changesOf` maps an element to the changes touching it (Open its change).
-- **DrBot chat** — 372px drawer (persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
+- **DrBot chat** — 372px drawer (closed until opened; then persistent ≥1300px, overlay below) with live WS/JSON-RPC streaming.
   `chat.send` may run for minutes (Claude Code + tools): the client timeout is `CHAT_SEND_TIMEOUT_MS`
   (15 min) — it was 60s, which cut answers off mid-way with a timeout error. The `dr visualize` server's
   `chat.tool.invoke` is snake_case (`tool_name`/`tool_input`) with a `tool_use_id`: once with
@@ -405,8 +405,9 @@ For local dev use `dr visualize --no-auth`.
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
   Today's dr CLI sends no `cliVersion`, so the status bar reads `cli —` until it does.
-- **Light/dark canvas** toggle in the topbar. **Dark is the default** (`uiStore`'s `canvasDark: true`) —
-  applies only on a first-ever visit; a persisted choice always wins after that.
+- **Light/dark canvas** toggle in the topbar. **Light is the default** (`uiStore`'s `canvasDark: false`, #596),
+  and **DrBot starts closed** at any width (`chatOpen: false`, #597) — both apply only on a first-ever visit; a
+  persisted choice always wins after that.
 - **Preference persistence** (`uiStore.ts`, `zustand/middleware`'s `persist`) — `canvasDark`, `chatOpen`
   (DrBot open/closed), and the graph settings (`graphLayout`/`showClusterBoundaries`/`showAllRelations`/
   `nodeMarginPreset`/`nodeDisplay`/`showInterLayerNodes`) and the inspector's `inspectorFollow` survive a

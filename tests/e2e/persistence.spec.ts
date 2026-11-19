@@ -10,21 +10,21 @@ import { test, expect } from '@playwright/test';
 import { gotoView, ROUTES } from './helpers';
 
 test.describe('localStorage persistence', () => {
-  test('canvas theme (dark by default) persists across a reload', async ({ page }) => {
+  test('canvas theme (light by default) persists across a reload', async ({ page }) => {
     await gotoView(page, ROUTES.model);
-    await expect(page.getByRole('radio', { name: 'dark', exact: true })).toBeChecked();
+    await expect(page.getByRole('radio', { name: 'light', exact: true })).toBeChecked();
 
-    await page.getByRole('radio', { name: 'light', exact: true }).click();
+    await page.getByRole('radio', { name: 'dark', exact: true }).click();
     await expect
       .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
-      .toBe(false);
+      .toBe(true);
 
     await page.reload();
     await expect(page.getByTestId('app-shell')).toBeVisible();
     await expect
       .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
-      .toBe(false);
-    await expect(page.getByRole('radio', { name: 'light', exact: true })).toBeChecked();
+      .toBe(true);
+    await expect(page.getByRole('radio', { name: 'dark', exact: true })).toBeChecked();
   });
 
   test('graph layout setting persists across a reload', async ({ page }) => {
@@ -42,8 +42,7 @@ test.describe('localStorage persistence', () => {
   test('DrBot open/closed state persists across a reload', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     const chatToggle = page.getByRole('button', { name: 'DrBot' });
-    // Playwright's default viewport (1280px) is below the 1300px "wide" threshold
-    // uiStore's initialWide uses, so chatOpen's own default is closed here.
+    // DrBot starts closed on a first visit at any width (#597).
     await expect(chatToggle).toHaveAttribute('aria-pressed', 'false');
 
     await chatToggle.click();

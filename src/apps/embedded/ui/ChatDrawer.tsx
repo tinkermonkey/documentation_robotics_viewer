@@ -5,7 +5,8 @@
  * + a "model assistant" eyebrow. Below it the `<ChatPanel/>` (thread + suggestions
  * + composer).
  *
- * Layout: visible only when `uiStore.chatOpen`. When `uiStore.wide` (viewport
+ * Layout: visible only when `uiStore.chatOpen` (false on a first visit; the
+ * topbar's DrBot button opens it and the choice persists). When `uiStore.wide` (viewport
  * >= 1300px) it is a persistent flex pane — a 4th column after the Inspector.
  * Below that breakpoint it becomes an absolute overlay pinned to the right edge
  * (z-index 30, box-shadow), per the design's `_chatDrawerStyle`. All colors read
