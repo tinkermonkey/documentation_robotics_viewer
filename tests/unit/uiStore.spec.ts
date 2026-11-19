@@ -588,6 +588,34 @@ describe('persist hydration validates inspectorFollow', () => {
   });
 });
 
+describe('persist hydration validates modelView', () => {
+  afterEach(() => {
+    localStorage.removeItem(PERSIST_KEY);
+  });
+
+  async function hydrateWith(modelView: unknown) {
+    localStorage.setItem(PERSIST_KEY, JSON.stringify({ state: { modelView }, version: 1 }));
+    vi.resetModules();
+    const fresh = await import('@/apps/embedded/ui/uiStore');
+    return fresh.useUiStore.getState().modelView;
+  }
+
+  it.each(['lanes', 'type-stack', null, 3])('falls back to the graph for an invalid stored value (%s)', async (v) => {
+    expect(await hydrateWith(v)).toBe('graph');
+  });
+
+  it.each(['graph', 'type-lanes', 'type-hive'])('keeps a valid stored view (%s)', async (v) => {
+    expect(await hydrateWith(v)).toBe(v);
+  });
+
+  it('persists the choice', () => {
+    useUiStore.getState().setModelView('type-lanes');
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state.modelView).toBe('type-lanes');
+    useUiStore.getState().setModelView('graph');
+  });
+});
+
 describe('persist hydration validates graphLayout/nodeMarginPreset/showInterLayerNodes', () => {
   // These string-union types are compile-time only at the one point
   // untyped external data enters them: a value read back from localStorage.
