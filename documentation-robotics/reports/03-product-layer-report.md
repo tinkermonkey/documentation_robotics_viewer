@@ -18,8 +18,8 @@ Product features, capabilities, personas, and milestones.
 | ------------------------- | ----- |
 | Elements                  | 29    |
 | Intra-Layer Relationships | 54    |
-| Inter-Layer Relationships | 68    |
-| Inbound Relationships     | 48    |
+| Inter-Layer Relationships | 71    |
+| Inbound Relationships     | 51    |
 | Outbound Relationships    | 20    |
 
 **Cross-Layer References**:
@@ -163,6 +163,8 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                        | `product.feature.cross-layer-follow`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                                | `product.softwarecapability.model-visualization`                   | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.nav-tree-groups`                                                                                      | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                                      | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                                      | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                                    | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                         | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                                 | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
@@ -204,6 +206,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                                  | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                        | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                 | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                                   | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
@@ -442,6 +445,7 @@ See one DR layer's elements grouped by node type: lanes (one per type, linked ty
 
 | Type        | Related Element                                                                                | Predicate   | Direction |
 | ----------- | ---------------------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label`                                               | `realizes`  | inbound   |
 | inter-layer | `application.applicationservice.type-bands`                                                    | `realizes`  | inbound   |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                 | `satisfies` | outbound  |
 | inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`     | inbound   |
@@ -471,6 +475,7 @@ The left rail's Model tree groups each layer's elements under their node type wi
 | Type        | Related Element                                                                                                     | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationservice.nav-tree-groups`                                                                    | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.node-type-label`                                                                    | `realizes` | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history` | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`        | `tests`    | inbound   |
 | intra-layer | `product.softwarecapability.model-visualization`                                                                    | `realizes` | outbound  |
@@ -659,6 +664,7 @@ Find an element or a Schema node type by name from the topbar: type-ahead result
 | inter-layer | `motivation.requirement.find-anything-by-name`                                                                                | `satisfies` | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                | `satisfies` | outbound  |
 | inter-layer | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `tests`     | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                           | `tests`     | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `tests`     | inbound   |
 | inter-layer | `ux.view.topbar-search`                                                                                                       | `realizes`  | inbound   |
 | intra-layer | `product.softwarecapability.model-visualization`                                                                              | `realizes`  | outbound  |
@@ -978,4 +984,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-20T18:10:43.859Z | Model Version: 0.1.0
+Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0

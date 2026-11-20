@@ -11475,26 +11475,6 @@ testing.testcasesketch.spec-node-neighborhood-graph-self-referential-relationshi
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
-testing.testcasesketch.layer-page-data-builds-the-header-crumbs-description-from-real-spec-model-data:
-  id: 6cae059f-c472-4ac7-9fa0-eb15a7c06b9b
-  path: testing.testcasesketch.layer-page-data-builds-the-header-crumbs-description-from-real-spec-model-data
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: layerPageData > builds the header/crumbs/description from real spec +
-    model data
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/pageData.spec.ts
-        symbol: layerPageData > builds the header/crumbs/description from real spec +
-          model data
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
 testing.testcasesketch.layer-page-data-carries-the-4-stats-in-node-types-relationships-elements-layer-order:
   id: 67a70139-1fe3-4ace-b538-b39be259e1da
   path: testing.testcasesketch.layer-page-data-carries-the-4-stats-in-node-types-relationships-elements-layer-order
@@ -11613,26 +11593,6 @@ testing.testcasesketch.layer-page-data-elements-in-model-table-has-one-row-per-e
       - file: tests/unit/pageData.spec.ts
         symbol: layerPageData > Elements in model table has one row per element in the
           layer, navigating to it
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
-testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-description-fields:
-  id: cd1a96d1-ce35-491b-ac42-783e36441853
-  path: testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-description-fields
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: layerPageData > LAYER SPEC facts read the real inspired_by + description
-    fields
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/pageData.spec.ts
-        symbol: layerPageData > LAYER SPEC facts read the real inspired_by + description
-          fields
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
@@ -12842,7 +12802,7 @@ testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-no
   type: testcasesketch
   layer_id: testing
   name: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) > id
-    is {slug}.{shortname}; label is the title; domainColor is the slug
+    is {slug}.{shortname}; label is the type label; domainColor is the slug
   attributes:
     status: automated
   source_reference:
@@ -12850,7 +12810,8 @@ testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-no
     locations:
       - file: tests/unit/specGraph.spec.ts
         symbol: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) >
-          id is {slug}.{shortname}; label is the title; domainColor is the slug
+          id is {slug}.{shortname}; label is the type label; domainColor is the
+          slug
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
@@ -15563,11 +15524,15 @@ testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: MarkdownText renders headings, lists, code and links, shows raw HTML as
-    text, and plain text as one paragraph
+  name: MarkdownText > renders headings, lists, code and links as written
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownText > renders headings, lists, code and links as written
   metadata:
     created_at: 2026-11-19T17:46:37.493Z
     updated_at: 2026-11-19T17:46:37.493Z
@@ -15578,11 +15543,17 @@ testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdo
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: PageView shows the description above the facts as markdown, and leaves it
-    out of the facts grid
+  name: PageView — description section (#593) > shows the description above the
+    stats and facts, rendered as markdown
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/PageView.spec.tsx
+        symbol: PageView — description section (#593) > shows the description above the
+          stats and facts, rendered as markdown
   metadata:
     created_at: 2026-11-19T17:46:37.493Z
     updated_at: 2026-11-19T17:46:37.493Z
@@ -15599,6 +15570,11 @@ testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-cou
     implementationFormat: automated
     description: Groups A–Z by type label, elements A–Z inside, a single-element
       type still grouped; groupKeyOf names the group holding an element.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
   metadata:
     created_at: 2026-11-19T17:48:07.767Z
     updated_at: 2026-11-19T17:48:07.767Z
@@ -15622,7 +15598,7 @@ testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-
           opens without history
   metadata:
     created_at: 2026-11-19T17:48:07.767Z
-    updated_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row:
   id: 298400b7-bbc0-4328-909e-c43e0b4f92f9
@@ -15645,7 +15621,7 @@ testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its
           reveals its row
   metadata:
     created_at: 2026-11-19T17:48:07.767Z
-    updated_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges:
   id: 57c0d042-90d1-4100-9de6-b42975c25479
@@ -15658,6 +15634,12 @@ testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-the
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/search.spec.ts
+        symbol: search index > ranks exact, prefix, word-prefix, substring then fuzzy
+          matches and returns highlight ranges
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
     updated_at: 2026-11-19T17:48:37.422Z
@@ -15672,9 +15654,14 @@ testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-ca
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/search.spec.ts
+        symbol: search index > groups results by layer in spec order and caps them
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
-    updated_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does:
   id: a5618102-15f5-4cf8-8cff-850747b0182b
@@ -15687,9 +15674,15 @@ testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-a
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/TopbarSearch.spec.tsx
+        symbol: topbar search > typing lists grouped results and Enter on an element
+          navigates as a nav-tree leaf does
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
-    updated_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view:
   id: b3344aea-d6b3-4b8d-b03c-412aae7474a6
@@ -15701,9 +15694,14 @@ testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-v
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/TopbarSearch.spec.tsx
+        symbol: topbar search > a node-type result opens it in the Schema view
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
-    updated_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes:
   id: db6cbc14-6bc9-4030-b64c-cab98def4ed1
@@ -15716,9 +15714,15 @@ testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-mo
   attributes:
     status: draft
     implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/TopbarSearch.spec.tsx
+        symbol: "topbar search > keyboard: slash and Cmd-K focus it, arrows move
+          aria-activedescendant, Escape closes"
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
-    updated_at: 2026-11-19T17:48:37.422Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.type-bands-order-linked-types-next-to-each-other:
   id: d74cf484-e4e8-47eb-8eca-6cd633f57d26
@@ -15726,12 +15730,19 @@ testing.testcasesketch.type-bands-order-linked-types-next-to-each-other:
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: type bands order linked types next to each other
+  name: type bands order linked types next to each other > finds an order with no
+    more lane-skipping than any other order
   attributes:
     status: draft
     implementationFormat: automated
     description: "Motivation fixture: requirements, goals and principles come out
       adjacent; the order has the least lane-skipping."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands order linked types next to each other > finds an order with
+          no more lane-skipping than any other order
   metadata:
     created_at: 2026-11-19T18:01:36.770Z
     updated_at: 2026-11-19T18:01:36.770Z
@@ -15742,12 +15753,19 @@ testing.testcasesketch.type-bands-name-types-without-the-layer-prefix:
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: type bands name types without the layer prefix
+  name: type bands name types without the layer prefix > drops the layer word and
+    makes the type plural
   attributes:
     status: draft
     implementationFormat: automated
     description: applicationservice in application reads Services; band ids stay the
       raw type.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands name types without the layer prefix > drops the layer word
+          and makes the type plural
   metadata:
     created_at: 2026-11-19T18:01:36.783Z
     updated_at: 2026-11-19T18:01:36.783Z
@@ -15758,13 +15776,20 @@ testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: model view control switches between graph lanes and hive and persists
+  name: Canvas — Model view by type (#594) > model view control switches between
+    graph lanes and hive and persists
   attributes:
     status: draft
     implementationFormat: automated
     description: Choosing Lanes by type renders the lanes, keeps the selection in
       the Inspector, survives a reload; Hive is disabled for a layer with fewer
       than 3 types.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/Canvas.spec.tsx
+        symbol: Canvas — Model view by type (#594) > model view control switches between
+          graph lanes and hive and persists
   metadata:
     created_at: 2026-11-19T18:01:36.783Z
     updated_at: 2026-11-19T18:01:36.783Z
@@ -15775,12 +15800,19 @@ testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer:
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: drbot panel steps left of an open inspector drawer
+  name: drbot panel steps left of an open inspector drawer > sits left of the
+    drawer at 1440px, without reflowing the graph area
   attributes:
     status: draft
     implementationFormat: automated
     description: "Inspector open at 1440px: the panel's right edge is left of the
       drawer, the canvas width and header row count are unchanged."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel steps left of an open inspector drawer > sits left of the
+          drawer at 1440px, without reflowing the graph area
   metadata:
     created_at: 2026-11-19T18:03:06.734Z
     updated_at: 2026-11-19T18:03:06.734Z
@@ -15791,12 +15823,19 @@ testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit:
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: drbot panel takes the drawer's place when both don't fit
+  name: drbot panel takes the drawer's place when both don't fit > overlays the
+    drawer at 1000px, never the nav rail, and the drawer returns on close
   attributes:
     status: draft
     implementationFormat: automated
     description: At 1000px with the Inspector open, the panel overlays the drawer's
       place and never the nav rail; the drawer returns when DrBot closes.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel takes the drawer's place when both don't fit > overlays the
+          drawer at 1000px, never the nav rail, and the drawer returns on close
   metadata:
     created_at: 2026-11-19T18:03:06.734Z
     updated_at: 2026-11-19T18:03:06.734Z
@@ -15808,12 +15847,20 @@ testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus
   type: testcasesketch
   layer_id: testing
   name: escape inside the drbot panel closes it and returns focus to the launcher
+    > focuses the composer on open, closes on Escape, keeps the thread
   attributes:
     status: draft
     implementationFormat: automated
     description: "Focus in the composer, Escape: the panel closes, focus lands on
       the topbar DrBot button, the thread is still there on reopen. Escape on
       the canvas does not close the panel."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: escape inside the drbot panel closes it and returns focus to the
+          launcher > focuses the composer on open, closes on Escape, keeps the
+          thread
   metadata:
     created_at: 2026-11-19T18:03:06.734Z
     updated_at: 2026-11-19T18:03:06.734Z
@@ -15824,13 +15871,20 @@ testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column:
   spec_node_id: testing.testcasesketch
   type: testcasesketch
   layer_id: testing
-  name: drbot panel resizes from its edge and docks as a column
+  name: drbot panel resizes from its edge and docks as a column > resizes within
+    340–820px by keyboard and pointer, and persists the size
   attributes:
     status: draft
     implementationFormat: automated
     description: Dragging or arrowing the separator resizes within 340–820px and the
       size survives a reload; Dock turns it into a resizable column that
       collapses to a rail tab.
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel resizes from its edge and docks as a column > resizes within
+          340–820px by keyboard and pointer, and persists the size
   metadata:
     created_at: 2026-11-19T18:03:06.734Z
     updated_at: 2026-11-19T18:03:06.734Z
@@ -15914,6 +15968,1532 @@ testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-pers
   metadata:
     created_at: 2026-11-19T17:50:11.049Z
     updated_at: 2026-11-19T17:50:11.049Z
+    version: 1
+testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded:
+  id: 69ba6a31-116c-4fbb-af35-bdb64a172870
+  path: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: FoldableMarkdownText > folds a long text behind Show more and toggles it
+    with aria-expanded
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: FoldableMarkdownText > folds a long text behind Show more and toggles it
+          with aria-expanded
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button:
+  id: 56c99614-f26c-4944-9b46-1851defbfa2d
+  path: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: FoldableMarkdownText > shows a short text whole, with no button
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: FoldableMarkdownText > shows a short text whole, with no button
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text:
+  id: 00bb9c7d-6aa4-4baf-9165-ba7b7e1d9f8a
+  path: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+    emphasis, links as plain text"
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+          emphasis, links as plain text"
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block:
+  id: 638b795f-53e0-4109-9be5-6cafb9cf3790
+  path: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownExcerpt > never renders raw HTML or a list or heading block
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownExcerpt > never renders raw HTML or a list or heading block
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup:
+  id: 0bc0dba9-dadf-49cb-9c39-93c6e69bed0e
+  path: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: descriptionExcerpt > takes only the first paragraph and drops list and
+    heading markup
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: descriptionExcerpt > takes only the first paragraph and drops list and
+          heading markup
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one:
+  id: 3c07ff2b-c484-4990-a160-370d17bed66c
+  path: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — header + op rows > renders a markdown description and
+    folds a long one
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — header + op rows > renders a markdown description and
+          folds a long one
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card:
+  id: 7b9a19bf-d208-4af6-b1e2-a726a704df3d
+  path: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+    description on the card
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+          description on the card
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none:
+  id: c6c41d27-fbc1-4caa-a173-3fe322c7ed98
+  path: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownExcerpt > reads a plain-text description as before and renders
+    nothing for none
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownExcerpt > reads a plain-text description as before and renders
+          nothing for none
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded:
+  id: e078ff31-cd67-469c-94a4-6e7cf06cc2ec
+  path: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: descriptionExcerpt > reads plain text unchanged, single newlines folded
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: descriptionExcerpt > reads plain text unchanged, single newlines folded
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text:
+  id: 02df0e52-6ab7-4e64-a6ab-a1fc12609761
+  path: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: inlineTokens > splits code spans, strong, emphasis and keeps only a link text
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: inlineTokens > splits code spans, strong, emphasis and keeps only a link
+          text
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text:
+  id: 997daf1f-f135-436d-af7f-239f5afa940f
+  path: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: inlineTokens > leaves snake_case and lone asterisks as text
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: inlineTokens > leaves snake_case and lone asterisks as text
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word:
+  id: 032d04ab-1283-40b4-af01-696af1e24a13
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: "Over real spec titles from tests/fixtures/spec.json: multi-word
+      (ApplicationComponent → Application Components / Components), irregular or
+      already-plural (Policy → Policies, Paths, ChartSeries, Index), acronyms
+      (UXApplication, OAuthFlow, OpenAPIDocument), a type not starting with its
+      layer's name (DataObject in application keeps both words), and the id
+      fallback when there is no title."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.nav-tree-groups-use-the-short-plural-label:
+  id: 7ce59589-f622-43e5-b848-c051ad4a6cd3
+  path: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: nav tree groups use the short plural label
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A Model layer's type groups are named with the short plural
+      ("Components" in Application), their count in NavItem's badge like the
+      layer rows, sorted by that label; the accessible name says "Components, 37
+      elements".
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.impact-group-nodes-use-the-full-plural-label:
+  id: a1610f9d-58f0-4ce0-9d48-30554dbcc9a8
+  path: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: impact group nodes use the full plural label
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A grouped large lane's group node reads "Application Components ·
+      12" from the spec title, not the raw type id.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetImpact.spec.ts
+        symbol: impact filters, search and grouped lanes > folds a large lane by type,
+          keeping what it is told to and merging links
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name:
+  id: 6cbdf2cb-fd2e-47c6-9dfe-1f9d37ab0eb9
+  path: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: toReviewItems names element and link-end types by their display name
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A review item's type line reads 'application · Application Service'
+      and its summary 'Adds this Application Service'; a link end keeps its type
+      id and adds typeName; a caller's typeNameOf (the spec's title) wins over
+      splitting the id.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetReview.spec.ts
+        symbol: names element and link-end types by their display name (#605)
+  metadata:
+    created_at: 2026-11-20T14:49:13.812Z
+    updated_at: 2026-11-20T14:49:13.812Z
+    version: 1
+testing.testcasesketch.canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view:
+  id: 29e60e40-4977-411f-9967-f17550c1da2d
+  path: testing.testcasesketch.canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Canvas — Model view by type (#594) > offers no View control in the Schema
+    view
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/Canvas.spec.tsx
+        symbol: Canvas — Model view by type (#594) > offers no View control in the
+          Schema view
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you:
+  id: 972b1303-5501-4f30-9e16-dcbae286118b
+  path: testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > lists an upgrade record under its own heading, never
+    under Waiting on you
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > lists an upgrade record under its own heading, never
+          under Waiting on you
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707:
+  id: 9a0c810d-69a5-43ab-8f35-58b8506a5bb0
+  path: testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "review — deciding changes (dr CLI with review) > names the bulk keep by
+    what's decided: all, the other N, or all but the blocked deletes"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: "review — deciding changes (dr CLI with review) > names the bulk keep by
+          what's decided: all, the other N, or all but the blocked deletes"
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it:
+  id: 521573ce-bedd-4e12-9aa4-67a6327a6c7f
+  path: testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: review — purpose and actions > offers an upgrade record Discard but no
+    Apply, and says what to do with it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetReview.spec.tsx
+        symbol: review — purpose and actions > offers an upgrade record Discard but no
+          Apply, and says what to do with it
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-a85a6ed4:
+  id: d41de8fe-23ae-494a-b2a8-0b88922e9265
+  path: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-a85a6ed4
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel resizes from its edge and docks as a column > docks as a
+    resizable column that collapses to a rail tab
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel resizes from its edge and docks as a column > docks as a
+          resizable column that collapses to a rail tab
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized:
+  id: 77345a8f-e1f2-45fd-98f2-d844482680a5
+  path: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel steps left of an open inspector drawer > follows the drawer
+    when it is resized
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel steps left of an open inspector drawer > follows the drawer
+          when it is resized
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-fills-a-graph-area-under-720px:
+  id: 797cfea9-435c-4f90-91e5-c15024ecafdb
+  path: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-fills-a-graph-area-under-720px
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: drbot panel takes the drawer's place when both don't fit > fills a graph
+    area under 720px
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: drbot panel takes the drawer's place when both don't fit > fills a graph
+          area under 720px
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-de74dc86:
+  id: 42f94d8e-f8c9-4e08-9ff1-35f91b82d0a5
+  path: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-de74dc86
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: escape inside the drbot panel closes it and returns focus to the launcher
+    > Escape on the canvas does not close the panel
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChatDrawer.spec.tsx
+        symbol: escape inside the drbot panel closes it and returns focus to the
+          launcher > Escape on the canvas does not close the panel
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.markdown-text-never-turns-raw-html-in-the-text-into-markup:
+  id: 32a2a0c9-7a4e-43d3-a952-b9709643f901
+  path: testing.testcasesketch.markdown-text-never-turns-raw-html-in-the-text-into-markup
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownText > never turns raw HTML in the text into markup
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownText > never turns raw HTML in the text into markup
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.markdown-text-reads-plain-text-as-one-paragraph-as-before:
+  id: d5700ce9-2a4f-4129-a9a8-a5c56d655ae6
+  path: testing.testcasesketch.markdown-text-reads-plain-text-as-one-paragraph-as-before
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownText > reads plain text as one paragraph, as before
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownText > reads plain text as one paragraph, as before
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text:
+  id: 6a3dc25c-9de6-4638-a5be-0a942f237d2f
+  path: testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownText > renders nothing for empty or whitespace-only text
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownText > renders nothing for empty or whitespace-only text
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.markdown-text-strips-a-javascript-link-target:
+  id: b8d99d8c-faa6-403e-8f14-bb809ea65eea
+  path: testing.testcasesketch.markdown-text-strips-a-javascript-link-target
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "MarkdownText > strips a javascript: link target"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: "MarkdownText > strips a javascript: link target"
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group:
+  id: 0658b9f7-2010-49c3-93a7-eeacadc512e1
+  path: testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree type groups > a type with a single element still gets its own group
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree type groups > a type with a single element still gets its own
+          group
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.page-view-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description:
+  id: 77288668-bae6-49ea-9a4f-b442d831830a
+  path: testing.testcasesketch.page-view-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: PageView — description section (#593) > shows a layer summary as plain
+    text above the description
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/PageView.spec.tsx
+        symbol: PageView — description section (#593) > shows a layer summary as plain
+          text above the description
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.page-view-description-section-593-shows-no-description-section-when-there-is-no-description:
+  id: 38a7d687-2d60-4ab1-a2dc-96de1d2d32a0
+  path: testing.testcasesketch.page-view-description-section-593-shows-no-description-section-when-there-is-no-description
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: PageView — description section (#593) > shows no description section when
+    there is no description
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/PageView.spec.tsx
+        symbol: PageView — description section (#593) > shows no description section
+          when there is no description
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree:
+  id: 8592f82a-a388-47a5-9a8e-e5e2cc4c6978
+  path: testing.testcasesketch.topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: topbar search > a chosen element is revealed inside its open type group in
+    the nav tree
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/TopbarSearch.spec.tsx
+        symbol: topbar search > a chosen element is revealed inside its open type group
+          in the nav tree
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.topbar-search-says-so-when-nothing-matches:
+  id: 1682224b-01c4-4510-bf8c-f6c01197c1a2
+  path: testing.testcasesketch.topbar-search-says-so-when-nothing-matches
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: topbar search > says so when nothing matches
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/TopbarSearch.spec.tsx
+        symbol: topbar search > says so when nothing matches
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739:
+  id: d94a4d46-79d0-4146-b0b5-3eb60de40393
+  path: testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "accessibility (axe / WCAG 2.1 AA) — topbar search open > topbar search
+    with results open — ${tone} canvas: zero serious/critical violations"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/a11y.spec.ts
+        symbol: "accessibility (axe / WCAG 2.1 AA) — topbar search open > topbar search
+          with results open — ${tone} canvas: zero serious/critical violations"
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.changeset-purpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded:
+  id: 09722e79-aebe-4355-a8c9-2e2610e97211
+  path: testing.testcasesketch.changeset-purpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "changesetPurpose > reads an upgrade record: never applied, reviewed,
+    restored from by hand, discarded"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetPurpose.spec.ts
+        symbol: "changesetPurpose > reads an upgrade record: never applied, reviewed,
+          restored from by hand, discarded"
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name-605:
+  id: e907fe73-205e-4d11-8c2d-ffecc44b57f3
+  path: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name-605
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: toReviewItems > names element and link-end types by their display name (#605)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/changesetReview.spec.ts
+        symbol: toReviewItems > names element and link-end types by their display name
+          (#605)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.chat-panel-layout-597-fills-an-area-under-720px-and-hides-an-open-drawer:
+  id: baf3a2ac-2d67-47e2-b38e-d30287ac70ae
+  path: testing.testcasesketch.chat-panel-layout-597-fills-an-area-under-720px-and-hides-an-open-drawer
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: chatPanelLayout (#597) > fills an area under 720px and hides an open drawer
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: chatPanelLayout (#597) > fills an area under 720px and hides an open
+          drawer
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.chat-panel-layout-597-leaves-240px-of-graph-and-fits-the-area-height:
+  id: 73b116b4-cd7e-44ec-88bb-03051dd23089
+  path: testing.testcasesketch.chat-panel-layout-597-leaves-240px-of-graph-and-fits-the-area-height
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: chatPanelLayout (#597) > leaves 240px of graph and fits the area height
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: chatPanelLayout (#597) > leaves 240px of graph and fits the area height
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.chat-panel-layout-597-sits-at-the-top-right-with-no-drawer:
+  id: a0d923b7-c24d-4e51-90c5-776a5f563cbe
+  path: testing.testcasesketch.chat-panel-layout-597-sits-at-the-top-right-with-no-drawer
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: chatPanelLayout (#597) > sits at the top-right with no drawer
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: chatPanelLayout (#597) > sits at the top-right with no drawer
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.chat-panel-layout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit:
+  id: b3e098e4-b6ca-417d-953a-5534b6f1272b
+  path: testing.testcasesketch.chat-panel-layout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: chatPanelLayout (#597) > steps left of an open drawer when panel + drawer
+    + 240px fit
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: chatPanelLayout (#597) > steps left of an open drawer when panel +
+          drawer + 240px fit
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.chat-panel-layout-597-takes-the-drawers-place-when-they-dont-fit:
+  id: 6fe5670e-8426-415e-9d45-0279f8161d02
+  path: testing.testcasesketch.chat-panel-layout-597-takes-the-drawers-place-when-they-dont-fit
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: chatPanelLayout (#597) > takes the drawer's place when they don't fit
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: chatPanelLayout (#597) > takes the drawer's place when they don't fit
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size:
+  id: c7444706-bf07-471f-9161-1fd0e366752c
+  path: testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: clampPanelSize / resizeByKey > clamps and fills in a malformed size
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: clampPanelSize / resizeByKey > clamps and fills in a malformed size
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243:
+  id: 66a7c5e2-642d-44c2-8e36-81c10f92c7f0
+  path: testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: clampPanelSize / resizeByKey > grows on ArrowLeft, shrinks on ArrowRight,
+    jumps on Home/End, ignores other keys
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatPanelLayout.spec.ts
+        symbol: clampPanelSize / resizeByKey > grows on ArrowLeft, shrinks on
+          ArrowRight, jumps on Home/End, ignores other keys
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.graph-canvas-key-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph:
+  id: 5c4642fd-8215-49a8-bfcb-f1a4e1fc2a9e
+  path: testing.testcasesketch.graph-canvas-key-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: graphCanvasKey > gives each Model by-type view its own key, and keeps the
+    old key for the graph
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/graphViewport.spec.ts
+        symbol: graphCanvasKey > gives each Model by-type view its own key, and keeps
+          the old key for the graph
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type:
+  id: 9cb145c6-c823-452c-b981-cbf87e6155de
+  path: testing.testcasesketch.nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Nav Tree Groups > keys a group by the spec node id of its type
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: Nav Tree Groups > keys a group by the spec node id of its type
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-5e53dde6:
+  id: b50c9d38-e71d-4ff9-ba10-cfada0422952
+  path: testing.testcasesketch.nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-5e53dde6
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Nav Tree Groups > labels every group by its type id without a spec, and
+    groups nothing for an empty layer
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: Nav Tree Groups > labels every group by its type id without a spec, and
+          groups nothing for an empty layer
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.layer-page-data-builds-the-header-crumbs-summary-description-from-real-spec-model-data:
+  id: 970a05d4-e549-403b-a0f5-ef2f0699747c
+  path: testing.testcasesketch.layer-page-data-builds-the-header-crumbs-summary-description-from-real-spec-model-data
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: layerPageData > builds the header/crumbs/summary/description from real
+    spec + model data
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/pageData.spec.ts
+        symbol: layerPageData > builds the header/crumbs/summary/description from real
+          spec + model data
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593:
+  id: 6b1c1f23-b6e6-4dcf-969f-5e1b65abc35a
+  path: testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: layerPageData > LAYER SPEC facts read the real inspired_by fields, and
+    leave the description out (#593)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/pageData.spec.ts
+        symbol: layerPageData > LAYER SPEC facts read the real inspired_by fields, and
+          leave the description out (#593)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query:
+  id: 337d492d-d81b-43d0-99a3-79da368a2c3c
+  path: testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: search index > ignores case and extra spaces, and returns nothing for a
+    blank query
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/search.spec.ts
+        symbol: search index > ignores case and extra spaces, and returns nothing for a
+          blank query
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better:
+  id: 921857f9-03ed-41f5-a30e-4b1be61dfb89
+  path: testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: search index > offers fuzzy matches only when few names match better
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/search.spec.ts
+        symbol: search index > offers fuzzy matches only when few names match better
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.search-index-stays-fast-on-a-large-model:
+  id: b8a7d476-eadc-4139-a7d7-d33985c73c79
+  path: testing.testcasesketch.search-index-stays-fast-on-a-large-model
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: search index > stays fast on a large model
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/search.spec.ts
+        symbol: search index > stays fast on a large model
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.cap-bands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded:
+  id: a72fc36b-2bd9-45a3-9767-2614102d8e9e
+  path: testing.testcasesketch.cap-bands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: capBands > always keeps the selection, and shows a whole lane once it is
+    expanded
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: capBands > always keeps the selection, and shows a whole lane once it is
+          expanded
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.cap-bands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked:
+  id: e29ac1bf-12ab-4130-b24b-2f441f6421ba
+  path: testing.testcasesketch.cap-bands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: capBands > folds a lane over the cap into a "+N more" node, keeping the
+    most linked
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: capBands > folds a lane over the cap into a "+N more" node, keeping the
+          most linked
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title:
+  id: 3182745e-6a8f-4f3b-9546-332e21c9edc5
+  path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands name types without the layer prefix > carries the full count in
+    the band title
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands name types without the layer prefix > carries the full count
+          in the band title
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-ab2b6c94:
+  id: 6136dee8-b061-4524-974a-d78b09a4fe99
+  path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-ab2b6c94
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands name types without the layer prefix > keeps a title that is
+    only the layer word, and splits the rest into words
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands name types without the layer prefix > keeps a title that is
+          only the layer word, and splits the rest into words
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-814adacb:
+  id: b84d947b-4c9e-4226-a30e-5abe8d873b6c
+  path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-814adacb
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands name types without the layer prefix > names bands from the spec
+    title, else the raw type, and keeps the raw type as the id
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands name types without the layer prefix > names bands from the
+          spec title, else the raw type, and keeps the raw type as the id
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-e1bfb361:
+  id: 4c49dd8c-4c25-4990-ad6e-30db682d0e25
+  path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-e1bfb361
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands order linked types next to each other > keeps busiest-first
+    order when the types share no links
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands order linked types next to each other > keeps busiest-first
+          order when the types share no links
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-bbaffe74:
+  id: ef9462bf-4bcf-49b9-961b-90b2dfbb7308
+  path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-bbaffe74
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands order linked types next to each other > orders more than seven
+    types greedily, still with every type once
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands order linked types next to each other > orders more than
+          seven types greedily, still with every type once
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order:
+  id: e83f97cc-d748-428b-b47d-659601b4d12f
+  path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands order linked types next to each other > places a chain of
+    linked types in chain order
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands order linked types next to each other > places a chain of
+          linked types in chain order
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band:
+  id: c4b2ca42-6d19-4005-9b1e-2f558fdd2ba8
+  path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: type bands order linked types next to each other > puts every motivation
+    type in exactly one band
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeBands.spec.ts
+        symbol: type bands order linked types next to each other > puts every motivation
+          type in exactly one band
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules:
+  id: 7c7da016-9957-4bf6-b5ae-148df92fb2a9
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > exposes the
+    word split and plural rules
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > exposes
+          the word split and plural rules
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-4702a09a:
+  id: de7afcd1-2782-44fb-aace-501280165560
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-4702a09a
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > falls back
+    to the type id when the spec has no title, capitalized
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > falls back
+          to the type id when the spec has no title, capitalized
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word:
+  id: 347e5df7-23e2-4463-811f-dbbaf3c4b84e
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > keeps a
+    title that is only the layer word
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > keeps a
+          title that is only the layer word
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole:
+  id: 105d9f55-62c4-4b55-a25b-b30a6a1d1e08
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > keeps
+    acronyms and known compounds whole
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > keeps
+          acronyms and known compounds whole
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-bbc1f185:
+  id: 14e4e435-3422-4878-a130-db556142f17b
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-bbc1f185
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > keeps every
+    word of a type whose title does not start with its layer name
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > keeps
+          every word of a type whose title does not start with its layer name
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-2f35bc06:
+  id: 4a2d3edc-6b7a-41e1-b855-83f4cd6ec49b
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-2f35bc06
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > pluralizes
+    -y, -s, -x and irregular nouns, and leaves an already-plural title alone
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > pluralizes
+          -y, -s, -x and irregular nouns, and leaves an already-plural title
+          alone
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label:
+  id: 93cc4e75-a35e-4279-8659-79d1a5e3b240
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > puts the
+    count after the label
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > puts the
+          count after the label
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-80053bec:
+  id: 985d2b87-bbb7-4d0b-8ade-6b6cc9c6136a
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-80053bec
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > reads a
+    title from the layer spec info by type id
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > reads a
+          title from the layer spec info by type id
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-772b8a24:
+  id: b9f9fe06-dfd5-435b-9f2e-350613e877d7
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-772b8a24
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word > splits a
+    multi-word title, makes it plural, and drops the layer word in the short
+    form
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word > splits a
+          multi-word title, makes it plural, and drops the layer word in the
+          short form
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee:
+  id: 1a7011a2-1b79-43cb-a11e-82d7c58d3fd5
+  path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+    DrBot size out of range or malformed is brought back within limits (#597)"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+          DrBot size out of range or malformed is brought back within limits
+          (#597)"
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s:
+  id: ce02f1bf-8c5f-42be-81f8-d01f57e22679
+  path: testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: persist hydration validates modelView > falls back to the graph for an
+    invalid stored value (%s)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: persist hydration validates modelView > falls back to the graph for an
+          invalid stored value (%s)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s:
+  id: 0c249d3d-4581-4456-9fe2-ffadcf9c92de
+  path: testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: persist hydration validates modelView > keeps a valid stored view (%s)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: persist hydration validates modelView > keeps a valid stored view (%s)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice:
+  id: c93fb38d-5bfa-47a6-9169-8f879705b6a8
+  path: testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: persist hydration validates modelView > persists the choice
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: persist hydration validates modelView > persists the choice
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e:
+  id: 42c8de5c-37e7-4be3-86dd-4c9075907766
+  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: selectLayer / selectChangeset / toggleChat > clamps the panel size and the
+    dock width to their limits (#597)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: selectLayer / selectChangeset / toggleChat > clamps the panel size and
+          the dock width to their limits (#597)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view:
+  id: c6329d60-ae2c-4c11-9bc6-446d28e0b5c0
+  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: selectLayer / selectChangeset / toggleChat > selectChangeset switches to
+    the changesets view
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: selectLayer / selectChangeset / toggleChat > selectChangeset switches to
+          the changesets view
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217:
+  id: cfdfad40-4e12-4727-a64e-1132490b62ae
+  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: selectLayer / selectChangeset / toggleChat > selectLayer clears selection
+    and expands the layer under the active view
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: selectLayer / selectChangeset / toggleChat > selectLayer clears
+          selection and expands the layer under the active view
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec:
+  id: f5caaf27-7074-44ce-9f80-5151c2d453b7
+  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: selectLayer / selectChangeset / toggleChat > toggleChat expands a
+    collapsed dock instead of closing it (#597)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: selectLayer / selectChangeset / toggleChat > toggleChat expands a
+          collapsed dock instead of closing it (#597)
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open:
+  id: 91361975-e827-4d4c-b824-421332d8e25a
+  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: selectLayer / selectChangeset / toggleChat > toggleChat flips chatOpen
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: selectLayer / selectChangeset / toggleChat > toggleChat flips chatOpen
+  metadata:
+    created_at: 2026-11-20T15:40:16.037Z
+    updated_at: 2026-11-20T15:40:16.037Z
     version: 1
 testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button:
   id: 2a1badaa-e13d-40f6-b38c-07f127e0271d
@@ -16217,45 +17797,6 @@ testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-
       - file: tests/components/NavTree.spec.tsx
         symbol: NavTree — sections > renders all four sections (Architecture / Model /
           Schema / Changesets)
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group:
-  id: df1831d4-392b-4633-b252-b6be7128d5af
-  path: testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: NavTree type groups > a type with a single element still gets its own group
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/components/NavTree.spec.tsx
-        symbol: NavTree type groups > a type with a single element still gets its own
-          group
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739:
-  id: d955dd65-e3f3-423c-abc4-c570e36f7d65
-  path: testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: "accessibility (axe / WCAG 2.1 AA) — topbar search open > topbar search
-    with results open — ${tone} canvas: zero serious/critical violations"
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/e2e/a11y.spec.ts
-        symbol: "accessibility (axe / WCAG 2.1 AA) — topbar search open > topbar search
-          with results open — ${tone} canvas: zero serious/critical violations"
   metadata:
     created_at: 2026-11-20T16:44:30.646Z
     updated_at: 2026-11-20T16:44:30.646Z
@@ -17165,181 +18706,6 @@ testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-
       - file: tests/unit/uiStore.spec.ts
         symbol: Architecture view state (C4 level, scope, selected box) > showC4 opens a
           diagram as a navigation and clears the selected box
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee:
-  id: a92b25fa-7191-4976-9688-88db028fb2e0
-  path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
-    DrBot size out of range or malformed is brought back within limits (#597)"
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
-          DrBot size out of range or malformed is brought back within limits
-          (#597)"
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s:
-  id: 399170c9-0560-42a3-99ea-7f5120bdc583
-  path: testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: persist hydration validates modelView > falls back to the graph for an
-    invalid stored value (%s)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: persist hydration validates modelView > falls back to the graph for an
-          invalid stored value (%s)
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s:
-  id: 63176c53-3591-4912-b3e9-304964eefa3f
-  path: testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: persist hydration validates modelView > keeps a valid stored view (%s)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: persist hydration validates modelView > keeps a valid stored view (%s)
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice:
-  id: b4999a30-7166-477d-8cdf-e606a44cc04b
-  path: testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: persist hydration validates modelView > persists the choice
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: persist hydration validates modelView > persists the choice
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e:
-  id: 8b13b253-8417-479b-b45e-95a2b1cfa382
-  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: selectLayer / selectChangeset / toggleChat > clamps the panel size and the
-    dock width to their limits (#597)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: selectLayer / selectChangeset / toggleChat > clamps the panel size and
-          the dock width to their limits (#597)
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view:
-  id: 1d36ab4c-2741-47d9-939b-981b416de632
-  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: selectLayer / selectChangeset / toggleChat > selectChangeset switches to
-    the changesets view
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: selectLayer / selectChangeset / toggleChat > selectChangeset switches to
-          the changesets view
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217:
-  id: 06ddf09e-3177-4bbc-912c-cf89edc84e72
-  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: selectLayer / selectChangeset / toggleChat > selectLayer clears selection
-    and expands the layer under the active view
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: selectLayer / selectChangeset / toggleChat > selectLayer clears
-          selection and expands the layer under the active view
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec:
-  id: bbe5832b-46f9-488d-8d73-856cc16dc1cf
-  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: selectLayer / selectChangeset / toggleChat > toggleChat expands a
-    collapsed dock instead of closing it (#597)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: selectLayer / selectChangeset / toggleChat > toggleChat expands a
-          collapsed dock instead of closing it (#597)
-  metadata:
-    created_at: 2026-11-20T16:44:30.646Z
-    updated_at: 2026-11-20T16:44:30.646Z
-    version: 1
-testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open:
-  id: c2a04d77-990d-45d1-89d4-7f0dce51590a
-  path: testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: selectLayer / selectChangeset / toggleChat > toggleChat flips chatOpen
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: selectLayer / selectChangeset / toggleChat > toggleChat flips chatOpen
   metadata:
     created_at: 2026-11-20T16:44:30.646Z
     updated_at: 2026-11-20T16:44:30.646Z
