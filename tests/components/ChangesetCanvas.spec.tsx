@@ -19,6 +19,7 @@ import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
 import { http, HttpResponse } from 'msw';
+import changesetDetail from '../fixtures/changeset-detail.json';
 
 const CHANGESET_ID = 'changeset-1774309821523-1gs13ct6s';
 
@@ -71,6 +72,50 @@ describe('ChangesetCanvas — header + op rows', () => {
     expect(within(row).getByTestId('review-op-chip')).toHaveTextContent('update');
     expect(row.querySelector('.drv-field')).toHaveTextContent('attributes.droppedAttributesCount');
     expect(row).toHaveTextContent('type only');
+  });
+
+  it('renders a markdown description and folds a long one', async () => {
+    const description = [
+      "#588: render a changeset's description as markdown, <script>window.__pwned = true</script>safely.",
+      '',
+      '**In scope**',
+      '- `application.applicationcomponent.markdown-text`',
+      '- `application.applicationcomponent.changeset-canvas`',
+      '- `application.applicationcomponent.changeset-inbox`',
+      '',
+      '## Done when',
+      '- see [the issue](https://github.com/tinkermonkey/documentation_robotics_viewer/issues/588)',
+      '- [not this](javascript:alert(1))',
+    ].join('\n');
+    mswServer.use(
+      http.get('*/api/changesets/:id', ({ params }) =>
+        HttpResponse.json({ ...changesetDetail, id: params.id, description }),
+      ),
+    );
+    const user = userEvent.setup();
+    renderCanvas();
+
+    const desc = await screen.findByTestId('changeset-description');
+    expect(within(desc).getAllByRole('listitem')).toHaveLength(5);
+    expect(within(desc).getByRole('heading', { name: 'Done when' })).toBeInTheDocument();
+    expect(within(desc).getByText('In scope').tagName).toBe('STRONG');
+    expect(within(desc).getByText('application.applicationcomponent.markdown-text').tagName).toBe('CODE');
+    expect(within(desc).getByRole('link', { name: 'the issue' })).toHaveAttribute(
+      'href',
+      'https://github.com/tinkermonkey/documentation_robotics_viewer/issues/588',
+    );
+    expect(within(desc).getByText('not this').closest('a')?.getAttribute('href') ?? '').not.toMatch(/javascript:/i);
+    expect(desc.querySelector('script')).toBeNull();
+    expect((window as unknown as { __pwned?: boolean }).__pwned).toBeUndefined();
+
+    // Long: folded behind Show more, which is a real toggle.
+    const toggle = within(desc).getByRole('button', { name: 'Show more' });
+    expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    expect(toggle).toHaveTextContent('Show less');
+    // The change list still follows it.
+    expect(screen.getByTestId('changeset-list')).toContainElement(desc);
   });
 });
 

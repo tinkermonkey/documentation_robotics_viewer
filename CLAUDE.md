@@ -49,7 +49,8 @@ src/
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
-│   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent); node pages, #588 next
+│   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
+│   │   ├── markdownExcerpt.ts # pure: a card's one-paragraph excerpt of markdown, as inline tokens (inbox, #588)
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
 │   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chat*/inspectorWidth/expanded
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
@@ -203,7 +204,17 @@ For local dev use `dr visualize --no-auth`.
   react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
   prose, so plain text reads as before). Shown in full, never collapsed. A layer page's generated lead is
   `PageData.summary` (plain text, above it); the description is never a fact. Reuse `MarkdownText` for any other
-  model prose (changeset descriptions, #588).
+  model prose.
+- **Changeset descriptions as markdown** (#588) — the dr CLI writes a changeset's description as markdown (an
+  intent, an **In scope** list with ids in code spans, a **Done when**; documentation_robotics#1210); plain text
+  from an older CLI reads as before. `ChangesetCanvas` shows it above the review list through
+  `FoldableMarkdownText` (`MarkdownText.tsx`): a text over `FOLD_CHARS` (420) or `FOLD_LINES` (6) non-blank lines
+  (`isLongText`, by source, never measured) folds to ~6 lines under a mask fade behind a Show more / Show less
+  `.drv-linkbtn` (`aria-expanded`, `aria-controls`); `.drv-markdown--compact` keeps the old 13px / 1.5. The inbox
+  card shows `MarkdownExcerpt`: `ui/markdownExcerpt.ts` takes the first paragraph (a lone heading skipped, a list's
+  first item, fences / rules / HTML tags dropped) and splits it into inline tokens (code spans, strong, emphasis; a
+  link keeps only its text, so the card has no nested link), rendered as React text, clamped to two lines. The
+  `ChangesetInspector` overview does NOT show the description: the canvas header beside it already does.
 - **Inspector selection drawer** (`Inspector.tsx`, both Model + Schema) — a Heimdall `DetailDrawer` overlay
   floating over the graph area's right edge, not a permanent sidebar column: translucent/blurred, auto-hides
   (`open={!!metadata}`) when nothing's selected, resizable via its own left-edge handle (local `width` state,

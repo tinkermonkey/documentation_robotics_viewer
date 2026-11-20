@@ -37,6 +37,7 @@ import { Tier1Panel } from './Tier1Panel';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DriftBadge } from './DriftNotice';
 import { driftTone } from '../data/changesetDrift';
+import { MarkdownExcerpt } from './MarkdownText';
 
 interface Progress {
   decided: number;
@@ -104,11 +105,8 @@ function StagedCard({
           </Button>
         </span>
       </div>
-      {cs.description && (
-        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))', maxWidth: 980 }}>
-          {cs.description}
-        </p>
-      )}
+      {/* The description's first paragraph, inline (#588); the canvas shows it whole. */}
+      <MarkdownExcerpt text={cs.description} data-testid="inbox-card-description" />
       <div className="drv-pills">
         <span className="drv-mono drv-muted" style={{ fontSize: 12 }}>
           {plural(cs.changesCount, 'change')}

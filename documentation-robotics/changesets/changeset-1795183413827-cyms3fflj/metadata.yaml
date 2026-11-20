@@ -1,0 +1,203 @@
+id: changeset-1795183413827-cyms3fflj
+name: changeset-description-markdown
+description: >-
+  #588: render a changeset's description as markdown in the canvas header
+  (folding a long one) and the inspector, and as a one-paragraph inline excerpt
+  on the inbox card, safely (no raw HTML).
+
+
+  **In scope**
+
+  - `application.applicationcomponent.markdown-text`: gains an inline excerpt
+  variant and a folding block variant
+
+  - `application.applicationcomponent.changeset-canvas`: the description under
+  the header as markdown, folded behind Show more / Show less when long
+
+  - `application.applicationcomponent.changeset-inbox`: the first paragraph
+  only, inline (code spans, emphasis; links as plain text inside the card)
+
+  - `application.applicationcomponent.changeset-inspector`: unchanged; the
+  canvas header already shows the description beside it
+
+
+  **Done when**
+
+  - Lists, code spans, emphasis, links and short headings render in the canvas;
+  raw HTML never does and `javascript:` links are stripped
+
+  - The inbox card shows a one-paragraph inline excerpt, never a list or heading
+
+  - A plain-text description from an older dr CLI reads as before
+created: 2026-11-20T14:03:33.832Z
+modified: 2026-11-20T14:10:14.313Z
+status: staged
+baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 26
+  modifications: 4
+  deletions: 0
+lastSequence: 36
+unstaged:
+  - sequence: 8
+    removedAt: 21
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+      layerName: testing
+      after:
+        id: 3c07ff2b-c484-4990-a160-370d17bed66c
+        path: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetCanvas — header + op rows > renders a markdown description and
+          folds a long one
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 9
+    removedAt: 22
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+      layerName: testing
+      after:
+        id: 7b9a19bf-d208-4af6-b1e2-a726a704df3d
+        path: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+          description on the card
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 7
+    removedAt: 23
+    change:
+      type: add
+      elementId: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+      layerName: testing
+      after:
+        id: 0bc0dba9-dadf-49cb-9c39-93c6e69bed0e
+        path: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: descriptionExcerpt > takes only the first paragraph and drops list and
+          heading markup
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 3
+    removedAt: 24
+    change:
+      type: add
+      elementId: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+      layerName: testing
+      after:
+        id: 69ba6a31-116c-4fbb-af35-bdb64a172870
+        path: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: FoldableMarkdownText > folds a long text behind Show more and toggles it
+          with aria-expanded
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 4
+    removedAt: 25
+    change:
+      type: add
+      elementId: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+      layerName: testing
+      after:
+        id: 56c99614-f26c-4944-9b46-1851defbfa2d
+        path: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: FoldableMarkdownText > shows a short text whole, with no button
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 6
+    removedAt: 26
+    change:
+      type: add
+      elementId: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+      layerName: testing
+      after:
+        id: 638b795f-53e0-4109-9be5-6cafb9cf3790
+        path: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: MarkdownExcerpt > never renders raw HTML or a list or heading block
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
+  - sequence: 5
+    removedAt: 27
+    change:
+      type: add
+      elementId: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+      layerName: testing
+      after:
+        id: 00bb9c7d-6aa4-4baf-9165-ba7b7e1d9f8a
+        path: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+          emphasis, links as plain text"
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-20T14:04:24.587Z
+          updated_at: 2026-11-20T14:04:24.587Z
+          version: 1
+      timestamp: 2026-11-20T14:04:24.599Z
+    rewritten: true
