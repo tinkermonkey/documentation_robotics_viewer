@@ -12881,7 +12881,7 @@ testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-no
   type: testcasesketch
   layer_id: testing
   name: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) > id
-    is {slug}.{shortname}; label is the title; domainColor is the slug
+    is {slug}.{shortname}; label is the type label; domainColor is the slug
   attributes:
     status: automated
   source_reference:
@@ -12889,7 +12889,8 @@ testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-no
     locations:
       - file: tests/unit/specGraph.spec.ts
         symbol: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) >
-          id is {slug}.{shortname}; label is the title; domainColor is the slug
+          id is {slug}.{shortname}; label is the type label; domainColor is the
+          slug
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
@@ -16001,4 +16002,319 @@ testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-pers
   metadata:
     created_at: 2026-11-19T17:50:11.049Z
     updated_at: 2026-11-19T17:50:11.049Z
+    version: 1
+testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded:
+  id: 69ba6a31-116c-4fbb-af35-bdb64a172870
+  path: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: FoldableMarkdownText > folds a long text behind Show more and toggles it
+    with aria-expanded
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: FoldableMarkdownText > folds a long text behind Show more and toggles it
+          with aria-expanded
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button:
+  id: 56c99614-f26c-4944-9b46-1851defbfa2d
+  path: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: FoldableMarkdownText > shows a short text whole, with no button
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: FoldableMarkdownText > shows a short text whole, with no button
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text:
+  id: 00bb9c7d-6aa4-4baf-9165-ba7b7e1d9f8a
+  path: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+    emphasis, links as plain text"
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+          emphasis, links as plain text"
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block:
+  id: 638b795f-53e0-4109-9be5-6cafb9cf3790
+  path: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownExcerpt > never renders raw HTML or a list or heading block
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownExcerpt > never renders raw HTML or a list or heading block
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup:
+  id: 0bc0dba9-dadf-49cb-9c39-93c6e69bed0e
+  path: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: descriptionExcerpt > takes only the first paragraph and drops list and
+    heading markup
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: descriptionExcerpt > takes only the first paragraph and drops list and
+          heading markup
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one:
+  id: 3c07ff2b-c484-4990-a160-370d17bed66c
+  path: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — header + op rows > renders a markdown description and
+    folds a long one
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — header + op rows > renders a markdown description and
+          folds a long one
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card:
+  id: 7b9a19bf-d208-4af6-b1e2-a726a704df3d
+  path: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+    description on the card
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetInbox.spec.tsx
+        symbol: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+          description on the card
+  metadata:
+    created_at: 2026-11-20T14:04:24.587Z
+    updated_at: 2026-11-20T14:04:24.587Z
+    version: 1
+testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none:
+  id: c6c41d27-fbc1-4caa-a173-3fe322c7ed98
+  path: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: MarkdownExcerpt > reads a plain-text description as before and renders
+    nothing for none
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/MarkdownText.spec.tsx
+        symbol: MarkdownExcerpt > reads a plain-text description as before and renders
+          nothing for none
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded:
+  id: e078ff31-cd67-469c-94a4-6e7cf06cc2ec
+  path: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: descriptionExcerpt > reads plain text unchanged, single newlines folded
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: descriptionExcerpt > reads plain text unchanged, single newlines folded
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text:
+  id: 02df0e52-6ab7-4e64-a6ab-a1fc12609761
+  path: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: inlineTokens > splits code spans, strong, emphasis and keeps only a link text
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: inlineTokens > splits code spans, strong, emphasis and keeps only a link
+          text
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text:
+  id: 997daf1f-f135-436d-af7f-239f5afa940f
+  path: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: inlineTokens > leaves snake_case and lone asterisks as text
+  attributes:
+    status: automated
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/markdownExcerpt.spec.ts
+        symbol: inlineTokens > leaves snake_case and lone asterisks as text
+  metadata:
+    created_at: 2026-11-20T14:10:14.294Z
+    updated_at: 2026-11-20T14:10:14.294Z
+    version: 1
+testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word:
+  id: 032d04ab-1283-40b4-af01-696af1e24a13
+  path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: node type label splits, pluralizes and drops the layer word
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: "Over real spec titles from tests/fixtures/spec.json: multi-word
+      (ApplicationComponent → Application Components / Components), irregular or
+      already-plural (Policy → Policies, Paths, ChartSeries, Index), acronyms
+      (UXApplication, OAuthFlow, OpenAPIDocument), a type not starting with its
+      layer's name (DataObject in application keeps both words), and the id
+      fallback when there is no title."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/typeLabel.spec.ts
+        symbol: node type label splits, pluralizes and drops the layer word
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.nav-tree-groups-use-the-short-plural-label:
+  id: 7ce59589-f622-43e5-b848-c051ad4a6cd3
+  path: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: nav tree groups use the short plural label
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A Model layer's type groups are named with the short plural
+      ("Components" in Application), their count in NavItem's badge like the
+      layer rows, sorted by that label; the accessible name says "Components, 37
+      elements".
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.impact-group-nodes-use-the-full-plural-label:
+  id: a1610f9d-58f0-4ce0-9d48-30554dbcc9a8
+  path: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: impact group nodes use the full plural label
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A grouped large lane's group node reads "Application Components ·
+      12" from the spec title, not the raw type id.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetImpact.spec.ts
+        symbol: impact filters, search and grouped lanes > folds a large lane by type,
+          keeping what it is told to and merging links
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name:
+  id: 6cbdf2cb-fd2e-47c6-9dfe-1f9d37ab0eb9
+  path: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: toReviewItems names element and link-end types by their display name
+  attributes:
+    status: draft
+    implementationFormat: automated
+    description: A review item's type line reads 'application · Application Service'
+      and its summary 'Adds this Application Service'; a link end keeps its type
+      id and adds typeName; a caller's typeNameOf (the spec's title) wins over
+      splitting the id.
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/changesetReview.spec.ts
+        symbol: names element and link-end types by their display name (#605)
+  metadata:
+    created_at: 2026-11-20T14:49:13.812Z
+    updated_at: 2026-11-20T14:49:13.812Z
     version: 1

@@ -18,8 +18,8 @@ Product features, capabilities, personas, and milestones.
 | ------------------------- | ----- |
 | Elements                  | 28    |
 | Intra-Layer Relationships | 51    |
-| Inter-Layer Relationships | 58    |
-| Inbound Relationships     | 40    |
+| Inter-Layer Relationships | 60    |
+| Inbound Relationships     | 42    |
 | Outbound Relationships    | 18    |
 
 **Cross-Layer References**:
@@ -156,6 +156,8 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.layered-reach`                                                                                | `product.feature.cross-layer-follow`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.model-graph-transform`                                                                        | `product.softwarecapability.model-visualization`                   | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.nav-tree-groups`                                                                              | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                              | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                              | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                            | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                 | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                         | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
@@ -394,6 +396,7 @@ See one DR layer's elements grouped by node type: lanes (one per type, linked ty
 
 | Type        | Related Element                                                                                | Predicate   | Direction |
 | ----------- | ---------------------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label`                                               | `realizes`  | inbound   |
 | inter-layer | `application.applicationservice.type-bands`                                                    | `realizes`  | inbound   |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                 | `satisfies` | outbound  |
 | inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`     | inbound   |
@@ -423,6 +426,7 @@ The left rail's Model tree groups each layer's elements under their node type wi
 | Type        | Related Element                                                                                                     | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationservice.nav-tree-groups`                                                                    | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.node-type-label`                                                                    | `realizes` | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history` | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`        | `tests`    | inbound   |
 | intra-layer | `product.softwarecapability.model-visualization`                                                                    | `realizes` | outbound  |
@@ -927,4 +931,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:39:35.548Z | Model Version: 0.1.0

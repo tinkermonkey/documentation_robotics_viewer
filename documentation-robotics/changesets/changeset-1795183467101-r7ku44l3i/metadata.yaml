@@ -4,8 +4,8 @@ description: "#605: one display name for a node type (singular, plural, short
   form without the layer word), used by the nav tree groups, the by-type lanes
   and hive, Impact group nodes, and Schema/page headers."
 created: 2026-11-20T14:04:27.106Z
-modified: 2026-11-20T14:49:13.843Z
-status: staged
+modified: 2026-11-20T15:39:35.543Z
+status: committed
 baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
 origin:
   kind: plan

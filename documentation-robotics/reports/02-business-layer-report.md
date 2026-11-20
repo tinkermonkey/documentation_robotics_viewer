@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 127   |
-| Inbound Relationships     | 120   |
+| Inter-Layer Relationships | 130   |
+| Inbound Relationships     | 123   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -119,6 +119,7 @@ flowchart TB
 | `application.applicationservice.serves.business.businessprocess`                      | `application.applicationservice.json-rpc-handler`                                                                                                        | `business.businessprocess.real-time-model-synchronization`   | `business`   | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.layer-domain-palette`                                                                                                    | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.model-graph-transform`                                                                                                   | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.node-type-label`                                                                                                         | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.spec-graph-transform`                                                                                                    | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
@@ -149,6 +150,7 @@ flowchart TB
 | `security.secureresource.references.business.businessobject`                          | `security.secureresource.web-socket-json-rpc-channel`                                                                                                    | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-lists-the-committed-changeset-read-only-30-changes-to-review-4-3a85b24b`                         | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-marks-the-changed-field-of-an-update-and-its-op`                                                 | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`                                             | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-shows-the-changeset-name-status-chip-and-change-count-in-the-header`                             | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-impact-tab-shares-its-follow-depth-with-the-model-inspector`                                                    | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-impact-tab-switches-from-the-change-list-to-the-impact-lanes-and-back`                                          | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
@@ -158,6 +160,7 @@ flowchart TB
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-counts-verdicts-kept-in-this-browser-for-an-older-dr-cli-by-the-shared-definition`                               | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan`                                    | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-opens-a-changeset-from-its-card`                                                                                 | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`                                      | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history`                                                                    | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-sorts-staged-changesets-into-waiting-on-you-and-on-dr-bot-with-the-history-below`                                | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.origin-badges-gives-the-same-details-in-the-change-inspector`                                                                    | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
@@ -445,6 +448,7 @@ Review a changeset before it lands, change by change: each change labelled with 
 | inter-layer | `application.applicationservice.use-changesets`                                                                                                          | `realizes` | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-canvas-header-op-rows-lists-the-committed-changeset-read-only-30-changes-to-review-4-3a85b24b`                         | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-canvas-header-op-rows-marks-the-changed-field-of-an-update-and-its-op`                                                 | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`                                             | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-canvas-header-op-rows-shows-the-changeset-name-status-chip-and-change-count-in-the-header`                             | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-canvas-impact-tab-shares-its-follow-depth-with-the-model-inspector`                                                    | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-canvas-impact-tab-switches-from-the-change-list-to-the-impact-lanes-and-back`                                          | `tests`    | inbound   |
@@ -454,6 +458,7 @@ Review a changeset before it lands, change by change: each change labelled with 
 | inter-layer | `testing.testcasesketch.changeset-inbox-counts-verdicts-kept-in-this-browser-for-an-older-dr-cli-by-the-shared-definition`                               | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan`                                    | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-inbox-opens-a-changeset-from-its-card`                                                                                 | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`                                      | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history`                                                                    | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.changeset-inbox-sorts-staged-changesets-into-waiting-on-you-and-on-dr-bot-with-the-history-below`                                | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.origin-badges-gives-the-same-details-in-the-change-inspector`                                                                    | `tests`    | inbound   |
@@ -541,6 +546,7 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 | Type        | Related Element                                             | Predicate  | Direction |
 | ----------- | ----------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label`            | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.search-index`               | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.spec-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.use-spec`                   | `realizes` | inbound   |
@@ -548,4 +554,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:39:35.548Z | Model Version: 0.1.0

@@ -4,12 +4,12 @@
 
 | Metric              | Value                    |
 | ------------------- | ------------------------ |
-| Total Elements      | 1124                     |
-| Total Relationships | 1572                     |
+| Total Elements      | 1140                     |
+| Total Relationships | 1609                     |
 | Populated Layers    | 13                       |
-| Last Updated        | 2026-11-20T00:56:27.100Z |
-| CLI Version         | 0.5.0                    |
-| Spec Version        | 0.13.0                   |
+| Last Updated        | 2026-11-20T15:39:35.546Z |
+| CLI Version         | 0.6.0                    |
+| Spec Version        | 0.14.0                   |
 
 ## Project Summary
 
@@ -59,7 +59,7 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | Business    | 14       | [02-business-layer-report.md](./reports/02-business-layer-report.md)       |
 | Product     | 28       | [03-product-layer-report.md](./reports/03-product-layer-report.md)         |
 | Security    | 12       | [04-security-layer-report.md](./reports/04-security-layer-report.md)       |
-| Application | 83       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
+| Application | 84       | [05-application-layer-report.md](./reports/05-application-layer-report.md) |
 | Technology  | 29       | [06-technology-layer-report.md](./reports/06-technology-layer-report.md)   |
 | API         | 37       | [07-api-layer-report.md](./reports/07-api-layer-report.md)                 |
 | Data Model  | 28       | [08-data-model-layer-report.md](./reports/08-data-model-layer-report.md)   |
@@ -67,8 +67,8 @@ Each layer is independently managed but interconnected, allowing elements in hig
 | UX          | 20       | [10-ux-layer-report.md](./reports/10-ux-layer-report.md)                   |
 | Navigation  | 10       | [11-navigation-layer-report.md](./reports/11-navigation-layer-report.md)   |
 | APM         | 7        | [12-apm-layer-report.md](./reports/12-apm-layer-report.md)                 |
-| Testing     | 824      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
+| Testing     | 839      | [13-testing-layer-report.md](./reports/13-testing-layer-report.md)         |
 
 ---
 
-Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:39:35.548Z | Model Version: 0.1.0
