@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.13.0] - 2026-11-20
+
+Finding your way around a model gets easier: search anything by name, browse a layer by node type in the nav
+tree, or see its elements as lanes or a hive by type. DrBot opens as a floating panel that no longer reflows the
+canvas. Descriptions render as markdown on node pages and changesets. Works with dr CLI 0.5.0 and 0.6.0; the
+changeset purposes, drift and upgrade records from 0.12.0 still need 0.6.0.
+
+### Added
+- **Search** in the topbar (#601, closes #595): type-ahead over every model element and Schema node type, grouped
+  by layer with the best match first. `/` or ⌘K / Ctrl+K focuses it; ↑↓ and Enter choose. Exact, prefix, word-start
+  and substring matches come first, then initials-style fuzzy matches when few names match better.
+- **Nav tree by node type** (#600, closes #592): a Model layer opens onto its node types, each with its count, and
+  each type holds its elements. Groups start collapsed; the selected element's group opens on its own.
+- **Model view by type** (#602, closes #594): a View control beside Layout: Graph, Lanes by type or Hive by type.
+  Lanes order linked types side by side and fold a lane over 48 elements into "+N more"; Hive is offered for
+  layers with three or more types. The choice persists.
+- **DrBot as a floating panel** (#603, closes #597): it opens at the top-right of the view, below its header, so
+  the canvas and header no longer change size. It sits beside an open Inspector (or takes its place when space
+  is short), resizes from its left edge and corner (also by keyboard), and Escape closes it. **Dock** turns it
+  into a column that collapses to a rail tab. Size and dock state persist.
+- **Descriptions as markdown** on node pages (#599, closes #593): layer, node type and element pages show the
+  description in its own section above the facts. Raw HTML is never rendered and `javascript:` links are
+  stripped; plain text reads as before.
+- **Changeset descriptions as markdown** (#609, closes #588): the changeset header renders the description as
+  markdown and folds a long one behind Show more. Each inbox card shows its first paragraph inline.
+
+### Changed
+- **Light canvas and DrBot closed on a first visit** (#598, closes #596): both used to start the other way. A
+  choice you've made before still wins.
+- **One name for a node type everywhere** (#610, closes #605): "Components" in views scoped to one layer (nav tree
+  groups, lanes, hive), "Application Component(s)" where layers mix (search, Schema, pages, the Impact tab, review
+  rows, the change inspector). The Impact tab's groups and the review rows no longer show raw type ids such as
+  `applicationservice`.
+
+### Chores
+- The viewer's own DR model moves to spec 0.14.0 with the dr 0.6.0 integration files; `.dr/` is no longer tracked
+  (#608). The active-changeset pointer is no longer tracked either (#604).
+- The DR model is synced with the code for this release, and the plans for each change above have landed (#606).
+- E2E: the Schema view's node-type counts come from the live spec (#607).
+
 ## [0.12.0] - 2026-11-19
 
 Changesets are handled by what they're for, and drift shows before you Apply. Tier 1 is visible: who decided
