@@ -447,10 +447,22 @@ function AppShellRoute() {
       return;
     }
 
+    // An Architecture URL that reads as this same diagram once normalized (no
+    // or an unknown `?level=`, a `?scope=` the level ignores): spelling the
+    // defaults out is no new destination, so replace — a push would leave a
+    // level-less entry that Back lands on with nothing changing.
+    const sameDiagramNormalized =
+      view === 'architecture' &&
+      section === targetSection &&
+      (parseC4Level(search.level) ?? 'context') === targetSearch.level &&
+      (targetSearch.level !== 'component' || (search.scope ?? undefined) === targetSearch.scope) &&
+      (search.node ?? undefined) === targetSearch.node;
+
     // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
     // after back/forward. Never a new destination, so always replace.
     const push =
       !destinationMatchesUrl &&
+      !sameDiagramNormalized &&
       (viewChanged ||
         modeChanged ||
         layerChanged ||

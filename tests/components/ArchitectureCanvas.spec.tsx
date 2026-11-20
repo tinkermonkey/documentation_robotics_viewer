@@ -92,6 +92,8 @@ describe('ArchitectureCanvas', () => {
     expect(await screen.findByRole('heading', { name: new RegExp(`^${firstContainer.element.name}`) })).toBeInTheDocument();
     const parts = buildC4View(c4, 'component', firstContainer.id);
     await waitFor(async () => expect(await cards()).toHaveLength(parts.elements.length));
+    // The drilled card is gone: focus moves into the new diagram, not to the page.
+    await waitFor(() => expect(screen.getByTestId('c4-diagram')).toContainElement(document.activeElement as HTMLElement));
 
     // Back up through the breadcrumb: the system is the Containers diagram.
     const trail = screen.getByTestId('c4-trail');

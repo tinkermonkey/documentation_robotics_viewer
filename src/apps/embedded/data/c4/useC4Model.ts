@@ -3,8 +3,10 @@
  *
  * The C4 model is built once per `/api/model` payload and spec, and shared by
  * everything that reads it (the Architecture canvas, the nav tree, DrBot's
- * context): the cache is keyed on the derived model object React Query hands
- * out, so a refetch that changes the model rebuilds it and nothing else does.
+ * context). Each `useModel()` / `useSpec()` caller derives its own objects, so
+ * the caches are keyed on what they all share: the payload's `nodes` array and
+ * the raw spec React Query hands out. A refetch that changes the model
+ * rebuilds it and nothing else does.
  */
 
 import { useMemo } from 'react';
@@ -16,21 +18,30 @@ import { specCatalog, type SpecCatalog } from './c4Rules';
 import { c4ViewKey, type C4View } from './c4Views';
 import { layoutC4View, type C4Layout } from './c4Layout';
 
-const built = new WeakMap<ModelDerived, { catalog: SpecCatalog | null; model: C4Model }>();
+/** Keyed on the payload's `nodes` array: shared by every `useModel()` caller, new on a refetch. */
+const built = new WeakMap<object, { catalog: SpecCatalog | null; model: C4Model }>();
+const catalogs = new WeakMap<object, SpecCatalog | null>();
 
 /** The C4 model of `model` under `catalog`, built at most once per pair. */
 export function c4ModelFor(model: ModelDerived, catalog: SpecCatalog | null): C4Model {
-  const hit = built.get(model);
+  const hit = built.get(model.nodes);
   if (hit && hit.catalog === catalog) return hit.model;
   const c4 = buildC4Model(model, { catalog });
-  built.set(model, { catalog, model: c4 });
+  built.set(model.nodes, { catalog, model: c4 });
   return c4;
+}
+
+/** The spec catalog of `spec`, built once per spec payload. */
+function catalogFor(spec: Parameters<typeof specCatalog>[0]): SpecCatalog | null {
+  if (!spec || typeof spec !== 'object') return specCatalog(spec);
+  if (!catalogs.has(spec)) catalogs.set(spec, specCatalog(spec));
+  return catalogs.get(spec) ?? null;
 }
 
 export function useC4Model() {
   const { derived, isLoading, isError } = useModel();
   const { raw: spec } = useSpec();
-  const catalog = useMemo(() => specCatalog(spec), [spec]);
+  const catalog = useMemo(() => catalogFor(spec), [spec]);
   const model = useMemo(() => c4ModelFor(derived, catalog), [derived, catalog]);
   return { model, isLoading, isError };
 }

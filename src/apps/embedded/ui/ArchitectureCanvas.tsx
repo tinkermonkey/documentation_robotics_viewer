@@ -14,7 +14,7 @@
  * model, not as a complete picture.
  */
 
-import { useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { Button, DetailDrawer, PageHeader, SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
@@ -225,8 +225,17 @@ export function ArchitectureCanvas() {
   const selected = c4SelectedId ? view.elements.find((e) => e.id === c4SelectedId) : undefined;
   const empty = isEmptyC4(model);
 
+  // A drill-in removes the control that made it (the card, the drawer's button,
+  // a breadcrumb link): the next diagram takes focus once it is drawn.
+  const [focusDiagram, setFocusDiagram] = useState(false);
+  const diagramFocused = useCallback(() => setFocusDiagram(false), []);
+
   /** Open the diagram of `id`: the system is the Container diagram, anything else a Component one. */
-  const open = (id: string) => (id === C4_SYSTEM_ID ? showC4('container') : showC4('component', id));
+  const open = (id: string) => {
+    setFocusDiagram(true);
+    if (id === C4_SYSTEM_ID) showC4('container');
+    else showC4('component', id);
+  };
   const setLevel = (level: C4Level) => {
     if (level === view.level) return;
     showC4(level, level === 'component' ? c4Scope : null);
@@ -287,7 +296,15 @@ export function ArchitectureCanvas() {
         ) : !layout ? (
           <Message>Laying out…</Message>
         ) : (
-          <C4Diagram view={view} layout={layout} selectedId={selected?.id ?? null} onSelect={selectC4} onDrill={open} />
+          <C4Diagram
+            view={view}
+            layout={layout}
+            selectedId={selected?.id ?? null}
+            onSelect={selectC4}
+            onDrill={open}
+            takeFocus={focusDiagram}
+            onFocused={diagramFocused}
+          />
         )}
         <DetailDrawer open={!!selected} width={DRAWER_WIDTH}>
           {selected && (

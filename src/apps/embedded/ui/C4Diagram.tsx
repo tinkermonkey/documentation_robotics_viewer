@@ -29,6 +29,13 @@ export interface C4DiagramProps {
   onSelect: (id: string | null) => void;
   /** Open the diagram of an element that has parts. */
   onDrill: (id: string) => void;
+  /**
+   * Move focus to the diagram's tab-stop card once it is drawn, then call
+   * `onFocused`. Set after a drill-in: the control that opened it is gone, and
+   * focus would otherwise fall back to the page.
+   */
+  takeFocus?: boolean;
+  onFocused?: () => void;
 }
 
 export const C4_KIND_LABELS: Record<C4Kind, string> = {
@@ -88,7 +95,7 @@ export function nearestCard(layout: C4Layout, fromId: string, direction: Directi
   return best;
 }
 
-export function C4Diagram({ view, layout, selectedId, onSelect, onDrill }: C4DiagramProps) {
+export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFocus, onFocused }: C4DiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Map<string, HTMLButtonElement>());
   const { transform, bind, zoomTo, panTo, getViewport } = usePanZoom({
@@ -132,6 +139,14 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill }: C4Dia
   useEffect(() => {
     if (focusId && !ids.includes(focusId)) setFocusId(null);
   }, [focusId, ids]);
+
+  // After a drill-in, focus the new diagram (its cards are rendered by now).
+  useEffect(() => {
+    if (!takeFocus) return;
+    const card = tabStop ? cardRefs.current.get(tabStop) : undefined;
+    (card ?? containerRef.current)?.focus({ preventScroll: true });
+    onFocused?.();
+  }, [takeFocus, tabStop, layout, onFocused]);
 
   // A pan drag ends in a click on the background too: only a press that didn't move clears.
   const press = useRef<{ x: number; y: number } | null>(null);

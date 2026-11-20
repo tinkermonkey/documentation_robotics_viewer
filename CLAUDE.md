@@ -623,7 +623,7 @@ The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRA
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **71 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **72 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr visualize` on a dedicated port — shell, model/schema/changesets/architecture views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.

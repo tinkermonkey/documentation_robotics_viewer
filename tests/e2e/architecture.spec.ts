@@ -116,4 +116,16 @@ test.describe('Architecture view — C4 diagrams', () => {
     await page.getByTestId('nav-c4-containers').click();
     await diagramAt(page, 'container');
   });
+
+  test('a link without ?level= opens the Context diagram in the same history entry, so one Back leaves it', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    await page.evaluate((hash) => {
+      window.location.hash = hash;
+    }, ROUTES.architecture);
+    await diagramAt(page, 'context');
+    await expect.poll(() => hashSearchParams(page.url()).get('level')).toBe('context');
+
+    await page.goBack();
+    await expect.poll(() => page.url()).toContain('#/model/');
+  });
 });
