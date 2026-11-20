@@ -442,7 +442,8 @@ application.applicationcomponent.chat-drawer:
     resizable, non-modal panel anchored to the topbar DrBot launcher at the
     graph area's top-right, stepping left of an open Inspector drawer (taking
     its place when both don't fit), or, after Dock, a resizable column that
-    collapses to a rail tab. Escape inside closes it and returns focus to the
+    collapses to a rail tab. Closed on a first visit; a persisted open/closed
+    choice wins after that. Escape inside closes it and returns focus to the
     launcher; size and docked state persist with the UI preferences."
   attributes:
     type: internal

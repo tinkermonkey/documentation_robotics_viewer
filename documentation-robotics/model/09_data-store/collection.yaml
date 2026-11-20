@@ -110,7 +110,8 @@ data-store.collection.ui-preferences:
   name: UI Preferences
   description: "localStorage entry dr-viewer-ui-preferences: the persisted part of
     the UI store (canvas theme, DrBot open, graph layout and display settings,
-    inspector follow depth). Navigation state is left to the URL."
+    inspector follow depth). With no entry yet, the canvas is light and DrBot is
+    closed. Navigation state is left to the URL."
   attributes:
     collectionType: COLLECTION
   source_reference:

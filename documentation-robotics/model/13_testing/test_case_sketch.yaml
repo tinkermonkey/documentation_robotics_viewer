@@ -5687,26 +5687,6 @@ testing.testcasesketch.node-page-accessibility-axe-wcag-2-1-aa-view-name-node-pa
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
-testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload:
-  id: 9ff4e1d8-4f08-4a0e-be2a-462fc87eeed4
-  path: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: localStorage persistence > canvas theme (dark by default) persists across
-    a reload
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/e2e/persistence.spec.ts
-        symbol: localStorage persistence > canvas theme (dark by default) persists
-          across a reload
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
 testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload:
   id: 33db14da-4400-4d03-a9f6-2e85dbd87747
   path: testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload
@@ -14746,26 +14726,6 @@ testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-e
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
-testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit:
-  id: a838989c-1794-4b5e-94f7-6e9551157009
-  path: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: uiStore — default state > defaults canvasDark to true (dark mode on first
-    visit)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/unit/uiStore.spec.ts
-        symbol: uiStore — default state > defaults canvasDark to true (dark mode on
-          first visit)
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
 testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section:
   id: aa0db503-f60d-49d5-92ab-5fcc84e30321
   path: testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section
@@ -15961,4 +15921,84 @@ testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column:
   metadata:
     created_at: 2026-11-19T18:03:06.734Z
     updated_at: 2026-11-19T18:03:06.734Z
+    version: 1
+testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit:
+  id: d1d53169-99bc-4326-98f6-131726054da6
+  path: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: uiStore — default state > defaults to a light canvas and DrBot closed on a
+    first visit
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: uiStore — default state > defaults to a light canvas and DrBot closed on
+          a first visit
+  metadata:
+    created_at: 2026-11-19T17:50:11.048Z
+    updated_at: 2026-11-19T17:50:11.048Z
+    version: 1
+testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload:
+  id: 684d3e85-d595-47d3-a9b0-1534b1c78923
+  path: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: localStorage persistence > canvas theme (light by default) persists across
+    a reload
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/persistence.spec.ts
+        symbol: localStorage persistence > canvas theme (light by default) persists
+          across a reload
+  metadata:
+    created_at: 2026-11-19T17:50:11.049Z
+    updated_at: 2026-11-19T17:50:11.049Z
+    version: 1
+testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed:
+  id: e21a6e1d-7561-4638-87ae-9b1d43b078b8
+  path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "first-visit defaults vs a persisted choice (#596, #597) > a first visit
+    on a wide window still gets a light canvas and DrBot closed"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "first-visit defaults vs a persisted choice (#596, #597) > a first visit
+          on a wide window still gets a light canvas and DrBot closed"
+  metadata:
+    created_at: 2026-11-19T17:50:11.049Z
+    updated_at: 2026-11-19T17:50:11.049Z
+    version: 1
+testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults:
+  id: 1e4d5761-c9f4-49c4-a3f7-42a9313255d3
+  path: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+    dark canvas and open DrBot still win over the defaults"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "first-visit defaults vs a persisted choice (#596, #597) > a persisted
+          dark canvas and open DrBot still win over the defaults"
+  metadata:
+    created_at: 2026-11-19T17:50:11.049Z
+    updated_at: 2026-11-19T17:50:11.049Z
     version: 1

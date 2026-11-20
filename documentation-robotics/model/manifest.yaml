@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.5.0
+cli_version: 0.6.0
 spec_version: 0.13.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-19T18:25:17.607Z
+updated: 2026-11-20T00:56:27.100Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -154,7 +154,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 816
+      testcasesketch: 818
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -202,6 +202,9 @@ changeset_history:
     action: committed
   - name: drbot-floating-panel
     committed_at: 2026-11-19T18:25:17.607Z
+    action: committed
+  - name: first-visit-defaults-light-closed-drbot
+    committed_at: 2026-11-20T00:56:27.099Z
     action: committed
 reconciled:
   changeset: model-sync-2026-11-18

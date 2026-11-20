@@ -119,7 +119,8 @@ ux.view.dr-bot-chat-drawer:
   name: DrBot Chat Drawer
   description: "The DrBot assistant, scoped to the current selection: a floating
     non-modal panel under the topbar launcher that never reflows the canvas,
-    with an opt-in docked column."
+    with an opt-in docked column. Closed on a first visit; a persisted choice
+    wins after that."
   attributes:
     type: panel
     routable: false

@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-11-19T18:25:17.579Z
+# Last updated: 2026-11-20T00:56:27.073Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -6384,12 +6384,6 @@
   layer: testing
   targetLayer: application
   category: structural
-- source: testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload
-  target: application.applicationfunction.ui-store
-  predicate: tests
-  layer: testing
-  targetLayer: application
-  category: structural
 - source: testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload
   target: application.applicationfunction.ui-store
   predicate: tests
@@ -7928,12 +7922,6 @@
   category: structural
 - source: testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back
   target: application.applicationcomponent.rich-tooltip
-  predicate: tests
-  layer: testing
-  targetLayer: application
-  category: structural
-- source: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
-  target: application.applicationfunction.ui-store
   predicate: tests
   layer: testing
   targetLayer: application
@@ -9504,4 +9492,28 @@
   target: motivation.goal.visualize-multi-layer-architecture-models
   predicate: realizes
   layer: motivation
+  category: structural
+- source: testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit
+  target: application.applicationfunction.ui-store
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload
+  target: application.applicationfunction.ui-store
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed
+  target: application.applicationfunction.ui-store
+  predicate: tests
+  layer: testing
+  targetLayer: application
+  category: structural
+- source: testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults
+  target: application.applicationfunction.ui-store
+  predicate: tests
+  layer: testing
+  targetLayer: application
   category: structural
