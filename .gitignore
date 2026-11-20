@@ -174,3 +174,6 @@ vite.config.ts.timestamp-*
 
 # DR: which changeset is active is per-checkout state, never shared
 documentation-robotics/changesets/.active
+
+# Documentation Robotics: per-checkout spec reference and analyzer state (recreated by the CLI)
+/.dr/

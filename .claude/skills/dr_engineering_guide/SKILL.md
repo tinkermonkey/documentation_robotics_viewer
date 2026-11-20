@@ -1,3 +1,8 @@
+---
+name: dr_engineering_guide
+description: Engineering guidance grounded in the DR model, in three modes - review requirements before code is written, guide how an implementation is structured, and critique code that exists (PR or code review). Advisory only; it recommends the next DR step rather than changing the model.
+---
+
 # dr_engineering_guide — Engineering Guidance Skill
 
 ## Purpose
@@ -57,7 +62,7 @@ Map the proposed change to the 13-layer model:
 
 **2. Layer Hierarchy Check**
 
-- Does the proposal respect the "higher layers reference lower layers" rule?
+- Do the proposed relationships use predicates whose direction matches their meaning (an application function `realizes` an API operation; a service `serves` a process), and do implementation elements trace to a motivation element through `realizes`, `satisfies` or `supports`?
 - Example red flag: "A data-store change that has no corresponding data-model change"
 - Example red flag: "An API endpoint that doesn't map to any application service"
 

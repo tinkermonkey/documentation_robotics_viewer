@@ -139,22 +139,88 @@ Activate when the user:
 
 ---
 
-## Cross-Layer Relationships
+## Intra-Layer Relationships
 
-**Outgoing (Testing → Other Layers):**
+Each testing type has one composing parent. The model composes targets, partitions, context
+variations, environment factors, exclusions and the summary; a target composes its input fields,
+outcome categories, coverage requirements and test case sketches. A sketch `validates` the one
+requirement it exercises and `references` its context variation and outcome category. Only target
+input fields reference the field under test, so partitions stay reusable. Summaries report with
+`references` and `aggregates`; they never `validates`.
 
-- `motivation.supports-goals` → Motivation Layer (quality goals)
-- `motivation.fulfills-requirements` → Motivation Layer (test requirements)
-- `business.covers-process` → Business Layer (process coverage)
-- `api.tests-operation` → API Layer (API endpoint testing)
-- `data.validates-schema` → Data Model Layer (data validation)
-- `ux.tests-view` → UX Layer (UI testing)
+| Source Type             | Predicate  | Target Type             | Example                                                                   |
+| ----------------------- | ---------- | ----------------------- | ------------------------------------------------------------------------- |
+| TestCoverageModel       | composes   | TestCoverageTarget      | "Login API Coverage Model" composes "Login Endpoint Coverage"             |
+| TestCoverageModel       | composes   | ContextVariation        | "Login API Coverage Model" composes "Security Testing"                    |
+| TestCoverageModel       | composes   | EnvironmentFactor       | "Login API Coverage Model" composes "Rate Limiter Enabled"                |
+| TestCoverageModel       | composes   | InputSpacePartition     | "Login API Coverage Model" composes "Email Format Partition"              |
+| TestCoverageModel       | composes   | CoverageExclusion       | "Login API Coverage Model" composes "SSO Login Out Of Scope"              |
+| TestCoverageModel       | composes   | CoverageSummary         | "Login API Coverage Model" composes "Login Coverage Summary"              |
+| TestCoverageTarget      | composes   | TargetInputField        | "Login Endpoint Coverage" composes "email field"                          |
+| TestCoverageTarget      | composes   | OutcomeCategory         | "Login Endpoint Coverage" composes "Invalid Credentials (401)"            |
+| TestCoverageTarget      | composes   | CoverageRequirement     | "Login Endpoint Coverage" composes "Pairwise Credentials"                 |
+| TestCoverageTarget      | composes   | TestCaseSketch          | "Login Endpoint Coverage" composes "Valid Login Test Case"                |
+| TargetInputField        | references | InputSpacePartition     | "email field" references "Email Format Partition"                         |
+| InputSpacePartition     | composes   | PartitionValue          | "Email Format Partition" composes "Malformed Email"                       |
+| PartitionDependency     | references | PartitionValue          | "Locked Account Requires Valid Email" references "Locked Account"         |
+| PartitionDependency     | references | InputSpacePartition     | "Locked Account Requires Valid Email" references "Email Format Partition" |
+| CoverageRequirement     | composes   | InputPartitionSelection | "Pairwise Credentials" composes "Email x Password Selection"              |
+| CoverageRequirement     | references | OutcomeCategory         | "Pairwise Credentials" references "Invalid Credentials (401)"             |
+| CoverageRequirement     | references | ContextVariation        | "Pairwise Credentials" references "Security Testing"                      |
+| InputPartitionSelection | references | PartitionValue          | "Email x Password Selection" references "Malformed Email"                 |
+| TestCaseSketch          | validates  | CoverageRequirement     | "Valid Login Test Case" validates "Pairwise Credentials"                  |
+| TestCaseSketch          | composes   | InputSelection          | "Valid Login Test Case" composes "Valid Email + Valid Password"           |
+| InputSelection          | references | PartitionValue          | "Valid Email + Valid Password" references "Well-Formed Email"             |
+| TestCaseSketch          | references | OutcomeCategory         | "Valid Login Test Case" references "Success (200 + JWT)"                  |
+| TestCaseSketch          | references | ContextVariation        | "Brute Force Lockout Test" references "Security Testing"                  |
+| ContextVariation        | references | EnvironmentFactor       | "Security Testing" references "Rate Limiter Enabled"                      |
+| CoverageGap             | references | CoverageRequirement     | "No MFA Cases" references "Pairwise Credentials"                          |
+| CoverageExclusion       | references | TestCoverageTarget      | "SSO Login Out Of Scope" references "Login Endpoint Coverage"             |
+| CoverageExclusion       | references | CoverageGap             | "SSO Login Out Of Scope" references "No SSO Cases"                        |
+| TargetCoverageSummary   | references | TestCoverageTarget      | "Login Endpoint Rollup" references "Login Endpoint Coverage"              |
+| TargetCoverageSummary   | references | CoverageGap             | "Login Endpoint Rollup" references "No MFA Cases"                         |
+| CoverageSummary         | aggregates | TargetCoverageSummary   | "Login Coverage Summary" aggregates "Login Endpoint Rollup"               |
 
-**Incoming (Other Layers → Testing):**
+---
 
-- Motivation Layer → Testing (requirements drive coverage)
-- API Layer → Testing (operations need test coverage)
-- Business Layer → Testing (processes need testing)
+## Cross-Layer References
+
+### Outgoing References (Testing → Other Layers)
+
+A target `covers` the production artifact it names; a sketch `tests` what it exercises. The model
+covers only the application component, UX application or API document it is for. Requirements and
+summaries reach no other layer. Only the model and test case sketches link to motivation.
+
+| Source Type        | Predicate        | Target Type                        | Example                                                               |
+| ------------------ | ---------------- | ---------------------------------- | --------------------------------------------------------------------- |
+| TestCoverageModel  | covers           | `application.applicationcomponent` | "Login API Coverage Model" covers "Auth Service"                      |
+| TestCoverageModel  | covers           | `api.openapidocument`              | "Login API Coverage Model" covers "Auth API"                          |
+| TestCoverageModel  | supports         | `motivation.goal`                  | "Login API Coverage Model" supports "Secure Customer Access"          |
+| TestCoverageModel  | satisfies        | `motivation.requirement`           | "Login API Coverage Model" satisfies "Auth Must Be Regression Tested" |
+| TestCoverageModel  | measures-outcome | `motivation.outcome`               | "Login API Coverage Model" measures-outcome "Fewer Auth Incidents"    |
+| TestCoverageTarget | covers           | `api.operation`                    | "Login Endpoint Coverage" covers "POST /auth/login"                   |
+| TestCoverageTarget | covers           | `product.feature`                  | "Password Reset Coverage" covers "Self-Service Password Reset"        |
+| TestCoverageTarget | covers           | `ux.view`                          | "Login Screen Coverage" covers "Login View"                           |
+| TestCoverageTarget | covers           | `data-store.storedlogic`           | "Order Total Trigger Coverage" covers "recalc_order_total"            |
+| TestCaseSketch     | tests            | `api.operation`                    | "Valid Login Test Case" tests "POST /auth/login"                      |
+| TestCaseSketch     | tests            | `api.response`                     | "Invalid Password Test" tests "401 Unauthorized"                      |
+| TestCaseSketch     | tests            | `business.businessprocess`         | "Complete Checkout E2E" tests "Order Checkout"                        |
+| TestCaseSketch     | tests            | `ux.view`                          | "Login Form Renders Errors" tests "Login View"                        |
+| TestCaseSketch     | tests            | `navigation.route`                 | "Deep Link To Profile" tests "User Profile Route"                     |
+| TestCaseSketch     | tests            | `security.threat`                  | "Brute Force Lockout Test" tests "Credential Stuffing"                |
+| TestCaseSketch     | tests            | `data-model.schemadefinition`      | "Reject Unknown Order Fields" tests "Order Schema"                    |
+| TestCaseSketch     | tests            | `data-model.objectschema`          | "Order Total Is Never Negative" tests "Order"                         |
+| TestCaseSketch     | tests            | `data-store.accesspattern`         | "Find Owners By Last Name" tests "findByLastName"                     |
+| TestCaseSketch     | tests            | `application.applicationcomponent` | "Pet Type Formatter Parses Names" tests "PetTypeFormatter"            |
+| TestCaseSketch     | satisfies        | `motivation.requirement`           | "Brute Force Lockout Test" satisfies "Lock After 5 Failures"          |
+| TestCaseSketch     | accesses         | `data-store.collection`            | "Order History Test" accesses `orders`                                |
+| TargetInputField   | references       | `api.parameter`                    | "email field" references "email parameter"                            |
+| TargetInputField   | references       | `data-model.schemaproperty`        | "email field" references "User.email"                                 |
+| EnvironmentFactor  | references       | `technology.systemsoftware`        | "PostgreSQL 16" references "PostgreSQL"                               |
+
+### Incoming References (Other Layers → Testing)
+
+None. Testing is a leaf layer: other layers do not hold relationships pointing into it. Record traceability from the testing side (e.g. `TestCaseSketch tests api.operation`).
 
 ---
 
@@ -202,8 +268,11 @@ name: "Login API Coverage Model"
 type: testcoveragemodel
 properties:
   version: "1.0"
-  application: application.service.auth-service
   description: "ISP coverage model for the Login API"
+```
+
+```bash
+dr relationship add testing.testcoveragemodel.login-api application.applicationcomponent.auth-service --predicate covers
 ```
 
 ---
@@ -220,6 +289,11 @@ properties:
   priority: critical
 ```
 
+```bash
+dr relationship add testing.testcoveragemodel.login-api testing.testcoveragetarget.login-endpoint --predicate composes
+dr relationship add testing.testcoveragetarget.login-endpoint api.operation.login --predicate covers
+```
+
 ---
 
 ## Example: Test Case Sketch
@@ -232,6 +306,12 @@ properties:
   status: draft
   description: "Successful login with valid email and password returns 200 with JWT"
   implementationFormat: automated
+```
+
+```bash
+dr relationship add testing.testcoveragetarget.login-endpoint testing.testcasesketch.valid-login --predicate composes
+dr relationship add testing.testcasesketch.valid-login testing.coveragerequirement.pairwise-credentials --predicate validates
+dr relationship add testing.testcasesketch.valid-login api.operation.login --predicate tests
 ```
 
 ---

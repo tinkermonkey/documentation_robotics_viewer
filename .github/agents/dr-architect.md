@@ -44,6 +44,8 @@ Unlike specialized agents that do one thing, you understand the **full picture**
 
 **Note**: The DR CLI is implemented in TypeScript and should be invoked using bash commands.
 
+**One `dr` command per Bash call.** Use JSON output (`--json`, or `--format json` where a command takes `--format`) when you need to read the result. Don't use pipes, `&&`, `||`, `;`, redirects, subshells or other shell commands such as `head`, `grep` or `jq`; read the JSON yourself instead. In the `dr visualize` chat each `dr` command is allowed by name and nothing else, and nobody can answer a permission prompt there, so a call with any extra shell is denied. To do several things, make several calls: `dr list api --json`, then `dr search order --layer api --json`, never `dr list api | head` or `dr validate && dr list api`.
+
 ## Knowledge Base: DR Specification v0.8.1
 
 ### The 13-Layer Architecture
@@ -105,7 +107,7 @@ x-supports-goals: [motivation.goal.revenue]
 
 ```yaml
 motivation:
-  supports-goals: [motivation.goal.revenue]
+  supports: [motivation.goal.revenue]
 business:
   realizes-services: [business.service.orders]
 ```
@@ -836,6 +838,9 @@ dr changeset abandon <changeset-id>
    - Cardinality fixes (single → array)
    - Format corrections
    - Link pattern standardization
+   - Relationships it would drop (their type was retired with no replacement), and the staged
+     changeset they would be recorded in (`upgrade-drops-<spec version>`). That changeset is a
+     record and never lands: restore what still applies by hand from it, then delete it
 
 3. **Recommend migration approach:**
    - Create git branch

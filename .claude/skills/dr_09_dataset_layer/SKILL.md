@@ -137,32 +137,83 @@ Activate when the user:
 
 ---
 
-## Cross-Layer Relationships
+## Intra-Layer Relationships
 
-Cross-layer links are created via `dr relate`, not inline YAML attributes. Key relationships from the spec:
+Containment is one level at a time (database → namespace → collection → fields, indexes, validation
+rules, event handlers). Stored data is passive: collections, views, fields and databases are accessed,
+referenced and mapped, and never serve or trigger. Behaviour in the store is stored logic, event
+handlers and access patterns.
 
-**Outgoing (Data Store → Other Layers):**
+| Source Type     | Predicate    | Target Type    | Example                                                                |
+| --------------- | ------------ | -------------- | ---------------------------------------------------------------------- |
+| Database        | composes     | Namespace      | "orders-db" composes the `public` schema                               |
+| Database        | composes     | Collection     | "sessions-redis" composes the `session:*` key collection               |
+| Database        | replicates   | Database       | "orders-db-primary" replicates to "orders-db-replica"                  |
+| Database        | federates    | Database       | "analytics-trino" federates "orders-db"                                |
+| Namespace       | composes     | Collection     | `public` schema composes the `orders` table                            |
+| Namespace       | composes     | View           | `reporting` schema composes `monthly_revenue_mv`                       |
+| Namespace       | composes     | StoredLogic    | `public` schema composes `calculate_discount()`                        |
+| Collection      | composes     | Field          | `orders` composes `orders.customer_id`                                 |
+| Collection      | composes     | Index          | `orders` composes `idx_orders_customer_id`                             |
+| Collection      | composes     | ValidationRule | `orders` composes the `chk_orders_total_positive` check constraint     |
+| Collection      | composes     | EventHandler   | `orders` composes the `orders_audit_trigger`                           |
+| Collection      | references   | Collection     | `orders` references `customers` (foreign key)                          |
+| Field           | composes     | Field          | `address` sub-document composes `address.city`                         |
+| Index           | aggregates   | Field          | `idx_orders_customer_date` aggregates `customer_id` and `created_at`   |
+| AccessPattern   | accesses     | Collection     | "list-orders-by-customer" accesses `orders`                            |
+| AccessPattern   | uses         | Index          | "list-orders-by-customer" uses `idx_orders_customer_date`              |
+| AccessPattern   | references   | Field          | "list-orders-by-customer" references `orders.customer_id`              |
+| View            | derives-from | Collection     | `active_users_view` derives from `users`                               |
+| View            | derives-from | View           | `quarterly_revenue_mv` derives from `monthly_revenue_mv`               |
+| StoredLogic     | accesses     | Collection     | `get_user_stats()` accesses `orders`                                   |
+| StoredLogic     | migrates     | Collection     | `migrate_2024_10_split_address()` migrates `customers`                 |
+| EventHandler    | references   | Field          | `orders_status_trigger` references `orders.status` (AFTER UPDATE OF)   |
+| EventHandler    | triggers     | StoredLogic    | `orders_audit_trigger` triggers `write_audit_row()`                    |
+| ValidationRule  | references   | Field          | `uq_users_email` references `users.email`                              |
+| ValidationRule  | cascades-to  | Collection     | `fk_order_items_order` (`ON DELETE CASCADE`) cascades to `order_items` |
+| RetentionPolicy | governs      | Collection     | "Audit Log Retention" governs `audit_log`                              |
+| RetentionPolicy | archives-to  | Collection     | "Audit Log Retention" archives to `audit_log_archive`                  |
 
-| Relationship                                         | Example                                       |
-| ---------------------------------------------------- | --------------------------------------------- |
-| `collection.realizes.api.schema`                     | Users collection → API response schema        |
-| `collection.maps-to.api.requestbody`                 | Orders collection → POST /orders body         |
-| `collection.serves.api.operation`                    | Products collection → GET /products operation |
-| `collection.implements.security.secureresource`      | PII collection → SecureResource policy        |
-| `collection.satisfies.security.dataclassification`   | Payments collection → PCI data class          |
-| `field.satisfies.security.dataclassification`        | email field → PII data classification         |
-| `field.requires.security.fieldaccesscontrol`         | SSN field → FieldAccessControl rule           |
-| `field.maps-to.api.parameter`                        | user_id field → API path parameter            |
-| `database.satisfies.security.securitypolicy`         | DB → encryption-at-rest policy                |
-| `database.depends-on.technology.systemsoftware`      | PostgreSQL DB → pg systemsoftware             |
-| `retentionpolicy.satisfies.security.retentionpolicy` | Retention rule → security retention policy    |
+---
 
-**Incoming (Other Layers → Data Store):**
+## Cross-Layer References
 
-| Relationship                                           | Example                          |
-| ------------------------------------------------------ | -------------------------------- |
-| `application.applicationcomponent.serves → collection` | UserService → users collection   |
-| `technology.systemsoftware.depends-on → database`      | PostgreSQL technology → database |
+Cross-layer links are created with `dr relationship add`, not inline YAML attributes.
+
+### Outgoing References (Data Store → Other Layers)
+
+| Source Type     | Predicate  | Target Type                       | Example                                                           |
+| --------------- | ---------- | --------------------------------- | ----------------------------------------------------------------- |
+| Collection      | realizes   | `business.businessobject`         | `orders` table realizes the "Customer Order" business object      |
+| Collection      | realizes   | `security.secureresource`         | `patients` collection realizes the "Patient Records" resource     |
+| Collection      | references | `security.dataclassification`     | `payments` collection references the "PCI" classification         |
+| Field           | references | `security.dataclassification`     | `users.email` references the "PII" classification                 |
+| Field           | requires   | `security.fieldaccesscontrol`     | `customers.ssn` requires the "SSN Masking" field control          |
+| Field           | maps-to    | `api.parameter`                   | `orders.id` maps to the `{orderId}` path parameter                |
+| Database        | depends-on | `technology.systemsoftware`       | "orders-db" depends on "PostgreSQL 16"                            |
+| Database        | depends-on | `technology.node`                 | "orders-db" depends on the "db-primary-01" node                   |
+| Database        | satisfies  | `security.securitypolicy`         | "orders-db" satisfies the "Encryption at Rest" policy             |
+| StoredLogic     | realizes   | `application.applicationfunction` | `calculate_discount()` realizes "Apply Promotions"                |
+| EventHandler    | triggers   | `application.applicationevent`    | "orders CDC stream" triggers "Order Placed"                       |
+| AccessPattern   | serves     | `application.applicationfunction` | "get-user-by-email" serves "Authenticate User"                    |
+| View            | maps-to    | `api.response`                    | `order_summary_view` maps to the `GET /orders/summary` response   |
+| RetentionPolicy | satisfies  | `security.retentionpolicy`        | "Audit Log Retention" satisfies the "SOC2 Audit Retention" policy |
+
+### Incoming References (Other Layers → Data Store)
+
+| Source Type                        | Predicate | Target Type    | Example                                                                           |
+| ---------------------------------- | --------- | -------------- | --------------------------------------------------------------------------------- |
+| `application.applicationcomponent` | accesses  | Collection     | "OrderRepository" accesses `orders`                                               |
+| `application.applicationfunction`  | accesses  | Collection     | "findOrdersByCustomer" accesses `orders`                                          |
+| `application.applicationservice`   | accesses  | View           | "Reporting Service" accesses `monthly_revenue_mv`                                 |
+| `application.applicationcomponent` | accesses  | Database       | "Persistence Layer" accesses `orders-db` as a whole (pool, client or ORM session) |
+| `application.applicationservice`   | accesses  | Database       | "Order API" accesses `orders-db` when its collections are not modelled            |
+| `data-model.objectschema`          | maps-to   | Collection     | "User" schema maps to the `users` table                                           |
+| `data-model.schemadefinition`      | maps-to   | Collection     | "AuditEntry" definition maps to `audit_log`                                       |
+| `testing.testcoveragetarget`       | covers    | StoredLogic    | "Discount rules" coverage target covers `calculate_discount()`                    |
+| `testing.testcasesketch`           | tests     | ValidationRule | "Reject negative total" sketch tests `chk_orders_total_positive`                  |
+| `apm.metricinstrument`             | monitors  | Database       | "db.client.connections.usage" monitors "orders-db"                                |
+| `apm.span`                         | monitors  | Collection     | "SELECT orders" span monitors `orders`                                            |
 
 ---
 
@@ -289,7 +340,7 @@ properties:
 - ❌ Using SQL-only concepts (Table, Column, Constraint) — use paradigm-neutral `collection`, `field`, `validationrule`
 - ❌ Skipping `AccessPattern` for NoSQL stores (DynamoDB, Cassandra) — define access patterns first
 - ❌ Nesting fields inline inside a collection element — `field` entities are always separate elements linked via `collection.composes.field`
-- ❌ Using invented `x-pii`, `x-json-schema`, or `x-apm-performance-metrics` attributes — these are not in the spec; use relationships (`field.satisfies.security.dataclassification`, `collection.realizes.api.schema`) instead
+- ❌ Using invented `x-pii`, `x-json-schema`, or `x-apm-performance-metrics` attributes — these are not in the spec; use relationships (`field satisfies security.dataclassification`, `data-model.objectschema maps-to collection`) instead
 - ❌ Using `ttlDays` / `archiveAfterDays` in retentionpolicy — use `retentionDuration` (ISO 8601, e.g. `"P365D"`) and `action` (enum: DELETE | ARCHIVE | ...)
 - ❌ Forgetting `RetentionPolicy` for regulated data
 - ❌ Not documenting `EventHandler` for CDC or change-triggered workflows

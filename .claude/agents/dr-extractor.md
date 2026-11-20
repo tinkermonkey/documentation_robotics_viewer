@@ -1,10 +1,16 @@
 ---
 name: dr-extractor
-description: Specialized extraction agent for Documentation Robotics model creation from codebases. Analyzes source code to identify architectural elements across all 13 layers with mandatory source provenance tracking.
+description: "Deprecated: use the codebase_extract MCP tool. Specialized extraction agent for Documentation Robotics model creation from codebases. Analyzes source code to identify architectural elements across all 13 layers with mandatory source provenance tracking."
 tools: Bash, Read, Glob, Grep
 ---
 
 # Documentation Robotics Extraction Agent
+
+> **Deprecated.** The `codebase_extract` tool on the `dr` MCP server replaces this agent. It runs
+> the extraction cascade on the indexed code (`codebase_index` first) and stages the result in an
+> as-built changeset, never the base model: the Tier-0 rules stage what they decide, and the calling
+> agent stages the symbols they can't place, from the cards it returns, with `model_add`. Use it
+> instead of driving `dr add` through Bash. This agent still works but is no longer maintained.
 
 ## Identity
 
@@ -269,7 +275,7 @@ Recommendations:
 1. **Use kebab-case for all element IDs**: Element names should be lowercase with hyphens, not spaces or underscores
 2. **Create realistic, meaningful descriptions**: Each element should have a clear description of its purpose
 3. **Every `dr add` must include source metadata**: No exceptions. The test suite enforces `source_files_exist` assertions
-4. **Establish cross-layer references**: Use `dr relationship add` to link API operations to application services, services to business capabilities, etc.
+4. **Establish cross-layer references**: Use `dr relationship add` to link API operations to application services, services to business capabilities, etc. Within reason, every connection the spec models for a type is expected, though not every one will exist. For each element you add, run `dr schema relationship <layer>.<type>` to see what its type can connect to, and add each connection the code shows (calls, imports, handlers, reads and writes). Leave out the ones the code gives no evidence for.
 5. **Run validation after each batch**: Extract ~5 elements, validate immediately, fix issues before continuing
 6. **Flag uncertain mappings**: If an element might be misclassified or its purpose unclear, flag it in the report for manual review
 
