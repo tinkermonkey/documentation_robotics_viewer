@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 822   |
+| Elements                  | 824   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 949   |
+| Inter-Layer Relationships | 951   |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 949   |
+| Outbound Relationships    | 951   |
 
 **Cross-Layer References**:
 
@@ -273,6 +273,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.filter-structural-inter-layer-returns-early-when-foreign-nodes-is-empty`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.first-node-type-id-returns-the-first-slug-shortname-for-a-populated-layer`                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.first-node-type-id-returns-undefined-for-a-layer-with-no-schema`                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                            | `testcasesketch`      | 0             |
@@ -380,7 +382,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.layer-page-data-spec-node-types-table-has-one-row-per-node-schemas-entry-navigating-to-the-spec-node`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-standard-resolves-the-inspiring-standard-for-a-known-slug`                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-standard-returns-empty-string-for-unknown-slugs`                                                                           | `testcasesketch`      | 0             |
-| `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `testcasesketch`      | 0             |
@@ -783,7 +785,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `testcasesketch`      | 0             |
-| `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                         | `testcasesketch`      | 0             |
@@ -1148,6 +1150,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.filter-structural-inter-layer-returns-early-when-foreign-nodes-is-empty`                                                         | `application.applicationservice.model-graph-transform`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.first-node-type-id-returns-the-first-slug-shortname-for-a-populated-layer`                                                       | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.first-node-type-id-returns-undefined-for-a-layer-with-no-schema`                                                                 | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`   | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`          | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                           | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                            | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1255,7 +1259,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-spec-node-types-table-has-one-row-per-node-schemas-entry-navigating-to-the-spec-node`                            | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-standard-resolves-the-inspiring-standard-for-a-known-slug`                                                                 | `application.applicationservice.layer-domain-palette`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-standard-returns-empty-string-for-unknown-slugs`                                                                           | `application.applicationservice.layer-domain-palette`              | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                                                 | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
@@ -1750,7 +1754,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `product.feature.topbar-search`                                    | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                            | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -6211,6 +6215,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.spec-graph-transform` | `tests`   | outbound  |
 
+### first-visit defaults vs a persisted choice (#596, #597) &gt; a first visit on a wide window still gets a light canvas and DrBot closed {#first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-drbot-closed}
+
+**ID**: `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### first-visit defaults vs a persisted choice (#596, #597) &gt; a persisted dark canvas and open DrBot still win over the defaults {#first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-drbot-still-win-over-the-defaults}
+
+**ID**: `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
 ### focus — page-view target (layer overview vs. node detail) &gt; selectLayer sets focus to "layer" {#focus-page-view-target-layer-overview-vs-node-detail-selectlayer-sets-focus-to-layer}
 
 **ID**: `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`
@@ -8137,9 +8177,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.layer-domain-palette` | `tests`   | outbound  |
 
-### localStorage persistence &gt; canvas theme (dark by default) persists across a reload {#localstorage-persistence-canvas-theme-dark-by-default-persists-across-a-reload}
+### localStorage persistence &gt; canvas theme (light by default) persists across a reload {#localstorage-persistence-canvas-theme-light-by-default-persists-across-a-reload}
 
-**ID**: `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`
+**ID**: `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`
 
 **Type**: `testcasesketch`
 
@@ -15523,9 +15563,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
 
-### uiStore — default state &gt; defaults canvasDark to true (dark mode on first visit) {#uistore-default-state-defaults-canvasdark-to-true-dark-mode-on-first-visit}
+### uiStore — default state &gt; defaults to a light canvas and DrBot closed on a first visit {#uistore-default-state-defaults-to-a-light-canvas-and-drbot-closed-on-a-first-visit}
 
-**ID**: `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`
+**ID**: `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`
 
 **Type**: `testcasesketch`
 
@@ -16838,4 +16878,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0

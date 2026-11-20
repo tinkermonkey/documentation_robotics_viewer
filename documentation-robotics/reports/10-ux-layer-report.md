@@ -461,7 +461,7 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 
 **Type**: `view`
 
-The DrBot assistant, scoped to the current selection: a floating non-modal panel under the topbar launcher that never reflows the canvas, with an opt-in docked column.
+The DrBot assistant, scoped to the current selection: a floating non-modal panel under the topbar launcher that never reflows the canvas, with an opt-in docked column. Closed on a first visit; a persisted choice wins after that.
 
 #### Attributes
 
@@ -594,4 +594,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0

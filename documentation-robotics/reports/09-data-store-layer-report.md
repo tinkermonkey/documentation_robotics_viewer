@@ -200,7 +200,7 @@ Single manifest.yaml file at the model root; contains model version, project inf
 
 **Type**: `collection`
 
-localStorage entry dr-viewer-ui-preferences: the persisted part of the UI store (canvas theme, DrBot open, graph layout and display settings, inspector follow depth). Navigation state is left to the URL.
+localStorage entry dr-viewer-ui-preferences: the persisted part of the UI store (canvas theme, DrBot open, graph layout and display settings, inspector follow depth). With no entry yet, the canvas is light and DrBot is closed. Navigation state is left to the URL.
 
 #### Attributes
 
@@ -266,4 +266,4 @@ File-based document store holding the architecture model as YAML files under doc
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0

@@ -76,83 +76,6 @@
     metadata: *a5
   timestamp: 2026-11-19T17:45:46.778Z
   sequenceNumber: 1
-- type: update
-  elementId: application.applicationcomponent.chat-drawer
-  layerName: application
-  before:
-    id: 021621e1-587f-497e-9410-f0e9ba08871b
-    path: application.applicationcomponent.chat-drawer
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Chat Drawer
-    description: The 372px DrBot drawer frame (persistent at 1300px and wider, an
-      overlay below) that hosts the chat panel.
-    attributes: &a6
-      type: internal
-    source_reference: &a7
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/ui/ChatDrawer.tsx
-          symbol: ChatDrawer
-    metadata: &a8
-      created_at: 2026-11-18T16:26:33.166Z
-      updated_at: 2026-11-18T16:26:33.166Z
-      version: 1
-  after:
-    id: 021621e1-587f-497e-9410-f0e9ba08871b
-    path: application.applicationcomponent.chat-drawer
-    spec_node_id: application.applicationcomponent
-    type: applicationcomponent
-    layer_id: application
-    name: Chat Drawer
-    description: "The 372px DrBot drawer frame that hosts the chat panel: closed
-      until opened from the topbar (on a first visit at any width), then
-      persistent at 1300px and wider, an overlay below."
-    attributes: *a6
-    source_reference: *a7
-    metadata: *a8
-  timestamp: 2026-11-19T17:45:46.960Z
-  sequenceNumber: 2
-- type: update
-  elementId: ux.view.dr-bot-chat-drawer
-  layerName: ux
-  before:
-    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
-    path: ux.view.dr-bot-chat-drawer
-    spec_node_id: ux.view
-    type: view
-    layer_id: ux
-    name: DrBot Chat Drawer
-    description: "The DrBot assistant, scoped to the current selection: persistent
-      at 1300px and wider, an overlay below."
-    attributes: &a9
-      type: drawer
-      routable: false
-    source_reference: &a10
-      provenance: extracted
-      locations:
-        - file: src/apps/embedded/ui/ChatPanel.tsx
-          symbol: ChatPanel
-    metadata: &a11
-      created_at: 2026-11-12T13:45:15.984Z
-      updated_at: 2026-11-12T13:45:15.984Z
-      version: 1
-  after:
-    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
-    path: ux.view.dr-bot-chat-drawer
-    spec_node_id: ux.view
-    type: view
-    layer_id: ux
-    name: DrBot Chat Drawer
-    description: "The DrBot assistant, scoped to the current selection: closed on a
-      first visit, opened from the topbar; once open, persistent at 1300px and
-      wider, an overlay below."
-    attributes: *a9
-    source_reference: *a10
-    metadata: *a11
-  timestamp: 2026-11-19T17:45:47.187Z
-  sequenceNumber: 3
 - type: delete
   elementId: testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit
   layerName: testing
@@ -373,3 +296,90 @@
     category: structural
   timestamp: 2026-11-19T17:50:11.062Z
   sequenceNumber: 19
+- type: update
+  elementId: application.applicationcomponent.chat-drawer
+  layerName: application
+  before:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: "The DrBot panel frame that hosts the chat panel: a floating,
+      resizable, non-modal panel anchored to the topbar DrBot launcher at the
+      graph area's top-right, stepping left of an open Inspector drawer (taking
+      its place when both don't fit), or, after Dock, a resizable column that
+      collapses to a rail tab. Escape inside closes it and returns focus to the
+      launcher; size and docked state persist with the UI preferences."
+    attributes: &a6
+      type: internal
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatDrawer.tsx
+          symbol: ChatDrawer
+    metadata: &a8
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: 021621e1-587f-497e-9410-f0e9ba08871b
+    path: application.applicationcomponent.chat-drawer
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Chat Drawer
+    description: "The DrBot panel frame that hosts the chat panel: a floating,
+      resizable, non-modal panel anchored to the topbar DrBot launcher at the
+      graph area's top-right, stepping left of an open Inspector drawer (taking
+      its place when both don't fit), or, after Dock, a resizable column that
+      collapses to a rail tab. Closed on a first visit; a persisted open/closed
+      choice wins after that. Escape inside closes it and returns focus to the
+      launcher; size and docked state persist with the UI preferences."
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-20T00:53:21.499Z
+  sequenceNumber: 21
+- type: update
+  elementId: ux.view.dr-bot-chat-drawer
+  layerName: ux
+  before:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: a floating
+      non-modal panel under the topbar launcher that never reflows the canvas,
+      with an opt-in docked column."
+    attributes: &a9
+      type: panel
+      routable: false
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChatPanel.tsx
+          symbol: ChatPanel
+    metadata: &a11
+      created_at: 2026-11-12T13:45:15.984Z
+      updated_at: 2026-11-12T13:45:15.984Z
+      version: 1
+  after:
+    id: 60ebdaa7-e2d2-456f-981f-e7f6cc2d2b67
+    path: ux.view.dr-bot-chat-drawer
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: DrBot Chat Drawer
+    description: "The DrBot assistant, scoped to the current selection: a floating
+      non-modal panel under the topbar launcher that never reflows the canvas,
+      with an opt-in docked column. Closed on a first visit; a persisted choice
+      wins after that."
+    attributes: *a9
+    source_reference: *a10
+    metadata: *a11
+  timestamp: 2026-11-20T00:53:21.728Z
+  sequenceNumber: 22

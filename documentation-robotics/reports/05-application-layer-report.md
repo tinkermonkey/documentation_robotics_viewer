@@ -18,8 +18,8 @@ Application components, services, and interactions.
 | ------------------------- | ----- |
 | Elements                  | 83    |
 | Intra-Layer Relationships | 184   |
-| Inter-Layer Relationships | 933   |
-| Inbound Relationships     | 869   |
+| Inter-Layer Relationships | 935   |
+| Inbound Relationships     | 871   |
 | Outbound Relationships    | 64    |
 
 **Cross-Layer References**:
@@ -490,6 +490,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.filter-structural-inter-layer-returns-early-when-foreign-nodes-is-empty`                                                         | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.first-node-type-id-returns-the-first-slug-shortname-for-a-populated-layer`                                                       | `application.applicationservice.spec-graph-transform`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.first-node-type-id-returns-undefined-for-a-layer-with-no-schema`                                                                 | `application.applicationservice.spec-graph-transform`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`   | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                           | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                            | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -597,7 +599,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.layer-page-data-spec-node-types-table-has-one-row-per-node-schemas-entry-navigating-to-the-spec-node`                            | `application.applicationservice.page-data-builder`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.layer-standard-resolves-the-inspiring-standard-for-a-known-slug`                                                                 | `application.applicationservice.layer-domain-palette`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.layer-standard-returns-empty-string-for-unknown-slugs`                                                                           | `application.applicationservice.layer-domain-palette`               | `application` | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                                                 | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                                | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `application.applicationcomponent.markdown-text`                    | `application` | `tests`      | many-to-many | medium   |
@@ -1019,7 +1021,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `application.applicationservice.type-bands`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `application.applicationservice.type-bands`                         | `application` | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                            | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -1493,7 +1495,7 @@ A changeset's Review tab: the summary card, the Show / Group by / Decided by con
 
 **Type**: `applicationcomponent`
 
-The DrBot panel frame that hosts the chat panel: a floating, resizable, non-modal panel anchored to the topbar DrBot launcher at the graph area's top-right, stepping left of an open Inspector drawer (taking its place when both don't fit), or, after Dock, a resizable column that collapses to a rail tab. Escape inside closes it and returns focus to the launcher; size and docked state persist with the UI preferences.
+The DrBot panel frame that hosts the chat panel: a floating, resizable, non-modal panel anchored to the topbar DrBot launcher at the graph area's top-right, stepping left of an open Inspector drawer (taking its place when both don't fit), or, after Dock, a resizable column that collapses to a rail tab. Closed on a first visit; a persisted open/closed choice wins after that. Escape inside closes it and returns focus to the launcher; size and docked state persist with the UI preferences.
 
 #### Attributes
 
@@ -2421,72 +2423,74 @@ Zustand store (persisted to localStorage as dr-viewer-local-review) holding verd
 
 **Type**: `applicationfunction`
 
-Zustand store for UI state: view, layer, selection, changeset, graph/page mode, nav accordion, graph settings and canvas tone. Preferences persist to localStorage; navigation state is the router's.
+Zustand store for UI state: view, layer, selection, changeset, graph/page mode, nav accordion, graph settings and canvas tone. A first visit gets a light canvas and DrBot closed; preferences persist to localStorage and a persisted choice wins; navigation state is the router's.
 
 #### Relationships
 
-| Type        | Related Element                                                                                                                       | Predicate     | Direction |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
-| inter-layer | `data-store.collection.ui-preferences`                                                                                                | `accesses`    | outbound  |
-| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                        | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`      | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                         | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-toggle-layer-sets-focus-to-layer-when-ba1fdca1`          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-default-to-organic-layout-boundaries-on-every-relation-visible-c5a4dba8`     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-graph-layout-switches-the-layout-engine`                                 | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-node-display-switches-between-card-and-pill`                             | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-node-margin-preset-switches-the-preset`                                  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-cluster-boundaries-flips-show-cluster-boundaries`                     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-show-all-relations-flips-show-all-relations`                          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-show-inter-layer-nodes-flips-show-inter-layer-nodes`                  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-a-fresh-2a3d8b66`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-select-9ffca8bf`     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-1a7a2152`     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-e5ecd4a2`     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.local-storage-persistence-canvas-theme-dark-by-default-persists-across-a-reload`                              | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                      | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.mode-graph-page-toggle-persists-across-a-layer-node-selection-design-mode-toggle-persists-across-3ccf9f32`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.mode-graph-page-toggle-set-mode-switches-the-mode`                                                            | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`      | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`   | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd` | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-does-not-persist-953ed5f4`         | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.navigate-to-spec-node-cross-layer-navigation-in-schema-view-stays-in-the-schema-view-and-switches-99f64adb`   | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-falls-back-to-98f0a96f`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-falls-back-to-a76359d4`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-a-09783d4e`          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-the-7dacf17c`        | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-inspector-follow-falls-back-to-1-layer-for-an-invalid-stored-value-s`             | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.persist-hydration-validates-inspector-follow-keeps-a-valid-stored-depth-s`                                    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-edge-sets-bc239ee3`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-layer-and-76820b98`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-node-select-5e30da1e`  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-set-highlighted-bda650c6`     | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-layer-cbdf5693`        | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-section-dadd2e34`      | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-changeset-switches-to-the-changesets-view`          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-layer-clears-selection-and-expands-the-c6b80944`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-toggle-chat-flips-chat-open-set-wide-sets-the-d407ed7f`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-node-select-graph-node-select-graph-node-expands-the-active-section-and-layer-when-set`                | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.select-node-select-graph-node-select-node-sets-selected-id-without-touching-the-view`                         | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-canvas-dark-toggles-body-dark-canvas-and-the-canvas-dark-flag`                                         | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-layer-collapsing-a-layer-keeps-the-current-selection`                                                  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-layer-expands-a-layer-sets-it-active-clears-selection-activates-the-section`                           | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-section-clears-selected-id-on-a-genuine-view-switch-selection-ids-are-not-portable-across-03048b0d`    | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-section-collapses-an-expanded-section-and-activates-its-view`                                          | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                       | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`           | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.ui-store-default-state-defaults-canvas-dark-to-true-dark-mode-on-first-visit`                                 | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                       | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`      | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`      | `tests`       | inbound   |
-| intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `assigned-to` | inbound   |
-| intra-layer | `application.applicationcomponent.nav-tree`                                                                                           | `assigned-to` | inbound   |
-| intra-layer | `application.applicationcomponent.topbar-search`                                                                                      | `assigned-to` | inbound   |
+| Type        | Related Element                                                                                                                                        | Predicate     | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------- |
+| inter-layer | `data-store.collection.ui-preferences`                                                                                                                 | `accesses`    | outbound  |
+| inter-layer | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed` | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`        | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                         | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                          | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-toggle-layer-sets-focus-to-layer-when-ba1fdca1`                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-default-to-organic-layout-boundaries-on-every-relation-visible-c5a4dba8`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-graph-layout-switches-the-layout-engine`                                                  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-node-display-switches-between-card-and-pill`                                              | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-set-node-margin-preset-switches-the-preset`                                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-cluster-boundaries-flips-show-cluster-boundaries`                                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-show-all-relations-flips-show-all-relations`                                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.graph-layout-display-preferences-toggle-show-inter-layer-nodes-flips-show-inter-layer-nodes`                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-a-fresh-2a3d8b66`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-select-9ffca8bf`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-1a7a2152`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-e5ecd4a2`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                              | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.mode-graph-page-toggle-persists-across-a-layer-node-selection-design-mode-toggle-persists-across-3ccf9f32`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.mode-graph-page-toggle-set-mode-switches-the-mode`                                                                             | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`                    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd`                  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-does-not-persist-953ed5f4`                          | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.navigate-to-spec-node-cross-layer-navigation-in-schema-view-stays-in-the-schema-view-and-switches-99f64adb`                    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-falls-back-to-98f0a96f`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-falls-back-to-a76359d4`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-a-09783d4e`                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-the-7dacf17c`                         | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-inspector-follow-falls-back-to-1-layer-for-an-invalid-stored-value-s`                              | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.persist-hydration-validates-inspector-follow-keeps-a-valid-stored-depth-s`                                                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-edge-sets-bc239ee3`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-layer-and-76820b98`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-select-node-select-5e30da1e`                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-set-highlighted-bda650c6`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-layer-cbdf5693`                         | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-section-dadd2e34`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-changeset-switches-to-the-changesets-view`                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-layer-clears-selection-and-expands-the-c6b80944`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-toggle-chat-flips-chat-open-set-wide-sets-the-d407ed7f`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-node-select-graph-node-select-graph-node-expands-the-active-section-and-layer-when-set`                                 | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.select-node-select-graph-node-select-node-sets-selected-id-without-touching-the-view`                                          | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-canvas-dark-toggles-body-dark-canvas-and-the-canvas-dark-flag`                                                          | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-layer-collapsing-a-layer-keeps-the-current-selection`                                                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-layer-expands-a-layer-sets-it-active-clears-selection-activates-the-section`                                            | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-section-clears-selected-id-on-a-genuine-view-switch-selection-ids-are-not-portable-across-03048b0d`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-section-collapses-an-expanded-section-and-activates-its-view`                                                           | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                        | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                            | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                          | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                        | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                       | `tests`       | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                                                                                           | `assigned-to` | inbound   |
+| intra-layer | `application.applicationcomponent.nav-tree`                                                                                                            | `assigned-to` | inbound   |
+| intra-layer | `application.applicationcomponent.topbar-search`                                                                                                       | `assigned-to` | inbound   |
 
 ### DR CLI REST Interface {#dr-cli-rest-interface}
 
@@ -3918,4 +3922,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0
