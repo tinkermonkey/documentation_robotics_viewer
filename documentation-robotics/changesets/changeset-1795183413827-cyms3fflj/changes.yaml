@@ -1,0 +1,664 @@
+- type: update
+  elementId: application.applicationcomponent.markdown-text
+  layerName: application
+  before:
+    id: f233ec56-7e96-4488-b062-df882ffd2860
+    path: application.applicationcomponent.markdown-text
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Markdown Text
+    description: "Shared renderer for untrusted model prose (node page descriptions;
+      changeset descriptions next, #588): wraps Heimdall's ChatMarkdownContent
+      (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
+      page typography so plain text reads as a paragraph."
+    attributes: &a1
+      type: internal
+    accepted_gaps: &a2
+      - direction: incoming
+        predicate: serves
+        other_spec_node_id: application.applicationservice
+        reason: "A presentation-only leaf: callers hand it the text as a prop, no data
+          service feeds it."
+        decided_by: agent
+        decided_at: 2026-11-19T17:46:42.460Z
+        changeset: changeset-1795110378807-ocbe9zrml
+    metadata: &a3
+      created_at: 2026-11-19T17:46:28.982Z
+      updated_at: 2026-11-19T17:46:28.982Z
+      version: 1
+  after:
+    id: f233ec56-7e96-4488-b062-df882ffd2860
+    path: application.applicationcomponent.markdown-text
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Markdown Text
+    description: "Shared renderer for untrusted model prose: node page descriptions
+      and changeset descriptions (#588). Wraps Heimdall's ChatMarkdownContent
+      (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
+      page typography so plain text reads as a paragraph. A foldable variant
+      shows a long text folded behind a Show more / Show less button
+      (aria-expanded); an inline excerpt variant renders only the first
+      paragraph, as inline text (code spans, emphasis, links as plain text),
+      never a list or heading, for a card."
+    attributes: *a1
+    accepted_gaps: *a2
+    metadata: *a3
+  timestamp: 2026-11-20T14:04:08.598Z
+  sequenceNumber: 0
+- type: update
+  elementId: application.applicationcomponent.changeset-canvas
+  layerName: application
+  before:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the op-coded change list and a Changes /
+      Impact switch. Its header carries the 'Base changed since this was staged'
+      badge when the base drift blocks a commit. A changeset the server no
+      longer has (a discard deletes it) shows as gone, with a way back to the
+      inbox."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: &a6
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the changeset's description as markdown (a
+      long one folded behind Show more, so the change list stays near the top),
+      the op-coded change list and a Changes / Impact switch. Its header carries
+      the 'Base changed since this was staged' badge when the base drift blocks
+      a commit. A changeset the server no longer has (a discard deletes it)
+      shows as gone, with a way back to the inbox."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-20T14:04:08.799Z
+  sequenceNumber: 1
+- type: update
+  elementId: application.applicationcomponent.changeset-inbox
+  layerName: application
+  before:
+    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
+    path: application.applicationcomponent.changeset-inbox
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Inbox
+    description: "The Changesets view's landing page when no changeset is open,
+      sorted by what each changeset needs from you: plans and DrBot's changes
+      waiting on you or on DrBot (with review progress and, for a plan whose
+      base drift blocks a commit, a 'Base changed since this was staged' badge),
+      changesets extracted from the code ready to land as built, verification
+      records each paired with the plan it verifies (never applied), then the
+      history with each changeset's purpose. Hosts the Tier 1 panel above the
+      history."
+    attributes: &a7
+      type: internal
+    source_reference: &a8
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetInbox.tsx
+          symbol: ChangesetInbox
+    metadata: &a9
+      created_at: 2026-11-18T16:26:33.166Z
+      updated_at: 2026-11-18T16:26:33.166Z
+      version: 1
+  after:
+    id: 432caa69-362c-4d05-b7d5-e2d98a8ebaf3
+    path: application.applicationcomponent.changeset-inbox
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Inbox
+    description: "The Changesets view's landing page when no changeset is open,
+      sorted by what each changeset needs from you: plans and DrBot's changes
+      waiting on you or on DrBot (with review progress, a one-paragraph inline
+      excerpt of the markdown description, and, for a plan whose base drift
+      blocks a commit, a 'Base changed since this was staged' badge), changesets
+      extracted from the code ready to land as built, verification records each
+      paired with the plan it verifies (never applied), then the history with
+      each changeset's purpose. Hosts the Tier 1 panel above the history."
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-20T14:04:08.982Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+  layerName: testing
+  after:
+    id: 69ba6a31-116c-4fbb-af35-bdb64a172870
+    path: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: FoldableMarkdownText > folds a long text behind Show more and toggles it
+      with aria-expanded
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/MarkdownText.spec.tsx
+          symbol: FoldableMarkdownText > folds a long text behind Show more and toggles it
+            with aria-expanded
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 3
+- type: add
+  elementId: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+  layerName: testing
+  after:
+    id: 56c99614-f26c-4944-9b46-1851defbfa2d
+    path: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: FoldableMarkdownText > shows a short text whole, with no button
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/MarkdownText.spec.tsx
+          symbol: FoldableMarkdownText > shows a short text whole, with no button
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 4
+- type: add
+  elementId: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+  layerName: testing
+  after:
+    id: 00bb9c7d-6aa4-4baf-9165-ba7b7e1d9f8a
+    path: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+      emphasis, links as plain text"
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/MarkdownText.spec.tsx
+          symbol: "MarkdownExcerpt > renders the first paragraph inline: code spans and
+            emphasis, links as plain text"
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 5
+- type: add
+  elementId: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+  layerName: testing
+  after:
+    id: 638b795f-53e0-4109-9be5-6cafb9cf3790
+    path: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: MarkdownExcerpt > never renders raw HTML or a list or heading block
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/MarkdownText.spec.tsx
+          symbol: MarkdownExcerpt > never renders raw HTML or a list or heading block
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+  layerName: testing
+  after:
+    id: 0bc0dba9-dadf-49cb-9c39-93c6e69bed0e
+    path: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: descriptionExcerpt > takes only the first paragraph and drops list and
+      heading markup
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/markdownExcerpt.spec.ts
+          symbol: descriptionExcerpt > takes only the first paragraph and drops list and
+            heading markup
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+  layerName: testing
+  after:
+    id: 3c07ff2b-c484-4990-a160-370d17bed66c
+    path: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: ChangesetCanvas — header + op rows > renders a markdown description and
+      folds a long one
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetCanvas.spec.tsx
+          symbol: ChangesetCanvas — header + op rows > renders a markdown description and
+            folds a long one
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 8
+- type: add
+  elementId: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+  layerName: testing
+  after:
+    id: 7b9a19bf-d208-4af6-b1e2-a726a704df3d
+    path: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+      description on the card
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T14:04:24.587Z
+      updated_at: 2026-11-20T14:04:24.587Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/ChangesetInbox.spec.tsx
+          symbol: ChangesetInbox > shows a one-paragraph inline excerpt of a markdown
+            description on the card
+  timestamp: 2026-11-20T14:10:01.066Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-canvas::composes::application.applicationcomponent.markdown-text
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-canvas
+    target: application.applicationcomponent.markdown-text
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-inbox::composes::application.applicationcomponent.markdown-text
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-inbox
+    target: application.applicationcomponent.markdown-text
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one::tests::application.applicationcomponent.changeset-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+    target: application.applicationcomponent.changeset-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card::tests::application.applicationcomponent.changeset-inbox
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+    target: application.applicationcomponent.changeset-inbox
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:24.599Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T14:04:32.347Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one::tests::business.businessservice.changeset-review
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one
+    target: business.businessservice.changeset-review
+    predicate: tests
+    layer: testing
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T14:04:32.347Z
+  sequenceNumber: 20
+- type: update
+  elementId: application.applicationcomponent.markdown-text
+  layerName: application
+  before:
+    id: f233ec56-7e96-4488-b062-df882ffd2860
+    path: application.applicationcomponent.markdown-text
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Markdown Text
+    description: "Shared renderer for untrusted model prose: node page descriptions
+      and changeset descriptions (#588). Wraps Heimdall's ChatMarkdownContent
+      (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
+      page typography so plain text reads as a paragraph. A foldable variant
+      shows a long text folded behind a Show more / Show less button
+      (aria-expanded); an inline excerpt variant renders only the first
+      paragraph, as inline text (code spans, emphasis, links as plain text),
+      never a list or heading, for a card."
+    attributes: &a10
+      type: internal
+    accepted_gaps: &a11
+      - direction: incoming
+        predicate: serves
+        other_spec_node_id: application.applicationservice
+        reason: "A presentation-only leaf: callers hand it the text as a prop, no data
+          service feeds it."
+        decided_by: agent
+        decided_at: 2026-11-19T17:46:42.460Z
+        changeset: changeset-1795110378807-ocbe9zrml
+    metadata: &a12
+      created_at: 2026-11-19T17:46:28.982Z
+      updated_at: 2026-11-19T17:46:28.982Z
+      version: 1
+  after:
+    id: f233ec56-7e96-4488-b062-df882ffd2860
+    path: application.applicationcomponent.markdown-text
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Markdown Text
+    description: "Shared renderer for untrusted model prose: node page descriptions
+      and changeset descriptions (#588). Wraps Heimdall's ChatMarkdownContent
+      (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
+      page typography so plain text reads as a paragraph. A foldable variant
+      shows a long text folded behind a Show more / Show less button
+      (aria-expanded); an inline excerpt variant renders only the first
+      paragraph, as inline text (code spans, emphasis, links as plain text),
+      never a list or heading, for a card."
+    attributes: *a10
+    accepted_gaps: *a11
+    metadata: *a12
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/MarkdownText.tsx
+          symbol: MarkdownText
+  timestamp: 2026-11-20T14:10:14.086Z
+  sequenceNumber: 28
+- type: add
+  elementId: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none
+  layerName: testing
+  after:
+    id: c6c41d27-fbc1-4caa-a173-3fe322c7ed98
+    path: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: MarkdownExcerpt > reads a plain-text description as before and renders
+      nothing for none
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/MarkdownText.spec.tsx
+          symbol: MarkdownExcerpt > reads a plain-text description as before and renders
+            nothing for none
+    metadata:
+      created_at: 2026-11-20T14:10:14.294Z
+      updated_at: 2026-11-20T14:10:14.294Z
+      version: 1
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 29
+- type: add
+  elementId: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded
+  layerName: testing
+  after:
+    id: e078ff31-cd67-469c-94a4-6e7cf06cc2ec
+    path: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: descriptionExcerpt > reads plain text unchanged, single newlines folded
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/markdownExcerpt.spec.ts
+          symbol: descriptionExcerpt > reads plain text unchanged, single newlines folded
+    metadata:
+      created_at: 2026-11-20T14:10:14.294Z
+      updated_at: 2026-11-20T14:10:14.294Z
+      version: 1
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 30
+- type: add
+  elementId: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text
+  layerName: testing
+  after:
+    id: 02df0e52-6ab7-4e64-a6ab-a1fc12609761
+    path: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: inlineTokens > splits code spans, strong, emphasis and keeps only a link
+      text
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/markdownExcerpt.spec.ts
+          symbol: inlineTokens > splits code spans, strong, emphasis and keeps only a link
+            text
+    metadata:
+      created_at: 2026-11-20T14:10:14.294Z
+      updated_at: 2026-11-20T14:10:14.294Z
+      version: 1
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 31
+- type: add
+  elementId: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text
+  layerName: testing
+  after:
+    id: 997daf1f-f135-436d-af7f-239f5afa940f
+    path: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: inlineTokens > leaves snake_case and lone asterisks as text
+    attributes:
+      status: automated
+      implementationFormat: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/markdownExcerpt.spec.ts
+          symbol: inlineTokens > leaves snake_case and lone asterisks as text
+    metadata:
+      created_at: 2026-11-20T14:10:14.294Z
+      updated_at: 2026-11-20T14:10:14.294Z
+      version: 1
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text::tests::application.applicationcomponent.markdown-text
+  layerName: testing
+  after:
+    source: testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text
+    target: application.applicationcomponent.markdown-text
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:10:14.309Z
+  sequenceNumber: 36
