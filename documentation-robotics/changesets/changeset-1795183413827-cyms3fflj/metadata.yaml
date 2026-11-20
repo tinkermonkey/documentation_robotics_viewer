@@ -30,8 +30,8 @@ description: >-
 
   - A plain-text description from an older dr CLI reads as before
 created: 2026-11-20T14:03:33.832Z
-modified: 2026-11-20T14:10:14.313Z
-status: staged
+modified: 2026-11-20T15:38:08.394Z
+status: committed
 baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
 origin:
   kind: plan

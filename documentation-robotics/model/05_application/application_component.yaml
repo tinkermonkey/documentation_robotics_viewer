@@ -128,10 +128,12 @@ application.applicationcomponent.changeset-canvas:
     purpose and where it came from, a lifecycle line says what this kind of
     changeset is for and what happens next (a verification record leads with the
     plan it verifies and what extraction read; a plan names its verification
-    records), then the op-coded change list and a Changes / Impact switch. Its
-    header carries the 'Base changed since this was staged' badge when the base
-    drift blocks a commit. A changeset the server no longer has (a discard
-    deletes it) shows as gone, with a way back to the inbox."
+    records), then the changeset's description as markdown (a long one folded
+    behind Show more, so the change list stays near the top), the op-coded
+    change list and a Changes / Impact switch. Its header carries the 'Base
+    changed since this was staged' badge when the base drift blocks a commit. A
+    changeset the server no longer has (a discard deletes it) shows as gone,
+    with a way back to the inbox."
   attributes:
     type: internal
   source_reference:
@@ -389,12 +391,12 @@ application.applicationcomponent.changeset-inbox:
   name: Changeset Inbox
   description: "The Changesets view's landing page when no changeset is open,
     sorted by what each changeset needs from you: plans and DrBot's changes
-    waiting on you or on DrBot (with review progress and, for a plan whose base
-    drift blocks a commit, a 'Base changed since this was staged' badge),
-    changesets extracted from the code ready to land as built, verification
-    records each paired with the plan it verifies (never applied), then the
-    history with each changeset's purpose. Hosts the Tier 1 panel above the
-    history."
+    waiting on you or on DrBot (with review progress, a one-paragraph inline
+    excerpt of the markdown description, and, for a plan whose base drift blocks
+    a commit, a 'Base changed since this was staged' badge), changesets
+    extracted from the code ready to land as built, verification records each
+    paired with the plan it verifies (never applied), then the history with each
+    changeset's purpose. Hosts the Tier 1 panel above the history."
   attributes:
     type: internal
   source_reference:
@@ -416,10 +418,11 @@ application.applicationcomponent.tier1-panel:
   description: Read-only card in the changeset inbox showing Tier 1's state (on,
     warming, capped, no credentials, misconfigured, off), provider and model,
     this month's spend against the cap, the warming fill's progress (cards done
-    of total, time left, cost so far), whether Tier 1 stages without the agent
-    or only suggests (with the server's reason), and OpenRouter's routing
-    (allowed upstreams, no fallbacks, no data collection, zero data retention),
-    from GET /api/tier1. Hidden on an older dr CLI (404).
+    of total, time left, cost so far), its mode (stages and hides non-elements
+    without the agent, only hides non-elements, or only suggests, with the
+    server's reason), and OpenRouter's routing (allowed upstreams, no fallbacks,
+    no data collection, zero data retention), from GET /api/tier1. Hidden on an
+    older dr CLI (404).
   attributes:
     type: internal
   source_reference:
@@ -761,21 +764,21 @@ application.applicationcomponent.markdown-text:
   type: applicationcomponent
   layer_id: application
   name: Markdown Text
-  description: "Shared renderer for untrusted model prose (node page descriptions;
-    changeset descriptions next, #588): wraps Heimdall's ChatMarkdownContent
+  description: "Shared renderer for untrusted model prose: node page descriptions
+    and changeset descriptions (#588). Wraps Heimdall's ChatMarkdownContent
     (react-markdown + GFM, no raw HTML, unsafe URLs stripped) in canvas-token
-    page typography so plain text reads as a paragraph."
+    page typography so plain text reads as a paragraph. A foldable variant shows
+    a long text folded behind a Show more / Show less button (aria-expanded); an
+    inline excerpt variant renders only the first paragraph, as inline text
+    (code spans, emphasis, links as plain text), never a list or heading, for a
+    card."
   attributes:
     type: internal
-  accepted_gaps:
-    - direction: incoming
-      predicate: serves
-      other_spec_node_id: application.applicationservice
-      reason: "A presentation-only leaf: callers hand it the text as a prop, no data
-        service feeds it."
-      decided_by: agent
-      decided_at: 2026-11-19T17:46:42.460Z
-      changeset: changeset-1795110378807-ocbe9zrml
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/MarkdownText.tsx
+        symbol: MarkdownText
   metadata:
     created_at: 2026-11-19T17:46:28.982Z
     updated_at: 2026-11-19T17:46:28.982Z
@@ -797,6 +800,11 @@ application.applicationcomponent.topbar-search:
     canvas/shell tokens."
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TopbarSearch.tsx
+        symbol: TopbarSearch
   metadata:
     created_at: 2026-11-19T17:48:18.602Z
     updated_at: 2026-11-19T17:48:18.602Z
@@ -814,6 +822,11 @@ application.applicationcomponent.type-lanes-view:
     selection through the Canvas's selectFromCanvas.
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeLanesView.tsx
+        symbol: TypeLanesView
   accepted_gaps:
     - direction: outgoing
       predicate: uses
@@ -839,6 +852,11 @@ application.applicationcomponent.type-hive-view:
     busiest per axis labelled; selection shared with the Inspector drawer.
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeHiveView.tsx
+        symbol: TypeHiveView
   accepted_gaps:
     - direction: outgoing
       predicate: uses

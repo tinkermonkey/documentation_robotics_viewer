@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 824   |
+| Elements                  | 896   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 951   |
+| Inter-Layer Relationships | 1049  |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 951   |
+| Outbound Relationships    | 1049  |
 
 **Cross-Layer References**:
 
@@ -36,6 +36,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.coveragerequirement.all-partitions-unit-test-requirement`                                                                                       | `coveragerequirement` | 1             |
 | `testing.coveragesummary.overall-test-coverage-summary`                                                                                                  | `coveragesummary`     | 1             |
 | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-create-edit-reply-resolve-delete-an-annotation`                                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `testcasesketch`      | 0             |
@@ -122,12 +123,15 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.canvas-inter-layer-nodes-control-toggling-inter-layer-nodes-on-and-off-updates-the-graph-composition`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-keyed-remount-on-view-layer-switch-switching-modelschema-for-one-layer-swaps-instances-for-b6ea5719`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-keyed-remount-on-view-layer-switch-switching-the-layer-swaps-the-rendered-node-set`                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-model-view-page-header-renders-instance-model-eyebrow-layer-title-id-chip-and-element-meta`                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-model-view-page-header-renders-the-selected-layer-graph-nodes`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-relations-toggle-actually-filters-rendered-edges-structural-hides-non-structural-edges-all-5d627845`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-schema-view-page-header-renders-meta-model-eyebrow-layer-schema-title-and-node-type-meta`                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-settings-flyout-hover-path-regression-it-closed-before-the-pointer-reached-it-keeps-working-509d4bba`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.canvas-settings-flyout-hover-path-regression-it-closed-before-the-pointer-reached-it-stays-open-1df0bf29`                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.cap-bands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded`                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.cap-bands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked`                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.card-short-card-shortj-j`                                                                                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.change-detail-add-of-an-element-added-type`                                                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.change-detail-delete-of-an-element-removed-type`                                                                                 | `testcasesketch`      | 0             |
@@ -142,6 +146,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.changeset-canvas-a-changeset-that-fails-to-load-says-why-instead-of-loading-changeset-forever-845ed2cf`                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-canvas-header-op-rows-lists-the-committed-changeset-read-only-30-changes-to-review-4-3a85b24b`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-canvas-header-op-rows-marks-the-changed-field-of-an-update-and-its-op`                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-canvas-header-op-rows-shows-the-changeset-name-status-chip-and-change-count-in-the-header`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-canvas-impact-tab-shares-its-follow-depth-with-the-model-inspector`                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-canvas-impact-tab-switches-from-the-change-list-to-the-impact-lanes-and-back`                                          | `testcasesketch`      | 0             |
@@ -168,7 +173,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.changeset-inbox-badges-a-drifted-plan-on-its-card-and-not-a-record-or-content-free-drift`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inbox-counts-verdicts-kept-in-this-browser-for-an-older-dr-cli-by-the-shared-definition`                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan`                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inbox-opens-a-changeset-from-its-card`                                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history`                                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inbox-sorts-staged-changesets-into-waiting-on-you-and-on-dr-bot-with-the-history-below`                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-inspector-blast-radius-keeps-its-scrolling-body-reachable-by-keyboard`                                                 | `testcasesketch`      | 0             |
@@ -179,6 +186,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli`                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli`                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one`                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.changeset-purpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded`                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-summary-falls-back-to-the-name-when-stats-are-missing`                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-summary-renders-the-additions-modifications-deletions-sentence`                                                        | `testcasesketch`      | 0             |
@@ -190,6 +198,11 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.chat-panel-composer-submit-sends-what-the-user-has-open-layer-selected-element-with-the-question`                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-panel-composer-submit-submitting-the-composer-calls-chat-service-send-message-with-the-text`                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-panel-composer-submit-surfaces-the-sdk-unavailable-error-from-the-store`                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.chat-panel-layout-597-fills-an-area-under-720px-and-hides-an-open-drawer`                                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.chat-panel-layout-597-leaves-240px-of-graph-and-fits-the-area-height`                                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.chat-panel-layout-597-sits-at-the-top-right-with-no-drawer`                                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.chat-panel-layout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit`                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.chat-panel-layout-597-takes-the-drawers-place-when-they-dont-fit`                                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-panel-message-rendering-via-the-adapter-renders-a-user-bubble-and-a-bot-markdown-body`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-panel-message-rendering-via-the-adapter-renders-tool-and-thinking-blocks-from-interleaved-bot-60c713b7`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-panel-suggestions-gating-hides-suggestions-once-the-thread-has-more-than-one-message`                                       | `testcasesketch`      | 0             |
@@ -215,6 +228,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.chat-service-send-message-success-path-clears-the-assistant-is-streaming-flag-and-store-is-dd0f6815`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-service-viewer-context-sends-the-context-with-the-question-but-shows-only-the-question-in-the-ae72b4ff`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.chat-streamed-answer-renders-exactly-once-double-emit-regression`                                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size`                                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-left-edge`                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-right-edge`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-does-not-flag-overlaps-anchor-for-a-normal-placement`                                                   | `testcasesketch`      | 0             |
@@ -223,12 +238,17 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.compute-tooltip-position-flips-to-bottom-when-top-has-no-room`                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-flips-to-top-when-bottom-has-no-room`                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-places-the-card-above-the-anchor-for-the-preferred-top-placement-when-it-c2af8640`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded`                                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.dotted-id-composes-layer-id-type-slugname`                                                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.dotted-id-drops-dots-in-the-name-segment-2-1-21`                                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.dotted-id-matches-slugify-name-for-the-name-segment-on-every-fixture-node`                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column`                                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-a85a6ed4`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-fills-a-graph-area-under-720px`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-destination-kind-badge-navigates-to-that-types-de9439b0`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-predicate-badge-navigates-to-the-edges-source-acb06194`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-source-kind-badge-navigates-to-that-types-schema-c007cb73`                     | `testcasesketch`      | 0             |
@@ -265,6 +285,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.error-boundary-renders-its-children-when-nothing-throws`                                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.error-boundary-shows-what-failed-in-place-and-keeps-the-rest-of-the-view`                                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-de74dc86`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.filter-structural-inter-layer-filters-out-edges-whose-nodes-were-removed`                                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.filter-structural-inter-layer-filters-out-foreign-nodes-without-structural-predicates`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.filter-structural-inter-layer-handles-reverse-direction-foreign-native-with-structural-predicate`                                | `testcasesketch`      | 0             |
@@ -275,13 +296,17 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.first-node-type-id-returns-undefined-for-a-layer-with-no-schema`                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-toggle-layer-sets-focus-to-layer-when-ba1fdca1`                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded`                                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button`                                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.generated-api-client-auth-token-still-prefers-a-token-set-explicitly-with-set-token`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.generated-api-client-auth-token-uses-a-token-stored-after-the-module-was-imported`                                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.graph-canvas-key-changes-with-every-input-that-remounts-the-canvas`                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.graph-canvas-key-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph`                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.graph-layout-display-preferences-default-to-organic-layout-boundaries-on-every-relation-visible-c5a4dba8`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.graph-layout-display-preferences-set-graph-layout-switches-the-layout-engine`                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.graph-layout-display-preferences-set-node-display-switches-between-card-and-pill`                                                | `testcasesketch`      | 0             |
@@ -305,6 +330,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-folds-a-large-lane-by-type-keeping-what-it-is-told-to-and-e41db012`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-leaves-small-lanes-and-opened-groups-alone`                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-shows-everything-with-no-filter-and-only-changes-with-1a772d3d`                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.impact-group-nodes-use-the-full-plural-label`                                                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text`                                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text`                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.inspector-annotations-section-mounting-does-not-mount-the-annotations-section-for-a-schema-node`                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.inspector-annotations-section-mounting-does-not-mount-the-annotations-section-when-nothing-is-724ec8a2`                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.inspector-annotations-section-mounting-mounts-the-annotations-section-for-a-selected-model-element`                              | `testcasesketch`      | 0             |
@@ -369,14 +397,14 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.layer-order-has-no-duplicates`                                                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-order-has-the-13-spec-layers-product-third`                                                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-order-matches-the-spec-manifest-order-derived-from-the-api-spec-fixture`                                                   | `testcasesketch`      | 0             |
-| `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-description-from-real-spec-model-data`                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-summary-description-from-real-spec-model-data`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-carries-the-4-stats-in-node-types-relationships-elements-layer-order`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-cross-layer-references-predicate-cells-carry-no-edge-info-every-row-here-is-cross-2930a453`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-cross-layer-references-row-carries-predicate-node-type-tooltips`                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-cross-layer-references-table-lists-meta-model-business-twice-navigating-to-the-e5a7a199`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-elements-in-model-row-carries-a-node-type-tooltip-on-the-type-cell`                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-elements-in-model-table-has-one-row-per-element-in-the-layer-navigating-to-it`                                   | `testcasesketch`      | 0             |
-| `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-description-fields`                                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-returns-null-for-a-layer-slug-that-is-not-one-of-the-12-domains`                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-spec-node-types-row-carries-a-node-type-tooltip-on-the-type-cell`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.layer-page-data-spec-node-types-table-has-one-row-per-node-schemas-entry-navigating-to-the-spec-node`                            | `testcasesketch`      | 0             |
@@ -385,7 +413,14 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block`                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none`                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text`                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-text-never-turns-raw-html-in-the-text-into-markup`                                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-text-reads-plain-text-as-one-paragraph-as-before`                                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text`                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.markdown-text-strips-a-javascript-link-target`                                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.metadata-for-element-curates-a-fixed-properties-set-layer-type-provenance-source-no-attribute-spread`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.metadata-for-element-defaults-provenance-to-authored-and-omits-source-when-no-reference`                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.metadata-for-element-falls-back-to-the-file-path-when-a-location-has-only-a-file`                                                | `testcasesketch`      | 0             |
@@ -434,6 +469,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-schema-leaf-navigates-to-that-node-type-with-full-5867a3be`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-the-schema-section-switches-the-view-to-spec`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted`                                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type`                                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-5e53dde6`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-groups-use-the-short-plural-label`                                                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-each-model-layer-row-shows-its-live-element-count`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-expands-a-layer-to-reveal-its-element-leaves`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-model-layers-expands-the-model-section-into-12-layer-rows`                                                              | `testcasesketch`      | 0             |
@@ -445,6 +483,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group`                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd`                    | `testcasesketch`      | 0             |
@@ -478,6 +517,16 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.node-type-connections-inbound-entries-carry-the-source-type`                                                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.node-type-connections-outbound-entries-carry-the-raw-predicate-no-cardinality-suffix-the-7e4da5c7`                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.node-type-connections-returns-empty-lists-for-a-node-type-with-no-relationship-schemas`                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word`                                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules`                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-4702a09a`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word`                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole`                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-bbc1f185`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-2f35bc06`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label`                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-80053bec`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-772b8a24`                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.node-type-tooltip-caps-the-connection-list-and-folds-the-remainder-into-a-n-more-row`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.node-type-tooltip-data-resolves-specifier-title-description-connections-for-a-known-node-type`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.node-type-tooltip-data-returns-null-for-an-undefined-spec`                                                                       | `testcasesketch`      | 0             |
@@ -544,6 +593,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-clicking-a-node-type-cell-navigates-46d00779`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-clicking-a-predicate-cell-backed-by-09004ddc`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-the-highlight-from-a-predicate-95568654`                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.page-view-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description`                                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.page-view-description-section-593-shows-no-description-section-when-there-is-no-description`                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13`                    | `testcasesketch`      | 0             |
@@ -557,6 +608,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-the-7dacf17c`                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.persist-hydration-validates-inspector-follow-falls-back-to-1-layer-for-an-invalid-stored-value-s`                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.persist-hydration-validates-inspector-follow-keeps-a-valid-stored-depth-s`                                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s`                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s`                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice`                                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-renders-no-kind-label-at-all-when-kind-is-omitted`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-renders-the-plain-kind-label-no-tooltip-when-spec-is-not-444f17d5`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-shows-the-node-type-tooltip-on-hover-using-kind-as-the-type-03cdd7bb`                     | `testcasesketch`      | 0             |
@@ -608,6 +662,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-heads-an-added-elements-inspector-with-its-layer-acc002c5`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-keeps-the-routine-updates-in-bulk`                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-labels-the-columns-and-the-two-chip-shapes-and-draws-a-aab3c51b`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-a-change-from-the-list-in-the-inspector`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-the-element-in-impact-from-its-neighbourhood`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-records-keep-from-the-inspector-and-flips-the-row`                                    | `testcasesketch`      | 0             |
@@ -625,6 +680,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.review-purpose-and-actions-explains-a-refused-commit-of-a-verification-record-inline-not-as-drift`                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-purpose-and-actions-keeps-apply-and-discard-on-an-older-dr-cli-that-sends-no-actions`                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply`                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-put-ordering-and-rollback-serialises-back-to-back-puts-in-order-and-keeps-both-verdicts`                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.review-since-your-last-review-opens-on-what-dr-bot-changed-revised-new-and-withdrawn`                                            | `testcasesketch`      | 0             |
@@ -646,7 +702,10 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query`                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.search-index-stays-fast-on-a-large-model`                                                                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `testcasesketch`      | 0             |
@@ -656,9 +715,11 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-set-highlighted-bda650c6`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-layer-cbdf5693`                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-section-dadd2e34`                         | `testcasesketch`      | 0             |
-| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-changeset-switches-to-the-changesets-view`                             | `testcasesketch`      | 0             |
-| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-layer-clears-selection-and-expands-the-c6b80944`                       | `testcasesketch`      | 0             |
-| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-toggle-chat-flips-chat-open-set-wide-sets-the-d407ed7f`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view`                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open`                                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-node-select-graph-node-select-graph-node-expands-the-active-section-and-layer-when-set`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.select-node-select-graph-node-select-node-sets-selected-id-without-touching-the-view`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis`                                                                    | `testcasesketch`      | 0             |
@@ -762,6 +823,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.to-review-items-keeps-an-identity-changing-update-out-of-the-bulk-keep`                                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.to-review-items-leaves-the-cancelled-pairs-out`                                                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.to-review-items-marks-link-ends-new-to-the-changeset-on-the-ends-not-as-chips`                                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name`                                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name-605`                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.to-review-items-names-the-changed-field-and-flags-a-type-only-change`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.to-review-items-puts-a-delete-with-blockers-in-blocked-deletes-one-without-in-removals`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.to-review-items-weighs-updates-routine-adds-new-elements-link-adds-new-links`                                                    | `testcasesketch`      | 0             |
@@ -780,11 +843,20 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title`                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-ab2b6c94`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-814adacb`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-e1bfb361`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-bbaffe74`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order`                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band`                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `testcasesketch`      | 0             |
@@ -900,11 +972,16 @@ flowchart TB
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                                                   | `462e2931-4c7c-4051-a9ac-8817c270d650`                             | `motivation`  | `supports`  | unknown      | unknown  |
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                                                   | `ef84b64d-883c-4471-9b56-a58574bac2b9`                             | `motivation`  | `supports`  | unknown      | unknown  |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-create-edit-reply-resolve-delete-an-annotation`                                                                      | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-delete-removes-an-annotation-and-the-list-refetches-cdc2828e`                           | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.annotations-mutations-invalidate-refetch-delete-removes-an-annotation-and-the-list-refetches-cdc2828e`                           | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-patch-updates-content-resolved-and-the-list-reflects-it-accf90b4`                       | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.annotations-mutations-invalidate-refetch-patch-updates-content-resolved-and-the-list-reflects-it-accf90b4`                       | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-add-adds-an-annotation-via-post-and-it-appears-in-the-list`                                                  | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-delete-deletes-via-a-confirm-dialog-delete-and-removes-the-annotation`                                       | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-edit-edits-an-annotation-via-patch-and-the-new-content-renders`                                              | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
@@ -986,12 +1063,15 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-inter-layer-nodes-control-toggling-inter-layer-nodes-on-and-off-updates-the-graph-composition`                            | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-keyed-remount-on-view-layer-switch-switching-modelschema-for-one-layer-swaps-instances-for-b6ea5719`                      | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-keyed-remount-on-view-layer-switch-switching-the-layer-swaps-the-rendered-node-set`                                       | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view`                                                         | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-model-view-page-header-renders-instance-model-eyebrow-layer-title-id-chip-and-element-meta`                               | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-model-view-page-header-renders-the-selected-layer-graph-nodes`                                                            | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-relations-toggle-actually-filters-rendered-edges-structural-hides-non-structural-edges-all-5d627845`                      | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-schema-view-page-header-renders-meta-model-eyebrow-layer-schema-title-and-node-type-meta`                                 | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-settings-flyout-hover-path-regression-it-closed-before-the-pointer-reached-it-keeps-working-509d4bba`                     | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.canvas-settings-flyout-hover-path-regression-it-closed-before-the-pointer-reached-it-stays-open-1df0bf29`                        | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cap-bands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded`                                                 | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cap-bands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked`                                                  | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.card-short-card-shortj-j`                                                                                                        | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.change-detail-add-of-an-element-added-type`                                                                                      | `application.applicationservice.changeset-op-rows`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.change-detail-delete-of-an-element-removed-type`                                                                                 | `application.applicationservice.changeset-op-rows`                 | `application` | `tests`     | many-to-many | medium   |
@@ -1002,10 +1082,14 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.change-detail-update-with-no-field-differences-updated-type`                                                                     | `application.applicationservice.changeset-op-rows`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changed-paths-ignores-metadata-id-and-path`                                                                                      | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-action-error-message-falls-back-to-the-raw-body-then-the-error-message`                                                | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-action-error-message-falls-back-to-the-raw-body-then-the-error-message`                                                | `application.applicationservice.use-changesets`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-action-error-message-returns-the-servers-error-message`                                                                | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-action-error-message-returns-the-servers-error-message`                                                                | `application.applicationservice.use-changesets`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-canvas-a-changeset-that-fails-to-load-says-why-instead-of-loading-changeset-forever-845ed2cf`                          | `application.applicationcomponent.changeset-canvas`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-lists-the-committed-changeset-read-only-30-changes-to-review-4-3a85b24b`                         | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-marks-the-changed-field-of-an-update-and-its-op`                                                 | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`                                             | `application.applicationcomponent.changeset-canvas`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`                                             | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-header-op-rows-shows-the-changeset-name-status-chip-and-change-count-in-the-header`                             | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-impact-tab-shares-its-follow-depth-with-the-model-inspector`                                                    | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-canvas-impact-tab-switches-from-the-change-list-to-the-impact-lanes-and-back`                                          | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
@@ -1038,7 +1122,11 @@ flowchart TB
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-counts-verdicts-kept-in-this-browser-for-an-older-dr-cli-by-the-shared-definition`                               | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan`                                    | `application.applicationcomponent.changeset-inbox`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-keeps-a-verification-record-out-of-waiting-on-you-and-pairs-it-with-its-plan`                                    | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you`                                        | `application.applicationcomponent.changeset-inbox`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you`                                        | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-opens-a-changeset-from-its-card`                                                                                 | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`                                      | `application.applicationcomponent.changeset-inbox`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`                                      | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history`                                                                    | `application.applicationcomponent.changeset-inbox`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-shows-each-changesets-purpose-in-the-history`                                                                    | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.changeset-inbox-sorts-staged-changesets-into-waiting-on-you-and-on-dr-bot-with-the-history-below`                                | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
@@ -1050,6 +1138,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-purpose-keeps-known-actions-drops-unknown-ones-and-reads-no-array-as-an-older-dr-cli`                                  | `application.applicationservice.changeset-purpose`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-purpose-offers-apply-and-discard-from-the-servers-actions-or-from-a-staged-status-on-an-older-dr-cli`                  | `application.applicationservice.changeset-purpose`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one`                                                              | `application.applicationservice.changeset-purpose`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-purpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded`                                | `application.applicationservice.changeset-purpose`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-purpose-sorts-the-inbox-by-purpose-and-pairs-each-verification-record-with-its-plan`                                   | `application.applicationservice.changeset-purpose`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-summary-falls-back-to-the-name-when-stats-are-missing`                                                                 | `application.applicationservice.changeset-op-rows`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-summary-renders-the-additions-modifications-deletions-sentence`                                                        | `application.applicationservice.changeset-op-rows`                 | `application` | `tests`     | many-to-many | medium   |
@@ -1061,6 +1150,11 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-composer-submit-sends-what-the-user-has-open-layer-selected-element-with-the-question`                                | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-composer-submit-submitting-the-composer-calls-chat-service-send-message-with-the-text`                                | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-composer-submit-surfaces-the-sdk-unavailable-error-from-the-store`                                                    | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-panel-layout-597-fills-an-area-under-720px-and-hides-an-open-drawer`                                                        | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-panel-layout-597-leaves-240px-of-graph-and-fits-the-area-height`                                                            | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-panel-layout-597-sits-at-the-top-right-with-no-drawer`                                                                      | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-panel-layout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit`                                                  | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-panel-layout-597-takes-the-drawers-place-when-they-dont-fit`                                                                | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-message-rendering-via-the-adapter-renders-a-user-bubble-and-a-bot-markdown-body`                                      | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-message-rendering-via-the-adapter-renders-tool-and-thinking-blocks-from-interleaved-bot-60c713b7`                     | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-panel-suggestions-gating-hides-suggestions-once-the-thread-has-more-than-one-message`                                       | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
@@ -1086,6 +1180,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-service-send-message-success-path-clears-the-assistant-is-streaming-flag-and-store-is-dd0f6815`                             | `application.applicationservice.chat-service`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.chat-service-viewer-context-sends-the-context-with-the-question-but-shows-only-the-question-in-the-ae72b4ff`                     | `application.applicationservice.chat-service`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-streamed-answer-renders-exactly-once-double-emit-regression`                                                                | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size`                                                             | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243`                    | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-left-edge`                                              | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-right-edge`                                             | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-does-not-flag-overlaps-anchor-for-a-normal-placement`                                                   | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
@@ -1094,13 +1190,20 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-flips-to-bottom-when-top-has-no-room`                                                                   | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-flips-to-top-when-bottom-has-no-room`                                                                   | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-places-the-card-above-the-anchor-for-the-preferred-top-placement-when-it-c2af8640`                      | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded`                                                           | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded`                                                           | `application.applicationservice.markdown-excerpt`                  | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`                                            | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`                                            | `application.applicationservice.markdown-excerpt`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.dotted-id-composes-layer-id-type-slugname`                                                                                       | `application.applicationservice.model-graph-transform`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.dotted-id-drops-dots-in-the-name-segment-2-1-21`                                                                                 | `application.applicationservice.model-graph-transform`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.dotted-id-matches-slugify-name-for-the-name-segment-on-every-fixture-node`                                                       | `application.applicationservice.model-graph-transform`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.accesses.data-store.collection`                               | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column`                                                                         | `data-store.collection.ui-preferences`                             | `data-store`  | `accesses`  | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-a85a6ed4`                     | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column`                                                                         | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized`                                        | `application.applicationservice.chat-anchor`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                                              | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                                              | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-fills-a-graph-area-under-720px`                                           | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                                                          | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                                                          | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.edge-inspector-cross-view-navigation-clicking-the-destination-kind-badge-navigates-to-that-types-de9439b0`                       | `application.applicationcomponent.inspector-drawer`                | `application` | `tests`     | many-to-many | medium   |
@@ -1140,6 +1243,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.error-boundary-gets-a-fresh-try-when-its-key-changes`                                                                            | `application.applicationcomponent.error-boundary`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.error-boundary-renders-its-children-when-nothing-throws`                                                                         | `application.applicationcomponent.error-boundary`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.error-boundary-shows-what-failed-in-place-and-keeps-the-rest-of-the-view`                                                        | `application.applicationcomponent.error-boundary`                  | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-de74dc86`                    | `application.applicationcomponent.chat-drawer`                     | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                                                       | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                                                       | `ux.view.dr-bot-chat-drawer`                                       | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.filter-structural-inter-layer-filters-out-edges-whose-nodes-were-removed`                                                        | `application.applicationservice.model-graph-transform`             | `application` | `tests`     | many-to-many | medium   |
@@ -1152,13 +1256,17 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.first-node-type-id-returns-undefined-for-a-layer-with-no-schema`                                                                 | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed`   | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`          | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`                                           | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-node-select-graph-node-navigate-to-6a261bdc`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-starts-as-layer`                                                            | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-toggle-layer-sets-focus-to-layer-when-ba1fdca1`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded`                                     | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button`                                                                  | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.generated-api-client-auth-token-still-prefers-a-token-set-explicitly-with-set-token`                                             | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.generated-api-client-auth-token-uses-a-token-stored-after-the-module-was-imported`                                               | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.graph-canvas-key-changes-with-every-input-that-remounts-the-canvas`                                                              | `application.applicationservice.graph-viewport-key`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.graph-canvas-key-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph`                                  | `application.applicationservice.graph-viewport-key`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.graph-layout-display-preferences-default-to-organic-layout-boundaries-on-every-relation-visible-c5a4dba8`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.graph-layout-display-preferences-set-graph-layout-switches-the-layout-engine`                                                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.graph-layout-display-preferences-set-node-display-switches-between-card-and-pill`                                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1180,8 +1288,12 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-drops-a-hidden-op-layer-or-type-with-its-links`                                          | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-finds-elements-by-name-changed-ones-first`                                               | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-folds-a-large-lane-by-type-keeping-what-it-is-told-to-and-e41db012`                      | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-folds-a-large-lane-by-type-keeping-what-it-is-told-to-and-e41db012`                      | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-leaves-small-lanes-and-opened-groups-alone`                                              | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-shows-everything-with-no-filter-and-only-changes-with-1a772d3d`                          | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-group-nodes-use-the-full-plural-label`                                                                                    | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text`                                                                      | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text`                                                      | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.inspector-annotations-section-mounting-does-not-mount-the-annotations-section-for-a-schema-node`                                 | `application.applicationcomponent.inspector-drawer`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.inspector-annotations-section-mounting-does-not-mount-the-annotations-section-when-nothing-is-724ec8a2`                          | `application.applicationcomponent.inspector-drawer`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.inspector-annotations-section-mounting-mounts-the-annotations-section-for-a-selected-model-element`                              | `application.applicationcomponent.inspector-drawer`                | `application` | `tests`     | many-to-many | medium   |
@@ -1222,7 +1334,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-structural-predicate-exports-exactly-the-12-predicate-structural-category`                                                    | `application.applicationservice.structural-predicate-classifier`   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-structural-predicate-treats-undefined-unknown-predicates-as-non-structural`                                                   | `application.applicationservice.structural-predicate-classifier`   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-tier1unavailable-treats-a-missing-route-or-a-non-json-body-as-an-older-server`                                                | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-tier1unavailable-treats-a-missing-route-or-a-non-json-body-as-an-older-server`                                                | `application.applicationservice.use-tier1`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-tier1unavailable-treats-anything-else-as-an-error-worth-showing`                                                              | `application.applicationservice.generated-api-client`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.is-tier1unavailable-treats-anything-else-as-an-error-worth-showing`                                                              | `application.applicationservice.use-tier1`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.json-rpc-handler-connection-close-rejects-pending-requests-as-soon-as-the-socket-closes-not-at-6e371d2b`                         | `application.applicationservice.json-rpc-handler`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.json-rpc-handler-on-notification-dispatch-dispatches-a-notification-to-handlers-registered-for-its-797b1838`                     | `application.applicationservice.json-rpc-handler`                  | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.json-rpc-handler-on-notification-dispatch-does-not-invoke-handlers-for-a-different-method-and-47d6ebb5`                          | `application.applicationservice.json-rpc-handler`                  | `application` | `tests`     | many-to-many | medium   |
@@ -1246,14 +1360,14 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-order-has-no-duplicates`                                                                                                   | `application.applicationservice.layer-domain-palette`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-order-has-the-13-spec-layers-product-third`                                                                                | `application.applicationservice.layer-domain-palette`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-order-matches-the-spec-manifest-order-derived-from-the-api-spec-fixture`                                                   | `application.applicationservice.layer-domain-palette`              | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-description-from-real-spec-model-data`                                                  | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-summary-description-from-real-spec-model-data`                                          | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-carries-the-4-stats-in-node-types-relationships-elements-layer-order`                                            | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-cross-layer-references-predicate-cells-carry-no-edge-info-every-row-here-is-cross-2930a453`                      | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-cross-layer-references-row-carries-predicate-node-type-tooltips`                                                 | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-cross-layer-references-table-lists-meta-model-business-twice-navigating-to-the-e5a7a199`                         | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-elements-in-model-row-carries-a-node-type-tooltip-on-the-type-cell`                                              | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-elements-in-model-table-has-one-row-per-element-in-the-layer-navigating-to-it`                                   | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-description-fields`                                                   | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593`                             | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-returns-null-for-a-layer-slug-that-is-not-one-of-the-12-domains`                                                 | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-spec-node-types-row-carries-a-node-type-tooltip-on-the-type-cell`                                                | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.layer-page-data-spec-node-types-table-has-one-row-per-node-schemas-entry-navigating-to-the-spec-node`                            | `application.applicationservice.page-data-builder`                 | `application` | `tests`     | many-to-many | medium   |
@@ -1262,7 +1376,14 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-canvas-theme-light-by-default-persists-across-a-reload`                                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-dr-bot-open-closed-state-persists-across-a-reload`                                                     | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.local-storage-persistence-graph-layout-setting-persists-across-a-reload`                                                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block`                                                              | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none`                                          | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text`                                 | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-never-turns-raw-html-in-the-text-into-markup`                                                                      | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-reads-plain-text-as-one-paragraph-as-before`                                                                       | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`                      | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text`                                                                 | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.markdown-text-strips-a-javascript-link-target`                                                                                   | `application.applicationcomponent.markdown-text`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.metadata-for-element-curates-a-fixed-properties-set-layer-type-provenance-source-no-attribute-spread`                            | `application.applicationservice.relationship-derivation`           | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.metadata-for-element-defaults-provenance-to-authored-and-omits-source-when-no-reference`                                         | `application.applicationservice.relationship-derivation`           | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.metadata-for-element-falls-back-to-the-file-path-when-a-location-has-only-a-file`                                                | `application.applicationservice.relationship-derivation`           | `application` | `tests`     | many-to-many | medium   |
@@ -1319,6 +1440,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-schema-leaf-navigates-to-that-node-type-with-full-5867a3be`                        | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-the-schema-section-switches-the-view-to-spec`                                        | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.nav-tree-groups-groups-a-layers-elements-by-type-with-counts-sorted`                                                             | `application.applicationservice.nav-tree-groups`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type`                                                                    | `application.applicationservice.nav-tree-groups`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-5e53dde6`                       | `application.applicationservice.nav-tree-groups`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.nav-tree-groups-use-the-short-plural-label`                                                                                      | `application.applicationservice.nav-tree-groups`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-each-model-layer-row-shows-its-live-element-count`                                                         | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-expands-a-layer-to-reveal-its-element-leaves`                                                              | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-model-layers-expands-the-model-section-into-12-layer-rows`                                                              | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
@@ -1332,6 +1456,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `product.feature.nav-tree-type-groups`                             | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `product.feature.nav-tree-type-groups`                             | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group`                                                      | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-same-layer-navigation-keeps-the-expanded-layers-set-c59270be`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-cross-layer-navigation-switches-layer-id-keeps-the-model-view-and-expands-the-58e03b42`                      | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.navigate-to-element-with-edge-cross-view-navigation-from-a-predicate-click-behaves-like-navigate-to-0232fbdd`                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1365,6 +1490,16 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-connections-inbound-entries-carry-the-source-type`                                                                     | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-connections-outbound-entries-carry-the-raw-predicate-no-cardinality-suffix-the-7e4da5c7`                               | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-connections-returns-empty-lists-for-a-node-type-with-no-relationship-schemas`                                          | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules`                              | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-4702a09a`                     | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word`                            | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole`                             | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-bbc1f185`                      | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-2f35bc06`                    | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label`                                       | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-80053bec`                      | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-772b8a24`                          | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word`                                                                      | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.node-type-tooltip-caps-the-connection-list-and-folds-the-remainder-into-a-n-more-row`                                            | `application.applicationcomponent.node-type-tooltip`               | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-tooltip-data-resolves-specifier-title-description-connections-for-a-known-node-type`                                   | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-type-tooltip-data-returns-null-for-an-undefined-spec`                                                                       | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
@@ -1373,6 +1508,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.node-type-tooltip-renders-the-specifier-title-and-description`                                                                   | `application.applicationcomponent.node-type-tooltip`               | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.node-type-tooltip-shows-an-empty-state-message-when-a-direction-has-no-connection-types`                                         | `application.applicationcomponent.node-type-tooltip`               | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-data-model-has-an-empty-layer-f8e2471c`                     | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8`                     | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8`                     | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-returns-for-a-layer-with-no-b6df00e5`                       | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-returns-one-node-type-per-node-2011b8a5`                    | `application.applicationservice.spec-graph-transform`              | `application` | `tests`     | many-to-many | medium   |
@@ -1444,6 +1580,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-clicking-a-node-type-cell-navigates-46d00779`                    | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-clicking-a-predicate-cell-backed-by-09004ddc`                    | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-cross-view-navigation-from-node-types-edge-predicates-the-highlight-from-a-predicate-95568654`                         | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description`                                     | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-description-section-593-shows-no-description-section-when-there-is-no-description`                                     | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`                       | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-node-type-cell-triggers-the-rich-node-type-tooltip-on-af1188a9`                    | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-predicate-cell-triggers-the-rich-predicate-tooltip-on-88492b13`                    | `application.applicationcomponent.page-view`                       | `application` | `tests`     | many-to-many | medium   |
@@ -1458,6 +1596,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-graph-layout-node-margin-preset-show-inter-layer-nodes-keeps-the-7dacf17c`                           | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-inspector-follow-falls-back-to-1-layer-for-an-invalid-stored-value-s`                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-inspector-follow-keeps-a-valid-stored-depth-s`                                                       | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s`                                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s`                                                              | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice`                                                                      | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-renders-no-kind-label-at-all-when-kind-is-omitted`                                        | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-renders-the-plain-kind-label-no-tooltip-when-spec-is-not-444f17d5`                        | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-kind-label-node-type-tooltip-shows-the-node-type-tooltip-on-hover-using-kind-as-the-type-03cdd7bb`                     | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
@@ -1485,6 +1626,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.relationships-for-element-returns-for-an-unknown-element-id`                                                                     | `application.applicationservice.relationship-derivation`           | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.relationships-for-element-target-domain-is-the-other-endpoint-layer-cross-layer-rels-carry-it`                                   | `application.applicationservice.relationship-derivation`           | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.revert-decisions-undoes-only-the-given-verdicts-restoring-what-was-there-before`                                                 | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessprocess`                               | `testing.testcasesketch.revert-decisions-undoes-only-the-given-verdicts-restoring-what-was-there-before`                                                 | `business.businessprocess.changeset-review-flow`                   | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-a-blocked-delete-clearing-and-a-blocker-that-appears-later-clears-a-verdict-with-clear-bfa5296a`                          | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-a-blocked-delete-clearing-and-a-blocker-that-appears-later-clears-a-verdict-with-clear-bfa5296a`                          | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-a-blocked-delete-clearing-and-a-blocker-that-appears-later-puts-a-kept-delete-back-to-needs-f38a0f1b`                     | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
@@ -1534,6 +1676,8 @@ flowchart TB
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-keeps-the-routine-updates-in-bulk`                                                    | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-labels-the-columns-and-the-two-chip-shapes-and-draws-a-aab3c51b`                      | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-labels-the-columns-and-the-two-chip-shapes-and-draws-a-aab3c51b`                      | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707`                     | `application.applicationcomponent.changeset-review-panel`          | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707`                     | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-a-change-from-the-list-in-the-inspector`                                        | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-a-change-from-the-list-in-the-inspector`                                        | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-the-element-in-impact-from-its-neighbourhood`                                   | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
@@ -1579,6 +1723,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply`                                                    | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply`                                                    | `application.applicationcomponent.changeset-review-panel`          | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-purpose-and-actions-offers-a-verification-record-discard-but-no-apply`                                                    | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it`                            | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it`                            | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f`                     | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f`                     | `business.businessservice.changeset-review`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.review-put-ordering-and-rollback-serialises-back-to-back-puts-in-order-and-keeps-both-verdicts`                                  | `application.applicationcomponent.changeset-inspector`             | `application` | `tests`     | many-to-many | medium   |
@@ -1603,7 +1749,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.schema-view-renders-node-type-nodes-and-predicate-edges-for-a-layer`                                                             | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.schema-view-toggling-the-same-layer-between-model-and-schema-shows-different-content`                                            | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-groups-results-by-layer-in-spec-order-and-caps-them`                                                                | `application.applicationservice.search-index`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query`                                                | `application.applicationservice.search-index`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better`                                                              | `application.applicationservice.search-index`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`                           | `application.applicationservice.search-index`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.search-index-stays-fast-on-a-large-model`                                                                                        | `application.applicationservice.search-index`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-a-node-selection-d5ef826a`                       | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-clear-edge-5c674d20`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-does-not-persist-b09a8cde`                       | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1613,9 +1762,11 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-set-highlighted-bda650c6`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-layer-cbdf5693`                           | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-edge-set-highlighted-edge-id-edge-selection-mutually-exclusive-with-node-toggle-section-dadd2e34`                         | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-changeset-switches-to-the-changesets-view`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-layer-clears-selection-and-expands-the-c6b80944`                       | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-toggle-chat-flips-chat-open-set-wide-sets-the-d407ed7f`                       | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e`                     | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view`                                      | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217`                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec`                      | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open`                                                           | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-node-select-graph-node-select-graph-node-expands-the-active-section-and-layer-when-set`                                   | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.select-node-select-graph-node-select-node-sets-selected-id-without-touching-the-view`                                            | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis`                                                                    | `application.applicationservice.use-cli-version`                   | `application` | `tests`     | many-to-many | medium   |
@@ -1726,6 +1877,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-keeps-an-identity-changing-update-out-of-the-bulk-keep`                                                          | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-leaves-the-cancelled-pairs-out`                                                                                  | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-marks-link-ends-new-to-the-changeset-on-the-ends-not-as-chips`                                                   | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name-605`                                                      | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name`                                                          | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-names-the-changed-field-and-flags-a-type-only-change`                                                            | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-puts-a-delete-with-blockers-in-blocked-deletes-one-without-in-removals`                                          | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.to-review-items-weighs-updates-routine-adds-new-elements-link-adds-new-links`                                                    | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
@@ -1744,15 +1897,26 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.toggle-section-expands-a-collapsed-section-and-switches-the-view-to-it`                                                          | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.toggle-section-toggling-the-already-active-section-pure-expand-collapse-leaves-selection-untouched`                              | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.tooltip-card-anchor-tracking-hides-when-its-anchor-disappears-and-shows-again-when-it-comes-back`                                | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree`                                           | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                                                    | `product.feature.topbar-search`                                    | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`                                 | `ux.view.topbar-search`                                            | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                                                      | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                                                      | `product.feature.topbar-search`                                    | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `motivation.requirement.find-anything-by-name`                     | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`                            | `product.feature.topbar-search`                                    | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title`                                         | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-ab2b6c94`                    | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-814adacb`                       | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `application.applicationservice.node-type-label`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`                                                                                  | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-e1bfb361`                     | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-bbaffe74`                      | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order`                                  | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band`                                 | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`                                                                                | `application.applicationservice.type-bands`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-defaults-to-a-light-canvas-and-dr-bot-closed-on-a-first-visit`                                            | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1778,7 +1942,9 @@ flowchart TB
 | `testing.testcasesketch.tests.navigation.navigationtransition`                        | `testing.testcasesketch.url-routing-left-panel-selections-selecting-an-edge-on-the-model-graph-updates-the-url-with-edge-16ac9848`                       | `navigation.navigationtransition.layer-deep-link-transition`       | `navigation`  | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`                        | `testing.testcasesketch.url-routing-left-panel-selections-switching-views-pushes-history-selecting-within-a-view-replaces-it`                            | `navigation.navigationtransition.layer-deep-link-transition`       | `navigation`  | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-is-disabled-no-request-when-element-id-is-null`                                       | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-is-disabled-no-request-when-element-id-is-null`                                       | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-returns-only-annotations-for-the-requested-element`                                   | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-returns-only-annotations-for-the-requested-element`                                   | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-changeset-detail-hook-is-disabled-no-fetch-until-an-id-is-provided`                                                          | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-changeset-detail-hook-maps-stats-change-rows-when-an-id-is-provided`                                                         | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-changesets-maps-the-api-changesets-fixture-lists-changeset-summaries-newest-first`                                           | `application.applicationservice.use-changesets`                    | `application` | `tests`     | many-to-many | medium   |
@@ -1796,7 +1962,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-live-model-updates-refetches-the-model-and-changesets-when-the-server-announces-a-model-change`                              | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-model-maps-the-api-model-fixture-exposes-raw-nodes-links-and-derives-per-layer-counts-rel-count`                             | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-replies-lazy-does-not-fetch-on-initial-render-when-disabled`                                                                 | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.use-replies-lazy-does-not-fetch-on-initial-render-when-disabled`                                                                 | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-replies-lazy-fetches-replies-when-enabled`                                                                                   | `application.applicationservice.use-model`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.use-replies-lazy-fetches-replies-when-enabled`                                                                                   | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-spec-maps-the-api-spec-fixture-derives-per-layer-node-type-info-from-node-schemas-keys-plus-the-f2c5a9ff`                    | `application.applicationservice.use-spec`                          | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-viewport-history-applies-a-viewport-set-from-outside-silently-once`                                                          | `application.applicationservice.use-viewport-history`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.use-viewport-history-ignores-a-viewport-scoped-to-another-canvas-and-offers-a-matching-one-as-e3fb6443`                          | `application.applicationservice.use-viewport-history`              | `application` | `tests`     | many-to-many | medium   |
@@ -1835,9 +2003,11 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-purpose`                 | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-review-model`            | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.chat-adapter`                      | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.chat-panel-layout`                 | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.graph-viewport-key`                | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.layer-domain-palette`              | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.layered-reach`                     | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.markdown-excerpt`                  | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.model-graph-transform`             | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.predicate-definitions`             | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.search-index`                      | `application` | `covers`    | many-to-many | medium   |
@@ -1926,6 +2096,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.app-shell` | `tests`   | outbound  |
 
+### accessibility (axe / WCAG 2.1 AA) — topbar search open &gt; topbar search with results open — $\{tone\} canvas: zero serious/critical violations {#accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-serious-critical-violations}
+
+**ID**: `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate   | Direction |
+| ----------- | ------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`   | `satisfies` | outbound  |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
+
 ### accessibility (axe / WCAG 2.1 AA) &gt; $\{view.name\} view — $\{tone\} canvas: no serious/critical violations (except known contrast) {#accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-known-contrast}
 
 **ID**: `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`
@@ -1979,6 +2168,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation`      | `tests`   | outbound  |
 
 ### annotations mutations — invalidate + refetch &gt; delete removes an annotation and the list refetches without it {#annotations-mutations-invalidate-refetch-delete-removes-an-annotation-and-the-list-refetches-without-it}
 
@@ -1997,6 +2187,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation`      | `tests`   | outbound  |
 
 ### annotations mutations — invalidate + refetch &gt; patch updates content/resolved and the list reflects it after refetch {#annotations-mutations-invalidate-refetch-patch-updates-content-resolved-and-the-list-reflects-it-after-refetch}
 
@@ -2015,6 +2206,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation`      | `tests`   | outbound  |
 
 ### AnnotationsSection — add &gt; adds an annotation via POST and it appears in the list {#annotationssection-add-adds-an-annotation-via-post-and-it-appears-in-the-list}
 
@@ -3476,6 +3668,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
 
+### Canvas — Model view by type (#594) &gt; offers no View control in the Schema view {#canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view}
+
+**ID**: `testing.testcasesketch.canvas-model-view-by-type-594-offers-no-view-control-in-the-schema-view`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate | Direction |
+| ----------- | ----------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
+
 ### Canvas — Model view PageHeader &gt; renders INSTANCE MODEL eyebrow, layer title, id chip and element meta {#canvas-model-view-pageheader-renders-instance-model-eyebrow-layer-title-id-chip-and-element-meta}
 
 **ID**: `testing.testcasesketch.canvas-model-view-page-header-renders-instance-model-eyebrow-layer-title-id-chip-and-element-meta`
@@ -3583,6 +3793,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                 | Predicate | Direction |
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
+
+### capBands &gt; always keeps the selection, and shows a whole lane once it is expanded {#capbands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded}
+
+**ID**: `testing.testcasesketch.cap-bands-always-keeps-the-selection-and-shows-a-whole-lane-once-it-is-expanded`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### capBands &gt; folds a lane over the cap into a "+N more" node, keeping the most linked {#capbands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked}
+
+**ID**: `testing.testcasesketch.cap-bands-folds-a-lane-over-the-cap-into-a-n-more-node-keeping-the-most-linked`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
 
 ### cardShort &gt; cardShort(%j) === %j {#cardshort-cardshort-j-j}
 
@@ -3763,6 +4009,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.generated-api-client` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `tests`   | outbound  |
 
 ### changesetActionErrorMessage &gt; returns the server's \{ error \} message {#changesetactionerrormessage-returns-the-server-s-error-message}
 
@@ -3781,6 +4028,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.generated-api-client` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `tests`   | outbound  |
 
 ### ChangesetCanvas — a changeset that fails to load &gt; says why instead of "loading changeset…" forever (canvas and inspector) {#changesetcanvas-a-changeset-that-fails-to-load-says-why-instead-of-loading-changeset-forever-canvas-and-inspector}
 
@@ -3835,6 +4083,26 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                             | Predicate | Direction |
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `business.businessservice.changeset-review` | `tests`   | outbound  |
+
+### ChangesetCanvas — header + op rows &gt; renders a markdown description and folds a long one {#changesetcanvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one}
+
+**ID**: `testing.testcasesketch.changeset-canvas-header-op-rows-renders-a-markdown-description-and-folds-a-long-one`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-canvas` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.changeset-review`         | `tests`   | outbound  |
 
 ### ChangesetCanvas — header + op rows &gt; shows the changeset name, status chip and change count in the header {#changesetcanvas-header-op-rows-shows-the-changeset-name-status-chip-and-change-count-in-the-header}
 
@@ -4310,6 +4578,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.changeset-inbox` | `tests`   | outbound  |
 | inter-layer | `business.businessservice.changeset-review`        | `tests`   | outbound  |
 
+### ChangesetInbox &gt; lists an upgrade record under its own heading, never under Waiting on you {#changesetinbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you}
+
+**ID**: `testing.testcasesketch.changeset-inbox-lists-an-upgrade-record-under-its-own-heading-never-under-waiting-on-you`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-inbox` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.changeset-review`        | `tests`   | outbound  |
+
 ### ChangesetInbox &gt; opens a changeset from its card {#changesetinbox-opens-a-changeset-from-its-card}
 
 **ID**: `testing.testcasesketch.changeset-inbox-opens-a-changeset-from-its-card`
@@ -4327,6 +4614,26 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                             | Predicate | Direction |
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `business.businessservice.changeset-review` | `tests`   | outbound  |
+
+### ChangesetInbox &gt; shows a one-paragraph inline excerpt of a markdown description on the card {#changesetinbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card}
+
+**ID**: `testing.testcasesketch.changeset-inbox-shows-a-one-paragraph-inline-excerpt-of-a-markdown-description-on-the-card`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-inbox` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.changeset-review`        | `tests`   | outbound  |
 
 ### ChangesetInbox &gt; shows each changeset's purpose in the history {#changesetinbox-shows-each-changeset-s-purpose-in-the-history}
 
@@ -4494,6 +4801,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 ### changesetPurpose &gt; reads a known purpose and ignores an unknown one {#changesetpurpose-reads-a-known-purpose-and-ignores-an-unknown-one}
 
 **ID**: `testing.testcasesketch.changeset-purpose-reads-a-known-purpose-and-ignores-an-unknown-one`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.changeset-purpose` | `tests`   | outbound  |
+
+### changesetPurpose &gt; reads an upgrade record: never applied, reviewed, restored from by hand, discarded {#changesetpurpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded}
+
+**ID**: `testing.testcasesketch.changeset-purpose-reads-an-upgrade-record-never-applied-reviewed-restored-from-by-hand-discarded`
 
 **Type**: `testcasesketch`
 
@@ -4706,6 +5031,96 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                               | Predicate | Direction |
 | ----------- | --------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.chat-panel` | `tests`   | outbound  |
+
+### chatPanelLayout (#597) &gt; fills an area under 720px and hides an open drawer {#chatpanellayout-597-fills-an-area-under-720px-and-hides-an-open-drawer}
+
+**ID**: `testing.testcasesketch.chat-panel-layout-597-fills-an-area-under-720px-and-hides-an-open-drawer`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### chatPanelLayout (#597) &gt; leaves 240px of graph and fits the area height {#chatpanellayout-597-leaves-240px-of-graph-and-fits-the-area-height}
+
+**ID**: `testing.testcasesketch.chat-panel-layout-597-leaves-240px-of-graph-and-fits-the-area-height`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### chatPanelLayout (#597) &gt; sits at the top-right with no drawer {#chatpanellayout-597-sits-at-the-top-right-with-no-drawer}
+
+**ID**: `testing.testcasesketch.chat-panel-layout-597-sits-at-the-top-right-with-no-drawer`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### chatPanelLayout (#597) &gt; steps left of an open drawer when panel + drawer + 240px fit {#chatpanellayout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit}
+
+**ID**: `testing.testcasesketch.chat-panel-layout-597-steps-left-of-an-open-drawer-when-panel-drawer-240px-fit`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### chatPanelLayout (#597) &gt; takes the drawer's place when they don't fit {#chatpanellayout-597-takes-the-drawer-s-place-when-they-don-t-fit}
+
+**ID**: `testing.testcasesketch.chat-panel-layout-597-takes-the-drawers-place-when-they-dont-fit`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
 
 ### ChatPanel — message rendering via the adapter &gt; renders a user bubble and a bot markdown body {#chatpanel-message-rendering-via-the-adapter-renders-a-user-bubble-and-a-bot-markdown-body}
 
@@ -5157,6 +5572,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | --------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.chat-panel` | `tests`   | outbound  |
 
+### clampPanelSize / resizeByKey &gt; clamps and fills in a malformed size {#clamppanelsize-resizebykey-clamps-and-fills-in-a-malformed-size}
+
+**ID**: `testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### clampPanelSize / resizeByKey &gt; grows on ArrowLeft, shrinks on ArrowRight, jumps on Home/End, ignores other keys {#clamppanelsize-resizebykey-grows-on-arrowleft-shrinks-on-arrowright-jumps-on-home-end-ignores-other-keys}
+
+**ID**: `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
 ### computeTooltipPosition &gt; clamps left within the viewport margin near the left edge {#computetooltipposition-clamps-left-within-the-viewport-margin-near-the-left-edge}
 
 **ID**: `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-left-edge`
@@ -5301,6 +5752,46 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.rich-tooltip` | `tests`   | outbound  |
 
+### descriptionExcerpt &gt; reads plain text unchanged, single newlines folded {#descriptionexcerpt-reads-plain-text-unchanged-single-newlines-folded}
+
+**ID**: `testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | automated |
+
+#### Relationships
+
+| Type        | Related Element                                   | Predicate | Direction |
+| ----------- | ------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text`  | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.markdown-excerpt` | `tests`   | outbound  |
+
+### descriptionExcerpt &gt; takes only the first paragraph and drops list and heading markup {#descriptionexcerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup}
+
+**ID**: `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                   | Predicate | Direction |
+| ----------- | ------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text`  | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.markdown-excerpt` | `tests`   | outbound  |
+
 ### dottedId &gt; composes \{layer_id\}.\{type\}.\{slug(name)\} {#dottedid-composes-layer-id-type-slug-name}
 
 **ID**: `testing.testcasesketch.dotted-id-composes-layer-id-type-slugname`
@@ -5355,7 +5846,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.model-graph-transform` | `tests`   | outbound  |
 
-### drbot panel resizes from its edge and docks as a column {#drbot-panel-resizes-from-its-edge-and-docks-as-a-column}
+### drbot panel resizes from its edge and docks as a column &gt; resizes within 340–820px by keyboard and pointer, and persists the size {#drbot-panel-resizes-from-its-edge-and-docks-as-a-column-resizes-within-340-820px-by-keyboard-and-pointer-and-persists-the-size}
 
 **ID**: `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column`
 
@@ -5376,7 +5867,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `data-store.collection.ui-preferences`         | `accesses` | outbound  |
 | inter-layer | `application.applicationcomponent.chat-drawer` | `tests`    | outbound  |
 
-### drbot panel steps left of an open inspector drawer {#drbot-panel-steps-left-of-an-open-inspector-drawer}
+### drbot panel resizes from its edge and docks as a column &gt; docks as a resizable column that collapses to a rail tab {#drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-to-a-rail-tab}
+
+**ID**: `testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-docks-as-a-resizable-column-that-collapses-a85a6ed4`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate | Direction |
+| ----------- | ---------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.chat-drawer` | `tests`   | outbound  |
+
+### drbot panel steps left of an open inspector drawer &gt; sits left of the drawer at 1440px, without reflowing the graph area {#drbot-panel-steps-left-of-an-open-inspector-drawer-sits-left-of-the-drawer-at-1440px-without-reflowing-the-graph-area}
 
 **ID**: `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`
 
@@ -5397,7 +5906,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `satisfies` | outbound  |
 | inter-layer | `application.applicationcomponent.chat-drawer`                     | `tests`     | outbound  |
 
-### drbot panel takes the drawer's place when both don't fit {#drbot-panel-takes-the-drawer-s-place-when-both-don-t-fit}
+### drbot panel steps left of an open inspector drawer &gt; follows the drawer when it is resized {#drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized}
+
+**ID**: `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                              | Predicate | Direction |
+| ----------- | -------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-anchor` | `tests`   | outbound  |
+
+### drbot panel takes the drawer's place when both don't fit &gt; overlays the drawer at 1000px, never the nav rail, and the drawer returns on close {#drbot-panel-takes-the-drawer-s-place-when-both-don-t-fit-overlays-the-drawer-at-1000px-never-the-nav-rail-and-the-drawer-returns-on-close}
 
 **ID**: `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`
 
@@ -5417,6 +5944,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------------------------ | ----------- | --------- |
 | inter-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `satisfies` | outbound  |
 | inter-layer | `application.applicationcomponent.chat-drawer`                     | `tests`     | outbound  |
+
+### drbot panel takes the drawer's place when both don't fit &gt; fills a graph area under 720px {#drbot-panel-takes-the-drawer-s-place-when-both-don-t-fit-fills-a-graph-area-under-720px}
+
+**ID**: `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-fills-a-graph-area-under-720px`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate | Direction |
+| ----------- | ---------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.chat-drawer` | `tests`   | outbound  |
 
 ### EdgeInspector — cross-view navigation &gt; clicking the destination kind badge navigates to that type's Schema entry {#edgeinspector-cross-view-navigation-clicking-the-destination-kind-badge-navigates-to-that-type-s-schema-entry}
 
@@ -6050,7 +6595,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.error-boundary` | `tests`   | outbound  |
 
-### escape inside the drbot panel closes it and returns focus to the launcher {#escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher}
+### escape inside the drbot panel closes it and returns focus to the launcher &gt; focuses the composer on open, closes on Escape, keeps the thread {#escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-focuses-the-composer-on-open-closes-on-escape-keeps-the-thread}
 
 **ID**: `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`
 
@@ -6070,6 +6615,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ---------------------------------------------- | ----------- | --------- |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance` | `satisfies` | outbound  |
 | inter-layer | `ux.view.dr-bot-chat-drawer`                   | `tests`     | outbound  |
+
+### escape inside the drbot panel closes it and returns focus to the launcher &gt; Escape on the canvas does not close the panel {#escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-not-close-the-panel}
+
+**ID**: `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-escape-on-the-canvas-does-de74dc86`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate | Direction |
+| ----------- | ---------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.chat-drawer` | `tests`   | outbound  |
 
 ### filterStructuralInterLayer &gt; filters out edges whose nodes were removed {#filterstructuralinterlayer-filters-out-edges-whose-nodes-were-removed}
 
@@ -6251,6 +6814,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
+### first-visit defaults vs a persisted choice (#596, #597) &gt; a persisted DrBot size out of range or malformed is brought back within limits (#597) {#first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-drbot-size-out-of-range-or-malformed-is-brought-back-within-limits-597}
+
+**ID**: `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
 ### focus — page-view target (layer overview vs. node detail) &gt; selectLayer sets focus to "layer" {#focus-page-view-target-layer-overview-vs-node-detail-selectlayer-sets-focus-to-layer}
 
 **ID**: `testing.testcasesketch.focus-page-view-target-layer-overview-vs-node-detail-select-layer-sets-focus-to-layer`
@@ -6323,6 +6904,44 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
+### FoldableMarkdownText &gt; folds a long text behind Show more and toggles it with aria-expanded {#foldablemarkdowntext-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded}
+
+**ID**: `testing.testcasesketch.foldable-markdown-text-folds-a-long-text-behind-show-more-and-toggles-it-with-aria-expanded`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### FoldableMarkdownText &gt; shows a short text whole, with no button {#foldablemarkdowntext-shows-a-short-text-whole-with-no-button}
+
+**ID**: `testing.testcasesketch.foldable-markdown-text-shows-a-short-text-whole-with-no-button`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
 ### generated ApiClient — auth token &gt; still prefers a token set explicitly with setToken {#generated-apiclient-auth-token-still-prefers-a-token-set-explicitly-with-settoken}
 
 **ID**: `testing.testcasesketch.generated-api-client-auth-token-still-prefers-a-token-set-explicitly-with-set-token`
@@ -6362,6 +6981,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 ### graphCanvasKey &gt; changes with every input that remounts the canvas {#graphcanvaskey-changes-with-every-input-that-remounts-the-canvas}
 
 **ID**: `testing.testcasesketch.graph-canvas-key-changes-with-every-input-that-remounts-the-canvas`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.graph-viewport-key` | `tests`   | outbound  |
+
+### graphCanvasKey &gt; gives each Model by-type view its own key, and keeps the old key for the graph {#graphcanvaskey-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph}
+
+**ID**: `testing.testcasesketch.graph-canvas-key-gives-each-model-by-type-view-its-own-key-and-keeps-the-old-key-for-the-graph`
 
 **Type**: `testcasesketch`
 
@@ -6754,6 +7391,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                            | Predicate | Direction |
 | ----------- | ---------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-impact-analysis` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.node-type-label`           | `tests`   | outbound  |
 
 ### impact filters, search and grouped lanes &gt; leaves small lanes and opened groups alone {#impact-filters-search-and-grouped-lanes-leaves-small-lanes-and-opened-groups-alone}
 
@@ -6790,6 +7428,64 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                            | Predicate | Direction |
 | ----------- | ---------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-impact-analysis` | `tests`   | outbound  |
+
+### impact group nodes use the full plural label {#impact-group-nodes-use-the-full-plural-label}
+
+**ID**: `testing.testcasesketch.impact-group-nodes-use-the-full-plural-label`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                                                           |
+| -------------------- | --------------------------------------------------------------------------------------------------------------- |
+| description          | A grouped large lane's group node reads "Application Components · 12" from the spec title, not the raw type id. |
+| implementationFormat | automated                                                                                                       |
+| status               | draft                                                                                                           |
+
+#### Relationships
+
+| Type        | Related Element                                            | Predicate | Direction |
+| ----------- | ---------------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.changeset-impact-analysis` | `tests`   | outbound  |
+
+### inlineTokens &gt; leaves snake_case and lone asterisks as text {#inlinetokens-leaves-snake-case-and-lone-asterisks-as-text}
+
+**ID**: `testing.testcasesketch.inline-tokens-leaves-snake-case-and-lone-asterisks-as-text`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### inlineTokens &gt; splits code spans, strong, emphasis and keeps only a link text {#inlinetokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text}
+
+**ID**: `testing.testcasesketch.inline-tokens-splits-code-spans-strong-emphasis-and-keeps-only-a-link-text`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
 
 ### Inspector — AnnotationsSection mounting &gt; does NOT mount the annotations section for a Schema node {#inspector-annotationssection-mounting-does-not-mount-the-annotations-section-for-a-schema-node}
 
@@ -7510,6 +8206,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.generated-api-client` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.use-tier1`            | `tests`   | outbound  |
 
 ### isTier1Unavailable &gt; treats anything else as an error worth showing {#istier1unavailable-treats-anything-else-as-an-error-worth-showing}
 
@@ -7528,6 +8225,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.generated-api-client` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.use-tier1`            | `tests`   | outbound  |
 
 ### jsonRpcHandler — connection close &gt; rejects pending requests as soon as the socket closes, not at their timeout {#jsonrpchandler-connection-close-rejects-pending-requests-as-soon-as-the-socket-closes-not-at-their-timeout}
 
@@ -7943,9 +8641,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.layer-domain-palette` | `tests`   | outbound  |
 
-### layerPageData &gt; builds the header/crumbs/description from real spec + model data {#layerpagedata-builds-the-header-crumbs-description-from-real-spec-model-data}
+### layerPageData &gt; builds the header/crumbs/summary/description from real spec + model data {#layerpagedata-builds-the-header-crumbs-summary-description-from-real-spec-model-data}
 
-**ID**: `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-description-from-real-spec-model-data`
+**ID**: `testing.testcasesketch.layer-page-data-builds-the-header-crumbs-summary-description-from-real-spec-model-data`
 
 **Type**: `testcasesketch`
 
@@ -8069,9 +8767,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | -------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.page-data-builder` | `tests`   | outbound  |
 
-### layerPageData &gt; LAYER SPEC facts read the real inspired_by + description fields {#layerpagedata-layer-spec-facts-read-the-real-inspired-by-description-fields}
+### layerPageData &gt; LAYER SPEC facts read the real inspired_by fields, and leave the description out (#593) {#layerpagedata-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593}
 
-**ID**: `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-description-fields`
+**ID**: `testing.testcasesketch.layer-page-data-layer-spec-facts-read-the-real-inspired-by-fields-and-leave-the-description-out-593`
 
 **Type**: `testcasesketch`
 
@@ -8231,7 +8929,100 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
-### MarkdownText renders headings, lists, code and links, shows raw HTML as text, and plain text as one paragraph {#markdowntext-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph}
+### MarkdownExcerpt &gt; never renders raw HTML or a list or heading block {#markdownexcerpt-never-renders-raw-html-or-a-list-or-heading-block}
+
+**ID**: `testing.testcasesketch.markdown-excerpt-never-renders-raw-html-or-a-list-or-heading-block`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownExcerpt &gt; reads a plain-text description as before and renders nothing for none {#markdownexcerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none}
+
+**ID**: `testing.testcasesketch.markdown-excerpt-reads-a-plain-text-description-as-before-and-renders-nothing-for-none`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownExcerpt &gt; renders the first paragraph inline: code spans and emphasis, links as plain text {#markdownexcerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text}
+
+**ID**: `testing.testcasesketch.markdown-excerpt-renders-the-first-paragraph-inline-code-spans-and-emphasis-links-as-plain-text`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownText &gt; never turns raw HTML in the text into markup {#markdowntext-never-turns-raw-html-in-the-text-into-markup}
+
+**ID**: `testing.testcasesketch.markdown-text-never-turns-raw-html-in-the-text-into-markup`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownText &gt; reads plain text as one paragraph, as before {#markdowntext-reads-plain-text-as-one-paragraph-as-before}
+
+**ID**: `testing.testcasesketch.markdown-text-reads-plain-text-as-one-paragraph-as-before`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownText &gt; renders headings, lists, code and links as written {#markdowntext-renders-headings-lists-code-and-links-as-written}
 
 **ID**: `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph`
 
@@ -8243,6 +9034,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | -------------------- | --------- |
 | implementationFormat | automated |
 | status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownText &gt; renders nothing for empty or whitespace-only text {#markdowntext-renders-nothing-for-empty-or-whitespace-only-text}
+
+**ID**: `testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.markdown-text` | `tests`   | outbound  |
+
+### MarkdownText &gt; strips a javascript: link target {#markdowntext-strips-a-javascript-link-target}
+
+**ID**: `testing.testcasesketch.markdown-text-strips-a-javascript-link-target`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
 
 #### Relationships
 
@@ -8919,7 +9746,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
 
-### model view control switches between graph lanes and hive and persists {#model-view-control-switches-between-graph-lanes-and-hive-and-persists}
+### Canvas — Model view by type (#594) &gt; model view control switches between graph lanes and hive and persists {#canvas-model-view-by-type-594-model-view-control-switches-between-graph-lanes-and-hive-and-persists}
 
 **ID**: `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`
 
@@ -9119,6 +9946,62 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | description          | Groups A–Z by type label, elements A–Z inside, a single-element type still grouped; groupKeyOf names the group holding an element. |
 | implementationFormat | automated                                                                                                                          |
 | status               | draft                                                                                                                              |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-groups` | `tests`   | outbound  |
+
+### Nav Tree Groups &gt; keys a group by the spec node id of its type {#nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type}
+
+**ID**: `testing.testcasesketch.nav-tree-groups-keys-a-group-by-the-spec-node-id-of-its-type`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-groups` | `tests`   | outbound  |
+
+### Nav Tree Groups &gt; labels every group by its type id without a spec, and groups nothing for an empty layer {#nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-layer}
+
+**ID**: `testing.testcasesketch.nav-tree-groups-labels-every-group-by-its-type-id-without-a-spec-and-groups-nothing-for-an-empty-5e53dde6`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-groups` | `tests`   | outbound  |
+
+### nav tree groups use the short plural label {#nav-tree-groups-use-the-short-plural-label}
+
+**ID**: `testing.testcasesketch.nav-tree-groups-use-the-short-plural-label`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                                                                                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| description          | A Model layer's type groups are named with the short plural ("Components" in Application), their count in NavItem's badge like the layer rows, sorted by that label; the accessible name says "Components, 37 elements". |
+| implementationFormat | automated                                                                                                                                                                                                                |
+| status               | draft                                                                                                                                                                                                                    |
 
 #### Relationships
 
@@ -9328,6 +10211,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
 | inter-layer | `product.feature.nav-tree-type-groups`      | `tests`   | outbound  |
+
+### NavTree type groups &gt; a type with a single element still gets its own group {#navtree-type-groups-a-type-with-a-single-element-still-gets-its-own-group}
+
+**ID**: `testing.testcasesketch.nav-tree-type-groups-a-type-with-a-single-element-still-gets-its-own-group`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
 
 ### navigateToElement — cross-layer navigation &gt; same-layer navigation keeps the expandedLayers set untouched {#navigatetoelement-cross-layer-navigation-same-layer-navigation-keeps-the-expandedlayers-set-untouched}
 
@@ -9923,6 +10824,188 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.spec-graph-transform` | `tests`   | outbound  |
 
+### node type label splits, pluralizes and drops the layer word {#node-type-label-splits-pluralizes-and-drops-the-layer-word}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                                                                                                                                                                                                                                                                                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| description          | Over real spec titles from tests/fixtures/spec.json: multi-word (ApplicationComponent → Application Components / Components), irregular or already-plural (Policy → Policies, Paths, ChartSeries, Index), acronyms (UXApplication, OAuthFlow, OpenAPIDocument), a type not starting with its layer's name (DataObject in application keeps both words), and the id fallback when there is no title. |
+| implementationFormat | automated                                                                                                                                                                                                                                                                                                                                                                                           |
+| status               | draft                                                                                                                                                                                                                                                                                                                                                                                               |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; exposes the word split and plural rules {#node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-exposes-the-word-split-and-plural-rules`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; falls back to the type id when the spec has no title, capitalized {#node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-has-no-title-capitalized}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-falls-back-to-the-type-id-when-the-spec-4702a09a`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; keeps a title that is only the layer word {#node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-a-title-that-is-only-the-layer-word`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; keeps acronyms and known compounds whole {#node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-acronyms-and-known-compounds-whole`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; keeps every word of a type whose title does not start with its layer name {#node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-does-not-start-with-its-layer-name}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-keeps-every-word-of-a-type-whose-title-bbc1f185`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; pluralizes -y, -s, -x and irregular nouns, and leaves an already-plural title alone {#node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-leaves-an-already-plural-title-alone}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-pluralizes-y-s-x-and-irregular-nouns-and-2f35bc06`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; puts the count after the label {#node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-puts-the-count-after-the-label`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; reads a title from the layer spec info by type id {#node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-by-type-id}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-reads-a-title-from-the-layer-spec-info-80053bec`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### node type label splits, pluralizes and drops the layer word &gt; splits a multi-word title, makes it plural, and drops the layer word in the short form {#node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-plural-and-drops-the-layer-word-in-the-short-form}
+
+**ID**: `testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word-splits-a-multi-word-title-makes-it-772b8a24`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
 ### NodeTypeTooltip &gt; caps the connection list and folds the remainder into a "+N more" row {#nodetypetooltip-caps-the-connection-list-and-folds-the-remainder-into-a-n-more-row}
 
 **ID**: `testing.testcasesketch.node-type-tooltip-caps-the-connection-list-and-folds-the-remainder-into-a-n-more-row`
@@ -10067,7 +11150,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.spec-graph-transform` | `tests`   | outbound  |
 
-### nodeTypesForLayer (uses nodeSchemas even when layer.node_types is \[\]) &gt; id is \{slug\}.\{shortname\}; label is the title; domainColor is the slug {#nodetypesforlayer-uses-nodeschemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-the-title-domaincolor-is-the-slug}
+### nodeTypesForLayer (uses nodeSchemas even when layer.node_types is \[\]) &gt; id is \{slug\}.\{shortname\}; label is the type label; domainColor is the slug {#nodetypesforlayer-uses-nodeschemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-the-type-label-domaincolor-is-the-slug}
 
 **ID**: `testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8`
 
@@ -10083,6 +11166,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 | Type        | Related Element                                       | Predicate | Direction |
 | ----------- | ----------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label`      | `tests`   | outbound  |
 | inter-layer | `application.applicationservice.spec-graph-transform` | `tests`   | outbound  |
 
 ### nodeTypesForLayer (uses nodeSchemas even when layer.node_types is \[\]) &gt; returns \[\] for a layer with no schema {#nodetypesforlayer-uses-nodeschemas-even-when-layer-node-types-is-returns-for-a-layer-with-no-schema}
@@ -11124,6 +12208,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.page-view` | `tests`   | outbound  |
 
+### PageView — description section (#593) &gt; shows a layer summary as plain text above the description {#pageview-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description}
+
+**ID**: `testing.testcasesketch.page-view-description-section-593-shows-a-layer-summary-as-plain-text-above-the-description`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                              | Predicate | Direction |
+| ----------- | -------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.page-view` | `tests`   | outbound  |
+
+### PageView — description section (#593) &gt; shows no description section when there is no description {#pageview-description-section-593-shows-no-description-section-when-there-is-no-description}
+
+**ID**: `testing.testcasesketch.page-view-description-section-593-shows-no-description-section-when-there-is-no-description`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                              | Predicate | Direction |
+| ----------- | -------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.page-view` | `tests`   | outbound  |
+
 ### PageView — node type + predicate cell tooltips &gt; a cell without tooltip metadata renders as plain, non-interactive text {#pageview-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-interactive-text}
 
 **ID**: `testing.testcasesketch.page-view-node-type-predicate-cell-tooltips-a-cell-without-tooltip-metadata-renders-as-plain-non-aa6c2af9`
@@ -11178,7 +12298,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.page-view` | `tests`   | outbound  |
 
-### PageView shows the description above the facts as markdown, and leaves it out of the facts grid {#pageview-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid}
+### PageView — description section (#593) &gt; shows the description above the stats and facts, rendered as markdown {#pageview-description-section-593-shows-the-description-above-the-stats-and-facts-rendered-as-markdown}
 
 **ID**: `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`
 
@@ -11345,6 +12465,60 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 ### persist hydration validates inspectorFollow &gt; keeps a valid stored depth (%s) {#persist-hydration-validates-inspectorfollow-keeps-a-valid-stored-depth-s}
 
 **ID**: `testing.testcasesketch.persist-hydration-validates-inspector-follow-keeps-a-valid-stored-depth-s`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### persist hydration validates modelView &gt; falls back to the graph for an invalid stored value (%s) {#persist-hydration-validates-modelview-falls-back-to-the-graph-for-an-invalid-stored-value-s}
+
+**ID**: `testing.testcasesketch.persist-hydration-validates-model-view-falls-back-to-the-graph-for-an-invalid-stored-value-s`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### persist hydration validates modelView &gt; keeps a valid stored view (%s) {#persist-hydration-validates-modelview-keeps-a-valid-stored-view-s}
+
+**ID**: `testing.testcasesketch.persist-hydration-validates-model-view-keeps-a-valid-stored-view-s`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### persist hydration validates modelView &gt; persists the choice {#persist-hydration-validates-modelview-persists-the-choice}
+
+**ID**: `testing.testcasesketch.persist-hydration-validates-model-view-persists-the-choice`
 
 **Type**: `testcasesketch`
 
@@ -11845,6 +13019,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                         | Predicate | Direction |
 | ----------- | ------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
+| inter-layer | `business.businessprocess.changeset-review-flow`        | `tests`   | outbound  |
 
 ### review — a blocked delete: clearing, and a blocker that appears later &gt; clears a verdict with Clear verdict {#review-a-blocked-delete-clearing-and-a-blocker-that-appears-later-clears-a-verdict-with-clear-verdict}
 
@@ -12305,6 +13480,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.changeset-inspector` | `tests`   | outbound  |
 | inter-layer | `business.businessservice.changeset-review`            | `tests`   | outbound  |
 
+### review — deciding changes (dr CLI with review) &gt; names the bulk keep by what's decided: all, the other N, or all but the blocked deletes {#review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-what-s-decided-all-the-other-n-or-all-but-the-blocked-deletes}
+
+**ID**: `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-names-the-bulk-keep-by-whats-decided-all-the-other-n-or-37bc6707`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate | Direction |
+| ----------- | --------------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.changeset-review`               | `tests`   | outbound  |
+
 ### review — deciding changes (dr CLI with review) &gt; opens a change from the list in the inspector {#review-deciding-changes-dr-cli-with-review-opens-a-change-from-the-list-in-the-inspector}
 
 **ID**: `testing.testcasesketch.review-deciding-changes-dr-cli-with-review-opens-a-change-from-the-list-in-the-inspector`
@@ -12639,6 +13833,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.changeset-inspector`    | `tests`   | outbound  |
 | inter-layer | `application.applicationcomponent.changeset-review-panel` | `tests`   | outbound  |
 | inter-layer | `business.businessservice.changeset-review`               | `tests`   | outbound  |
+
+### review — purpose and actions &gt; offers an upgrade record Discard but no Apply, and says what to do with it {#review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it}
+
+**ID**: `testing.testcasesketch.review-purpose-and-actions-offers-an-upgrade-record-discard-but-no-apply-and-says-what-to-do-with-it`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-inspector` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.changeset-review`            | `tests`   | outbound  |
 
 ### review — PUT ordering and rollback &gt; on a refused PUT restores only the verdict, keeping a refetch that landed meanwhile {#review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-landed-meanwhile}
 
@@ -13022,6 +14235,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | --------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
 
+### search index &gt; ignores case and extra spaces, and returns nothing for a blank query {#search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query}
+
+**ID**: `testing.testcasesketch.search-index-ignores-case-and-extra-spaces-and-returns-nothing-for-a-blank-query`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
+
+### search index &gt; offers fuzzy matches only when few names match better {#search-index-offers-fuzzy-matches-only-when-few-names-match-better}
+
+**ID**: `testing.testcasesketch.search-index-offers-fuzzy-matches-only-when-few-names-match-better`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
+
 ### search index &gt; ranks exact, prefix, word-prefix, substring then fuzzy matches and returns highlight ranges {#search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges}
 
 **ID**: `testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-ranges`
@@ -13034,6 +14283,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | -------------------- | --------- |
 | implementationFormat | automated |
 | status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.search-index` | `tests`   | outbound  |
+
+### search index &gt; stays fast on a large model {#search-index-stays-fast-on-a-large-model}
+
+**ID**: `testing.testcasesketch.search-index-stays-fast-on-a-large-model`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
 
 #### Relationships
 
@@ -13203,27 +14470,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
-### selectLayer / selectChangeset / toggleChat / setWide &gt; selectChangeset switches to the changesets view {#selectlayer-selectchangeset-togglechat-setwide-selectchangeset-switches-to-the-changesets-view}
+### selectLayer / selectChangeset / toggleChat &gt; clamps the panel size and the dock width to their limits (#597) {#selectlayer-selectchangeset-togglechat-clamps-the-panel-size-and-the-dock-width-to-their-limits-597}
 
-**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-changeset-switches-to-the-changesets-view`
-
-**Type**: `testcasesketch`
-
-#### Attributes
-
-| Name   | Value     |
-| ------ | --------- |
-| status | automated |
-
-#### Relationships
-
-| Type        | Related Element                            | Predicate | Direction |
-| ----------- | ------------------------------------------ | --------- | --------- |
-| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
-
-### selectLayer / selectChangeset / toggleChat / setWide &gt; selectLayer clears selection and expands the layer under the active view {#selectlayer-selectchangeset-togglechat-setwide-selectlayer-clears-selection-and-expands-the-layer-under-the-active-view}
-
-**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-select-layer-clears-selection-and-expands-the-c6b80944`
+**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-clamps-the-panel-size-and-the-dock-width-to-their-limits-50d1110e`
 
 **Type**: `testcasesketch`
 
@@ -13239,9 +14488,63 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
-### selectLayer / selectChangeset / toggleChat / setWide &gt; toggleChat flips chatOpen; setWide sets the responsive seed {#selectlayer-selectchangeset-togglechat-setwide-togglechat-flips-chatopen-setwide-sets-the-responsive-seed}
+### selectLayer / selectChangeset / toggleChat &gt; selectChangeset switches to the changesets view {#selectlayer-selectchangeset-togglechat-selectchangeset-switches-to-the-changesets-view}
 
-**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-set-wide-toggle-chat-flips-chat-open-set-wide-sets-the-d407ed7f`
+**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-changeset-switches-to-the-changesets-view`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### selectLayer / selectChangeset / toggleChat &gt; selectLayer clears selection and expands the layer under the active view {#selectlayer-selectchangeset-togglechat-selectlayer-clears-selection-and-expands-the-layer-under-the-active-view}
+
+**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-select-layer-clears-selection-and-expands-the-layer-under-f85d4217`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### selectLayer / selectChangeset / toggleChat &gt; toggleChat expands a collapsed dock instead of closing it (#597) {#selectlayer-selectchangeset-togglechat-togglechat-expands-a-collapsed-dock-instead-of-closing-it-597}
+
+**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-expands-a-collapsed-dock-instead-of-closing-f5c164ec`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### selectLayer / selectChangeset / toggleChat &gt; toggleChat flips chatOpen {#selectlayer-selectchangeset-togglechat-togglechat-flips-chatopen}
+
+**ID**: `testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-flips-chat-open`
 
 **Type**: `testcasesketch`
 
@@ -15133,6 +16436,44 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
 
+### toReviewItems names element and link-end types by their display name {#toreviewitems-names-element-and-link-end-types-by-their-display-name}
+
+**ID**: `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value                                                                                                                                                                                                                                     |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| description          | A review item's type line reads 'application · Application Service' and its summary 'Adds this Application Service'; a link end keeps its type id and adds typeName; a caller's typeNameOf (the spec's title) wins over splitting the id. |
+| implementationFormat | automated                                                                                                                                                                                                                                 |
+| status               | draft                                                                                                                                                                                                                                     |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate | Direction |
+| ----------- | ------------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
+
+### toReviewItems &gt; names element and link-end types by their display name (#605) {#toreviewitems-names-element-and-link-end-types-by-their-display-name-605}
+
+**ID**: `testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name-605`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate | Direction |
+| ----------- | ------------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
+
 ### toReviewItems &gt; names the changed field and flags a type-only change {#toreviewitems-names-the-changed-field-and-flags-a-type-only-change}
 
 **ID**: `testing.testcasesketch.to-review-items-names-the-changed-field-and-flags-a-type-only-change`
@@ -15461,6 +16802,24 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.rich-tooltip` | `tests`   | outbound  |
 
+### topbar search &gt; a chosen element is revealed inside its open type group in the nav tree {#topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree}
+
+**ID**: `testing.testcasesketch.topbar-search-a-chosen-element-is-revealed-inside-its-open-type-group-in-the-nav-tree`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`   | outbound  |
+
 ### topbar search &gt; a node-type result opens it in the Schema view {#topbar-search-a-node-type-result-opens-it-in-the-schema-view}
 
 **ID**: `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`
@@ -15502,6 +16861,25 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
 | inter-layer | `ux.view.topbar-search`                          | `tests`     | outbound  |
 
+### topbar search &gt; says so when nothing matches {#topbar-search-says-so-when-nothing-matches}
+
+**ID**: `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.topbar-search` | `tests`   | outbound  |
+| inter-layer | `product.feature.topbar-search`                  | `tests`   | outbound  |
+
 ### topbar search &gt; typing lists grouped results and Enter on an element navigates as a nav-tree leaf does {#topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does}
 
 **ID**: `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`
@@ -15523,7 +16901,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
 | inter-layer | `product.feature.topbar-search`                  | `tests`     | outbound  |
 
-### type bands name types without the layer prefix {#type-bands-name-types-without-the-layer-prefix}
+### type bands name types without the layer prefix &gt; drops the layer word and makes the type plural {#type-bands-name-types-without-the-layer-prefix-drops-the-layer-word-and-makes-the-type-plural}
 
 **ID**: `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix`
 
@@ -15539,11 +16917,66 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.type-bands`      | `tests`   | outbound  |
+
+### type bands name types without the layer prefix &gt; carries the full count in the band title {#type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title}
+
+**ID**: `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-carries-the-full-count-in-the-band-title`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
 | Type        | Related Element                             | Predicate | Direction |
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
 
-### type bands order linked types next to each other {#type-bands-order-linked-types-next-to-each-other}
+### type bands name types without the layer prefix &gt; keeps a title that is only the layer word, and splits the rest into words {#type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-the-rest-into-words}
+
+**ID**: `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-keeps-a-title-that-is-only-the-layer-word-and-splits-ab2b6c94`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.node-type-label` | `tests`   | outbound  |
+
+### type bands name types without the layer prefix &gt; names bands from the spec title, else the raw type, and keeps the raw type as the id {#type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-and-keeps-the-raw-type-as-the-id}
+
+**ID**: `testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-names-bands-from-the-spec-title-else-the-raw-type-814adacb`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### type bands order linked types next to each other &gt; finds an order with no more lane-skipping than any other order {#type-bands-order-linked-types-next-to-each-other-finds-an-order-with-no-more-lane-skipping-than-any-other-order}
 
 **ID**: `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other`
 
@@ -15556,6 +16989,78 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | description          | Motivation fixture: requirements, goals and principles come out adjacent; the order has the least lane-skipping. |
 | implementationFormat | automated                                                                                                        |
 | status               | draft                                                                                                            |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### type bands order linked types next to each other &gt; keeps busiest-first order when the types share no links {#type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-links}
+
+**ID**: `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-keeps-busiest-first-order-when-the-types-share-no-e1bfb361`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### type bands order linked types next to each other &gt; orders more than seven types greedily, still with every type once {#type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-every-type-once}
+
+**ID**: `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-orders-more-than-seven-types-greedily-still-with-bbaffe74`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### type bands order linked types next to each other &gt; places a chain of linked types in chain order {#type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order}
+
+**ID**: `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-places-a-chain-of-linked-types-in-chain-order`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.type-bands` | `tests`   | outbound  |
+
+### type bands order linked types next to each other &gt; puts every motivation type in exactly one band {#type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band}
+
+**ID**: `testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-puts-every-motivation-type-in-exactly-one-band`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
 
 #### Relationships
 
@@ -15994,6 +17499,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation`      | `tests`   | outbound  |
 
 ### useAnnotations — GET filtered by elementId &gt; returns only annotations for the requested element {#useannotations-get-filtered-by-elementid-returns-only-annotations-for-the-requested-element}
 
@@ -16012,6 +17518,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation`      | `tests`   | outbound  |
 
 ### useChangeset — detail hook &gt; is disabled (no fetch) until an id is provided {#usechangeset-detail-hook-is-disabled-no-fetch-until-an-id-is-provided}
 
@@ -16315,9 +17822,10 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                            | Predicate | Direction |
-| ----------- | ------------------------------------------ | --------- | --------- |
-| inter-layer | `application.applicationservice.use-model` | `tests`   | outbound  |
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.use-model`  | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation` | `tests`   | outbound  |
 
 ### useReplies — lazy &gt; fetches replies when enabled {#usereplies-lazy-fetches-replies-when-enabled}
 
@@ -16333,9 +17841,10 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 
 #### Relationships
 
-| Type        | Related Element                            | Predicate | Direction |
-| ----------- | ------------------------------------------ | --------- | --------- |
-| inter-layer | `application.applicationservice.use-model` | `tests`   | outbound  |
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.use-model`  | `tests`   | outbound  |
+| inter-layer | `business.businessservice.model-annotation` | `tests`   | outbound  |
 
 ### useSpec — maps the /api/spec fixture &gt; derives per-layer node-type info from nodeSchemas keys, plus the version {#usespec-maps-the-api-spec-fixture-derives-per-layer-node-type-info-from-nodeschemas-keys-plus-the-version}
 
@@ -16866,9 +18375,11 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 | inter-layer | `application.applicationservice.changeset-purpose`                 | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.changeset-review-model`            | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.chat-adapter`                      | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.chat-panel-layout`                 | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.graph-viewport-key`                | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.layer-domain-palette`              | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.layered-reach`                     | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.markdown-excerpt`                  | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.model-graph-transform`             | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.predicate-definitions`             | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.search-index`                      | `covers`   | outbound  |
@@ -16878,4 +18389,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:34.131Z | Model Version: 0.1.0

@@ -199,7 +199,9 @@ application.applicationservice.spec-graph-transform:
   layer_id: application
   name: Spec Graph Transform
   description: Turns /api/spec into per-layer node-type graphs, attribute rows and
-    relationship-schema counts for the Schema view.
+    relationship-schema counts for the Schema view; node types are named with
+    the node type label's full singular ("Application Component"), never the raw
+    title.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -220,7 +222,9 @@ application.applicationservice.page-data-builder:
   name: Page Data Builder
   description: Builds the page view's records (header, breadcrumb, summary,
     markdown description, stats, facts, tables) for a layer, spec node type or
-    model element; the description is its own field, never a fact.
+    model element; the description is its own field, never a fact. A node type
+    is named with the node type label's full singular in headers and tables; the
+    spec's raw title stays a fact.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -264,7 +268,8 @@ application.applicationservice.changeset-impact-analysis:
     and returns the reached subgraph and per-layer blast radius; narrows it to a
     filter (change, layer, type, link category), a name search, or one focused
     element's reach, with per-facet counts, and groups a large lane's elements
-    by type.
+    by type into group nodes named with the node type label's full plural and
+    count ("Application Components · 12").
   attributes:
     serviceType: synchronous
   source_reference:
@@ -304,7 +309,8 @@ application.applicationservice.neighborhood-graph:
   layer_id: application
   name: Neighborhood Graph
   description: The one-hop neighborhood graph of a model element or spec node type
-    shown on its page.
+    shown on its page; node types are named with the node type label's full
+    singular.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -326,9 +332,11 @@ application.applicationservice.changeset-review-model:
   description: "Pure review model over a changeset: review items, groups,
     cancel-out pairs, effective decisions, drop cascade, conflicts,
     since-your-review diff and the apply plan. A link item carries each end's
-    name, type, layer and whether this changeset adds it (replacing the 'new
-    source' / 'new target' / 'both ends new' chips); an element item counts its
-    new links out and in. Apply needs a decision only where one is required
+    name, type, the type's display name, layer and whether this changeset adds
+    it (replacing the 'new source' / 'new target' / 'both ends new' chips); an
+    element item counts its new links out and in. Types read by their display
+    name (#605): the caller passes typeNameOf (the spec's title), else the type
+    id is split into words. Apply needs a decision only where one is required
     (#573): canApply holds while a blocked delete is undecided, a change waits
     on DrBot or a drop conflicts, and otherwise undecided changes land as kept
     (apply.undecided lists them); ready still means every change has a verdict.
@@ -763,11 +771,17 @@ application.applicationservice.nav-tree-groups:
   layer_id: application
   name: Nav Tree Groups
   description: "Pure transform for the nav tree: a layer's model elements grouped
-    by node type, each group with its type key, label (the spec's type title,
-    else the type id) and count, groups and elements sorted A–Z; plus the group
-    key holding a given element, so the tree can open it."
+    by node type, each group with its type key, label (the node type label's
+    short plural, e.g. \"Components\" in Application, the same name the by-type
+    lanes use) and count, groups sorted A–Z by that label and elements A–Z; plus
+    the group key holding a given element, so the tree can open it."
   attributes:
     serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/navTreeGroups.ts
+        symbol: groupByType
   metadata:
     created_at: 2026-11-19T17:47:57.291Z
     updated_at: 2026-11-19T17:47:57.291Z
@@ -781,13 +795,19 @@ application.applicationservice.search-index:
   name: Search Index
   description: "Pure, React-free search over the loaded /api/model elements and
     /api/spec node types (data/search.ts): builds a lower-cased index once per
-    payload, ranks exact > prefix > word-prefix > substring > in-order fuzzy
-    (subsequence) matches, caps the results, groups them by layer in LAYER_ORDER
-    and returns the matched character ranges for highlighting. Stays fast on a
-    large model: one pass over the index per keystroke, no allocation for a
-    candidate that fails."
+    payload (node types named with the node type label's full singular, matched
+    by that name or the spec title), ranks exact > prefix > word-prefix >
+    substring > in-order fuzzy (subsequence) matches, caps the results, groups
+    them by layer in LAYER_ORDER and returns the matched character ranges for
+    highlighting. Stays fast on a large model: one pass over the index per
+    keystroke, no allocation for a candidate that fails."
   attributes:
     serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/search.ts
+        symbol: buildSearchIndex
   metadata:
     created_at: 2026-11-19T17:48:37.422Z
     updated_at: 2026-11-19T17:48:37.422Z
@@ -801,12 +821,17 @@ application.applicationservice.type-bands:
   name: Type Bands
   description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
     'kind') for one DR layer's elements; band order with the least lane-skipping
-    between linked types; plural display names without the layer prefix (shared
-    with the nav tree's type helper); the row cap for large lanes. Where it
-    meets Heimdall, Heimdall's 'layer' is our node type; layerId only ever means
-    a DR layer."
+    between linked types; each band named with the node type label's short
+    plural (\"Components · 37\"); the row cap for large lanes. Where it meets
+    Heimdall, Heimdall's 'layer' is our node type; layerId only ever means a DR
+    layer."
   attributes:
     serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/typeBands.ts
+        symbol: typeBands
   accepted_gaps:
     - direction: incoming
       predicate: depends-on
@@ -827,4 +852,130 @@ application.applicationservice.type-bands:
   metadata:
     created_at: 2026-11-19T18:01:46.735Z
     updated_at: 2026-11-19T18:01:46.735Z
+    version: 1
+application.applicationservice.node-type-label:
+  id: 9d94af2b-192f-4710-b0e1-a12f1f4a8284
+  path: application.applicationservice.node-type-label
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Node Type Label
+  description: "data/typeLabel.ts: one display name for a node type, from the
+    spec's title (else the type id) and its layer: singular and plural, split
+    into words (\"Application Component\"), and a short plural that drops the
+    layer's own leading word (\"Components\"). The short form is only used where
+    the view is scoped to one layer (by-type lanes and hive, and the nav tree
+    type groups, whose count stays in the NavItem badge); views that mix layers
+    use the full form. withCount gives \"Components · 37\" for lane and hive
+    titles. data/useTypeName.ts gives the full singular from the live spec for
+    one element's type beside its layer (\"application · Application Service\"):
+    review rows, link ends, the change inspector and its neighbourhood, the
+    Impact matches and focus line. Type ids stay ids wherever they are ids."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/typeLabel.ts
+        symbol: typeLabel
+  metadata:
+    created_at: 2026-11-20T14:04:49.110Z
+    updated_at: 2026-11-20T14:04:49.110Z
+    version: 1
+application.applicationservice.chat-panel-layout:
+  id: 89067a7b-ecf4-46aa-a5e9-948ee52a4c23
+  path: application.applicationservice.chat-panel-layout
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Panel Layout
+  description: "ui/chatPanelLayout.ts: the pure placement rule for the floating
+    DrBot panel. Given the anchor area, whether the Inspector drawer is open and
+    its width, and the panel size, it places the panel beside the drawer
+    (top-right, left of it), over the drawer (when panel + drawer + 240px of
+    graph don't fit, setting chatCoversDrawer) or filling the area (under
+    720px). Also clamps the persisted panel size (340-820px wide, at least 360px
+    tall) and dock width (320-760px), and maps resize keys (arrows, Shift,
+    Home/End) to a new width."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/chatPanelLayout.ts
+        symbol: chatPanelLayout
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.chat-anchor:
+  id: 6a15565c-d8eb-490a-8234-b2f363f6a2c0
+  path: application.applicationservice.chat-anchor
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Anchor
+  description: "ui/chatAnchor.ts: useChatAnchor(ref) lets a view register the area
+    the DrBot panel anchors to (Canvas's graph area, ChangesetCanvas's body) in
+    a small Zustand store; the chat drawer reads it and places the panel from
+    the anchor's rect through a ResizeObserver. Also names the topbar launcher's
+    test id so Escape can return focus to it."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/chatAnchor.ts
+        symbol: useChatAnchor
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.markdown-excerpt:
+  id: 1a1d357f-d896-4b12-a3ae-f0ddbb23dfed
+  path: application.applicationservice.markdown-excerpt
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Markdown Excerpt
+  description: "ui/markdownExcerpt.ts: descriptionExcerpt takes the first
+    paragraph of a markdown description and drops list and heading markup (plain
+    text unchanged, single newlines folded); inlineTokens splits that line into
+    text, code-span and emphasis tokens, links as plain text. Used by
+    MarkdownExcerpt for the one-paragraph inline description on a changeset
+    inbox card, with no raw HTML."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/markdownExcerpt.ts
+        symbol: descriptionExcerpt
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.use-type-name:
+  id: a0bc9cdf-0a88-4a77-b40d-90b6643f578b
+  path: application.applicationservice.use-type-name
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useTypeName
+  description: "data/useTypeName.ts: a node type's full singular display name from
+    the live spec (\"Application Service\"), for views that name one element's
+    type beside its layer: review rows and link ends (through the review model's
+    typeNameOf), the change inspector's band, related rows and neighbourhood,
+    and the Impact matches and focus line. Before the spec loads, the type id
+    split into words stands in."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useTypeName.ts
+        symbol: useTypeName
+  metadata:
+    created_at: 2026-11-20T15:48:29.376Z
+    updated_at: 2026-11-20T15:48:29.376Z
     version: 1

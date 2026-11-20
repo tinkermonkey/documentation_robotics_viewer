@@ -145,6 +145,11 @@ ux.view.topbar-search:
   attributes:
     type: overlay
     routable: false
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TopbarSearch.tsx
+        symbol: TopbarSearch
   accepted_gaps:
     - direction: incoming
       predicate: maps-to
