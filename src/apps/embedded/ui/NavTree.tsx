@@ -27,7 +27,7 @@ import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
 import { purposeLabel } from '../data/changesetPurpose';
 import { groupByType, typeGroupKey } from '../data/navTreeGroups';
-import { specTypeLabel, withCount } from '../data/typeLabel';
+import { specTypeLabel } from '../data/typeLabel';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets'>;
 
@@ -195,7 +195,8 @@ function LayerRow({
           <div key={group.key}>
             <div style={{ position: 'relative' }}>
               <NavItem
-                label={withCount(group.label, n)}
+                label={group.label}
+                count={n}
                 depth={1}
                 className="drv-nav-l2 drv-nav-group"
                 aria-expanded={groupOpen}

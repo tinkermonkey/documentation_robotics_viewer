@@ -4,7 +4,7 @@ description: "#605: one display name for a node type (singular, plural, short
   form without the layer word), used by the nav tree groups, the by-type lanes
   and hive, Impact group nodes, and Schema/page headers."
 created: 2026-11-20T14:04:27.106Z
-modified: 2026-11-20T14:14:13.545Z
+modified: 2026-11-20T14:43:16.171Z
 status: staged
 baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
 origin:
@@ -14,7 +14,7 @@ stats:
   additions: 18
   modifications: 11
   deletions: 0
-lastSequence: 32
+lastSequence: 33
 unstaged:
   - sequence: 0
     removedAt: 25
@@ -121,4 +121,34 @@ unstaged:
           updated_at: 2026-11-20T14:04:49.110Z
           version: 1
       timestamp: 2026-11-20T14:04:49.120Z
+    rewritten: true
+  - sequence: 2
+    removedAt: 33
+    change:
+      type: add
+      elementId: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+      layerName: testing
+      after:
+        id: 7ce59589-f622-43e5-b848-c051ad4a6cd3
+        path: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: nav tree groups use the short plural label
+        attributes:
+          status: draft
+          implementationFormat: automated
+          description: A Model layer's type groups read "Components · 37" in Application,
+            sorted by that label; the accessible name says "Components, 37
+            elements".
+        metadata:
+          created_at: 2026-11-20T14:04:49.110Z
+          updated_at: 2026-11-20T14:04:49.110Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: tests/unit/navTreeGroups.spec.ts
+              symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+      timestamp: 2026-11-20T14:13:53.461Z
     rewritten: true

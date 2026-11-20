@@ -324,12 +324,15 @@ describe('NavTree type groups', () => {
     await user.click((await screen.findAllByText('Motivation'))[0].closest('button')!);
     const goal = await screen.findByTestId('nav-type-group-motivation.goal');
 
-    // One group per type, named with the type's short plural (#605) and its
-    // count as "Goals · 12", A–Z; all collapsed.
+    // One group per type, named with the type's short plural (#605), its count
+    // in NavItem's badge as on the layer rows, A–Z; all collapsed.
     const groups = screen
       .getByTestId('nav-tree')
       .querySelectorAll<HTMLButtonElement>('.drv-nav-group');
-    const labels = [...groups].map((g) => g.querySelector('.nav-item__label')!.textContent);
+    const labels = [...groups].map(
+      (g) =>
+        `${g.querySelector('.nav-item__label')!.textContent} · ${g.querySelector('.nav-item__count')!.textContent}`,
+    );
     const count = (type: string) =>
       model.nodes.filter((n) => n.layer_id === 'motivation' && n.type === type).length;
     expect(labels).toEqual(

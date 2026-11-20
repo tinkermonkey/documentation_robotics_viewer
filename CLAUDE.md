@@ -451,7 +451,7 @@ For local dev use `dr visualize --no-auth`.
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
   The API spec requires `cliVersion` since 2026-11-19; an older dr CLI sends none, so the status bar reads `cli —` there.
 - **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: the
-  type label's short plural + count as "Components · 37", A–Z, a single-element type still grouped; the
+  type label's short plural, its count in NavItem's badge like the layer rows, A–Z, a single-element type still grouped; the
   accessible name says "Components, 37 elements"), each holding its elements (A–Z); Schema leaves are the full
   singular ("Application Component"). Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
   opening one pushes no history. The selected element's group opens on every selection change (nav, graph,
