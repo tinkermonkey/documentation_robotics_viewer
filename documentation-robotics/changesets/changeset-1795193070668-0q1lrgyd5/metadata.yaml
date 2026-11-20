@@ -1,0 +1,1316 @@
+id: changeset-1795193070668-0q1lrgyd5
+name: c4-architecture-views-poc-as-built
+description: As-built extraction of the code at a7eb3de, files changed since
+  main. Staged by codebase_extract.
+created: 2026-11-20T16:44:30.673Z
+modified: 2026-11-20T18:10:43.829Z
+status: committed
+baseSnapshot: sha256:d2d36b5dbe9c559098081f718c8e60fb9713d723cc8c1c1a7de91e0e67e4e97a
+origin:
+  kind: extract
+purpose: reconcile
+stats:
+  additions: 202
+  modifications: 12
+  deletions: 38
+lastSequence: 323
+unstaged:
+  - sequence: 95
+    removedAt: 175
+    change:
+      type: add
+      elementId: application.applicationservice.build-c4model
+      layerName: application
+      after:
+        id: fd0f400e-225d-41d9-9658-4d744831cbbd
+        path: application.applicationservice.build-c4model
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: buildC4Model
+        description: Builds the C4 model of a DR model by the rules in c4Rules.ts.
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/c4Model.ts
+              symbol: buildC4Model
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 96
+    removedAt: 175
+    change:
+      type: add
+      elementId: application.applicationservice.build-c4view
+      layerName: application
+      after:
+        id: a1931ef5-f078-4db7-a946-11d397c6b14b
+        path: application.applicationservice.build-c4view
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: buildC4View
+        description: Builds one C4 diagram (level and scope) out of the C4 model.
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/c4Views.ts
+              symbol: buildC4View
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 97
+    removedAt: 175
+    change:
+      type: add
+      elementId: application.applicationservice.layout-c4view
+      layerName: application
+      after:
+        id: 52e93b30-2f2d-4293-b865-4ff7660b0b3b
+        path: application.applicationservice.layout-c4view
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: layoutC4View
+        description: Lays out one C4 view with ELK.
+        attributes:
+          serviceType: asynchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/c4Layout.ts
+              symbol: layoutC4View
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 99
+    removedAt: 175
+    change:
+      type: add
+      elementId: application.applicationcomponent.c4diagram
+      layerName: application
+      after:
+        id: 9ef20260-f74f-42d7-916b-42bea31d7b52
+        path: application.applicationcomponent.c4diagram
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: C4Diagram
+        description: Draws one laid-out C4 view.
+        attributes:
+          type: internal
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/ui/C4Diagram.tsx
+              symbol: C4Diagram
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 100
+    removedAt: 175
+    change:
+      type: add
+      elementId: data-model.objectschema.c4model
+      layerName: data-model
+      after:
+        id: 359de8b9-dc6e-418d-9ffa-4a16be1f968b
+        path: data-model.objectschema.c4model
+        spec_node_id: data-model.objectschema
+        type: objectschema
+        layer_id: data-model
+        name: C4Model
+        attributes:
+          type: object
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/c4Model.ts
+              symbol: C4Model
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 101
+    removedAt: 175
+    change:
+      type: add
+      elementId: data-model.objectschema.c4view
+      layerName: data-model
+      after:
+        id: 344f641f-e706-463a-b50a-28f19d365e47
+        path: data-model.objectschema.c4view
+        spec_node_id: data-model.objectschema
+        type: objectschema
+        layer_id: data-model
+        name: C4View
+        attributes:
+          type: object
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/c4Views.ts
+              symbol: C4View
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+  - sequence: 104
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.c4model
+      layerName: application
+      after:
+        source: application.applicationcomponent.architecture-canvas
+        target: data-model.objectschema.c4model
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 105
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.c4view
+      layerName: application
+      after:
+        source: application.applicationcomponent.architecture-canvas
+        target: data-model.objectschema.c4view
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 106
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.architecture-canvas::uses::application.applicationcomponent.c4diagram
+      layerName: application
+      after:
+        source: application.applicationcomponent.architecture-canvas
+        target: application.applicationcomponent.c4diagram
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 107
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.build-c4model::accesses::data-model.objectschema.c4model
+      layerName: application
+      after:
+        source: application.applicationservice.build-c4model
+        target: data-model.objectschema.c4model
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 108
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.build-c4model::depends-on::application.applicationservice.model-graph-transform
+      layerName: application
+      after:
+        source: application.applicationservice.build-c4model
+        target: application.applicationservice.model-graph-transform
+        predicate: depends-on
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 109
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.build-c4view::accesses::data-model.objectschema.c4model
+      layerName: application
+      after:
+        source: application.applicationservice.build-c4view
+        target: data-model.objectschema.c4model
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 110
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.build-c4view::accesses::data-model.objectschema.c4view
+      layerName: application
+      after:
+        source: application.applicationservice.build-c4view
+        target: data-model.objectschema.c4view
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 111
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.build-c4view::serves::application.applicationcomponent.architecture-canvas
+      layerName: application
+      after:
+        source: application.applicationservice.build-c4view
+        target: application.applicationcomponent.architecture-canvas
+        predicate: serves
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 113
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.layout-c4view::accesses::data-model.objectschema.c4view
+      layerName: application
+      after:
+        source: application.applicationservice.layout-c4view
+        target: data-model.objectschema.c4view
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 114
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.layout-c4view::serves::application.applicationcomponent.c4diagram
+      layerName: application
+      after:
+        source: application.applicationservice.layout-c4view
+        target: application.applicationcomponent.c4diagram
+        predicate: serves
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:IMPORTS
+  - sequence: 115
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.use-c4model::accesses::data-model.objectschema.c4model
+      layerName: application
+      after:
+        source: application.applicationservice.use-c4model
+        target: data-model.objectschema.c4model
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 116
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.use-c4model::accesses::data-model.objectschema.c4view
+      layerName: application
+      after:
+        source: application.applicationservice.use-c4model
+        target: data-model.objectschema.c4view
+        predicate: accesses
+        layer: application
+        targetLayer: data-model
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:USAGE
+  - sequence: 117
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.use-c4model::depends-on::application.applicationservice.build-c4model
+      layerName: application
+      after:
+        source: application.applicationservice.use-c4model
+        target: application.applicationservice.build-c4model
+        predicate: depends-on
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 118
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.use-c4model::depends-on::application.applicationservice.layout-c4view
+      layerName: application
+      after:
+        source: application.applicationservice.use-c4model
+        target: application.applicationservice.layout-c4view
+        predicate: depends-on
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: edge:CALLS
+  - sequence: 125
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 126
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 129
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 130
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary::tests::application.applicationservice.layout-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary
+        target: application.applicationservice.layout-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 131
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 132
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view::tests::application.applicationservice.layout-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view
+        target: application.applicationservice.layout-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 133
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 134
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it::tests::application.applicationservice.layout-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it
+        target: application.applicationservice.layout-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 135
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 136
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label::tests::application.applicationservice.layout-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label
+        target: application.applicationservice.layout-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 137
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 138
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 139
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 140
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 141
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 142
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 143
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 144
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 145
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 146
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 147
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 148
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 149
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 150
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 151
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 152
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 153
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 154
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 155
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 156
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 157
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 158
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope::tests::application.applicationservice.build-c4model
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope
+        target: application.applicationservice.build-c4model
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 159
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 160
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 161
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 162
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 163
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 164
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 165
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 166
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 167
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 168
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 169
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 170
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 171
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 172
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 173
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter::tests::application.applicationcomponent.c4diagram
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+        target: application.applicationcomponent.c4diagram
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 174
+    removedAt: 175
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter::tests::application.applicationservice.build-c4view
+      layerName: testing
+      after:
+        source: testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+        target: application.applicationservice.build-c4view
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T16:45:30.883Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 98
+    removedAt: 286
+    change:
+      type: add
+      elementId: application.applicationservice.use-c4model
+      layerName: application
+      after:
+        id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+        path: application.applicationservice.use-c4model
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: useC4Model
+        description: "Hook: the loaded model as a C4 model, built once per model and
+          spec; with useC4Layout, one view laid out through React Query."
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/useC4Model.ts
+              symbol: useC4Model
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T16:45:15.439Z
+    rewritten: true
+  - sequence: 98
+    removedAt: 322
+    change:
+      type: add
+      elementId: application.applicationservice.use-c4model
+      layerName: application
+      after:
+        id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+        path: application.applicationservice.use-c4model
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: useC4Model
+        description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
+          per /api/model payload and spec catalog and shared by the Architecture
+          canvas, the nav tree and DrBot's context; and useC4Layout, one view
+          laid out through a React Query keyed on the view's content."
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/useC4Model.ts
+              symbol: useC4Model
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+      timestamp: 2026-11-20T17:18:27.042Z
+    rewritten: true
+  - sequence: 98
+    removedAt: 323
+    change:
+      type: add
+      elementId: application.applicationservice.use-c4model
+      layerName: application
+      after:
+        id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+        path: application.applicationservice.use-c4model
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: useC4Model
+        description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
+          per /api/model payload and spec catalog and shared by the Architecture
+          canvas, the nav tree and DrBot's context; and useC4Layout, one view
+          laid out through a React Query keyed on the view's content."
+        attributes:
+          serviceType: synchronous
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: src/apps/embedded/data/c4/useC4Model.ts
+              symbol: useC4Model
+        metadata:
+          created_at: 2026-11-20T16:45:15.400Z
+          updated_at: 2026-11-20T16:45:15.400Z
+          version: 1
+        accepted_gaps:
+          - direction: incoming
+            predicate: covers
+            other_spec_node_id: testing.testcoveragetarget
+            reason: It has no unit test of its own; the Architecture canvas component tests
+              exercise it.
+            decided_by: agent
+            decided_at: 2026-11-20T17:19:07.849Z
+            changeset: changeset-1795193070668-0q1lrgyd5
+      timestamp: 2026-11-20T17:19:08.200Z
+    rewritten: true

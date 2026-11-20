@@ -227,4 +227,4 @@ Aspirational: an OpenTelemetry-style resource identity for the browser viewer (t
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0

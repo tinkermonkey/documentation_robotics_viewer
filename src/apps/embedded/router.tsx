@@ -22,6 +22,7 @@ import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
 import { websocketClient } from './services/websocketClient';
 import { useModel } from './data/useModel';
+import { parseC4Level, type C4Level } from './data/c4/c4Level';
 
 /**
  * Root component — runs the WebSocket bootstrap effect (ported verbatim from the
@@ -117,6 +118,7 @@ const SECTION_TO_VIEW: Record<string, ViewKind> = {
   model: 'model',
   spec: 'spec',
   changesets: 'changesets',
+  architecture: 'architecture',
 };
 
 /** Reverse map: uiStore view → route `:section` segment. */
@@ -124,6 +126,7 @@ const VIEW_TO_SECTION: Record<ViewKind, string> = {
   model: 'model',
   spec: 'spec',
   changesets: 'changesets',
+  architecture: 'architecture',
 };
 
 /** Default `:view` segment per section (the only view each section has today). */
@@ -131,6 +134,7 @@ const SECTION_DEFAULT_VIEW: Record<string, string> = {
   model: 'graph',
   spec: 'graph',
   changesets: 'list',
+  architecture: 'diagram',
 };
 
 /** Search-param shape for `appShellRoute` — reflects the current left-panel
@@ -148,6 +152,11 @@ interface AppShellSearch {
   node?: string;
   edge?: string;
   changeset?: string;
+  /** Architecture view: the C4 level (`context` | `container` | `component`). */
+  level?: string;
+  /** Architecture view, Component level: the C4 element whose parts are shown.
+   *  There, `node` is the selected box (a C4 element id), not a model element. */
+  scope?: string;
   /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
    *  Schema only. Kept on page-mode URLs too, so switching back to the graph
    *  returns to the same view. */
@@ -161,8 +170,14 @@ function selectionKey(
   selectedId: string | null,
   selectedEdgeId: string | null,
   changesetId: string | null,
+  c4: string,
 ): string {
-  return `${layerId ?? ''}|${selectedId ?? ''}|${selectedEdgeId ?? ''}|${changesetId ?? ''}`;
+  return `${layerId ?? ''}|${selectedId ?? ''}|${selectedEdgeId ?? ''}|${changesetId ?? ''}|${c4}`;
+}
+
+/** The Architecture view's part of the selection key: level, scope, selected box. */
+function c4Key(level: C4Level, scope: string | null, selectedId: string | null): string {
+  return `${level}:${scope ?? ''}:${selectedId ?? ''}`;
 }
 
 /**
@@ -218,6 +233,10 @@ function AppShellRoute() {
   const mode = useUiStore((s) => s.mode);
   const setMode = useUiStore((s) => s.setMode);
   const navSeq = useUiStore((s) => s.navSeq);
+  const c4Level = useUiStore((s) => s.c4Level);
+  const c4Scope = useUiStore((s) => s.c4Scope);
+  const c4SelectedId = useUiStore((s) => s.c4SelectedId);
+  const restoreC4 = useUiStore((s) => s.restoreC4);
   const graphViewport = useUiStore((s) => s.graphViewport);
   const canvasKey = useUiStore(graphCanvasKey);
   const setGraphViewport = useUiStore((s) => s.setGraphViewport);
@@ -240,7 +259,9 @@ function AppShellRoute() {
   // first while the store is still stale; the effect would see a mismatch
   // and navigate "backward" to correct it, oscillating forever.
   const prevViewRef = useRef(view);
-  const prevSelectionKeyRef = useRef(selectionKey(layerId, selectedId, selectedEdgeId, changesetId));
+  const prevSelectionKeyRef = useRef(
+    selectionKey(layerId, selectedId, selectedEdgeId, changesetId, c4Key(c4Level, c4Scope, c4SelectedId)),
+  );
   const prevModeRef = useRef(mode);
   const prevLayerRef = useRef(layerId);
   const prevNavSeqRef = useRef(navSeq);
@@ -262,6 +283,19 @@ function AppShellRoute() {
   // only when they differ from the store, so it never fights a change that
   // originated in the app itself (see the store → URL effect below).
   useEffect(() => {
+    // Architecture: `?level=` / `?scope=` pick the diagram, `?node=` the
+    // selected box. Its `node` is a C4 element id, so it must never reach the
+    // Model selection below.
+    if (section === 'architecture') {
+      const level = parseC4Level(search.level) ?? 'context';
+      const scope = level === 'component' ? (search.scope ?? null) : null;
+      const selected = search.node ?? null;
+      const s = useUiStore.getState();
+      if (s.c4Level !== level || s.c4Scope !== scope || s.c4SelectedId !== selected) {
+        restoreC4(level, scope, selected);
+      }
+      return;
+    }
     if (search.changeset && search.changeset !== changesetId) {
       selectChangeset(search.changeset);
       return;
@@ -305,7 +339,7 @@ function AppShellRoute() {
     // would make this effect re-fire the moment IT calls
     // selectLayer/selectNode/selectEdge/selectChangeset, fighting its own update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search.layer, search.node, search.edge, search.changeset, modelLoaded, model.links]);
+  }, [section, search.layer, search.node, search.edge, search.changeset, search.level, search.scope, modelLoaded, model.links]);
 
   // URL → store: viewport. Runs after the selection effect above, so on
   // back/forward the layer it scopes to is already in the store. A URL with
@@ -334,7 +368,13 @@ function AppShellRoute() {
   // on-canvas selection within a layer so graph clicks don't flood history.
   // Skip first render — see mountedRef above.
   useEffect(() => {
-    const key = selectionKey(layerId, selectedId, selectedEdgeId, changesetId);
+    const key = selectionKey(
+      layerId,
+      selectedId,
+      selectedEdgeId,
+      changesetId,
+      c4Key(c4Level, c4Scope, c4SelectedId),
+    );
     if (!mountedRef.current) {
       mountedRef.current = true;
       prevViewRef.current = view;
@@ -358,7 +398,7 @@ function AppShellRoute() {
     // effect re-run in dev), and a stale null here would strip `?vp=`.
     const live = useUiStore.getState();
     const vp =
-      view !== 'changesets' && live.graphViewport?.scope === graphCanvasKey(live)
+      view !== 'changesets' && view !== 'architecture' && live.graphViewport?.scope === graphCanvasKey(live)
         ? formatViewportParam(live.graphViewport)
         : undefined;
     const vpChanged = prevVpRef.current !== vp;
@@ -371,9 +411,16 @@ function AppShellRoute() {
     prevVpRef.current = vp;
 
     const targetSection = VIEW_TO_SECTION[view];
-    const targetView = view === 'changesets' ? SECTION_DEFAULT_VIEW[targetSection] : mode;
+    const targetView =
+      view === 'changesets' || view === 'architecture' ? SECTION_DEFAULT_VIEW[targetSection] : mode;
     const targetSearch: AppShellSearch =
-      view === 'changesets'
+      view === 'architecture'
+        ? {
+            level: c4Level,
+            scope: c4Level === 'component' ? (c4Scope ?? undefined) : undefined,
+            node: c4SelectedId ?? undefined,
+          }
+        : view === 'changesets'
         ? { changeset: changesetId ?? undefined }
         : {
             layer: layerId ?? undefined,
@@ -393,20 +440,34 @@ function AppShellRoute() {
       (search.layer ?? undefined) === targetSearch.layer &&
       (search.node ?? undefined) === targetSearch.node &&
       (search.edge ?? undefined) === targetSearch.edge &&
-      (search.changeset ?? undefined) === targetSearch.changeset;
+      (search.changeset ?? undefined) === targetSearch.changeset &&
+      (search.level ?? undefined) === targetSearch.level &&
+      (search.scope ?? undefined) === targetSearch.scope;
     if (destinationMatchesUrl && (search.vp ?? undefined) === targetSearch.vp) {
       return;
     }
+
+    // An Architecture URL that reads as this same diagram once normalized (no
+    // or an unknown `?level=`, a `?scope=` the level ignores): spelling the
+    // defaults out is no new destination, so replace — a push would leave a
+    // level-less entry that Back lands on with nothing changing.
+    const sameDiagramNormalized =
+      view === 'architecture' &&
+      section === targetSection &&
+      (parseC4Level(search.level) ?? 'context') === targetSearch.level &&
+      (targetSearch.level !== 'component' || (search.scope ?? undefined) === targetSearch.scope) &&
+      (search.node ?? undefined) === targetSearch.node;
 
     // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
     // after back/forward. Never a new destination, so always replace.
     const push =
       !destinationMatchesUrl &&
+      !sameDiagramNormalized &&
       (viewChanged ||
         modeChanged ||
         layerChanged ||
         navigated ||
-        (mode === 'page' && selectionChanged) ||
+        (mode === 'page' && view !== 'architecture' && selectionChanged) ||
         // Opening or closing a changeset: the inbox and each changeset are
         // destinations of their own.
         (view === 'changesets' && selectionChanged));
@@ -421,7 +482,7 @@ function AppShellRoute() {
     // guard; re-running on their own changes would re-check a URL the store
     // effects above are about to make it match.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey]);
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId]);
 
   return <AppShell />;
 }
@@ -447,6 +508,8 @@ const appShellRoute = createRoute({
     node: typeof search.node === 'string' ? search.node : undefined,
     edge: typeof search.edge === 'string' ? search.edge : undefined,
     changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
+    level: typeof search.level === 'string' ? search.level : undefined,
+    scope: typeof search.scope === 'string' ? search.scope : undefined,
     vp: typeof search.vp === 'string' ? search.vp : undefined,
   }),
   component: AppShellRoute,

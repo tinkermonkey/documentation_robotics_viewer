@@ -1003,3 +1003,13 @@ body.dark-canvas {
 .drv-type-lanes .graph-lane__title tspan {
   display: none;
 }
+
+/* Architecture section (C4 diagrams): rows nest as deep as the C4 model does,
+ * so the indent comes from the row's depth (--c4-depth, set inline). */
+.nav-item.drv-nav-l2.drv-nav-c4 {
+  padding-left: calc(38px + var(--c4-depth, 0) * 14px);
+}
+
+.nav-item.drv-nav-l2.drv-nav-c4.nav-item--active::before {
+  left: calc(22px + var(--c4-depth, 0) * 14px);
+}

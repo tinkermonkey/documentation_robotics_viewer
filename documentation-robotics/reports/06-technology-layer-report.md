@@ -16,16 +16,16 @@ Infrastructure, platforms, systems, and technology components.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 29    |
+| Elements                  | 30    |
 | Intra-Layer Relationships | 25    |
-| Inter-Layer Relationships | 18    |
-| Inbound Relationships     | 2     |
-| Outbound Relationships    | 16    |
+| Inter-Layer Relationships | 23    |
+| Inbound Relationships     | 3     |
+| Outbound Relationships    | 20    |
 
 **Cross-Layer References**:
 
 - **Upstream layers**: [UX](./10-ux-layer-report.md)
-- **Downstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md)
+- **Downstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Motivation](./01-motivation-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -41,6 +41,7 @@ flowchart LR
     technology_path_app_to_dr_cli_https_path["App to DR CLI HTTPS Path"]
     technology_path_app_to_dr_cli_web_socket_path["App to DR CLI WebSocket Path"]
     technology_systemsoftware_axe_core_playwright["Axe Core Playwright"]
+    technology_systemsoftware_elk["ELK"]
     technology_systemsoftware_happy_dom["Happy DOM"]
     technology_systemsoftware_heimdall_ui["Heimdall UI"]
     technology_systemsoftware_msw["MSW"]
@@ -109,6 +110,7 @@ flowchart TB
   testing["Testing"]
   technology --> api
   technology --> application
+  technology --> motivation
   ux --> technology
   class technology current
 ```
@@ -118,7 +120,11 @@ flowchart TB
 | Relationship ID                                                     | Source Node                                       | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
 | ------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
 | `technology.node.serves.application.applicationcomponent`           | `technology.node.vite-dev-server`                 | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.satisfies.motivation.constraint`         | `technology.systemsoftware.elk`                   | `motivation.constraint.browser-only-deployment`                     | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.elk`                   | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-inspector`                 | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-link-card`                 | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
@@ -133,6 +139,7 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query` | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.technologyservice.serves.api.openapidocument`           | `technology.technologyservice.dr-cli-rest-server` | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.architecture-view`                       | `technology.systemsoftware.elk`                                     | `technology`  | `depends-on` | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.changesets-view`                         | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.model-view`                              | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
 
@@ -324,6 +331,28 @@ axe-core accessibility checks (WCAG 2.1 AA) run by the Playwright E2E suite on e
 | ----------- | -------------------------------------- | ------------ | --------- |
 | intra-layer | `technology.systemsoftware.playwright` | `depends-on` | outbound  |
 
+### ELK {#elk}
+
+**ID**: `technology.systemsoftware.elk`
+
+**Type**: `systemsoftware`
+
+elkjs (Eclipse Layout Kernel compiled to JavaScript), pinned to an exact version, EPL-2.0. Lays out nested graphs with right-angle edge routes. Loaded as a lazy chunk by the C4 diagram layout only; a stand-in until Heimdall has a native nested layout.
+
+#### Attributes
+
+| Name         | Value      |
+| ------------ | ---------- |
+| softwareType | middleware |
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate    | Direction |
+| ----------- | ----------------------------------------------- | ------------ | --------- |
+| inter-layer | `motivation.constraint.browser-only-deployment` | `satisfies`  | outbound  |
+| inter-layer | `application.applicationcomponent.c4-diagram`   | `serves`     | outbound  |
+| inter-layer | `ux.view.architecture-view`                     | `depends-on` | inbound   |
+
 ### Happy DOM {#happy-dom}
 
 **ID**: `technology.systemsoftware.happy-dom`
@@ -363,6 +392,8 @@ DOM implementation for Vitest component tests.
 | Type        | Related Element                                           | Predicate    | Direction |
 | ----------- | --------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `application.applicationcomponent.app-shell`              | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.architecture-canvas`    | `serves`     | outbound  |
+| inter-layer | `application.applicationcomponent.c4-diagram`             | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.change-inspector`       | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.change-link-card`       | `serves`     | outbound  |
 | inter-layer | `application.applicationcomponent.change-neighbourhood`   | `serves`     | outbound  |
@@ -741,4 +772,4 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0

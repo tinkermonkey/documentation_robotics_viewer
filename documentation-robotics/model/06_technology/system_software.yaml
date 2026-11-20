@@ -285,3 +285,25 @@ technology.systemsoftware.axe-core-playwright:
     created_at: 2026-11-18T16:27:42.057Z
     updated_at: 2026-11-18T16:27:42.057Z
     version: 1
+technology.systemsoftware.elk:
+  id: 76b6e459-9e27-483e-ad4b-dff8dda62807
+  path: technology.systemsoftware.elk
+  spec_node_id: technology.systemsoftware
+  type: systemsoftware
+  layer_id: technology
+  name: ELK
+  description: elkjs (Eclipse Layout Kernel compiled to JavaScript), pinned to an
+    exact version, EPL-2.0. Lays out nested graphs with right-angle edge routes.
+    Loaded as a lazy chunk by the C4 diagram layout only; a stand-in until
+    Heimdall has a native nested layout.
+  attributes:
+    softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: elkjs
+  metadata:
+    created_at: 2026-11-20T15:40:02.900Z
+    updated_at: 2026-11-20T15:40:02.900Z
+    version: 1

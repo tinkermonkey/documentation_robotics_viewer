@@ -16,6 +16,7 @@ export const ROUTES = {
   model: '#/model/graph',
   spec: '#/spec/graph',
   changesets: '#/changesets/list',
+  architecture: '#/architecture/diagram',
 } as const;
 
 /** The 12-layer domain palette (slug → hex), verbatim from `ui/domain.ts`. */

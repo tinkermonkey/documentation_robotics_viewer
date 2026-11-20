@@ -3,6 +3,9 @@
  *
  *   column [ Topbar 54px ]
  *          [ row: LeftRail 244px | Canvas flex:1 (+ chat slot) ]
+ *
+ * The canvas is the active view's: `Canvas` (Model + Schema), `ChangesetCanvas`
+ * (Changesets) or `ArchitectureCanvas` (Architecture, the C4 diagrams).
  *          [ StatusBar 28px ]
  *
  * Full 100vh, min-width 880px. The dark shell consumes Heimdall shell tokens
@@ -24,6 +27,7 @@ import { StatusBar } from './StatusBar';
 import { Canvas } from './Canvas';
 import { ChangesetCanvas } from './ChangesetCanvas';
 import { ChangesetInspector } from './ChangesetInspector';
+import { ArchitectureCanvas } from './ArchitectureCanvas';
 import { ChatDrawer } from './ChatDrawer';
 import { useUiStore } from './uiStore';
 import { LAYER_ORDER } from './domain';
@@ -122,6 +126,8 @@ export function AppShell() {
   // Model + Schema render the graph Canvas (Inspector drawer lives inside it);
   // Changesets renders the diff list + changeset detail.
   const isChangesets = view === 'changesets';
+  // Architecture renders the C4 diagrams; its details drawer lives inside its canvas.
+  const isArchitecture = view === 'architecture';
   // No changeset open: the inbox takes the whole canvas.
   const hasChangeset = useUiStore((s) => s.changesetId !== null);
 
@@ -155,8 +161,9 @@ export function AppShell() {
         }}
       >
         <LeftRail />
-        {/* Model + Schema: live graph (Inspector drawer inside it). Changesets: diff list + detail column. */}
-        {isChangesets ? <ChangesetCanvas /> : <Canvas />}
+        {/* Model + Schema: live graph (Inspector drawer inside it). Changesets: diff list + detail column.
+            Architecture: the C4 diagrams. */}
+        {isArchitecture ? <ArchitectureCanvas /> : isChangesets ? <ChangesetCanvas /> : <Canvas />}
         {isChangesets && hasChangeset && <ChangesetInspector />}
         {/* DrBot: a floating panel over the view's area (fixed, anchored via
             useChatAnchor), or, docked, a column / rail tab at the row's end. */}

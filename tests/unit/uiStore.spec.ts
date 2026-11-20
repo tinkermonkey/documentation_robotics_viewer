@@ -794,3 +794,44 @@ describe('first-visit defaults vs a persisted choice (#596, #597)', () => {
     expect(state.chatDocked).toBe(false);
   });
 });
+
+describe('Architecture view state (C4 level, scope, selected box)', () => {
+  it('showC4 opens a diagram as a navigation and clears the selected box', () => {
+    get().selectC4('some.box');
+    const before = get().navSeq;
+    get().showC4('component', 'application.applicationcomponent.app-shell');
+    expect(get()).toMatchObject({
+      view: 'architecture',
+      c4Level: 'component',
+      c4Scope: 'application.applicationcomponent.app-shell',
+      c4SelectedId: null,
+    });
+    expect(get().navSeq).toBe(before + 1);
+    expect(get().expandedSections.has('architecture')).toBe(true);
+  });
+
+  it('keeps a scope only at the Component level', () => {
+    get().showC4('container', 'application.applicationcomponent.app-shell');
+    expect(get()).toMatchObject({ c4Level: 'container', c4Scope: null });
+    get().restoreC4('context', 'x', 'y');
+    expect(get()).toMatchObject({ c4Level: 'context', c4Scope: null, c4SelectedId: 'y' });
+  });
+
+  it('selectC4 and restoreC4 are not navigations', () => {
+    const before = get().navSeq;
+    get().selectC4('a');
+    get().restoreC4('component', 'scope', 'box');
+    expect(get().navSeq).toBe(before);
+    expect(get()).toMatchObject({ c4Level: 'component', c4Scope: 'scope', c4SelectedId: 'box' });
+  });
+
+  it('does not persist the C4 level, scope or selection (the URL owns them)', () => {
+    get().showC4('component', 'scope');
+    get().selectC4('box');
+    get().toggleCanvasDark(); // any persisted write
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('c4Level');
+    expect(stored.state).not.toHaveProperty('c4Scope');
+    expect(stored.state).not.toHaveProperty('c4SelectedId');
+  });
+});

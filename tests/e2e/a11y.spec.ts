@@ -1,5 +1,5 @@
 /**
- * a11y.spec.ts — automated axe-core (WCAG 2.1 AA) scan of the three primary
+ * a11y.spec.ts — automated axe-core (WCAG 2.1 AA) scan of the four primary
  * views in BOTH canvas tones (light + dark).
  *
  * Gate: NO `serious`/`critical` violations OTHER than `color-contrast`.
@@ -52,6 +52,8 @@ const CONTRAST_BASELINE: Record<string, number> = {
   'Schema/dark': 0,
   'Changesets/light': 0,
   'Changesets/dark': 0,
+  'Architecture/light': 0,
+  'Architecture/dark': 0,
 };
 
 /** Run axe with the WCAG AA ruleset over the full page. */
@@ -80,6 +82,8 @@ const VIEWS: Array<{ name: string; route: string }> = [
   { name: 'Model', route: ROUTES.model },
   { name: 'Schema', route: ROUTES.spec },
   { name: 'Changesets', route: ROUTES.changesets },
+  // The Container diagram: boundary, cards of every kind in and out of scope, arrows.
+  { name: 'Architecture', route: `${ROUTES.architecture}?level=container` },
 ];
 
 const TONES: Array<'light' | 'dark'> = ['light', 'dark'];

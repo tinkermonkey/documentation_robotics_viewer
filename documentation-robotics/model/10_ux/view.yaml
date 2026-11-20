@@ -171,3 +171,22 @@ ux.view.topbar-search:
     created_at: 2026-11-19T17:48:18.607Z
     updated_at: 2026-11-19T17:48:18.607Z
     version: 1
+ux.view.architecture-view:
+  id: a69be5e5-d12d-4753-b45a-7560b165c116
+  path: ux.view.architecture-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Architecture View
+  description: "The model as C4 diagrams (#/architecture): a level control
+    (Context · Containers · Components), a breadcrumb of the scope, and the
+    diagram. Clicking a box selects it and opens its details; a box with parts
+    drills into them."
+  attributes:
+    type: page
+    title: Architecture
+    routable: true
+  metadata:
+    created_at: 2026-11-20T15:40:02.904Z
+    updated_at: 2026-11-20T15:40:02.904Z
+    version: 1

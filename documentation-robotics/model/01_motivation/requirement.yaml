@@ -188,3 +188,22 @@ motivation.requirement.dr-bot-opens-without-reflowing-the-canvas:
     created_at: 2026-11-19T18:03:06.730Z
     updated_at: 2026-11-19T18:03:06.730Z
     version: 1
+motivation.requirement.architecture-reads-as-c4-diagrams:
+  id: ef8acbe2-363e-48b5-b457-b344f315715b
+  path: motivation.requirement.architecture-reads-as-c4-diagrams
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Architecture reads as C4 diagrams
+  description: A person can read the modelled system as the established C4
+    diagrams (Context, Container, Component), derived from the DR model by rule,
+    without learning DR's layers or node types. Every box and arrow traces back
+    to the model elements it came from, and nothing is drawn that the model
+    doesn't hold.
+  attributes:
+    requirementType: functional
+    priority: high
+  metadata:
+    created_at: 2026-11-20T15:40:02.878Z
+    updated_at: 2026-11-20T15:40:02.878Z
+    version: 1

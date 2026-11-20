@@ -3548,25 +3548,6 @@ testing.testcasesketch.nav-tree-schema-counts-differ-from-model-schema-layer-cou
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
-testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets:
-  id: 7a1bd29b-1bc7-4132-a3b2-94be5440f409
-  path: testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: NavTree — sections > renders all three sections (Model / Schema / Changesets)
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/components/NavTree.spec.tsx
-        symbol: NavTree — sections > renders all three sections (Model / Schema /
-          Changesets)
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
 testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets:
   id: 160f7ada-e1f5-485b-8d09-6dcc1aa64141
   path: testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets
@@ -6174,26 +6155,6 @@ testing.testcasesketch.shell-favicon-is-linked-and-served-no-favicon-ico-404:
     locations:
       - file: tests/e2e/shell.spec.ts
         symbol: shell > favicon is linked and served (no /favicon.ico 404)
-  metadata:
-    created_at: 2026-11-18T16:22:43.196Z
-    updated_at: 2026-11-18T16:22:43.196Z
-    version: 1
-testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts:
-  id: 3e5d705e-1c58-4e58-a692-4e53b733ae88
-  path: testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts
-  spec_node_id: testing.testcasesketch
-  type: testcasesketch
-  layer_id: testing
-  name: shell > nav rail shows the 3 sections and, when Model is expanded, 12
-    layers with API counts
-  attributes:
-    status: automated
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: tests/e2e/shell.spec.ts
-        symbol: shell > nav rail shows the 3 sections and, when Model is expanded, 12
-          layers with API counts
   metadata:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
@@ -17533,4 +17494,1219 @@ testing.testcasesketch.select-layer-select-changeset-toggle-chat-toggle-chat-fli
   metadata:
     created_at: 2026-11-20T15:40:16.037Z
     updated_at: 2026-11-20T15:40:16.037Z
+    version: 1
+testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button:
+  id: 2a1badaa-e13d-40f6-b38c-07f127e0271d
+  path: testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > closes the details from their Close button
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > closes the details from their Close button
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back:
+  id: 1c0f978f-007b-46fc-b092-3f872899cf10
+  path: testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > drills from a container into its components and back
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > drills from a container into its components and
+          back
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it:
+  id: c20c4237-87a9-4f13-8e05-86eeabac4e58
+  path: testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "ArchitectureCanvas > opens on the system context: the system as one box,
+    with who and what is around it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: "ArchitectureCanvas > opens on the system context: the system as one
+          box, with who and what is around it"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them:
+  id: eb6e0959-42ca-4f00-a185-4572740e5b95
+  path: testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > opens the details of a selected box, and a model
+    element from them
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > opens the details of a selected box, and a model
+          element from them
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope:
+  id: 73f471cf-a858-4361-b07b-3ecf93c1dd8a
+  path: testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > shows the default container when the Components level
+    has no scope
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > shows the default container when the Components
+          level has no scope
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control:
+  id: eada1495-aae9-4609-8ba7-10e89c013465
+  path: testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > switches level from the header control
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > switches level from the header control
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram:
+  id: 2474c66f-bd3a-4786-b459-1d0234c78591
+  path: testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — drawing > draws no boundary on a context diagram
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — drawing > draws no boundary on a context diagram
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship:
+  id: 73f13ab6-8d38-4fff-8064-de02e0e68834
+  path: testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — drawing > draws the boundary, a card per element and a
+    labelled edge per relationship
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — drawing > draws the boundary, a card per element and a
+          labelled edge per relationship
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it:
+  id: addd48e6-7ccd-497e-b93b-6d28d0abb289
+  path: testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — drawing > marks the selected card and the arrows that touch it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — drawing > marks the selected card and the arrows that touch
+          it
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03:
+  id: 757275cc-712f-47a6-8910-9a4f152ba38c
+  path: testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — drawing > selects a card on click, clears it on a second
+    click, and opens one from its parts button
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — drawing > selects a card on click, clears it on a second
+          click, and opens one from its parts button
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape:
+  id: c749a694-1a04-4aca-9427-7767f15c0509
+  path: testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — keyboard > clears the selection with Escape
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — keyboard > clears the selection with Escape
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop:
+  id: 5f7f01cd-1e3c-4e57-8884-a5cb5658b53b
+  path: testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — keyboard > keeps the cards to one Tab stop
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — keyboard > keeps the cards to one Tab stop
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter:
+  id: 09235375-1331-49dc-802d-0621f4103560
+  path: testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4Diagram — keyboard > moves between cards with the arrow keys and drills
+    in with Enter
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Diagram.spec.tsx
+        symbol: C4Diagram — keyboard > moves between cards with the arrow keys and
+          drills in with Enter
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row:
+  id: a24b8a2a-a01b-40ae-9418-b1443813f17e
+  path: testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree — Architecture section > counts the diagrams on the section row
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree — Architecture section > counts the diagrams on the section row
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row:
+  id: 6bbb5e17-9319-4bcc-ad54-7840b17f8493
+  path: testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree — Architecture section > lists the C4 diagrams and opens one from
+    its row
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree — Architecture section > lists the C4 diagrams and opens one
+          from its row
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-model-schema-changesets:
+  id: c992f234-0552-4313-9035-3ffa1d52de84
+  path: testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-model-schema-changesets
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree — sections > renders all four sections (Architecture / Model /
+    Schema / Changesets)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree — sections > renders all four sections (Architecture / Model /
+          Schema / Changesets)
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90:
+  id: 6c76706a-f789-4e0d-89df-bf1fb956efe5
+  path: testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > drills from a container into its
+    components and down to Graph Canvas, and Back returns
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > drills from a container into its
+          components and down to Graph Canvas, and Back returns
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box:
+  id: c64290c6-f177-446c-b4c9-a3b1ab375992
+  path: testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > restores level and scope from the URL,
+    and the selected box
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > restores level and scope from the URL,
+          and the selected box
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976:
+  id: 5d1c9731-7322-4857-ac68-f0ea5e78fde7
+  path: testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > selecting a box replaces the history
+    entry; a source link opens the element in the Model view
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > selecting a box replaces the history
+          entry; a source link opens the element in the Model view
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams:
+  id: 8c1156ff-a7e2-48d3-9d1d-6d628f9ee5ab
+  path: testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > the Architecture section of the nav tree
+    opens the diagrams
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > the Architecture section of the nav
+          tree opens the diagrams
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a:
+  id: 10a10397-fdfd-4d02-8eac-c9ba5fe6f6b6
+  path: testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > the Container diagram shows the people,
+    the viewer app, its storage and the DR CLI server, and nothing from the
+    technology layer
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > the Container diagram shows the
+          people, the viewer app, its storage and the DR CLI server, and nothing
+          from the technology layer
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts:
+  id: 4c2e3152-95c0-4d8b-a776-fe5cfab5689a
+  path: testing.testcasesketch.shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: shell > nav rail shows the 4 sections and, when Model is expanded, 12
+    layers with API counts
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/shell.spec.ts
+        symbol: shell > nav rail shows the 4 sections and, when Model is expanded, 12
+          layers with API counts
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary:
+  id: 6eebaf57-e346-48d8-8500-bb7e99e96f13
+  path: testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout > draws a context diagram without a boundary
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Layout.spec.ts
+        symbol: c4 layout > draws a context diagram without a boundary
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count:
+  id: 9bfb9969-3b85-432b-9a0d-6a4fd3a99b29
+  path: testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout > labels an arrow with its predicates and, past one link, a count
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Layout.spec.ts
+        symbol: c4 layout > labels an arrow with its predicates and, past one link, a
+          count
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view:
+  id: 5499ee49-be8b-410a-8407-0eaf9a4f3246
+  path: testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout > lays out nothing for an empty view
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Layout.spec.ts
+        symbol: c4 layout > lays out nothing for an empty view
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it:
+  id: ca00a9e3-ce71-43c8-8698-81bf0bce1aa4
+  path: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout > places every element inside its boundary, and everything else
+    outside it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Layout.spec.ts
+        symbol: c4 layout > places every element inside its boundary, and everything
+          else outside it
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label:
+  id: e884cf3f-eec7-4e62-9776-71055a2f71c0
+  path: testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout > routes one arrow per relationship, from box edge to box edge,
+    with a label
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Layout.spec.ts
+        symbol: c4 layout > routes one arrow per relationship, from box edge to box
+          edge, with a label
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577:
+  id: 653e3fd1-406b-4a87-9ac9-eb60c20e0b9b
+  path: testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model of the real fixture > accounts for every model element: a C4
+    element, folded onto one, a technology line, or counted as unplaced"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model of the real fixture > accounts for every model element: a C4
+          element, folded onto one, a technology line, or counted as unplaced"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b:
+  id: 192b9e52-fcbc-4d9b-8f21-3651b9109f39
+  path: testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 model of the real fixture > places every element in exactly one parent
+    chain that ends at the system
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: c4 model of the real fixture > places every element in exactly one
+          parent chain that ends at the system
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c:
+  id: c52b6ddc-6729-4492-9148-d56241a73ad1
+  path: testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: containment > leaves unowned components unassigned when the
+    model has several application containers"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: containment > leaves unowned components unassigned when the
+          model has several application containers"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container:
+  id: 646f9d0a-3430-4982-8cda-57bbd7768d8a
+  path: testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: containment > nests components by composes and puts unowned
+    ones in the app container"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: containment > nests components by composes and puts unowned
+          ones in the app container"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle:
+  id: 4dd6a2eb-7621-4214-b588-d577462adb44
+  path: testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: containment > never closes a containment cycle"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: containment > never closes a containment cycle"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor:
+  id: 36d08aeb-090b-4f8f-aadb-3989e98331f7
+  path: testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: containment > puts an element several parents claim under their
+    nearest common ancestor"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: containment > puts an element several parents claim under
+          their nearest common ancestor"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so:
+  id: 0d5d41ea-23c6-48e4-a540-83771374bc2e
+  path: testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: containment > stands in a container when the model has none,
+    and says so"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: containment > stands in a container when the model has none,
+          and says so"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318:
+  id: 2d133a36-ed1c-44ba-9f0f-496f466a0071
+  path: testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: elements and identity > gives a container its technology from
+    the model, and a component the system software serving it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: elements and identity > gives a container its technology from
+          the model, and a component the system software serving it"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person:
+  id: 68323317-11bd-4566-9937-85d5f70954d6
+  path: testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: elements and identity > merges a persona and its business role
+    into one person"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: elements and identity > merges a persona and its business
+          role into one person"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737:
+  id: bb1e75c0-b351-4ce5-9f1a-8376742e1f93
+  path: testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: elements and identity > reads an actor by its type, and one
+    external system for a same-named actor and stakeholder"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: elements and identity > reads an actor by its type, and one
+          external system for a same-named actor and stakeholder"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path:
+  id: 73079452-1255-4cf1-bb09-987c6673e539
+  path: testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: relationships > derives the arrows the model holds as a
+    two-link path"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: relationships > derives the arrows the model holds as a
+          two-link path"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39:
+  id: 4192c619-072c-4b93-aad7-3629ea2123a6
+  path: testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: relationships > folds what is not a C4 element onto the one it
+    tests or references, and counts the rest"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: relationships > folds what is not a C4 element onto the one
+          it tests or references, and counts the rest"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship:
+  id: 9ff71f44-8557-48be-9fe7-5365d7e16779
+  path: testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 model: relationships > keeps the source ids of every element and
+    relationship"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: "c4 model: relationships > keeps the source ids of every element and
+          relationship"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use:
+  id: b6a77729-50a2-4787-84a3-f00b2e041251
+  path: testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: 'c4 model: relationships > turns "serves" round, so every arrow reads as a
+    use'
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: 'c4 model: relationships > turns "serves" round, so every arrow reads as
+          a use'
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded:
+  id: a47b49b1-af5b-4444-a461-45b2132604c7
+  path: testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 rules against the spec > applies every rule when no spec is loaded
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: c4 rules against the spec > applies every rule when no spec is loaded
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14:
+  id: 96506b86-74e6-42e2-a6d5-82022c874176
+  path: testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 rules against the spec > reads a catalog from an /api/spec payload, and
+    reports what an older spec lacks
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: c4 rules against the spec > reads a catalog from an /api/spec payload,
+          and reports what an older spec lacks
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out:
+  id: f544a555-ca87-4097-b4ff-9866d875718f
+  path: testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 rules against the spec > reports rules that name types the spec does
+    not define, and leaves them out
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: c4 rules against the spec > reports rules that name types the spec does
+          not define, and leaves them out
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines:
+  id: 5c2f688b-c28a-4717-be10-e7dd6879c5f8
+  path: testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 rules against the spec > the shipped rules name only what the current
+    spec defines
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Model.spec.ts
+        symbol: c4 rules against the spec > the shipped rules name only what the current
+          spec defines
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary:
+  id: d8be059b-79bf-41dc-adb8-1770948ad261
+  path: testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: levels > container: the containers inside the system boundary"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: levels > container: the containers inside the system
+          boundary"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system:
+  id: 2755e700-2249-497b-a940-f88df62580ec
+  path: testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: levels > context: the system as one box, with every person and
+    external system"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: levels > context: the system as one box, with every person
+          and external system"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams:
+  id: 2cc0c06a-1df8-4edc-877d-e10ee9cc7415
+  path: testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: levels > keeps technology elements out of context and container
+    diagrams"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: levels > keeps technology elements out of context and
+          container diagrams"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc:
+  id: 81151d6c-0745-4df7-bef6-6f129a21af45
+  path: testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: lifting > caps the outside of a component diagram at the most
+    linked, and says how many it left out"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: lifting > caps the outside of a component diagram at the most
+          linked, and says how many it left out"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links:
+  id: 9c1ec565-fc24-4cc1-9bfa-abe8f7c3a326
+  path: testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: lifting > lifts an outside neighbour to its nearest visible
+    ancestor and counts the links"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: lifting > lifts an outside neighbour to its nearest visible
+          ancestor and counts the links"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels:
+  id: 9042ee39-6de8-49bf-800b-93b2b7a57b43
+  path: testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: lifting > merges several links between one pair into one arrow
+    with a count and its labels"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: lifting > merges several links between one pair into one
+          arrow with a count and its labels"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope:
+  id: 253ca45a-3567-440d-80d2-778d42a84277
+  path: testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: scope > falls back to the default container for an unknown or
+    part-less scope"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: scope > falls back to the default container for an unknown or
+          part-less scope"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content:
+  id: 327d848a-109a-43e2-b4b4-ffe1c9370a1b
+  path: testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: scope > keys a view by its content"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: scope > keys a view by its content"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them:
+  id: e4d202c2-6c00-46f8-af10-b78c6008dd87
+  path: testing.testcasesketch.c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: scope > lists every element with parts for the nav tree, nested
+    as the model nests them"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: scope > lists every element with parts for the nav tree,
+          nested as the model nests them"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url:
+  id: 04244a96-0dab-42e5-9b79-e1b2a065effb
+  path: testing.testcasesketch.c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "c4 views: scope > names a level by its scope, and parses a level from a URL"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Views.spec.ts
+        symbol: "c4 views: scope > names a level by its scope, and parses a level from a
+          URL"
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b:
+  id: 065d1f92-3b02-4cee-ac30-60139df55c01
+  path: testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildChatContext in the Architecture view > names the diagram and the
+    selected box with the model elements behind it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatContext.spec.ts
+        symbol: buildChatContext in the Architecture view > names the diagram and the
+          selected box with the model elements behind it
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known:
+  id: 63bbe931-26e7-4fda-b577-4e7421eaf4f4
+  path: testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildChatContext in the Architecture view > returns null before the C4
+    model is known
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatContext.spec.ts
+        symbol: buildChatContext in the Architecture view > returns null before the C4
+          model is known
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39:
+  id: 46c02a1e-5468-4fae-9c76-270a4c668977
+  path: testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildChatContext in the Architecture view > says when nothing is selected,
+    and that a stand-in box has no model element
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatContext.spec.ts
+        symbol: buildChatContext in the Architecture view > says when nothing is
+          selected, and that a stand-in box has no model element
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca:
+  id: 9debf09d-36d1-4a41-a875-db395a27bab4
+  path: testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view state (C4 level, scope, selected box) > does not persist
+    the C4 level, scope or selection (the URL owns them)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: Architecture view state (C4 level, scope, selected box) > does not
+          persist the C4 level, scope or selection (the URL owns them)
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level:
+  id: 618ee827-bc17-4778-8eab-7be14af8c850
+  path: testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view state (C4 level, scope, selected box) > keeps a scope
+    only at the Component level
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: Architecture view state (C4 level, scope, selected box) > keeps a scope
+          only at the Component level
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations:
+  id: 81e57072-c810-435c-b429-7bb5fc7fe5e2
+  path: testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view state (C4 level, scope, selected box) > selectC4 and
+    restoreC4 are not navigations
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: Architecture view state (C4 level, scope, selected box) > selectC4 and
+          restoreC4 are not navigations
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
+    version: 1
+testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee:
+  id: 68cfe68c-e4bd-4b30-b738-77487de64961
+  path: testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view state (C4 level, scope, selected box) > showC4 opens a
+    diagram as a navigation and clears the selected box
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: Architecture view state (C4 level, scope, selected box) > showC4 opens a
+          diagram as a navigation and clears the selected box
+  metadata:
+    created_at: 2026-11-20T16:44:30.646Z
+    updated_at: 2026-11-20T16:44:30.646Z
     version: 1

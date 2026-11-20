@@ -27,9 +27,12 @@ navigation.route.app-shell-sectionview-route:
   layer_id: navigation
   name: App Shell Section/View Route
   description: Parameterized route at /#/:section/:view (section = model | spec |
-    changesets; view is a per-section default, e.g. graph or list) that renders
-    AppShell; a two-way effect keeps uiStore.view and the URL hash in sync.
-    Replaced the previous six separate per-section redirect + view routes
+    changesets | architecture; view is a per-section default, e.g. graph, list,
+    or diagram for architecture) that renders AppShell; a two-way effect keeps
+    uiStore.view and the URL hash in sync. The architecture section carries
+    ?level= (context | container | component), ?scope= (the dotted id of the
+    element whose parts are shown) and ?node= (the selected box). Replaced the
+    previous six separate per-section redirect + view routes
     (model/spec/changesets redirect-route and view-route pairs) with a single
     generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in
     the June 2026 Heimdall UX rebuild; protected — requires a valid auth token

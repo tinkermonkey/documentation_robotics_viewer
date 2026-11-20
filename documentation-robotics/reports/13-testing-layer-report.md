@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 896   |
+| Elements                  | 956   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 1049  |
+| Inter-Layer Relationships | 1138  |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 1049  |
+| Outbound Relationships    | 1138  |
 
 **Cross-Layer References**:
 
@@ -49,8 +49,26 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`                                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known`                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-returns-null-when-nothing-is-open-beyond-the-view`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-says-when-only-a-layer-is-open`                                                                               | `testcasesketch`      | 0             |
@@ -79,6 +97,46 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`                                                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it`                                               | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label`                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle`                                                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor`                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so`                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person`                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577`                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b`                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path`                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines`                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary`                                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system`                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams`                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links`                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`                               | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content`                                                                                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them`                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram`                                                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it`                                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03`                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape`                                                                             | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop`                                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide`                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-leaves-a-delete-of-a-model-element-no-earlier-add-alone`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-never-folds-a-delete-that-has-blockers-it-stays-a-blocked-delete-to-resolve`                                        | `testcasesketch`      | 0             |
@@ -462,6 +520,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.model-view-graph-nodes-render-with-the-layer-domain-color-data-model-swatch-2dd4bf`                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.model-view-hovering-an-edge-predicate-for-3s-explains-it-beside-the-label-not-on-top-of-it`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`                               | `testcasesketch`      | 0             |
@@ -479,7 +539,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-collapses-sibling-sections-on-a-url-driven-view-change-and-6c119aef`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-opens-one-section-at-a-time-and-reports-it-with-aria-89a421e8`                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-schema-layer-counts-come-from-spec-node-types-data-model-9b436e7e`                      | `testcasesketch`      | 0             |
-| `testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets`                                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-model-schema-changesets`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                                             | `testcasesketch`      | 0             |
@@ -728,7 +788,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.shell-favicon-is-linked-and-served-no-favicon-ico-404`                                                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version`                                                                 | `testcasesketch`      | 0             |
-| `testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts`                                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version`                                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.shell-the-light-dark-segmented-control-toggles-body-dark-canvas-and-flips-a-canvas-color`                                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.shell-topbar-nav-rail-and-statusbar-are-present-and-sized-54-244-28`                                                             | `testcasesketch`      | 0             |
@@ -974,7 +1034,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `application.applicationcomponent.topbar-search`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `ux.view.topbar-search`                                            | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-create-edit-reply-resolve-delete-an-annotation`                                                                      | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `business.businessservice.model-annotation`                        | `business`    | `tests`     | many-to-many | medium   |
@@ -989,8 +1051,33 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`                                                                  | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`                            | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`                            | `application.applicationservice.use-c4model`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`                                           | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                                          | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                                      | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`                     | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                                       | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                                        | `navigation.route.app-shell-sectionview-route`                     | `navigation`  | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                                        | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                                       | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`                       | `navigation.route.app-shell-sectionview-route`                     | `navigation`  | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`                       | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b`                      | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known`                                           | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39`                      | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`                                           | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-returns-null-when-nothing-is-open-beyond-the-view`                                                            | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-says-when-only-a-layer-is-open`                                                                               | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
@@ -1019,6 +1106,63 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`                                                                                    | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`                                                                                    | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it`                                               | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it`                                               | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label`                                              | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label`                                              | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c`                       | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                                    | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle`                                                                           | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor`                                  | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so`                                                  | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318`                     | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person`                                           | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737`                     | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577`                           | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b`                         | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path`                                                    | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`                          | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                                         | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                                             | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`                      | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`                            | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines`                                             | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary`                                                             | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system`                                             | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams`                                                 | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`                       | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`                       | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links`                                | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`                               | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`                               | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                                            | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                                            | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content`                                                                                       | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them`                                   | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url`                                                         | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram`                                                                        | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram`                                                                        | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                    | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                    | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it`                                                          | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it`                                                          | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03`                     | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03`                     | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape`                                                                             | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape`                                                                             | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop`                                                                              | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop`                                                                              | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                             | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                             | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                             | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                             | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide`                                     | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-leaves-a-delete-of-a-model-element-no-earlier-add-alone`                                                            | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-never-folds-a-delete-that-has-blockers-it-stays-a-blocked-delete-to-resolve`                                        | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
@@ -1433,6 +1577,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.model-view-graph-nodes-render-with-the-layer-domain-color-data-model-swatch-2dd4bf`                                              | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.model-view-hovering-an-edge-predicate-for-3s-explains-it-beside-the-label-not-on-top-of-it`                                      | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                                            | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                                                  | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`                            | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                                           | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`                               | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
@@ -1450,7 +1596,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-collapses-sibling-sections-on-a-url-driven-view-change-and-6c119aef`                    | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-opens-one-section-at-a-time-and-reports-it-with-aria-89a421e8`                          | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-schema-counts-differ-from-model-schema-layer-counts-come-from-spec-node-types-data-model-9b436e7e`                      | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets`                                                            | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-model-schema-changesets`                                                | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-sections-shows-12-on-the-model-section-and-the-live-changeset-count-on-changesets`                                      | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                                      | `product.feature.nav-tree-type-groups`                             | `product`     | `tests`     | many-to-many | medium   |
@@ -1777,7 +1923,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-footer-shows-the-spec-manifests-version-and-the-cli-version-health-reports`                                                | `application.applicationcomponent.status-bar`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version`                                                                 | `application.applicationcomponent.left-rail`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-footer-shows-when-the-server-sends-no-spec-or-cli-version`                                                                 | `application.applicationcomponent.status-bar`                      | `application` | `tests`     | many-to-many | medium   |
-| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts`                                        | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts`                                        | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version`                                               | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version`                                               | `application.applicationcomponent.status-bar`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.shell-the-light-dark-segmented-control-toggles-body-dark-canvas-and-flips-a-canvas-color`                                        | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
@@ -1996,6 +2142,9 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-model`                         | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-spec`                          | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.web-socket-client`                 | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-diagram-layout`                 | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-model-transform`                | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-view-scoping`                   | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.change-origin-helpers`             | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-drift`                   | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-impact-analysis`         | `application` | `covers`    | many-to-many | medium   |
@@ -2114,6 +2263,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------ | ----------- | --------- |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`   | `satisfies` | outbound  |
 | inter-layer | `application.applicationcomponent.topbar-search` | `tests`     | outbound  |
+| inter-layer | `ux.view.topbar-search`                          | `tests`     | outbound  |
 
 ### accessibility (axe / WCAG 2.1 AA) &gt; $\{view.name\} view — $\{tone\} canvas: no serious/critical violations (except known contrast) {#accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-known-contrast}
 
@@ -2132,6 +2282,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                              | Predicate | Direction |
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.app-shell` | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                  | `tests`   | outbound  |
 
 ### annotations &gt; create → edit → reply → resolve → delete an annotation {#annotations-create-edit-reply-resolve-delete-an-annotation}
 
@@ -2334,6 +2485,283 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationcomponent.annotations-section` | `tests`   | outbound  |
 
+### ArchitectureCanvas &gt; closes the details from their Close button {#architecturecanvas-closes-the-details-from-their-close-button}
+
+**ID**: `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+
+### ArchitectureCanvas &gt; drills from a container into its components and back {#architecturecanvas-drills-from-a-container-into-its-components-and-back}
+
+**ID**: `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`       | `tests`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`             | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                            | `tests`   | outbound  |
+
+### ArchitectureCanvas &gt; opens on the system context: the system as one box, with who and what is around it {#architecturecanvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it}
+
+**ID**: `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.use-c4model`     | `tests`   | outbound  |
+
+### ArchitectureCanvas &gt; opens the details of a selected box, and a model element from them {#architecturecanvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them}
+
+**ID**: `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+
+### ArchitectureCanvas &gt; shows the default container when the Components level has no scope {#architecturecanvas-shows-the-default-container-when-the-components-level-has-no-scope}
+
+**ID**: `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+
+### ArchitectureCanvas &gt; switches level from the header control {#architecturecanvas-switches-level-from-the-header-control}
+
+**ID**: `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+
+### Architecture view — C4 diagrams &gt; drills from a container into its components and down to Graph Canvas, and Back returns {#architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-and-back-returns}
+
+**ID**: `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `product.feature.c4-architecture-diagrams` | `tests`   | outbound  |
+
+### Architecture view — C4 diagrams &gt; restores level and scope from the URL, and the selected box {#architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box}
+
+**ID**: `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate | Direction |
+| ----------- | ---------------------------------------------- | --------- | --------- |
+| inter-layer | `navigation.route.app-shell-sectionview-route` | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                    | `tests`   | outbound  |
+
+### Architecture view — C4 diagrams &gt; selecting a box replaces the history entry; a source link opens the element in the Model view {#architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-element-in-the-model-view}
+
+**ID**: `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate | Direction |
+| ----------- | ---------------------------------------------- | --------- | --------- |
+| inter-layer | `navigation.route.app-shell-sectionview-route` | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                    | `tests`   | outbound  |
+
+### Architecture view — C4 diagrams &gt; the Architecture section of the nav tree opens the diagrams {#architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams}
+
+**ID**: `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                 | `tests`   | outbound  |
+
+### Architecture view — C4 diagrams &gt; the Container diagram shows the people, the viewer app, its storage and the DR CLI server, and nothing from the technology layer {#architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-the-dr-cli-server-and-nothing-from-the-technology-layer}
+
+**ID**: `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `product.feature.c4-architecture-diagrams` | `tests`   | outbound  |
+
+### Architecture view state (C4 level, scope, selected box) &gt; does not persist the C4 level, scope or selection (the URL owns them) {#architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-selection-the-url-owns-them}
+
+**ID**: `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### Architecture view state (C4 level, scope, selected box) &gt; keeps a scope only at the Component level {#architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level}
+
+**ID**: `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### Architecture view state (C4 level, scope, selected box) &gt; selectC4 and restoreC4 are not navigations {#architecture-view-state-c4-level-scope-selected-box-selectc4-and-restorec4-are-not-navigations}
+
+**ID**: `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### Architecture view state (C4 level, scope, selected box) &gt; showC4 opens a diagram as a navigation and clears the selected box {#architecture-view-state-c4-level-scope-selected-box-showc4-opens-a-diagram-as-a-navigation-and-clears-the-selected-box}
+
+**ID**: `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate | Direction |
+| ----------- | ------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
 ### buildChatContext &gt; describes a Schema node type and a relationship {#buildchatcontext-describes-a-schema-node-type-and-a-relationship}
 
 **ID**: `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`
@@ -2355,6 +2783,60 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 ### buildChatContext &gt; describes the selected changeset in the Changesets view {#buildchatcontext-describes-the-selected-changeset-in-the-changesets-view}
 
 **ID**: `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate | Direction |
+| ----------- | ----------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-context-builder` | `tests`   | outbound  |
+
+### buildChatContext in the Architecture view &gt; names the diagram and the selected box with the model elements behind it {#buildchatcontext-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-elements-behind-it}
+
+**ID**: `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate | Direction |
+| ----------- | ----------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-context-builder` | `tests`   | outbound  |
+
+### buildChatContext in the Architecture view &gt; returns null before the C4 model is known {#buildchatcontext-in-the-architecture-view-returns-null-before-the-c4-model-is-known}
+
+**ID**: `testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate | Direction |
+| ----------- | ----------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.chat-context-builder` | `tests`   | outbound  |
+
+### buildChatContext in the Architecture view &gt; says when nothing is selected, and that a stand-in box has no model element {#buildchatcontext-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-has-no-model-element}
+
+**ID**: `testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39`
 
 **Type**: `testcasesketch`
 
@@ -2875,6 +3357,743 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                         | Predicate | Direction |
 | ----------- | ------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
+
+### c4 layout &gt; draws a context diagram without a boundary {#c4-layout-draws-a-context-diagram-without-a-boundary}
+
+**ID**: `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`   | `tests`   | outbound  |
+
+### c4 layout &gt; labels an arrow with its predicates and, past one link, a count {#c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count}
+
+**ID**: `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+
+### c4 layout &gt; lays out nothing for an empty view {#c4-layout-lays-out-nothing-for-an-empty-view}
+
+**ID**: `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`   | `tests`   | outbound  |
+
+### c4 layout &gt; places every element inside its boundary, and everything else outside it {#c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it}
+
+**ID**: `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`   | `tests`   | outbound  |
+
+### c4 layout &gt; routes one arrow per relationship, from box edge to box edge, with a label {#c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label}
+
+**ID**: `testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`   | `tests`   | outbound  |
+
+### c4 model: containment &gt; leaves unowned components unassigned when the model has several application containers {#c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-containers}
+
+**ID**: `testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: containment &gt; nests components by composes and puts unowned ones in the app container {#c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container}
+
+**ID**: `testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: containment &gt; never closes a containment cycle {#c4-model-containment-never-closes-a-containment-cycle}
+
+**ID**: `testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: containment &gt; puts an element several parents claim under their nearest common ancestor {#c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor}
+
+**ID**: `testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: containment &gt; stands in a container when the model has none, and says so {#c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so}
+
+**ID**: `testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: elements and identity &gt; gives a container its technology from the model, and a component the system software serving it {#c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-system-software-serving-it}
+
+**ID**: `testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: elements and identity &gt; merges a persona and its business role into one person {#c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person}
+
+**ID**: `testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: elements and identity &gt; reads an actor by its type, and one external system for a same-named actor and stakeholder {#c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-actor-and-stakeholder}
+
+**ID**: `testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model of the real fixture &gt; accounts for every model element: a C4 element, folded onto one, a technology line, or counted as unplaced {#c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-technology-line-or-counted-as-unplaced}
+
+**ID**: `testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model of the real fixture &gt; places every element in exactly one parent chain that ends at the system {#c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-system}
+
+**ID**: `testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: relationships &gt; derives the arrows the model holds as a two-link path {#c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path}
+
+**ID**: `testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: relationships &gt; folds what is not a C4 element onto the one it tests or references, and counts the rest {#c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-counts-the-rest}
+
+**ID**: `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model: relationships &gt; keeps the source ids of every element and relationship {#c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship}
+
+**ID**: `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                            | Predicate   | Direction |
+| ----------- | ---------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams` | `satisfies` | outbound  |
+| inter-layer | `application.applicationservice.c4-model-transform`        | `tests`     | outbound  |
+
+### c4 model: relationships &gt; turns "serves" round, so every arrow reads as a use {#c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use}
+
+**ID**: `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 rules against the spec &gt; applies every rule when no spec is loaded {#c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded}
+
+**ID**: `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 rules against the spec &gt; reads a catalog from an /api/spec payload, and reports what an older spec lacks {#c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-lacks}
+
+**ID**: `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 rules against the spec &gt; reports rules that name types the spec does not define, and leaves them out {#c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out}
+
+**ID**: `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 rules against the spec &gt; the shipped rules name only what the current spec defines {#c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines}
+
+**ID**: `testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 views: levels &gt; container: the containers inside the system boundary {#c4-views-levels-container-the-containers-inside-the-system-boundary}
+
+**ID**: `testing.testcasesketch.c4-views-levels-container-the-containers-inside-the-system-boundary`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: levels &gt; context: the system as one box, with every person and external system {#c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system}
+
+**ID**: `testing.testcasesketch.c4-views-levels-context-the-system-as-one-box-with-every-person-and-external-system`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: levels &gt; keeps technology elements out of context and container diagrams {#c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams}
+
+**ID**: `testing.testcasesketch.c4-views-levels-keeps-technology-elements-out-of-context-and-container-diagrams`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: lifting &gt; caps the outside of a component diagram at the most linked, and says how many it left out {#c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-left-out}
+
+**ID**: `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`    | `tests`   | outbound  |
+
+### c4 views: lifting &gt; lifts an outside neighbour to its nearest visible ancestor and counts the links {#c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links}
+
+**ID**: `testing.testcasesketch.c4-views-lifting-lifts-an-outside-neighbour-to-its-nearest-visible-ancestor-and-counts-the-links`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: lifting &gt; merges several links between one pair into one arrow with a count and its labels {#c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels}
+
+**ID**: `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`    | `tests`   | outbound  |
+
+### c4 views: scope &gt; falls back to the default container for an unknown or part-less scope {#c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope}
+
+**ID**: `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`    | `tests`   | outbound  |
+
+### c4 views: scope &gt; keys a view by its content {#c4-views-scope-keys-a-view-by-its-content}
+
+**ID**: `testing.testcasesketch.c4-views-scope-keys-a-view-by-its-content`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: scope &gt; lists every element with parts for the nav tree, nested as the model nests them {#c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them}
+
+**ID**: `testing.testcasesketch.c4-views-scope-lists-every-element-with-parts-for-the-nav-tree-nested-as-the-model-nests-them`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views: scope &gt; names a level by its scope, and parses a level from a URL {#c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url}
+
+**ID**: `testing.testcasesketch.c4-views-scope-names-a-level-by-its-scope-and-parses-a-level-from-a-url`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — drawing &gt; draws no boundary on a context diagram {#c4diagram-drawing-draws-no-boundary-on-a-context-diagram}
+
+**ID**: `testing.testcasesketch.c4diagram-drawing-draws-no-boundary-on-a-context-diagram`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — drawing &gt; draws the boundary, a card per element and a labelled edge per relationship {#c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship}
+
+**ID**: `testing.testcasesketch.c4diagram-drawing-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — drawing &gt; marks the selected card and the arrows that touch it {#c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it}
+
+**ID**: `testing.testcasesketch.c4diagram-drawing-marks-the-selected-card-and-the-arrows-that-touch-it`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — drawing &gt; selects a card on click, clears it on a second click, and opens one from its parts button {#c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-button}
+
+**ID**: `testing.testcasesketch.c4diagram-drawing-selects-a-card-on-click-clears-it-on-a-second-click-and-opens-one-from-its-parts-0c452f03`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — keyboard &gt; clears the selection with Escape {#c4diagram-keyboard-clears-the-selection-with-escape}
+
+**ID**: `testing.testcasesketch.c4diagram-keyboard-clears-the-selection-with-escape`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — keyboard &gt; keeps the cards to one Tab stop {#c4diagram-keyboard-keeps-the-cards-to-one-tab-stop}
+
+**ID**: `testing.testcasesketch.c4diagram-keyboard-keeps-the-cards-to-one-tab-stop`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### C4Diagram — keyboard &gt; moves between cards with the arrow keys and drills in with Enter {#c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter}
+
+**ID**: `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate   | Direction |
+| ----------- | ------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`   | `satisfies` | outbound  |
+| inter-layer | `application.applicationcomponent.c4-diagram`    | `tests`     | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`     | outbound  |
+| inter-layer | `ux.view.architecture-view`                      | `tests`     | outbound  |
 
 ### cancelPairs &gt; folds an element add and its delete; an update between stays a change to decide {#cancelpairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide}
 
@@ -9825,6 +11044,42 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ----------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.graph-canvas` | `tests`   | outbound  |
 
+### NavTree — Architecture section &gt; counts the diagrams on the section row {#navtree-architecture-section-counts-the-diagrams-on-the-section-row}
+
+**ID**: `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+
+### NavTree — Architecture section &gt; lists the C4 diagrams and opens one from its row {#navtree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row}
+
+**ID**: `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name   | Value     |
+| ------ | --------- |
+| status | automated |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+
 ### NavTree — clicks drive the uiStore &gt; clicking a changeset leaf selects it and switches to the changesets view {#navtree-clicks-drive-the-uistore-clicking-a-changeset-leaf-selects-it-and-switches-to-the-changesets-view}
 
 **ID**: `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`
@@ -10135,9 +11390,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
 
-### NavTree — sections &gt; renders all three sections (Model / Schema / Changesets) {#navtree-sections-renders-all-three-sections-model-schema-changesets}
+### NavTree — sections &gt; renders all four sections (Architecture / Model / Schema / Changesets) {#navtree-sections-renders-all-four-sections-architecture-model-schema-changesets}
 
-**ID**: `testing.testcasesketch.nav-tree-sections-renders-all-three-sections-model-schema-changesets`
+**ID**: `testing.testcasesketch.nav-tree-sections-renders-all-four-sections-architecture-model-schema-changesets`
 
 **Type**: `testcasesketch`
 
@@ -14710,9 +15965,9 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | inter-layer | `application.applicationcomponent.left-rail`  | `tests`   | outbound  |
 | inter-layer | `application.applicationcomponent.status-bar` | `tests`   | outbound  |
 
-### shell &gt; nav rail shows the 3 sections and, when Model is expanded, 12 layers with API counts {#shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts}
+### shell &gt; nav rail shows the 4 sections and, when Model is expanded, 12 layers with API counts {#shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts}
 
-**ID**: `testing.testcasesketch.shell-nav-rail-shows-the-3-sections-and-when-model-is-expanded-12-layers-with-api-counts`
+**ID**: `testing.testcasesketch.shell-nav-rail-shows-the-4-sections-and-when-model-is-expanded-12-layers-with-api-counts`
 
 **Type**: `testcasesketch`
 
@@ -18368,6 +19623,9 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 | Type        | Related Element                                                    | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout`                 | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.c4-model-transform`                | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`                   | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.change-origin-helpers`             | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.changeset-drift`                   | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.changeset-impact-analysis`         | `covers`   | outbound  |
@@ -18389,4 +19647,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-20T15:49:34.131Z | Model Version: 0.1.0
+Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0

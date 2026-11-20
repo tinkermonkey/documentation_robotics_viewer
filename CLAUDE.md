@@ -7,7 +7,8 @@ system**. The app is both **served from** and **fed data by** the Documentation 
 thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 
 **Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned via npm),
-Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5.
+Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5, `elkjs` (pinned exact; the C4 diagram
+layout only, loaded lazily).
 
 **13 Architecture Layers** (spec 0.12+): Motivation, Business, Product, Security, Application, Technology,
 API, Data Model, Data Store, UX, Navigation, APM, Testing.
@@ -47,12 +48,14 @@ src/
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
+│   │   ├── ArchitectureCanvas.tsx C4Diagram.tsx c4-diagram.css  # Architecture view: C4 diagrams (level control, breadcrumb,
+│   │   │                                          # details drawer) + the POC renderer (boundary, C4 cards, right-angle arrows)
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
 │   │   ├── markdownExcerpt.ts # pure: a card's one-paragraph excerpt of markdown, as inline tokens (inbox, #588)
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
-│   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chat*/inspectorWidth/expanded
+│   │   ├── uiStore.ts         # Zustand UI state: view/layer/selection/changeset/canvasDark/chat*/inspectorWidth/expanded/c4*
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
 │   │   └── domain-and-nav.css # 12-domain swatch CSS + nav-item helpers (Heimdall's bundle lacks DR domains)
 │   ├── data/                  # Stateless hooks + transforms over the API (no UI)
@@ -63,6 +66,9 @@ src/
 │   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   ├── changesetImpact.ts # changeset over the model → multi-origin reach subgraph + per-layer blast radius
 │   │   ├── changesetReview.ts useChangesetReview.ts  # pure review model + verdict hook (server or localStorage)
+│   │   ├── c4/                # the model as a C4 model (pure): c4Rules.ts (rules as data, checked against the spec),
+│   │   │                      # c4Model.ts (elements, containment, folds, relationships), c4Views.ts (one diagram per level + scope),
+│   │   │                      # c4Layout.ts (ELK adapter, lazy), c4Level.ts, useC4Model.ts (shared hook + layout query)
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
@@ -211,6 +217,49 @@ For local dev use `dr visualize --no-auth`.
   ("applicationservice" → "Application Service"); compounds like OAuth / OpenAPI stay whole.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
+- **Architecture view: C4 diagrams** (proof of concept) — a fourth top-level view (`#/architecture/diagram`,
+  first in the nav accordion) that draws the model as C4 System Context, Container and Component diagrams.
+  `data/c4/` is the transformation layer, pure and keyed on spec ids:
+  - `c4Rules.ts`: the rules as data. Element rules (a node type plus an attribute guard → person / external
+    system / container / component), identity (a persona and the business role it `references` are one person;
+    same-named people or external systems merge), containment (`composes` strict; `assigned-to` / `realizes`
+    shared: a part several parents claim goes to their nearest common ancestor), folds (a test, feature, schema
+    or API operation attaches to the element it tests, realizes, accesses or references, 2 links deep; system
+    software that `serves` a component becomes its technology line), relationship rules (keep, or flip `serves`
+    to read "uses"; structure and tests draw no arrow) and derived rules (an arrow the model holds as two links
+    through a node that isn't a C4 element: persona ← feature ← service, component → collection ← database,
+    element → constraint ← external system). `checkRules` drops and reports any rule naming a type, predicate or
+    relationship the loaded spec doesn't define.
+  - `c4Model.ts`: `buildC4Model` → elements (id = the dotted id of the first source), relationships (with the
+    model `linkIds` behind them), `elementOf` / `anchorsOf` (model element → the C4 element it is, or is folded
+    onto: slice 2's changeset overlay reads these), `unplaced` (counted, never dropped silently) and `issues`.
+    The spec has no "software system" type, so the system is ONE synthetic box (`C4_SYSTEM_ID`, named
+    "Software system": `/api/model` carries no project name). Components nothing owns go into the model's one
+    application container (`ux.uxapplication`); with none a stand-in container, with several an "Unassigned"
+    one, each with an issue. The technology layer has no element rules yet (Deployment diagram: later slice).
+  - `c4Views.ts`: `buildC4View(model, level, scope)`. Outside elements lift to their nearest ancestor that isn't
+    an ancestor of the scope; relationships merge per pair (labels, link count). Context and Container show
+    every person and external system, linked or not; a Component diagram shows linked outsiders, capped at
+    `OUTSIDE_CAP` (12, most linked first, the rest counted). `resolveScope` falls back to the container with the
+    most components. `c4NavRows` feeds the nav tree.
+  - `c4Layout.ts`: the ONLY module that knows ELK (`elkjs`, EPL-2.0, `import()`ed on first use; the packaging
+    script copies its licence into the bundle). Returns boxes, the boundary rectangle and polyline routes
+    (edge coordinates are relative to `edge.container`: convert through `origins`). A stand-in until Heimdall
+    has a native nested layout. `useC4Layout` wraps it in a React Query keyed on `c4ViewKey`.
+  `ui/C4Diagram.tsx` is the POC renderer Heimdall's `GraphCanvas` can't provide yet (a rectangular boundary, a
+  C4 card): HTML cards over one SVG of boundary + arrows inside a `usePanZoom` world, a toolbar reusing
+  `.graph-toolbar` classes (`GraphToolbar` itself only works inside a `GraphCanvas`), roving focus over the cards
+  (arrows move to the nearest card, Enter opens a card with parts, Space selects, Escape clears), and a
+  visually hidden list of the arrows (the SVG is `aria-hidden`). It fits a new diagram one frame after mount:
+  `usePanZoom` drops a `zoomTo` / `panTo` made in a layout effect. `ui/ArchitectureCanvas.tsx` adds the header
+  (level control), the scope breadcrumb, a `DetailDrawer` for the selected box (its model elements link into the
+  Model view through `navigateToElement`) and a footnote saying how much of the model the rules placed. State:
+  `uiStore.c4Level` / `c4Scope` / `c4SelectedId` (not persisted), `showC4` (a navigation: bumps `navSeq`, so the
+  router pushes) and `selectC4` (replaces). URL: `?level=` / `?scope=` / `?node=`; in this section `node` is a C4
+  element id, and the router returns early so it never reaches the Model selection. DrBot's context names the
+  diagram and the selected box's model elements. Not built yet: the changeset overlay, Deployment and Dynamic
+  diagrams, export. Known model gaps it exposes: no ownership (which system an element belongs to) and no
+  container membership in the spec.
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
   section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
   react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
@@ -528,7 +577,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~690 tests)
+npm test            # Vitest: unit + integration + component (~990 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -559,6 +608,8 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 | GraphCanvas overflows its box onto content below | Heimdall's `.graph-canvas` has `min-height: 360px`; a smaller fixed-height box with an absolutely positioned canvas can't contain it | Keep the canvas in normal flow (`flex: 1`) inside a box whose min-height is ≥ 360px (see `NeighborhoodGraphView`) |
 | A RichTooltip swallows the click on its own trigger | No side had room, so clamping put the card over the trigger and the mouseup landed on it | `computeTooltipPosition` tries all four sides, then sets `overlapsAnchor` → the card gets `pointer-events: none` |
 | `?vp=` stripped on load in dev only | StrictMode re-runs the router's store → URL effect with a stale closure where `graphViewport` isn't seeded yet | Read `useUiStore.getState()` inside that effect for the viewport (router.tsx does) |
+| `usePanZoom` ignores a `zoomTo` / `panTo` on mount | Called from a layout effect, before the hook's own mount effects | Call it a frame later (`requestAnimationFrame` in an effect), as `C4Diagram`'s fit does |
+| A component test's seeded store state is gone after render | `renderWithProviders` resets `uiStore` first | Render, then drive the store inside `act()` (see `ArchitectureCanvas.spec.tsx`'s `renderAt`) |
 | Fonts fall back to system | woff2 404 (served as HTML) | Since heimdall-ui 0.11 `@tinkermonkey/heimdall-ui/fonts` uses relative URLs, so Vite emits the woff2 files into `assets/` — keep that import in `main.tsx`; there is no `public/fonts` copy any more. `scripts/package-embedded.cjs` copies the fonts' OFL licence texts into the bundle's `licenses/fonts/` (required when redistributing them) and fails if heimdall-ui stops shipping them |
 | Stale UI after an edit | Vite transform cache | Restart dev server + `rm -rf node_modules/.vite`. Before debugging a code change that "isn't taking effect," `fetch()` the source path from the live page and grep the response for a string unique to your edit — cheaper than assuming the logic is wrong |
 | `userEvent.click()` on a 2nd element inside a hover-tracked overlay doesn't fire its handler | happy-dom/user-event doesn't reliably exclude a shared ancestor when synthesizing the pointer path between two different click targets, so a spurious `mouseleave` collapses (unmounts) the panel mid-click | Use `fireEvent.click()` for that specific multi-step interaction instead of `userEvent.click()` — confirms it's a test-environment artifact, not a product bug (verify live too) |
@@ -567,13 +618,13 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~690 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~990 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
-  `predicates`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
+  `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **62 tests** in `tests/e2e/`): drives the **production bundle** served
-  by `dr visualize` on a dedicated port — shell, model/schema/changesets views, URL routing + localStorage
+- **Playwright** (`npm run test:e2e`, **72 tests** in `tests/e2e/`): drives the **production bundle** served
+  by `dr visualize` on a dedicated port — shell, model/schema/changesets/architecture views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.
 - **CI**: `.github/workflows/test.yml` — Vitest + `test:types` + build are the required gate; the E2E job is

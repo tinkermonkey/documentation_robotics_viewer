@@ -143,6 +143,16 @@ function packageEmbedded() {
     fs.copyFileSync(licence, path.join(licencesDir, `${font}-OFL.txt`));
   }
 
+  // elkjs lays out the Architecture view's C4 diagrams (a lazy chunk in
+  // assets/). It is EPL-2.0, so its licence text travels with the bundle too;
+  // a missing one fails the build, as for the fonts.
+  log('3c. Copying the elkjs licence...', colors.blue);
+  const elkLicence = path.join(__dirname, '..', 'node_modules', 'elkjs', 'LICENSE.md');
+  if (!fs.existsSync(elkLicence)) {
+    throw new Error(`elkjs licence not found: ${elkLicence}`);
+  }
+  fs.copyFileSync(elkLicence, path.join(BUNDLE_DIR, 'licenses', 'elkjs-LICENSE.md'));
+
   // Generate manifest
   log('4. Generating manifest...', colors.blue);
   const manifest = generateManifest();

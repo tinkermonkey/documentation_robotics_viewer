@@ -1,7 +1,7 @@
 /**
  * shell.spec.ts — the 4-pane IDE shell: topbar / nav rail / statusbar.
  *
- * Asserts the chrome dimensions (54 / 244 / 28), the nav rail's 3 sections and
+ * Asserts the chrome dimensions (54 / 244 / 28), the nav rail's 4 sections and
  * 12 layers with counts equal to the live API, the rail's spec version, the
  * statusbar's CLI version +
  * rel count, the light/dark canvas SegmentedControl toggle (sets
@@ -40,7 +40,7 @@ test.describe('shell', () => {
     expect(topbarHeight).toBe(54);
   });
 
-  test('nav rail shows the 3 sections and, when Model is expanded, 12 layers with API counts', async ({
+  test('nav rail shows the 4 sections and, when Model is expanded, 12 layers with API counts', async ({
     page,
     request,
   }) => {
@@ -49,8 +49,8 @@ test.describe('shell', () => {
     const nav = page.getByTestId('nav-tree');
     await expect(nav).toBeVisible();
 
-    // The 3 top-level sections.
-    for (const label of ['Model', 'Schema', 'Changesets']) {
+    // The 4 top-level sections.
+    for (const label of ['Architecture', 'Model', 'Schema', 'Changesets']) {
       await expect(nav.getByRole('button', { name: new RegExp(`^${label}`) }).first()).toBeVisible();
     }
 

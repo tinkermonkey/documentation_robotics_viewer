@@ -80,7 +80,7 @@ export function usePageData(): PageData | null {
   const index = useMemo(() => buildModelIndex(model), [model]);
 
   return useMemo(() => {
-    if (!layerId || view === 'changesets') return null;
+    if (!layerId || view === 'changesets' || view === 'architecture') return null;
     if (focus === 'layer') {
       return layerPageData(view, layerId, model, index, specRaw);
     }

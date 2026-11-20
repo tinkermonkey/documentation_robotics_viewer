@@ -35,10 +35,11 @@ function modelCountsByLayer(): Record<string, number> {
 }
 
 describe('NavTree — sections', () => {
-  it('renders all three sections (Model / Schema / Changesets)', async () => {
+  it('renders all four sections (Architecture / Model / Schema / Changesets)', async () => {
     renderWithProviders(<NavTree />);
 
     expect(await screen.findByText('Model')).toBeInTheDocument();
+    expect(screen.getByText('Architecture')).toBeInTheDocument();
     expect(screen.getByText('Schema')).toBeInTheDocument();
     expect(screen.getByText('Changesets')).toBeInTheDocument();
   });
@@ -406,5 +407,45 @@ describe('NavTree type groups', () => {
     } finally {
       HTMLElement.prototype.scrollIntoView = original;
     }
+  });
+});
+
+describe('NavTree — Architecture section', () => {
+  it('lists the C4 diagrams and opens one from its row', async () => {
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    // The helper's fixture model reads as people, containers and components.
+    await user.click((await screen.findByText('Architecture')).closest('button')!);
+    expect(useUiStore.getState().view).toBe('architecture');
+
+    const context = await screen.findByTestId('nav-c4-context');
+    expect(context).toHaveClass('nav-item--active');
+    await user.click(screen.getByTestId('nav-c4-containers'));
+    expect(useUiStore.getState()).toMatchObject({ c4Level: 'container', c4Scope: null });
+    await waitFor(() => expect(screen.getByTestId('nav-c4-containers')).toHaveClass('nav-item--active'));
+
+    // Every element with parts gets a row, named with its part count; it opens that scope.
+    const rows = await waitFor(() => {
+      const found = [...document.querySelectorAll<HTMLElement>('.drv-nav-c4')];
+      expect(found.length).toBeGreaterThan(0);
+      return found;
+    });
+    expect(rows[0]).toHaveAccessibleName(/, \d+ parts?$/);
+    const before = useUiStore.getState().navSeq;
+    await user.click(rows[0]);
+    const scope = rows[0].getAttribute('data-testid')!.replace('nav-c4-', '');
+    expect(useUiStore.getState()).toMatchObject({ c4Level: 'component', c4Scope: scope, c4SelectedId: null });
+    expect(useUiStore.getState().navSeq).toBe(before + 1);
+    await waitFor(() => expect(rows[0]).toHaveClass('nav-item--active'));
+  });
+
+  it('counts the diagrams on the section row', async () => {
+    renderWithProviders(<NavTree />);
+    const row = (await screen.findByText('Architecture')).closest('button')!;
+    // Context and Containers, plus one per element with parts (the model loads async).
+    await waitFor(() => {
+      const count = Number(row.querySelector('.nav-item__count, [class*="count"]')?.textContent);
+      expect(count).toBeGreaterThan(2);
+    });
   });
 });

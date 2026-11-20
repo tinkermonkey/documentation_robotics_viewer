@@ -1,0 +1,395 @@
+/**
+ * c4-diagram.css — the Architecture view: C4 cards, boundary, arrows, the
+ * details drawer and the scope breadcrumb.
+ *
+ * Canvas tokens and Heimdall status tokens only, so the dark canvas flips it.
+ * A kind is told apart by the band along a card's top and by its outline
+ * (dashed for anything outside the scope), never by colour alone: the kind is
+ * also written on the card.
+ */
+
+.c4-diagram {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  touch-action: none;
+  cursor: grab;
+  outline: none;
+}
+
+.c4-diagram:active {
+  cursor: grabbing;
+}
+
+.c4-diagram:focus-visible {
+  box-shadow: inset 0 0 0 2px rgb(var(--accent-primary));
+}
+
+.c4-diagram__world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.c4-diagram__lines {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.c4-diagram__boundary {
+  fill: rgb(var(--canvas-surface) / 0.55);
+  stroke: rgb(var(--canvas-fg-3));
+  stroke-width: 1.25;
+  stroke-dasharray: 7 5;
+}
+
+.c4-diagram__boundary-title {
+  fill: rgb(var(--canvas-fg-2));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.c4-diagram__edge polyline {
+  fill: none;
+  stroke: rgb(var(--canvas-fg-3));
+  stroke-width: 1.25;
+  stroke-linejoin: round;
+}
+
+.c4-diagram__arrowhead {
+  fill: rgb(var(--canvas-fg-3));
+}
+
+.c4-diagram__edge--hot polyline {
+  stroke: rgb(var(--accent-primary));
+  stroke-width: 2;
+}
+
+.c4-diagram__arrowhead--hot {
+  fill: rgb(var(--accent-primary));
+}
+
+.c4-diagram__edge-label-bg {
+  fill: rgb(var(--canvas-bg));
+  fill-opacity: 0.92;
+}
+
+.c4-diagram__edge-label {
+  fill: rgb(var(--canvas-fg-2));
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+}
+
+.c4-diagram__edge--hot .c4-diagram__edge-label {
+  fill: rgb(var(--canvas-fg-1));
+  font-weight: 600;
+}
+
+.c4-diagram__toolbar {
+  left: 14px;
+  bottom: 14px;
+  flex-direction: column;
+}
+
+.c4-diagram__toolbar .graph-toolbar__btn:hover {
+  background: rgb(var(--canvas-surface));
+  color: rgb(var(--canvas-fg-1));
+}
+
+.c4-diagram__toolbar .graph-toolbar__btn:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 1px;
+}
+
+/* ---- cards ---------------------------------------------------------------- */
+
+.c4-card {
+  --c4-accent: var(--canvas-fg-3);
+  position: absolute;
+  box-sizing: border-box;
+  background: rgb(var(--canvas-card));
+  border: 1px solid rgb(var(--canvas-border));
+  border-top: 4px solid rgb(var(--c4-accent));
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  cursor: default;
+}
+
+.c4-card--person {
+  --c4-accent: var(--status-violet);
+  border-radius: 22px 22px 8px 8px;
+}
+
+.c4-card--system {
+  --c4-accent: var(--accent-primary);
+}
+
+.c4-card--container {
+  --c4-accent: var(--status-cyan);
+}
+
+.c4-card--component {
+  --c4-accent: var(--status-emerald);
+}
+
+.c4-card--external-system {
+  --c4-accent: var(--canvas-fg-4);
+}
+
+/* A data store reads as a cylinder: a band at the bottom too. */
+.c4-card--datastore {
+  border-bottom: 4px solid rgb(var(--c4-accent));
+  border-radius: 14px;
+}
+
+/* Outside the scope: dashed outline, flatter. */
+.c4-card--outside {
+  border-style: dashed;
+  border-top-style: solid;
+  background: rgb(var(--canvas-surface));
+  box-shadow: none;
+}
+
+.c4-card--selected {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 2px;
+}
+
+.c4-card__main {
+  all: unset;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  height: 100%;
+  padding: 9px 12px 8px;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: inherit;
+  text-align: left;
+}
+
+.c4-card__main:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 2px;
+}
+
+.c4-card__name {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  padding-right: 34px; /* clear of the drill button */
+  color: rgb(var(--canvas-fg-1));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.c4-card__name > span {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.c4-card__name svg {
+  flex: none;
+  margin-top: 2px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.c4-card__kind {
+  color: rgb(var(--canvas-fg-2));
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.c4-card__description {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  color: rgb(var(--canvas-fg-2));
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.c4-card__drill {
+  all: unset;
+  box-sizing: border-box;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  height: 20px;
+  padding: 0 3px 0 6px;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: 10px;
+  background: rgb(var(--canvas-surface));
+  color: rgb(var(--canvas-fg-2));
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.c4-card__drill:hover {
+  border-color: rgb(var(--accent-primary));
+  color: rgb(var(--canvas-fg-1));
+}
+
+.c4-card__drill:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 1px;
+}
+
+/* ---- canvas chrome --------------------------------------------------------- */
+
+.c4-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-3));
+}
+
+.c4-trail {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 6px;
+  padding: 0 22px 10px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-trail__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.c4-trail__sep {
+  color: rgb(var(--canvas-fg-3));
+}
+
+.c4-trail [aria-current='page'] {
+  color: rgb(var(--canvas-fg-1));
+  font-weight: 600;
+}
+
+.c4-message {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-footnote {
+  flex: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  padding: 6px 22px 8px;
+  border-top: 1px solid rgb(var(--canvas-border));
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-footnote__issue {
+  color: rgb(var(--canvas-fg-1));
+}
+
+/* ---- details drawer -------------------------------------------------------- */
+
+.c4-details {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px 16px 20px;
+  font-family: Inter, system-ui, sans-serif;
+  color: rgb(var(--canvas-fg-1));
+}
+
+.c4-details__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.c4-details__eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-details__name {
+  margin: 2px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.c4-details__tech {
+  margin-top: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-details__section {
+  margin: 0 0 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(var(--canvas-fg-2));
+}
+
+.c4-details__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12.5px;
+}
+
+.c4-details__list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+}
+
+.c4-details__muted {
+  margin: 0;
+  font-size: 11.5px;
+  color: rgb(var(--canvas-fg-2));
+}
