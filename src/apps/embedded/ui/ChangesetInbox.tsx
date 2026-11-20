@@ -132,6 +132,11 @@ function StagedCard({
           {cs.drift!.message} Ask DrBot to restage it before you review.
         </p>
       )}
+      {driftTone(cs.drift) === 'overlaps' && (
+        <p className="drv-muted" style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5 }} data-testid="inbox-drift-message">
+          {cs.drift!.message}
+        </p>
+      )}
       <ProgressBar
         percent={pct}
         color="amber"

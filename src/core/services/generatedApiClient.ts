@@ -395,10 +395,21 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapichangesetschangesetId(changesetId: string): Promise<unknown> {
+  async getapichangesetschangesetId(changesetId: string, query?: { driftLimit?: string, driftOffset?: string }): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}`;
-    const url = `${baseUrl}${pathStr}`;
+    
+    const queryString = new URLSearchParams();
+    if (query) {
+      Object.entries(query).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          queryString.append(key, value);
+        }
+      });
+    }
+    const url = queryString.toString()
+      ? `${baseUrl}${pathStr}?${queryString.toString()}`
+      : `${baseUrl}${pathStr}`;
 
     const options: RequestInit = {
       method: 'GET',

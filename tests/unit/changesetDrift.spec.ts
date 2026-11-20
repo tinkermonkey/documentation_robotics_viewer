@@ -108,4 +108,60 @@ describe('changesetDrift', () => {
     expect(driftTone({ state: 'none', blocksCommit: false, message: 'm' })).toBeUndefined();
     expect(driftBlocksCommit({ state: 'content-free', blocksCommit: false, message: 'm' })).toBe(false);
   });
+
+  it('reads a newer dr CLI: consequence and resolve per overlap, notChecked, the page; drifted lands over its overlaps', () => {
+    const NEWER = { state: 'drifted', blocksCommit: false, message: 'The base changed under 1 staged change.' };
+    const drift = toDrift({
+      ...NEWER,
+      overlapping: {
+        elements: [
+          { id: 'a.b.c', reason: 'changed-in-base', consequence: 'Landing overwrites the base edit.', resolve: 'Restage the update.' },
+          { id: 'a.b.d', reason: 'changed-in-base', consequence: '', resolve: 7 },
+        ],
+        relationships: [
+          { source: 'a.b.c', predicate: 'serves', target: 'd.e.f', reason: 'already-in-base', consequence: 'Nothing is added.', resolve: 'Unstage it.' },
+        ],
+      },
+      notChecked: { elements: ['x.y.z', 3], relationships: 2, sentence: '1 element and 2 links could not be checked.' },
+      baseChanges: {
+        counts: { elementsAdded: 3, elementsRemoved: 0, elementsChanged: 0, relationshipsAdded: 0, relationshipsRemoved: 0 },
+        elementsAdded: ['api.operation.one'],
+        elementsRemoved: [],
+        elementsChanged: [],
+        relationshipsAdded: [],
+        relationshipsRemoved: [],
+        layers: ['api'],
+        truncated: true,
+        page: {
+          offset: 0,
+          limit: 1,
+          totals: { elementsAdded: 3, elementsRemoved: 0, elementsChanged: 0, relationshipsAdded: 0, relationshipsRemoved: 0 },
+          returned: { elementsAdded: 1, elementsRemoved: 0, elementsChanged: 0, relationshipsAdded: 0, relationshipsRemoved: 0 },
+          nextOffset: 1,
+          more: 'Read on with driftOffset 1.',
+        },
+      },
+    });
+    expect(drift?.overlapping).toEqual({
+      elements: [
+        { id: 'a.b.c', reason: 'changed-in-base', consequence: 'Landing overwrites the base edit.', resolve: 'Restage the update.' },
+        // Empty or non-string explanations are dropped; the overlap stays.
+        { id: 'a.b.d', reason: 'changed-in-base' },
+      ],
+      relationships: [
+        { source: 'a.b.c', predicate: 'serves', target: 'd.e.f', reason: 'already-in-base', consequence: 'Nothing is added.', resolve: 'Unstage it.' },
+      ],
+    });
+    expect(drift?.notChecked).toEqual({ elements: ['x.y.z'], relationships: 2, sentence: '1 element and 2 links could not be checked.' });
+    expect(drift?.baseChanges?.page).toMatchObject({ offset: 0, limit: 1, nextOffset: 1, more: 'Read on with driftOffset 1.' });
+    expect(drift?.baseChanges?.page?.totals.elementsAdded).toBe(3);
+    // A malformed page or notChecked is dropped, the rest kept.
+    const odd = toDrift({ ...NEWER, notChecked: { elements: [] }, baseChanges: { ...drift!.baseChanges!, page: { offset: 'x' } } });
+    expect(odd?.notChecked).toBeUndefined();
+    expect(odd?.baseChanges && 'page' in odd.baseChanges).toBe(false);
+    expect(odd?.baseChanges?.elementsAdded).toEqual(['api.operation.one']);
+    // Drifted that doesn't block (blocksCommit is always false now): it lands over its overlaps.
+    expect(driftTone(toDriftSummary(NEWER))).toBe('overlaps');
+    expect(driftBlocksCommit(toDriftSummary(NEWER))).toBe(false);
+  });
 });

@@ -11,13 +11,20 @@
  * | `not-applicable` | a verification record, or a changeset no longer staged       | no              |
  * | `unknown`        | no base snapshot, or the check failed                        | no              |
  *
- * `blocksCommit` is the server's: true exactly when `POST .../commit` would be
- * refused for drift. The commit route takes no force, so the viewer can't land
- * a drifted plan anyway: the way forward is to have DrBot restage it.
+ * Two generations of the dr CLI read `drifted` differently:
+ * - an older one refuses the commit (409) and says so with `blocksCommit: true`;
+ *   the commit route takes no force, so the way forward is to have DrBot restage;
+ * - a newer one (documentation_robotics, drift that warns) never refuses: a
+ *   drifted plan lands over its overlaps, `blocksCommit` is always false, and
+ *   each overlap carries a `consequence` (what landing does about it, for the
+ *   person) and a `resolve` (how to revise the plan, for the agent).
+ * `driftTone` tells them apart (`blocks` vs `overlaps`).
  *
  * The detail adds, when the base's hash changed (content-free, drifted), the
- * staged changes the base now overlaps and what changed in the base
- * (`baseChanges`: exact counts and layers, lists cut at 50 with `truncated`).
+ * staged changes the base now overlaps, what couldn't be checked for overlaps
+ * (`notChecked`) and what changed in the base (`baseChanges`: exact counts and
+ * layers; the lists are a page, cut at 50 by default with `truncated`, and a
+ * newer CLI says what the page holds in `page`).
  *
  * Nothing from the wire reaches React unchecked (as in `tier1.ts` and
  * `changesetPurpose.ts`): a malformed `drift` is dropped, as is a malformed
@@ -41,16 +48,30 @@ type WireRelationshipOverlap = WireOverlaps['relationships'][number];
  * e.g. `removed-in-base`): the overlap is kept and shows under that name, so a
  * blocking drift never shows an empty list.
  */
-type ElementOverlap = Omit<WireElementOverlap, 'reason'> & { reason: WireElementOverlap['reason'] | (string & {}) };
-type RelationshipOverlap = Omit<WireRelationshipOverlap, 'reason'> & {
-  reason: WireRelationshipOverlap['reason'] | (string & {});
-};
+/**
+ * `consequence` and `resolve` are optional here: an older dr CLI sends neither,
+ * and the overlap still shows (by its reason).
+ */
+type OverlapExtras = 'reason' | 'consequence' | 'resolve';
+type Explained = { consequence?: string; resolve?: string };
+export type ElementOverlap = Omit<WireElementOverlap, OverlapExtras> &
+  Explained & { reason: WireElementOverlap['reason'] | (string & {}) };
+export type RelationshipOverlap = Omit<WireRelationshipOverlap, OverlapExtras> &
+  Explained & { reason: WireRelationshipOverlap['reason'] | (string & {}) };
 export type DriftOverlaps = { elements: ElementOverlap[]; relationships: RelationshipOverlap[] };
-export type ChangesetDrift = Omit<WireDrift, 'overlapping'> & { overlapping?: DriftOverlaps };
+type WireBaseChanges = NonNullable<WireDrift['baseChanges']>;
+/** What a page of the base-change lists holds; absent from an older dr CLI. */
+export type DriftPage = WireBaseChanges['page'];
+export type DriftBaseChanges = Omit<WireBaseChanges, 'page'> & { page?: DriftPage };
+export type ChangesetDrift = Omit<WireDrift, 'overlapping' | 'baseChanges'> & {
+  overlapping?: DriftOverlaps;
+  baseChanges?: DriftBaseChanges;
+};
 export type DriftState = ChangesetDriftSummary['state'];
-export type DriftBaseChanges = NonNullable<ChangesetDrift['baseChanges']>;
 type BaseIndex = NonNullable<ChangesetDrift['baseIndex']>;
 type BaseRelationship = DriftBaseChanges['relationshipsAdded'][number];
+type ListCounts = DriftPage['totals'];
+type NotChecked = NonNullable<ChangesetDrift['notChecked']>;
 
 export const DRIFT_STATES: readonly DriftState[] = ['none', 'content-free', 'drifted', 'not-applicable', 'unknown'];
 const BASE_INDEX: readonly BaseIndex[] = ['recorded', 'not-recorded', 'unreadable'];
@@ -109,6 +130,13 @@ const FALLBACK_MESSAGE: Record<DriftState, string> = {
   unknown: 'Drift could not be checked.',
 };
 
+/** An overlap's `consequence` / `resolve`, each only when it is a non-empty string. */
+function explained(v: Record<string, unknown>): Explained {
+  const consequence = str(v.consequence);
+  const resolve = str(v.resolve);
+  return { ...(consequence ? { consequence } : {}), ...(resolve ? { resolve } : {}) };
+}
+
 function toOverlaps(v: unknown): DriftOverlaps | undefined {
   if (!isObject(v)) return undefined;
   const elements: ElementOverlap[] = [];
@@ -116,30 +144,59 @@ function toOverlaps(v: unknown): DriftOverlaps | undefined {
     if (!isObject(e)) continue;
     const id = str(e.id);
     const reason = str(e.reason);
-    if (id && reason) elements.push({ id, reason });
+    if (id && reason) elements.push({ id, reason, ...explained(e) });
   }
   const rels: RelationshipOverlap[] = [];
   for (const r of Array.isArray(v.relationships) ? v.relationships : []) {
+    if (!isObject(r)) continue;
     const base = relationship(r);
-    const reason = isObject(r) ? str(r.reason) : undefined;
+    const reason = str(r.reason);
     if (!base || !reason) continue;
-    const endpoints = strings((r as Record<string, unknown>).endpoints);
-    rels.push(endpoints.length ? { ...base, reason, endpoints } : { ...base, reason });
+    const endpoints = strings(r.endpoints);
+    rels.push({ ...base, reason, ...(endpoints.length ? { endpoints } : {}), ...explained(r) });
   }
   return { elements, relationships: rels };
 }
 
+function listCounts(v: Record<string, unknown>): ListCounts {
+  return {
+    elementsAdded: count(v.elementsAdded),
+    elementsRemoved: count(v.elementsRemoved),
+    elementsChanged: count(v.elementsChanged),
+    relationshipsAdded: count(v.relationshipsAdded),
+    relationshipsRemoved: count(v.relationshipsRemoved),
+  };
+}
+
+/** The page the base-change lists are, when well formed (a newer dr CLI); else undefined. */
+function toPage(v: unknown): DriftPage | undefined {
+  if (!isObject(v) || !isObject(v.totals) || !isObject(v.returned)) return undefined;
+  if (typeof v.offset !== 'number' || typeof v.limit !== 'number') return undefined;
+  const nextOffset = typeof v.nextOffset === 'number' && v.nextOffset >= 0 ? Math.floor(v.nextOffset) : undefined;
+  const more = str(v.more);
+  return {
+    offset: count(v.offset),
+    limit: count(v.limit),
+    totals: listCounts(v.totals),
+    returned: listCounts(v.returned),
+    ...(nextOffset !== undefined ? { nextOffset } : {}),
+    ...(more ? { more } : {}),
+  };
+}
+
+/** What couldn't be checked for overlaps, when the server says (a newer dr CLI). */
+function toNotChecked(v: unknown): NotChecked | undefined {
+  if (!isObject(v)) return undefined;
+  const sentence = str(v.sentence);
+  if (!sentence) return undefined;
+  return { elements: strings(v.elements), relationships: count(v.relationships), sentence };
+}
+
 function toBaseChanges(v: unknown): DriftBaseChanges | undefined {
   if (!isObject(v) || !isObject(v.counts)) return undefined;
-  const c = v.counts;
+  const page = toPage(v.page);
   return {
-    counts: {
-      elementsAdded: count(c.elementsAdded),
-      elementsRemoved: count(c.elementsRemoved),
-      elementsChanged: count(c.elementsChanged),
-      relationshipsAdded: count(c.relationshipsAdded),
-      relationshipsRemoved: count(c.relationshipsRemoved),
-    },
+    counts: listCounts(v.counts),
     elementsAdded: strings(v.elementsAdded),
     elementsRemoved: strings(v.elementsRemoved),
     elementsChanged: strings(v.elementsChanged),
@@ -147,13 +204,14 @@ function toBaseChanges(v: unknown): DriftBaseChanges | undefined {
     relationshipsRemoved: relationships(v.relationshipsRemoved),
     layers: strings(v.layers),
     truncated: v.truncated === true,
+    ...(page ? { page } : {}),
   };
 }
 
 /**
  * The detail's drift: the summary, plus (when the server sent them) its
- * warnings, whether a base index was recorded, the overlaps and the base
- * changes. Undefined when the summary itself is missing or malformed.
+ * warnings, whether a base index was recorded, the overlaps, what couldn't be
+ * checked for them and the base changes. Undefined when the summary itself is missing or malformed.
  */
 export function toDrift(v: unknown): ChangesetDrift | undefined {
   const summary = toDriftSummary(v);
@@ -161,12 +219,14 @@ export function toDrift(v: unknown): ChangesetDrift | undefined {
   const warnings = strings(v.warnings);
   const baseIndex = oneOf(v.baseIndex, BASE_INDEX);
   const overlapping = toOverlaps(v.overlapping);
+  const notChecked = toNotChecked(v.notChecked);
   const baseChanges = toBaseChanges(v.baseChanges);
   return {
     ...summary,
     ...(warnings.length ? { warnings } : {}),
     ...(baseIndex ? { baseIndex } : {}),
     ...(overlapping ? { overlapping } : {}),
+    ...(notChecked ? { notChecked } : {}),
     ...(baseChanges ? { baseChanges } : {}),
   };
 }
@@ -175,19 +235,25 @@ export function toDrift(v: unknown): ChangesetDrift | undefined {
 
 /**
  * How the viewer treats a drift report:
- * - `blocks`: a commit would be refused (badge it, warn before Apply and in its dialog).
+ * - `blocks`: a commit would be refused (an older dr CLI: badge it, warn before
+ *   Apply and in its dialog that the server will likely refuse it).
+ * - `overlaps`: drifted, but a commit lands anyway (a newer dr CLI): badge it,
+ *   and show each overlap's consequence before Apply and in its dialog.
  * - `quiet`: content-free drift, a note at most, never a warning.
  * - `unchecked`: drift couldn't be checked; say so plainly, block nothing.
  * - `settled`: not-applicable (a verification record, a settled changeset):
  *   never a problem; its message may be shown as information.
  * - undefined: nothing to show (no drift, or an older dr CLI that sends none).
  */
-export type DriftTone = 'blocks' | 'quiet' | 'unchecked' | 'settled';
+export type DriftTone = 'blocks' | 'overlaps' | 'quiet' | 'unchecked' | 'settled';
 
 export function driftTone(drift: ChangesetDriftSummary | undefined): DriftTone | undefined {
   if (!drift) return undefined;
   if (drift.blocksCommit) return 'blocks';
   switch (drift.state) {
+    case 'drifted':
+      // A newer dr CLI: `blocksCommit` is always false and the plan lands over its overlaps.
+      return 'overlaps';
     case 'content-free':
       return 'quiet';
     case 'unknown':
@@ -195,12 +261,12 @@ export function driftTone(drift: ChangesetDriftSummary | undefined): DriftTone |
     case 'not-applicable':
       return 'settled';
     default:
-      // `none`, or `drifted` that the server says doesn't block: nothing to flag.
+      // `none`: nothing to flag.
       return undefined;
   }
 }
 
-/** Whether Apply would be refused for drift, by the server's own word. */
+/** Whether Apply would be refused for drift, by the server's own word (only an older dr CLI says so). */
 export function driftBlocksCommit(drift: ChangesetDriftSummary | undefined): boolean {
   return drift?.blocksCommit === true;
 }
@@ -211,6 +277,11 @@ export const DRIFT_BADGE_LABEL = 'Base changed since this was staged';
 export const DRIFT_WAY_FORWARD =
   'Your decisions are kept. Ask DrBot to restage it against the current model, then review only what moved. ' +
   'Landing it anyway, over the drift, isn’t something the viewer can do: the apply route takes no force.';
+
+/** Before Apply, for a plan that lands over its overlaps (a newer dr CLI). */
+export const DRIFT_OVERLAPS_APPLY =
+  'Apply lands it over what the base changed: see what that does to each overlap under Base drift in the ' +
+  'inspector. To revise it first instead, ask DrBot to restage it against the current model.';
 
 /** Element changes the base made, as one line ("2 added · 1 removed · 3 changed"). */
 export function baseChangeCountsLabel(changes: DriftBaseChanges): string {
@@ -237,6 +308,7 @@ const OVERLAP_REASON: Record<string, string> = {
   'changed-in-base': 'the base changed it',
   'removed-in-base': 'the base removed it',
   'linked-in-base': 'the base linked it since, and deleting it would remove that link',
+  // Only an older dr CLI reports an edited end; a newer one doesn't count it as an overlap.
   'endpoint-changed-in-base': 'the base changed an end',
   'endpoint-removed-in-base': 'the base removed an end',
 };

@@ -1060,6 +1060,75 @@ describe('review — drift before Apply', () => {
     expect(screen.getByTestId('drift-section')).toHaveTextContent('Could not compare one relationship.');
   });
 
+  it('on a newer dr CLI, says a drifted plan lands over its overlaps and lists each consequence', async () => {
+    const message = 'The base changed under 2 staged changes; a commit lands them all the same.';
+    const NEWER = {
+      ...DRIFTED,
+      blocksCommit: false,
+      message,
+      overlapping: {
+        elements: [
+          {
+            id: 'application.applicationservice.use-changesets',
+            reason: 'changed-in-base',
+            consequence: 'Landing overwrites the edit the base made to it.',
+            resolve: 'Restage the update on the current base.',
+          },
+        ],
+        relationships: [
+          {
+            source: 'api.operation.one',
+            predicate: 'references',
+            target: 'api.operation.two',
+            reason: 'endpoint-removed-in-base',
+            endpoints: ['api.operation.two'],
+            consequence: 'The link is dropped: its end is gone.',
+            resolve: 'Unstage the link.',
+          },
+        ],
+      },
+      notChecked: { elements: ['ux.view.gone'], relationships: 0, sentence: '1 staged change records no element, so it was not checked.' },
+      baseChanges: {
+        ...DRIFTED.baseChanges,
+        page: {
+          offset: 0,
+          limit: 2,
+          totals: { elementsAdded: 4, elementsRemoved: 0, elementsChanged: 61, relationshipsAdded: 1, relationshipsRemoved: 0 },
+          returned: { elementsAdded: 2, elementsRemoved: 0, elementsChanged: 1, relationshipsAdded: 1, relationshipsRemoved: 0 },
+          nextOffset: 2,
+        },
+      },
+    };
+    const server = serve({ ...PLAN, review: keepAll(), drift: NEWER });
+    const user = userEvent.setup();
+    renderReview();
+    const note = await screen.findByTestId('drift-apply-note');
+    expect(note).toHaveTextContent(message);
+    expect(note).toHaveTextContent('Apply lands it over what the base changed');
+    expect(note).not.toHaveTextContent('refuse');
+    expect(note).not.toHaveClass('drv-alert');
+    for (const badge of screen.getAllByTestId('drift-badge')) expect(badge).toHaveTextContent('Base changed since this was staged');
+    // The inspector: each overlap with what landing does about it; resolve is the agent's, not shown.
+    const overlaps = screen.getByTestId('drift-overlaps');
+    expect(overlaps).toHaveTextContent('Landing overwrites the edit the base made to it.');
+    expect(overlaps).toHaveTextContent('The link is dropped: its end is gone.');
+    expect(overlaps).not.toHaveTextContent('Restage the update');
+    expect(within(overlaps).getByTestId('drift-not-checked')).toHaveTextContent('1 staged change records no element');
+    expect(screen.getByTestId('drift-truncated')).toHaveTextContent('The lists hold 4 of 66 entries (up to 2 each)');
+    // The confirm dialog lists the consequences before the commit, which lands.
+    const apply = screen.getByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    await user.click(apply);
+    const confirm = await screen.findByTestId('apply-confirm');
+    const warn = within(confirm).getByTestId('apply-confirm-drift');
+    expect(warn).toHaveTextContent('Applying lands it all the same');
+    expect(warn).toHaveTextContent('Landing overwrites the edit the base made to it.');
+    expect(warn).not.toHaveTextContent('refuse');
+    await user.click(within(confirm).getByTestId('apply-confirm-button'));
+    await waitFor(() => expect(server.commits).toHaveLength(1));
+    expect(screen.queryByTestId('changeset-action-error')).not.toBeInTheDocument();
+  });
+
   it('keeps Apply and the 409 backstop on an older dr CLI without drift', async () => {
     serve({
       review: keepAll(),

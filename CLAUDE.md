@@ -159,11 +159,17 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   `origin.kind` is `upgrade`. Discard DELETES the
   changeset (GET answers 404, it leaves the list), so a new server has no `discarded` history.
 - Changeset drift (dr CLI with documentation_robotics#1191): list and detail carry a required `drift`
-  `{ state: none|content-free|drifted|not-applicable|unknown, blocksCommit, message }` (`blocksCommit` true only
-  for `drifted`, exactly when commit would 409 for drift; a record or settled changeset is `not-applicable`).
-  The detail adds, when the base's hash changed, `warnings`, `baseIndex`, `overlapping { elements,
-  relationships }` and `baseChanges` (exact `counts` and `layers`, lists cut at 50 with `truncated`). The commit
-  route takes NO force. The server sends `changesets.updated` after a model reload, so drift stays current.
+  `{ state: none|content-free|drifted|not-applicable|unknown, blocksCommit, message }` (a record or settled
+  changeset is `not-applicable`). The detail adds, when the base's hash changed, `warnings`, `baseIndex`,
+  `overlapping { elements, relationships }` and `baseChanges` (exact `counts` and `layers`, lists cut at 50 with
+  `truncated`). The commit route takes NO force. The server sends `changesets.updated` after a model reload, so
+  drift stays current. Two generations: an OLDER CLI refuses a drifted commit (409) and says so with
+  `blocksCommit: true`; a NEWER one (spec synced 2026-11-20) never refuses for drift: `blocksCommit` is
+  deprecated and always false, a drifted plan lands over its overlaps, each overlap carries `consequence` (what
+  landing does, for the person) and `resolve` (how to revise the plan, for the agent), the drift adds
+  `notChecked { elements, relationships, sentence }` and `rebaselined`, `baseChanges.page { offset, limit,
+  totals, returned, nextOffset?, more? }` pages the lists (`?driftLimit=` / `?driftOffset=` on the detail), and
+  the commit result may carry `drift { message, overlapping? }`.
 - `GET /api/tier1` → Tier 1 state + this month's spend (`Tier1Status`; read-only, never a credential value; an
   older dr CLI answers 404). Each change in `GET /api/changesets/:id` (and `unstaged[].change`) may carry
   `origin: { by: tier0|tier1|agent, rule?, provider?, model?, upstream?, p?: { layer, type }, confirmed? }`
@@ -372,7 +378,7 @@ For local dev use `dr visualize --no-auth`.
   undecided land as kept) and commits through the generated
   `usePostapichangesetschangesetIdcommit` with body `{ drop, deleteBlockedLinks }` (BOTH lists, always — the
   server only applies reviewed-commit rules when the body names either); a committed changeset shows
-  `AppliedResult` (landed by layer, what was left out, how many landed without a decision — server mode only). Refusals inline: 409 drift ("nothing was written, your
+  `AppliedResult` (landed by layer, what was left out, how many landed without a decision — server mode only). Refusals inline: 409 drift (an older dr CLI: "nothing was written, your
   decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
   Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
   `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
@@ -401,15 +407,22 @@ For local dev use `dr visualize --no-auth`.
   puts the purpose in the row's title / accessible name. A 404 detail shows `ChangesetGone`; a discard on a
   server that sends `actions` returns to the inbox with a toast (`ChangesetReviewPanel`'s `onGone`).
 - **Drift before Apply** (#576) — `data/changesetDrift.ts` validates `drift` (as `tier1.ts` does; malformed
-  dropped, none from an older dr CLI) and `driftTone` reads it: `blocks` (server's `blocksCommit`), `quiet`
+  dropped, none from an older dr CLI; `consequence` / `resolve` / `notChecked` / `page` optional, kept only when
+  well formed) and `driftTone` reads it: `blocks` (server's `blocksCommit`: an older CLI that refuses),
+  `overlaps` (`drifted` without `blocksCommit`: a newer CLI that lands it over its overlaps), `quiet`
   (content-free), `unchecked` (unknown), `settled` (not-applicable). `ui/DriftNotice.tsx`: `DriftBadge` ("Base
-  changed since this was staged", the message as its title) only on `blocks`, on the inbox card, canvas header
-  and inspector; `DriftApplyNote` on the summary card warns before Apply (which stays enabled: the person
-  decides) that the server will likely refuse the commit, with the way forward (ask DrBot to restage; no "land
-  anyway": the REST commit has no force), and `ApplyConfirm`'s `driftWarning` says the drift 409 is the
-  expected outcome; or it says plainly that drift couldn't be checked; `DriftSection` in the inspector overview lists the
-  overlaps and base changes per layer (a cut list said as cut), content-free as a quiet line, a record's
-  message as information. With no `drift` the 409 after confirm is the only signal, as before (the backstop).
+  changed since this was staged", the message as its title) on `blocks` (rose) and `overlaps` (amber), on the
+  inbox card, canvas header and inspector. `DriftApplyNote` on the summary card before Apply (which stays
+  enabled: the person decides): on `blocks` the server will likely refuse the commit, with the way forward (ask
+  DrBot to restage; no "land anyway": the REST commit has no force); on `overlaps` Apply lands it over what the
+  base changed (see each consequence, or ask DrBot to restage first); or it says plainly that drift couldn't be
+  checked. `ApplyConfirm`'s `drift` prop: on `blocks` the drift 409 is the expected outcome; on `overlaps` it
+  lists every overlap with its consequence (`DriftOverlapList`) before the commit, as the API asks.
+  `DriftSection` in the inspector overview lists the overlaps (each with its consequence; `resolve` is for the
+  agent and not shown), `notChecked`'s sentence, and base changes per layer (a cut list said as cut, from `page`
+  totals when sent), content-free as a quiet line, a record's message as information. With no `drift` the 409
+  after confirm is the only signal on an older CLI, as before (the backstop). Not shown yet: `rebaselined`,
+  paging past the first page, and the commit result's `drift`.
 - **Who decided a change, and Tier 1's spend** — `codebase_extract` records each staged change's `origin`
   (Tier 0 rule / Tier 1 decision model / the agent). The wire types are the generated OpenAPI schemas, aliased
   in `data/tier1.ts` (one place to adjust when the contract moves). Nothing from the wire reaches React
