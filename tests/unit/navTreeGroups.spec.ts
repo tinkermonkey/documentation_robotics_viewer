@@ -28,8 +28,8 @@ describe('Nav Tree Groups', () => {
       spec,
     );
 
-    // Groups A–Z by the spec's title; an unknown type falls back to its id.
-    expect(groups.map((g) => g.label)).toEqual(['Driver', 'Goal', 'mystery', 'Requirement']);
+    // Groups A–Z by the type's short plural; an unknown type falls back to its id.
+    expect(groups.map((g) => g.label)).toEqual(['Drivers', 'Goals', 'Mysteries', 'Requirements']);
     expect(groups.map((g) => g.key)).toEqual([
       'motivation.driver',
       'motivation.goal',
@@ -44,7 +44,7 @@ describe('Nav Tree Groups', () => {
   });
 
   it('labels every group by its type id without a spec, and groups nothing for an empty layer', () => {
-    expect(groupByType('motivation', [node('1', 'goal', 'G')]).map((g) => g.label)).toEqual(['goal']);
+    expect(groupByType('motivation', [node('1', 'goal', 'G')]).map((g) => g.label)).toEqual(['Goals']);
     expect(groupByType('motivation', [])).toEqual([]);
   });
 

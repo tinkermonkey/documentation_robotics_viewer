@@ -1,0 +1,948 @@
+- type: add
+  elementId: application.applicationservice.node-type-label
+  layerName: application
+  after:
+    id: 9d94af2b-192f-4710-b0e1-a12f1f4a8284
+    path: application.applicationservice.node-type-label
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Node Type Label
+    description: "data/typeLabel.ts: one display name for a node type, from the
+      spec's title (else the type id) and its layer: singular and plural, split
+      into words (\"Application Component\"), and a short plural that drops the
+      layer's own leading word (\"Components\"). The short form is only used
+      where the view is scoped to one layer (by-type lanes and hive, and the nav
+      tree type groups, whose count stays in the NavItem badge); views that mix
+      layers use the full form. withCount gives \"Components · 37\" for lane and
+      hive titles. data/useTypeName.ts gives the full singular from the live
+      spec for one element's type beside its layer (\"application · Application
+      Service\"): review rows, link ends, the change inspector and its
+      neighbourhood, the Impact matches and focus line. Type ids stay ids
+      wherever they are ids."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-20T14:04:49.110Z
+      updated_at: 2026-11-20T14:04:49.110Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/typeLabel.ts
+          symbol: typeLabel
+  timestamp: 2026-11-20T14:49:05.800Z
+  sequenceNumber: 0
+- type: add
+  elementId: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
+  layerName: testing
+  after:
+    id: 032d04ab-1283-40b4-af01-696af1e24a13
+    path: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: node type label splits, pluralizes and drops the layer word
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: "Over real spec titles from tests/fixtures/spec.json: multi-word
+        (ApplicationComponent → Application Components / Components), irregular
+        or already-plural (Policy → Policies, Paths, ChartSeries, Index),
+        acronyms (UXApplication, OAuthFlow, OpenAPIDocument), a type not
+        starting with its layer's name (DataObject in application keeps both
+        words), and the id fallback when there is no title."
+    metadata:
+      created_at: 2026-11-20T14:04:49.110Z
+      updated_at: 2026-11-20T14:04:49.110Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/typeLabel.spec.ts
+          symbol: node type label splits, pluralizes and drops the layer word
+  timestamp: 2026-11-20T14:13:53.204Z
+  sequenceNumber: 1
+- type: add
+  elementId: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+  layerName: testing
+  after:
+    id: 7ce59589-f622-43e5-b848-c051ad4a6cd3
+    path: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: nav tree groups use the short plural label
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: A Model layer's type groups are named with the short plural
+        ("Components" in Application), their count in NavItem's badge like the
+        layer rows, sorted by that label; the accessible name says "Components,
+        37 elements".
+    metadata:
+      created_at: 2026-11-20T14:04:49.110Z
+      updated_at: 2026-11-20T14:04:49.110Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/navTreeGroups.spec.ts
+          symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
+  timestamp: 2026-11-20T14:43:16.163Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label
+  layerName: testing
+  after:
+    id: a1610f9d-58f0-4ce0-9d48-30554dbcc9a8
+    path: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: impact group nodes use the full plural label
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: A grouped large lane's group node reads "Application Components ·
+        12" from the spec title, not the raw type id.
+    metadata:
+      created_at: 2026-11-20T14:04:49.110Z
+      updated_at: 2026-11-20T14:04:49.110Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetImpact.spec.ts
+          symbol: impact filters, search and grouped lanes > folds a large lane by type,
+            keeping what it is told to and merging links
+  timestamp: 2026-11-20T14:13:53.714Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::realizes::product.feature.nav-tree-type-groups
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: product.feature.nav-tree-type-groups
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::realizes::product.feature.model-view-by-type
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: product.feature.model-view-by-type
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.type-bands::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.type-bands
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationservice.nav-tree-groups::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.nav-tree-groups
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: application.applicationservice.spec-graph-transform::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.spec-graph-transform
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: application.applicationservice.page-data-builder::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.page-data-builder
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationservice.search-index::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.search-index
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: application.applicationservice.neighborhood-graph::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.neighborhood-graph
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word::tests::application.applicationservice.node-type-label
+  layerName: testing
+  after:
+    source: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
+    target: application.applicationservice.node-type-label
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label::tests::application.applicationservice.nav-tree-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-groups-use-the-short-plural-label
+    target: application.applicationservice.nav-tree-groups
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label::tests::application.applicationservice.changeset-impact-analysis
+  layerName: testing
+  after:
+    source: testing.testcasesketch.impact-group-nodes-use-the-full-plural-label
+    target: application.applicationservice.changeset-impact-analysis
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:04:49.120Z
+  sequenceNumber: 15
+- type: update
+  elementId: application.applicationservice.type-bands
+  layerName: application
+  before:
+    id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+    path: application.applicationservice.type-bands
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Type Bands
+    description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+      'kind') for one DR layer's elements; band order with the least
+      lane-skipping between linked types; plural display names without the layer
+      prefix (shared with the nav tree's type helper); the row cap for large
+      lanes. Where it meets Heimdall, Heimdall's 'layer' is our node type;
+      layerId only ever means a DR layer."
+    attributes: &a1
+      serviceType: synchronous
+    accepted_gaps: &a2
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: Only the two by-type view components call it; no other data service
+          builds on the type bands.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:22.848Z
+        changeset: changeset-1795111279160-shbw81238
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its own unit test case sketches (ordering, naming); the
+          viewer models no coverage target per data service.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:23.063Z
+        changeset: changeset-1795111279160-shbw81238
+    metadata: &a3
+      created_at: 2026-11-19T18:01:46.735Z
+      updated_at: 2026-11-19T18:01:46.735Z
+      version: 1
+  after:
+    id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+    path: application.applicationservice.type-bands
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Type Bands
+    description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+      'kind') for one DR layer's elements; band order with the least
+      lane-skipping between linked types; each band named with the node type
+      label's short plural (\"Components · 37\"); the row cap for large lanes.
+      Where it meets Heimdall, Heimdall's 'layer' is our node type; layerId only
+      ever means a DR layer."
+    attributes: *a1
+    accepted_gaps: *a2
+    metadata: *a3
+  timestamp: 2026-11-20T14:05:04.957Z
+  sequenceNumber: 16
+- type: update
+  elementId: application.applicationservice.nav-tree-groups
+  layerName: application
+  before:
+    id: 5b117791-acda-41f6-8666-8c6159bdda4e
+    path: application.applicationservice.nav-tree-groups
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Nav Tree Groups
+    description: "Pure transform for the nav tree: a layer's model elements grouped
+      by node type, each group with its type key, label (the spec's type title,
+      else the type id) and count, groups and elements sorted A–Z; plus the
+      group key holding a given element, so the tree can open it."
+    attributes: &a4
+      serviceType: synchronous
+    metadata: &a5
+      created_at: 2026-11-19T17:47:57.291Z
+      updated_at: 2026-11-19T17:47:57.291Z
+      version: 1
+  after:
+    id: 5b117791-acda-41f6-8666-8c6159bdda4e
+    path: application.applicationservice.nav-tree-groups
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Nav Tree Groups
+    description: "Pure transform for the nav tree: a layer's model elements grouped
+      by node type, each group with its type key, label (the node type label's
+      short plural, e.g. \"Components\" in Application, the same name the
+      by-type lanes use) and count, groups sorted A–Z by that label and elements
+      A–Z; plus the group key holding a given element, so the tree can open it."
+    attributes: *a4
+    metadata: *a5
+  timestamp: 2026-11-20T14:05:05.160Z
+  sequenceNumber: 17
+- type: update
+  elementId: application.applicationservice.changeset-impact-analysis
+  layerName: application
+  before:
+    id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+    path: application.applicationservice.changeset-impact-analysis
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Impact Analysis
+    description: Lays a changeset over the model (staged additions included), nets
+      its ops in order, runs multi-origin computeReach from every changed
+      element and returns the reached subgraph and per-layer blast radius;
+      narrows it to a filter (change, layer, type, link category), a name
+      search, or one focused element's reach, with per-facet counts, and groups
+      a large lane's elements by type.
+    attributes: &a6
+      serviceType: synchronous
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/changesetImpact.ts
+          symbol: changesetImpact
+    metadata: &a8
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: 5b68ace2-6239-4670-ab0e-7a9dcc36ef43
+    path: application.applicationservice.changeset-impact-analysis
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Impact Analysis
+    description: Lays a changeset over the model (staged additions included), nets
+      its ops in order, runs multi-origin computeReach from every changed
+      element and returns the reached subgraph and per-layer blast radius;
+      narrows it to a filter (change, layer, type, link category), a name
+      search, or one focused element's reach, with per-facet counts, and groups
+      a large lane's elements by type into group nodes named with the node type
+      label's full plural and count ("Application Components · 12").
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-20T14:05:05.351Z
+  sequenceNumber: 18
+- type: update
+  elementId: application.applicationservice.spec-graph-transform
+  layerName: application
+  before:
+    id: cdc0d563-37f6-4ffb-90a5-e59432086bbd
+    path: application.applicationservice.spec-graph-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Spec Graph Transform
+    description: Turns /api/spec into per-layer node-type graphs, attribute rows and
+      relationship-schema counts for the Schema view.
+    attributes: &a9
+      serviceType: synchronous
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/specGraph.ts
+          symbol: schemaForLayer
+    metadata: &a11
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: cdc0d563-37f6-4ffb-90a5-e59432086bbd
+    path: application.applicationservice.spec-graph-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Spec Graph Transform
+    description: Turns /api/spec into per-layer node-type graphs, attribute rows and
+      relationship-schema counts for the Schema view; node types are named with
+      the node type label's full singular ("Application Component"), never the
+      raw title.
+    attributes: *a9
+    source_reference: *a10
+    metadata: *a11
+  timestamp: 2026-11-20T14:05:05.542Z
+  sequenceNumber: 19
+- type: update
+  elementId: application.applicationservice.page-data-builder
+  layerName: application
+  before:
+    id: 9037c16e-7a88-4afa-8199-0e80bcd5bc96
+    path: application.applicationservice.page-data-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Page Data Builder
+    description: Builds the page view's records (header, breadcrumb, summary,
+      markdown description, stats, facts, tables) for a layer, spec node type or
+      model element; the description is its own field, never a fact.
+    attributes: &a12
+      serviceType: synchronous
+    source_reference: &a13
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/pageData.ts
+          symbol: layerPageData
+    metadata: &a14
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: 9037c16e-7a88-4afa-8199-0e80bcd5bc96
+    path: application.applicationservice.page-data-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Page Data Builder
+    description: Builds the page view's records (header, breadcrumb, summary,
+      markdown description, stats, facts, tables) for a layer, spec node type or
+      model element; the description is its own field, never a fact. A node type
+      is named with the node type label's full singular in headers and tables;
+      the spec's raw title stays a fact.
+    attributes: *a12
+    source_reference: *a13
+    metadata: *a14
+  timestamp: 2026-11-20T14:05:05.769Z
+  sequenceNumber: 20
+- type: update
+  elementId: application.applicationservice.search-index
+  layerName: application
+  before:
+    id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+    path: application.applicationservice.search-index
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Search Index
+    description: "Pure, React-free search over the loaded /api/model elements and
+      /api/spec node types (data/search.ts): builds a lower-cased index once per
+      payload, ranks exact > prefix > word-prefix > substring > in-order fuzzy
+      (subsequence) matches, caps the results, groups them by layer in
+      LAYER_ORDER and returns the matched character ranges for highlighting.
+      Stays fast on a large model: one pass over the index per keystroke, no
+      allocation for a candidate that fails."
+    attributes: &a15
+      serviceType: synchronous
+    metadata: &a16
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  after:
+    id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+    path: application.applicationservice.search-index
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Search Index
+    description: "Pure, React-free search over the loaded /api/model elements and
+      /api/spec node types (data/search.ts): builds a lower-cased index once per
+      payload (node types named with the node type label's full singular,
+      matched by that name or the spec title), ranks exact > prefix >
+      word-prefix > substring > in-order fuzzy (subsequence) matches, caps the
+      results, groups them by layer in LAYER_ORDER and returns the matched
+      character ranges for highlighting. Stays fast on a large model: one pass
+      over the index per keystroke, no allocation for a candidate that fails."
+    attributes: *a15
+    metadata: *a16
+  timestamp: 2026-11-20T14:05:05.966Z
+  sequenceNumber: 21
+- type: update
+  elementId: application.applicationservice.neighborhood-graph
+  layerName: application
+  before:
+    id: 82d54efd-afe7-4daa-a81d-f8305b417f9f
+    path: application.applicationservice.neighborhood-graph
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Neighborhood Graph
+    description: The one-hop neighborhood graph of a model element or spec node type
+      shown on its page.
+    attributes: &a17
+      serviceType: synchronous
+    source_reference: &a18
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/neighborhoodGraph.ts
+          symbol: modelElementNeighborhoodGraph
+    metadata: &a19
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: 82d54efd-afe7-4daa-a81d-f8305b417f9f
+    path: application.applicationservice.neighborhood-graph
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Neighborhood Graph
+    description: The one-hop neighborhood graph of a model element or spec node type
+      shown on its page; node types are named with the node type label's full
+      singular.
+    attributes: *a17
+    source_reference: *a18
+    metadata: *a19
+  timestamp: 2026-11-20T14:05:06.164Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:05:15.179Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::realizes::business.businessservice.schema-exploration
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: business.businessservice.schema-exploration
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T14:05:15.179Z
+  sequenceNumber: 24
+- type: update
+  elementId: testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8
+  layerName: testing
+  before:
+    id: 6a38fdda-db99-4bf2-a1cc-33044e4dc451
+    path: testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) > id
+      is {slug}.{shortname}; label is the title; domainColor is the slug
+    attributes: &a20
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/specGraph.spec.ts
+          symbol: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) >
+            id is {slug}.{shortname}; label is the title; domainColor is the
+            slug
+    metadata: &a21
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  after:
+    id: 6a38fdda-db99-4bf2-a1cc-33044e4dc451
+    path: testing.testcasesketch.node-types-for-layer-uses-node-schemas-even-when-layer-node-types-is-id-is-slug-shortname-label-is-b935f9f8
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) > id
+      is {slug}.{shortname}; label is the type label; domainColor is the slug
+    attributes: *a20
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/specGraph.spec.ts
+          symbol: nodeTypesForLayer (uses nodeSchemas even when layer.node_types is []) >
+            id is {slug}.{shortname}; label is the type label; domainColor is
+            the slug
+    metadata: *a21
+  timestamp: 2026-11-20T14:14:01.202Z
+  sequenceNumber: 29
+- type: update
+  elementId: application.applicationservice.type-bands
+  layerName: application
+  before:
+    id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+    path: application.applicationservice.type-bands
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Type Bands
+    description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+      'kind') for one DR layer's elements; band order with the least
+      lane-skipping between linked types; each band named with the node type
+      label's short plural (\"Components · 37\"); the row cap for large lanes.
+      Where it meets Heimdall, Heimdall's 'layer' is our node type; layerId only
+      ever means a DR layer."
+    attributes: &a22
+      serviceType: synchronous
+    accepted_gaps: &a23
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: Only the two by-type view components call it; no other data service
+          builds on the type bands.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:22.848Z
+        changeset: changeset-1795111279160-shbw81238
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its own unit test case sketches (ordering, naming); the
+          viewer models no coverage target per data service.
+        decided_by: agent
+        decided_at: 2026-11-19T18:02:23.063Z
+        changeset: changeset-1795111279160-shbw81238
+    metadata: &a24
+      created_at: 2026-11-19T18:01:46.735Z
+      updated_at: 2026-11-19T18:01:46.735Z
+      version: 1
+  after:
+    id: 500be8a4-c52a-4463-bbfd-ca599208c8db
+    path: application.applicationservice.type-bands
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Type Bands
+    description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
+      'kind') for one DR layer's elements; band order with the least
+      lane-skipping between linked types; each band named with the node type
+      label's short plural (\"Components · 37\"); the row cap for large lanes.
+      Where it meets Heimdall, Heimdall's 'layer' is our node type; layerId only
+      ever means a DR layer."
+    attributes: *a22
+    accepted_gaps: *a23
+    metadata: *a24
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/typeBands.ts
+          symbol: typeBands
+  timestamp: 2026-11-20T14:14:13.079Z
+  sequenceNumber: 30
+- type: update
+  elementId: application.applicationservice.nav-tree-groups
+  layerName: application
+  before:
+    id: 5b117791-acda-41f6-8666-8c6159bdda4e
+    path: application.applicationservice.nav-tree-groups
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Nav Tree Groups
+    description: "Pure transform for the nav tree: a layer's model elements grouped
+      by node type, each group with its type key, label (the node type label's
+      short plural, e.g. \"Components\" in Application, the same name the
+      by-type lanes use) and count, groups sorted A–Z by that label and elements
+      A–Z; plus the group key holding a given element, so the tree can open it."
+    attributes: &a25
+      serviceType: synchronous
+    metadata: &a26
+      created_at: 2026-11-19T17:47:57.291Z
+      updated_at: 2026-11-19T17:47:57.291Z
+      version: 1
+  after:
+    id: 5b117791-acda-41f6-8666-8c6159bdda4e
+    path: application.applicationservice.nav-tree-groups
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Nav Tree Groups
+    description: "Pure transform for the nav tree: a layer's model elements grouped
+      by node type, each group with its type key, label (the node type label's
+      short plural, e.g. \"Components\" in Application, the same name the
+      by-type lanes use) and count, groups sorted A–Z by that label and elements
+      A–Z; plus the group key holding a given element, so the tree can open it."
+    attributes: *a25
+    metadata: *a26
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/navTreeGroups.ts
+          symbol: groupByType
+  timestamp: 2026-11-20T14:14:13.299Z
+  sequenceNumber: 31
+- type: update
+  elementId: application.applicationservice.search-index
+  layerName: application
+  before:
+    id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+    path: application.applicationservice.search-index
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Search Index
+    description: "Pure, React-free search over the loaded /api/model elements and
+      /api/spec node types (data/search.ts): builds a lower-cased index once per
+      payload (node types named with the node type label's full singular,
+      matched by that name or the spec title), ranks exact > prefix >
+      word-prefix > substring > in-order fuzzy (subsequence) matches, caps the
+      results, groups them by layer in LAYER_ORDER and returns the matched
+      character ranges for highlighting. Stays fast on a large model: one pass
+      over the index per keystroke, no allocation for a candidate that fails."
+    attributes: &a27
+      serviceType: synchronous
+    metadata: &a28
+      created_at: 2026-11-19T17:48:37.422Z
+      updated_at: 2026-11-19T17:48:37.422Z
+      version: 1
+  after:
+    id: 15ee056b-c277-4302-800a-4bc4bfd4f664
+    path: application.applicationservice.search-index
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Search Index
+    description: "Pure, React-free search over the loaded /api/model elements and
+      /api/spec node types (data/search.ts): builds a lower-cased index once per
+      payload (node types named with the node type label's full singular,
+      matched by that name or the spec title), ranks exact > prefix >
+      word-prefix > substring > in-order fuzzy (subsequence) matches, caps the
+      results, groups them by layer in LAYER_ORDER and returns the matched
+      character ranges for highlighting. Stays fast on a large model: one pass
+      over the index per keystroke, no allocation for a candidate that fails."
+    attributes: *a27
+    metadata: *a28
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/search.ts
+          symbol: buildSearchIndex
+  timestamp: 2026-11-20T14:14:13.535Z
+  sequenceNumber: 32
+- type: update
+  elementId: application.applicationservice.changeset-review-model
+  layerName: application
+  before:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, layer and whether this changeset adds it (replacing the 'new
+      source' / 'new target' / 'both ends new' chips); an element item counts
+      its new links out and in. Apply needs a decision only where one is
+      required (#573): canApply holds while a blocked delete is undecided, a
+      change waits on DrBot or a drop conflicts, and otherwise undecided changes
+      land as kept (apply.undecided lists them); ready still means every change
+      has a verdict. The commit body is unchanged: drop names only dropped
+      changes, deleteBlockedLinks only kept blocked deletes."
+    attributes: &a29
+      serviceType: synchronous
+    source_reference: &a30
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/changesetReview.ts
+          symbol: buildReviewModel
+    metadata: &a31
+      created_at: 2026-11-17T22:03:59.328Z
+      updated_at: 2026-11-17T22:03:59.328Z
+      version: 1
+  after:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, the type's display name, layer and whether this changeset adds
+      it (replacing the 'new source' / 'new target' / 'both ends new' chips); an
+      element item counts its new links out and in. Types read by their display
+      name (#605): the caller passes typeNameOf (the spec's title), else the
+      type id is split into words. Apply needs a decision only where one is
+      required (#573): canApply holds while a blocked delete is undecided, a
+      change waits on DrBot or a drop conflicts, and otherwise undecided changes
+      land as kept (apply.undecided lists them); ready still means every change
+      has a verdict. The commit body is unchanged: drop names only dropped
+      changes, deleteBlockedLinks only kept blocked deletes."
+    attributes: *a29
+    source_reference: *a30
+    metadata: *a31
+  timestamp: 2026-11-20T14:49:06.047Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: application.applicationservice.use-changeset-review::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.use-changeset-review
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-link-card
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-link-card
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 42
+- type: add
+  elementId: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+  layerName: testing
+  after:
+    id: 6cbdf2cb-fd2e-47c6-9dfe-1f9d37ab0eb9
+    path: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: toReviewItems names element and link-end types by their display name
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: A review item's type line reads 'application · Application Service'
+        and its summary 'Adds this Application Service'; a link end keeps its
+        type id and adds typeName; a caller's typeNameOf (the spec's title) wins
+        over splitting the id.
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: names element and link-end types by their display name (#605)
+    metadata:
+      created_at: 2026-11-20T14:49:13.812Z
+      updated_at: 2026-11-20T14:49:13.812Z
+      version: 1
+  timestamp: 2026-11-20T14:49:13.837Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name::tests::application.applicationservice.changeset-review-model
+  layerName: testing
+  after:
+    source: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+    target: application.applicationservice.changeset-review-model
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:13.837Z
+  sequenceNumber: 44

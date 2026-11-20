@@ -54,6 +54,9 @@ import {
   type ImpactOp,
 } from '../data/changesetImpact';
 import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
+import { useSpec } from '../data/useSpec';
+import { specTypeLabel } from '../data/typeLabel';
+import { useTypeName } from '../data/useTypeName';
 
 const FOLLOW_OPTIONS = FOLLOW_DEPTHS.map((d) => ({ value: d, label: followOptionLabel(d) }));
 const LABEL_OPTIONS = [
@@ -175,6 +178,14 @@ export function ChangesetImpactView({
   const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
+  const { derived: spec } = useSpec();
+  // Group nodes name their type in full: the lanes mix layers (#605).
+  const typeName = useMemo(
+    () => (layerId: string, type: string) => specTypeLabel(spec.byLayer[layerId], layerId, type).plural,
+    [spec],
+  );
+  // One element's type, beside its layer in the matches and the focus line.
+  const typeNameOf = useTypeName();
 
   // A focus on an element that's no longer in the graph (another follow
   // depth, a refetch) falls back to every change.
@@ -188,8 +199,9 @@ export function ChangesetImpactView({
         threshold: grouping ? GROUP_THRESHOLD : Infinity,
         keep: new Set(focusId ? [focusId] : []),
         expanded,
+        typeName,
       }),
-    [filtered, grouping, focusId, expanded],
+    [filtered, grouping, focusId, expanded, typeName],
   );
   const shown = grouped.impact;
   const matches = useMemo(() => searchImpact(base, query).slice(0, MAX_MATCHES), [base, query]);
@@ -501,7 +513,7 @@ export function ChangesetImpactView({
                     <button type="button" className="drv-impact__match" onClick={() => pick(m.id)} onMouseEnter={() => setActive(i)}>
                       <span className="drv-impact__match-name">{m.label}</span>
                       <span className="drv-row__type">
-                        {layerLabel(m.layerId).toLowerCase()} · {m.kind} ·{' '}
+                        {layerLabel(m.layerId).toLowerCase()} · {m.kind ? typeNameOf(m.layerId, m.kind) : 'element'} ·{' '}
                         {m.op ? <span className="drv-impact__match-op">{OP_OUTLINE[m.op].label}</span> : 'reached, unchanged'}
                       </span>
                     </button>
@@ -514,7 +526,8 @@ export function ChangesetImpactView({
               <span className="drv-impact__eyebrow">Focused</span>
               <strong style={{ fontSize: 13.5 }}>{focusNode.label}</strong>
               <span className="drv-row__type">
-                {layerLabel(focusNode.domainColor).toLowerCase()} · {focusNode.kind}
+                {layerLabel(focusNode.domainColor).toLowerCase()} ·{' '}
+                {focusNode.kind ? typeNameOf(focusNode.domainColor ?? '', focusNode.kind) : 'element'}
                 {impact.opOf.get(focusNode.id) ? ` · ${OP_OUTLINE[impact.opOf.get(focusNode.id)!].label}` : ' · reached, unchanged'}
               </span>
               <span className="drv-muted" style={{ fontSize: 12 }}>

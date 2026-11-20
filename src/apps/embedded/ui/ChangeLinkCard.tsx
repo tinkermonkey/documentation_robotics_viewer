@@ -31,7 +31,7 @@ function EndCard({ role, end, description }: { role: 'Source' | 'Target'; end: L
       <span className="drv-endcard__body">
         <span className="drv-endcard__top">
           <span className="drv-eyebrow">
-            {role} · {layerLabel(end.layerId).toLowerCase()} · {end.type}
+            {role} · {layerLabel(end.layerId).toLowerCase()} · {end.typeName}
           </span>
           {end.isNew ? (
             <span className="drv-new">NEW</span>
@@ -68,7 +68,7 @@ export function ChangeLinkCard({ item, model }: { item: ReviewItem; model: Revie
             <span aria-hidden="true">↓</span> {item.link.predicate}
           </span>
           <span className="drv-muted" style={{ fontSize: 11.5 }}>
-            {definition?.description ?? `${source.type} ${item.link.predicate} ${target.type}`}
+            {definition?.description ?? `${source.typeName} ${item.link.predicate} ${target.typeName}`}
             {definition ? ` · ${definition.category}` : ''}
           </span>
         </span>

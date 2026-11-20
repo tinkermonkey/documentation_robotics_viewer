@@ -39,6 +39,7 @@ import {
 import { layerColor, layerLabel, layerStandard, isLayerSlug } from '../ui/domain';
 import type { NeighborhoodGraph } from './neighborhoodGraph';
 import { specNodeNeighborhoodGraph, modelElementNeighborhoodGraph } from './neighborhoodGraph';
+import { typeLabel } from './typeLabel';
 
 // ─── Shared row/target shapes ──────────────────────────────────────────────
 
@@ -257,7 +258,7 @@ export function layerPageData(
     return {
       target: { kind: 'specNode', specNodeId: `${layerId}.${short}`, layerId },
       cells: [
-        nodeTypeCell(ns.title ?? short, 'name', layerId, short),
+        nodeTypeCell(typeLabel(ns.title ?? short, layerId).singular, 'name', layerId, short),
         cell(`${layerId}.${short}`, 'dim'),
         cell(instances, 'num'),
       ],
@@ -477,7 +478,7 @@ export function specNodePageData(
 
   return {
     eyebrow: `SPEC NODE · ${standard}`,
-    title: ns.title ?? short,
+    title: typeLabel(ns.title ?? short, layerId).singular,
     idChip: specNodeId,
     meta: `${attrs.length} attributes · ${instances.length} instances`,
     color,
@@ -640,7 +641,7 @@ export function modelNodePageData(
     {
       target: { kind: 'specNode', specNodeId: `${layerId}.${n.type}`, layerId },
       cells: [
-        nodeTypeCell(specNode?.title ?? n.type, 'name', layerId, n.type),
+        nodeTypeCell(typeLabel(specNode?.title ?? n.type, layerId).singular, 'name', layerId, n.type),
         cell(`${layerId}.${n.type}`, 'dim'),
         cell(`${attrs.length} attrs`, 'num'),
       ],

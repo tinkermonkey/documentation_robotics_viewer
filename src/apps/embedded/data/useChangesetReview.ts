@@ -27,6 +27,7 @@ import { buildReviewModel, type ChangesetReview, type DecisionInput, type Review
 import { changesetActionErrorMessage, type ChangesetDetail } from './useChangesets';
 import { useModel } from './useModel';
 import { dottedId } from './modelGraph';
+import { useTypeName } from './useTypeName';
 
 export type ReviewMode = 'server' | 'local';
 
@@ -184,6 +185,8 @@ export function useChangesetReview(detail: ChangesetDetail | null): ChangesetRev
     return m;
   }, [modelData.nodes]);
 
+  const typeNameOf = useTypeName();
+
   const model = useMemo(
     () =>
       detail
@@ -192,10 +195,11 @@ export function useChangesetReview(detail: ChangesetDetail | null): ChangesetRev
             unstaged: detail.unstaged,
             review,
             nameOf: (dotted) => nameIndex.get(dotted),
+            typeNameOf,
             acknowledgedBlockers: blockersSeen,
           })
         : null,
-    [detail, review, nameIndex, blockersSeen],
+    [detail, review, nameIndex, typeNameOf, blockersSeen],
   );
 
   const decide = useCallback(

@@ -13,6 +13,7 @@ import {
   nodeTypeTooltipData,
   type SpecPayload,
 } from '@/apps/embedded/data/specGraph';
+import { typeLabel } from '@/apps/embedded/data/typeLabel';
 import specFixture from '../fixtures/spec.json';
 
 const spec = specFixture as unknown as SpecPayload;
@@ -64,14 +65,14 @@ describe('nodeTypesForLayer (uses nodeSchemas even when layer.node_types is [])'
     expect(nodes.length).toBeGreaterThan(0);
   });
 
-  it('id is {slug}.{shortname}; label is the title; domainColor is the slug', () => {
+  it('id is {slug}.{shortname}; label is the type label; domainColor is the slug', () => {
     const s = schemaForLayer(spec, 'data-model')!;
     const nodes = nodeTypesForLayer(spec, 'data-model');
     for (const n of nodes) {
       expect(n.id.startsWith('data-model.')).toBe(true);
       const short = shortName('data-model', n.id);
       expect(s.nodeSchemas?.[short]).toBeDefined();
-      expect(n.label).toBe(s.nodeSchemas?.[short]?.title ?? short);
+      expect(n.label).toBe(typeLabel(s.nodeSchemas?.[short]?.title ?? short, 'data-model').singular);
       expect(n.kind).toBe('spec node');
       expect(n.domainColor).toBe('data-model');
     }

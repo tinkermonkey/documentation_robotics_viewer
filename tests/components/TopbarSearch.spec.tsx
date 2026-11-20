@@ -87,7 +87,7 @@ describe('topbar search', () => {
     const { user, input } = await renderSearch();
 
     await typeAndWait(user, input, 'externaldoc');
-    const option = await screen.findByRole('option', { name: /ExternalDocumentation/ });
+    const option = await screen.findByRole('option', { name: /External Documentation/ });
     expect(option).toHaveAttribute('data-kind', 'type');
     expect(screen.getByRole('group', { name: /API · Schema/ })).toContainElement(option);
 

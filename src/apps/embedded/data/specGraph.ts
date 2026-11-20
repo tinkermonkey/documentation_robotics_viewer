@@ -24,6 +24,7 @@ import type {
   RelationshipLink,
   GraphNodeMetadata,
 } from '@tinkermonkey/heimdall-ui';
+import { typeLabel } from './typeLabel';
 
 // ─── Raw /api/spec shapes (only the fields this module reads) ─────────────────
 
@@ -105,10 +106,10 @@ export function shortName(slug: string, specNodeId: string): string {
 }
 
 /**
- * Resolve a `spec_node_id` to its human title by looking up the destination
- * layer's `nodeSchemas`. Falls back to the short type name when the title (or
- * the destination layer schema) is unavailable — so cross-layer targets still
- * read sensibly.
+ * Resolve a `spec_node_id` to its display name (`typeLabel`'s full singular,
+ * e.g. "Application Component") from the destination layer's `nodeSchemas`.
+ * Falls back to the short type name when the title (or the destination layer
+ * schema) is unavailable — so cross-layer targets still read sensibly.
  */
 export function titleForSpecNode(
   spec: SpecPayload | undefined,
@@ -117,7 +118,7 @@ export function titleForSpecNode(
 ): string {
   const short = shortName(layer, specNodeId);
   const schema = schemaForLayer(spec, layer);
-  return schema?.nodeSchemas?.[short]?.title ?? short;
+  return typeLabel(schema?.nodeSchemas?.[short]?.title ?? short, layer).singular;
 }
 
 // ─── Node-types (graph nodes) ─────────────────────────────────────────────────
@@ -125,7 +126,7 @@ export function titleForSpecNode(
 /**
  * Node-types for a layer as `GraphNodeData[]`, one per `nodeSchemas` entry:
  *   id -> spec_node_id (`<slug>.<shortname>`)
- *   label -> nodeSchema.title (fall back to the short name)
+ *   label -> typeLabel(nodeSchema.title, else the short name).singular
  *   kind -> 'spec node'
  *   domainColor -> the layer slug (drives the domain swatch CSS)
  *
@@ -143,7 +144,7 @@ export function nodeTypesForLayer(
 
   return entries.map(([short, ns]) => ({
     id: `${slug}.${short}`,
-    label: ns.title ?? short,
+    label: typeLabel(ns.title ?? short, slug).singular,
     kind: 'spec node',
     domainColor: slug,
   }));
@@ -349,7 +350,7 @@ export function specMetadataForNode(
 
   return {
     id: nodeId,
-    title: ns.title ?? short,
+    title: typeLabel(ns.title ?? short, slug).singular,
     kind: 'SPEC NODE',
     domain: slug,
     description: ns.description,

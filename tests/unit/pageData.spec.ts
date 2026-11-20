@@ -106,7 +106,7 @@ describe('layerPageData', () => {
     const table = pg.tables.find((t) => t.title === 'Spec node types')!;
     expect(table.rows).toHaveLength(9);
     const objectSchemaRow = table.rows.find((r) =>
-      r.cells.some((c) => c.text === 'ObjectSchema'),
+      r.cells.some((c) => c.text === 'Object Schema'),
     )!;
     expect(objectSchemaRow.target).toEqual({
       kind: 'specNode',
@@ -151,7 +151,7 @@ describe('layerPageData', () => {
     const pg = layerPageData('spec', 'data-model', model, index, spec)!;
     const table = pg.tables.find((t) => t.title === 'Spec node types')!;
     const objectSchemaRow = table.rows.find((r) =>
-      r.cells.some((c) => c.text === 'ObjectSchema'),
+      r.cells.some((c) => c.text === 'Object Schema'),
     )!;
     expect(objectSchemaRow.cells[0].tooltip).toEqual({
       kind: 'nodeType',
@@ -204,7 +204,7 @@ describe('specNodePageData', () => {
   it('builds header/stats from the real ObjectSchema node schema', () => {
     const pg = specNodePageData('data-model', 'data-model.objectschema', spec, model)!;
     expect(pg.eyebrow).toBe('SPEC NODE · JSON Schema Draft 7');
-    expect(pg.title).toBe('ObjectSchema');
+    expect(pg.title).toBe('Object Schema'); // typeLabel's full singular, not the raw title
     expect(pg.idChip).toBe('data-model.objectschema');
     expect(pg.meta).toBe('8 attributes · 31 instances');
     expect(pg.description).toContain('Defines validation rules for JSON object instances');

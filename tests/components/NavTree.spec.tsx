@@ -324,15 +324,29 @@ describe('NavTree type groups', () => {
     await user.click((await screen.findAllByText('Motivation'))[0].closest('button')!);
     const goal = await screen.findByTestId('nav-type-group-motivation.goal');
 
-    // One group per type, A–Z by the spec's title, each with its count; all collapsed.
+    // One group per type, named with the type's short plural (#605), its count
+    // in NavItem's badge as on the layer rows, A–Z; all collapsed.
     const groups = screen
       .getByTestId('nav-tree')
       .querySelectorAll<HTMLButtonElement>('.drv-nav-group');
-    const labels = [...groups].map((g) => g.querySelector('.nav-item__label')!.textContent);
-    expect(labels).toEqual(['Constraint', 'Driver', 'Goal', 'Principle', 'Requirement', 'Stakeholder']);
+    const labels = [...groups].map(
+      (g) =>
+        `${g.querySelector('.nav-item__label')!.textContent} · ${g.querySelector('.nav-item__count')!.textContent}`,
+    );
+    const count = (type: string) =>
+      model.nodes.filter((n) => n.layer_id === 'motivation' && n.type === type).length;
+    expect(labels).toEqual(
+      [
+        ['Constraints', 'constraint'],
+        ['Drivers', 'driver'],
+        ['Goals', 'goal'],
+        ['Principles', 'principle'],
+        ['Requirements', 'requirement'],
+        ['Stakeholders', 'stakeholder'],
+      ].map(([label, type]) => `${label} · ${count(type)}`),
+    );
     for (const g of groups) expect(g).toHaveAttribute('aria-expanded', 'false');
-    expect(goal).toHaveAccessibleName(`Goal, ${goals.length} elements`);
-    expect(within(goal).getByText(String(goals.length))).toBeInTheDocument();
+    expect(goal).toHaveAccessibleName(`Goals, ${goals.length} elements`);
     expect(screen.queryByText(goals[0].name)).not.toBeInTheDocument();
 
     // Opening a group shows its elements A–Z and touches neither the
