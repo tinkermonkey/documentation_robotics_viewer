@@ -1,0 +1,105 @@
+id: changeset-1795189106448-lycsp34uv
+name: c4-architecture-views-poc
+description: >-
+  Add C4 diagrams of the model to the viewer as a proof of concept. A pure
+  transform turns the DR model into C4 elements (people, the software system,
+  external systems, containers, components) by rules keyed on spec type ids, and
+  a new top-level Architecture view draws the Context, Container and Component
+  diagrams from it, with drill-down into any component that has parts. The
+  nested layout and boundary drawing are POCs meant to move into Heimdall; the
+  viewer keeps the transform and the view.
+
+
+  **In scope**
+
+
+  - The transform in `data/c4/`: element rules, identity merges (a persona and
+  its business role are one person), containment, folds (tests, features and
+  schemas attach to a C4 element), and relationships lifted onto C4 elements,
+  each keeping its source DR ids.
+
+  - Scoped views: Context, Container, Component at any depth; neighbours outside
+  the scope lifted to their nearest visible ancestor.
+
+  - The Architecture view (`#/architecture`): level and scope navigation,
+  drill-down, and a selection that opens the source DR element.
+
+  - Layout by ELK (`elkjs`, lazy-loaded), drawn with Heimdall primitives.
+
+
+  **Not in scope**
+
+
+  - The changeset overlay on the diagrams (slice 2).
+
+  - Deployment and Dynamic diagrams, and export to Structurizr or Mermaid.
+
+  - Spec or dr CLI changes (ownership and container-membership gaps are separate
+  proposals).
+
+
+  **Done when**
+
+
+  - On this repo's model the Container diagram shows the two personas, the
+  viewer web app, `Browser localStorage` and the DR CLI server, and nothing from
+  the technology layer.
+
+  - Component drill-down works from the app container down to `Graph Canvas`.
+
+  - Unit tests cover the rules and the view scoping; the new view passes axe in
+  light and dark.
+created: 2026-11-20T15:38:26.452Z
+modified: 2026-11-20T15:49:07.647Z
+status: committed
+baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 94
+  modifications: 8
+  deletions: 0
+lastSequence: 104
+unstaged:
+  - sequence: 84
+    removedAt: 87
+    change:
+      type: relationship-add
+      elementId: application.applicationcomponent.nav-tree::uses::application.applicationcomponent.architecture-canvas
+      layerName: application
+      after:
+        source: application.applicationcomponent.nav-tree
+        target: application.applicationcomponent.architecture-canvas
+        predicate: uses
+        layer: application
+        category: structural
+      timestamp: 2026-11-20T15:40:23.963Z
+  - sequence: 4
+    removedAt: 104
+    change:
+      type: add
+      elementId: application.applicationservice.c4-diagram-layout
+      layerName: application
+      after:
+        id: 6b62a496-1289-4a79-b75a-94937c2fb87a
+        path: application.applicationservice.c4-diagram-layout
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: C4 Diagram Layout
+        description: "data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top
+          to bottom, nested boundary, right-angle edge routes, edge label boxes)
+          and returns absolute boxes for elements and the boundary plus a
+          polyline and label position per relationship. elkjs is imported
+          lazily, so it loads only when the Architecture view opens; the result
+          is cached per view key. Proof of concept for a native nested layout in
+          Heimdall: nothing outside this module knows ELK's types."
+        attributes:
+          serviceType: asynchronous
+        metadata:
+          created_at: 2026-11-20T15:40:02.899Z
+          updated_at: 2026-11-20T15:40:02.899Z
+          version: 1
+      timestamp: 2026-11-20T15:40:02.930Z
+    rewritten: true

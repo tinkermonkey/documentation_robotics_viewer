@@ -18,9 +18,9 @@ Application routing, navigation flows, and page structures.
 | ------------------------- | ----- |
 | Elements                  | 10    |
 | Intra-Layer Relationships | 9     |
-| Inter-Layer Relationships | 26    |
-| Inbound Relationships     | 19    |
-| Outbound Relationships    | 7     |
+| Inter-Layer Relationships | 28    |
+| Inbound Relationships     | 20    |
+| Outbound Relationships    | 8     |
 
 **Cross-Layer References**:
 
@@ -87,9 +87,11 @@ flowchart TB
 | `navigation.navigationguard.realizes.security.securitypolicy`       | `navigation.navigationguard.authentication-guard`                                                                                     | `security.securitypolicy.bearer-token-policy`                | `security`    | `realizes`   | many-to-many | medium   |
 | `navigation.navigationguard.requires.security.role`                 | `navigation.navigationguard.authentication-guard`                                                                                     | `security.role.authenticated-viewer`                         | `security`    | `requires`   | many-to-many | medium   |
 | `navigation.route.depends-on.application.applicationcomponent`      | `navigation.route.app-shell-sectionview-route`                                                                                        | `application.applicationcomponent.app-shell`                 | `application` | `depends-on` | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.architecture-view`                                  | `ux`          | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.changesets-view`                                    | `ux`          | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.model-view`                                         | `ux`          | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.schema-view`                                        | `ux`          | `maps-to`    | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                     | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                      | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
@@ -244,7 +246,7 @@ Programmatic redirect from the index route to the model graph view after success
 
 **Type**: `navigationtransition`
 
-Deep links into a layer, element or changeset: the router two-way syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph viewport) with the UI store, so a shared link, reload or back/forward restores the selection.
+Deep links into a layer, element, changeset or C4 diagram: the router two-way syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph viewport), and ?level= / ?scope= in the Architecture view, with the UI store, so a shared link, reload or back/forward restores the selection. A drill-down in the Architecture view pushes a history entry; selecting a box replaces it.
 
 #### Attributes
 
@@ -285,7 +287,7 @@ Deep links into a layer, element or changeset: the router two-way syncs ?layer= 
 
 **Type**: `navigationtransition`
 
-Switching between the Model, Schema and Changesets sections in the sidebar nav tree (an accordion: opening a section collapses the others). The section is the route's :section segment.
+Switching between the Architecture, Model, Schema and Changesets sections in the sidebar nav tree (an accordion: opening a section collapses the others). The section is the route's :section segment.
 
 #### Attributes
 
@@ -307,7 +309,7 @@ Switching between the Model, Schema and Changesets sections in the sidebar nav t
 
 **Type**: `route`
 
-Parameterized route at /#/:section/:view (section = model \| spec \| changesets; view is a per-section default, e.g. graph or list) that renders AppShell; a two-way effect keeps uiStore.view and the URL hash in sync. Replaced the previous six separate per-section redirect + view routes (model/spec/changesets redirect-route and view-route pairs) with a single generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in the June 2026 Heimdall UX rebuild; protected — requires a valid auth token via authStore.
+Parameterized route at /#/:section/:view (section = model \| spec \| changesets \| architecture; view is a per-section default, e.g. graph, list, or diagram for architecture) that renders AppShell; a two-way effect keeps uiStore.view and the URL hash in sync. The architecture section carries ?level= (context \| container \| component), ?scope= (the dotted id of the element whose parts are shown) and ?node= (the selected box). Replaced the previous six separate per-section redirect + view routes (model/spec/changesets redirect-route and view-route pairs) with a single generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in the June 2026 Heimdall UX rebuild; protected — requires a valid auth token via authStore.
 
 #### Attributes
 
@@ -317,17 +319,19 @@ Parameterized route at /#/:section/:view (section = model \| spec \| changesets;
 
 #### Relationships
 
-| Type        | Related Element                                              | Predicate      | Direction |
-| ----------- | ------------------------------------------------------------ | -------------- | --------- |
-| inter-layer | `application.applicationcomponent.app-shell`                 | `depends-on`   | outbound  |
-| inter-layer | `ux.view.changesets-view`                                    | `maps-to`      | outbound  |
-| inter-layer | `ux.view.model-view`                                         | `maps-to`      | outbound  |
-| inter-layer | `ux.view.schema-view`                                        | `maps-to`      | outbound  |
-| intra-layer | `navigation.flowstep.post-auth-model-entry-step`             | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`   | `composes`     | inbound   |
-| intra-layer | `navigation.navigationtransition.layer-deep-link-transition` | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationtransition.tab-navigation-transition`  | `navigates-to` | inbound   |
-| intra-layer | `navigation.route.index-route`                               | `navigates-to` | inbound   |
+| Type        | Related Element                                                                  | Predicate      | Direction |
+| ----------- | -------------------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`                                     | `depends-on`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                                                      | `maps-to`      | outbound  |
+| inter-layer | `ux.view.changesets-view`                                                        | `maps-to`      | outbound  |
+| inter-layer | `ux.view.model-view`                                                             | `maps-to`      | outbound  |
+| inter-layer | `ux.view.schema-view`                                                            | `maps-to`      | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url` | `tests`        | inbound   |
+| intra-layer | `navigation.flowstep.post-auth-model-entry-step`                                 | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`                       | `composes`     | inbound   |
+| intra-layer | `navigation.navigationtransition.layer-deep-link-transition`                     | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationtransition.tab-navigation-transition`                      | `navigates-to` | inbound   |
+| intra-layer | `navigation.route.index-route`                                                   | `navigates-to` | inbound   |
 
 ### Index Route {#index-route}
 
@@ -352,4 +356,4 @@ Landing route at path /#/; accepts optional ?token= search parameter; renders Au
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0

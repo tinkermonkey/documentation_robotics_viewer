@@ -11,7 +11,8 @@
  * layout/display settings (graphLayout/showClusterBoundaries/
  * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes/modelView), and the
  * Model inspector's follow depth (inspectorFollow). Navigation state (view/layerId/
- * selectedId/changesetId/mode/focus/expanded*) is deliberately NOT persisted
+ * selectedId/changesetId/mode/focus/expanded*, and the Architecture view's c4Level/
+ * c4Scope/c4SelectedId) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."
  */
@@ -20,6 +21,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ScopedViewport } from './graphViewport';
 import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
+import type { C4Level } from '../data/c4/c4Level';
 import {
   CHAT_DOCK_DEFAULT_WIDTH,
   CHAT_PANEL_DEFAULT,
@@ -28,7 +30,7 @@ import {
   type ChatPanelSize,
 } from './chatPanelLayout';
 
-export type ViewKind = 'model' | 'spec' | 'changesets';
+export type ViewKind = 'model' | 'spec' | 'changesets' | 'architecture';
 export type CanvasMode = 'graph' | 'page';
 export type PageFocus = 'layer' | 'node';
 /** The layouts offered in the header's Layout control. heimdall-ui also has
@@ -76,6 +78,14 @@ interface UiState {
   changesetTab: 'changes' | 'impact';
   /** Impact tab: the element whose reach it shows alone (null: every change). Not persisted. */
   impactFocus: string | null;
+  /** Architecture view: which C4 diagram is drawn. Not persisted (the URL's `?level=`). */
+  c4Level: C4Level;
+  /** Architecture view, Component level: the C4 element whose parts are shown
+   *  (null: the default container). A C4 element id, see data/c4/c4Model.ts.
+   *  Not persisted (the URL's `?scope=`). */
+  c4Scope: string | null;
+  /** Architecture view: the selected box (a C4 element id). Not persisted. */
+  c4SelectedId: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
   /** The floating DrBot panel's size (#597), persisted; see chatPanelLayout. */
@@ -207,6 +217,13 @@ interface UiState {
   setChangesetTab: (tab: 'changes' | 'impact') => void;
   /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. */
   focusImpact: (elementId: string | null) => void;
+  /** Open a C4 diagram: a deliberate navigation (pushes history), clears the
+   *  selected box. `scope` only matters at the Component level. */
+  showC4: (level: C4Level, scope?: string | null) => void;
+  /** Select a box on the current C4 diagram (null clears). */
+  selectC4: (id: string | null) => void;
+  /** Restore a C4 diagram from the URL: no history push. */
+  restoreC4: (level: C4Level, scope: string | null, selectedId: string | null) => void;
   /** Switch the main panel between the live graph and the page-view scaffold.
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
@@ -285,6 +302,9 @@ export const useUiStore = create<UiState>()(
       changeSeq: null,
       changesetTab: 'changes',
       impactFocus: null,
+      c4Level: 'context',
+      c4Scope: null,
+      c4SelectedId: null,
       // A first visit (nothing persisted yet) gets a light canvas and DrBot
       // closed, at any width (#596, #597). A later explicit choice via
       // toggleCanvasDark / toggleChat persists and overrides these.
@@ -425,6 +445,19 @@ export const useUiStore = create<UiState>()(
       selectChange: (changeSeq) => set({ changeSeq }),
       setChangesetTab: (changesetTab) => set({ changesetTab }),
       focusImpact: (impactFocus) => set(impactFocus ? { impactFocus, changesetTab: 'impact' } : { impactFocus }),
+
+      showC4: (c4Level, scope = null) =>
+        set((s) => ({
+          navSeq: s.navSeq + 1,
+          view: 'architecture',
+          c4Level,
+          c4Scope: c4Level === 'component' ? scope : null,
+          c4SelectedId: null,
+          expandedSections: onlySection('architecture'),
+        })),
+      selectC4: (c4SelectedId) => set({ c4SelectedId }),
+      restoreC4: (c4Level, c4Scope, c4SelectedId) =>
+        set({ c4Level, c4Scope: c4Level === 'component' ? c4Scope : null, c4SelectedId }),
 
       setMode: (mode) => set({ mode }),
 

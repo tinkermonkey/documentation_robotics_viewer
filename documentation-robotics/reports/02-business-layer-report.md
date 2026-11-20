@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 127   |
-| Inbound Relationships     | 120   |
+| Inter-Layer Relationships | 133   |
+| Inbound Relationships     | 126   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -110,6 +110,8 @@ flowchart TB
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`  | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                                                   | `35295e18-08a8-4ca0-ada3-40a017cb4318`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-realizes-e642ad79-62ea-47a4-ae04-d512d0ef7881`  | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`    | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`   | `serves`     | unknown      | unknown  |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-model-transform`                                                                                                      | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-view-scoping`                                                                                                         | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-drift`                                                                                                         | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                     | `application.applicationservice.changeset-impact-analysis`                                                                                               | `business.businessobject.changeset`                          | `business`   | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-impact-analysis`                                                                                               | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
@@ -133,6 +135,7 @@ flowchart TB
 | `b7775f1a-2418-4c7a-84aa-997efd658a97-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`    | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                                                   | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                       | `business`   | `serves`     | unknown      | unknown  |
 | `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`                                                                                                            | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `realizes`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`  | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                                                                   | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`                       | `business`   | `realizes`   | unknown      | unknown  |
+| `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.c4-model`                                                                                                                       | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.changeset-detail`                                                                                                               | `business.businessobject.changeset`                          | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.extracted-reference`                                                                                                            | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.model-metadata`                                                                                                                 | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
@@ -215,6 +218,9 @@ flowchart TB
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-put-ordering-and-rollback-on-a-refused-put-restores-only-the-verdict-keeping-a-refetch-that-f02fdd5f`                     | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-put-ordering-and-rollback-serialises-back-to-back-puts-in-order-and-keeps-both-verdicts`                                  | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.business.businessservice`                               | `testing.testcasesketch.review-since-your-last-review-opens-on-what-dr-bot-changed-revised-new-and-withdrawn`                                            | `business.businessservice.changeset-review`                  | `business`   | `tests`      | many-to-many | medium   |
+| `ux.view.references.business.businessobject`                                          | `ux.view.architecture-view`                                                                                                                              | `business.businessobject.architecture-model`                 | `business`   | `references` | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`                                                | `ux.view.architecture-view`                                                                                                                              | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
+| `ux.view.serves.business.businessrole`                                                | `ux.view.architecture-view`                                                                                                                              | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.references.business.businessobject`                                          | `ux.view.changesets-view`                                                                                                                                | `business.businessobject.changeset`                          | `business`   | `references` | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`                                                | `ux.view.changesets-view`                                                                                                                                | `business.businessrole.architecture-reviewer`                | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`                                                | `ux.view.dr-bot-chat-drawer`                                                                                                                             | `business.businessrole.model-author`                         | `business`   | `serves`     | many-to-many | medium   |
@@ -272,12 +278,14 @@ The multi-layer YAML architecture model managed by DR CLI and visualized by the 
 
 | Type        | Related Element                                              | Predicate    | Direction |
 | ----------- | ------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-model`                           | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.extracted-reference`                | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.model-metadata`                     | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.reference`                          | `realizes`   | inbound   |
 | inter-layer | `data-store.collection.model-manifest`                       | `realizes`   | inbound   |
 | inter-layer | `security.secureresource.model-rest-api`                     | `references` | inbound   |
 | inter-layer | `security.secureresource.web-socket-json-rpc-channel`        | `references` | inbound   |
+| inter-layer | `ux.view.architecture-view`                                  | `references` | inbound   |
 | inter-layer | `ux.view.model-view`                                         | `references` | inbound   |
 | inter-layer | `ux.view.schema-view`                                        | `references` | inbound   |
 | inter-layer | `ux.view.topbar-search`                                      | `references` | inbound   |
@@ -369,6 +377,7 @@ Team member who uses the viewer to review, annotate, and discuss architecture mo
 | Type        | Related Element                                  | Predicate     | Direction |
 | ----------- | ------------------------------------------------ | ------------- | --------- |
 | inter-layer | `product.persona.architecture-reviewer`          | `references`  | inbound   |
+| inter-layer | `ux.view.architecture-view`                      | `serves`      | inbound   |
 | inter-layer | `ux.view.changesets-view`                        | `serves`      | inbound   |
 | inter-layer | `ux.view.model-view`                             | `serves`      | inbound   |
 | inter-layer | `ux.view.topbar-search`                          | `serves`      | inbound   |
@@ -387,6 +396,7 @@ Architect who creates and updates the DR model via DR CLI; views results in the 
 | Type        | Related Element                | Predicate    | Direction |
 | ----------- | ------------------------------ | ------------ | --------- |
 | inter-layer | `product.persona.model-author` | `references` | inbound   |
+| inter-layer | `ux.view.architecture-view`    | `serves`     | inbound   |
 | inter-layer | `ux.view.dr-bot-chat-drawer`   | `serves`     | inbound   |
 | inter-layer | `ux.view.topbar-search`        | `serves`     | inbound   |
 
@@ -417,6 +427,8 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 
 | Type        | Related Element                                              | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform`          | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.c4-view-scoping`             | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.layer-domain-palette`        | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.model-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.search-index`                | `realizes` | inbound   |
@@ -548,4 +560,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0

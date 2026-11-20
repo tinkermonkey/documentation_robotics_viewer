@@ -10,6 +10,9 @@
  * `domain.ts`; counts come from the live model (`useModel`) and spec
  * (`useSpec`); leaves are element names (Model) or node-type names (Schema).
  * Changesets lists changesets, or a subtle empty hint when the model has none.
+ * Architecture lists the C4 diagrams: Context, Containers, then every container
+ * and component that has parts, nested as the C4 model nests them
+ * (`data/c4/c4Views.ts`'s `c4NavRows`); a row opens that diagram.
  *
  * Type groups (`data/navTreeGroups.ts`) start collapsed. Their open state is
  * local to the tree, not in `uiStore` or the URL, so opening one pushes no
@@ -18,7 +21,7 @@
  * link, a cross-layer navigate), so the reveal effect can scroll to its row.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { NavItem, type IconName } from '@tinkermonkey/heimdall-ui';
 import { useUiStore, type ViewKind } from './uiStore';
 import { LAYER_ORDER, layerLabel, type LayerSlug } from './domain';
@@ -28,10 +31,16 @@ import { useChangesets } from '../data/useChangesets';
 import { purposeLabel } from '../data/changesetPurpose';
 import { groupByType, typeGroupKey } from '../data/navTreeGroups';
 import { specTypeLabel } from '../data/typeLabel';
+import { useC4Model } from '../data/c4/useC4Model';
+import { c4NavRows, defaultComponentScope, resolveScope } from '../data/c4/c4Views';
+import { C4_SYSTEM_ID } from '../data/c4/c4Model';
 
-type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets'>;
+type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets' | 'architecture'>;
+/** The sections that list the spec's layers. */
+type LayerSectionId = Extract<SectionId, 'model' | 'spec'>;
 
 const SECTIONS: { id: SectionId; label: string; icon: IconName }[] = [
+  { id: 'architecture', label: 'Architecture', icon: 'component' },
   { id: 'model', label: 'Model', icon: 'graph' },
   { id: 'spec', label: 'Schema', icon: 'schema' },
   { id: 'changesets', label: 'Changesets', icon: 'clock' },
@@ -63,8 +72,12 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
   const toggleSection = useUiStore((s) => s.toggleSection);
 
   const { derived: changesets } = useChangesets();
+  const { model: c4 } = useC4Model();
   const open = expandedSections.has(section.id);
-  const count = section.id === 'changesets' ? changesets.list.length : 12;
+  // Architecture counts its diagrams: Context, Containers, and one per element with parts.
+  const diagrams = useMemo(() => 2 + c4NavRows(c4).length, [c4]);
+  const count =
+    section.id === 'changesets' ? changesets.list.length : section.id === 'architecture' ? diagrams : 12;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -120,7 +133,7 @@ function LayerRow({
   slug,
   groups: groupState,
 }: {
-  sectionId: SectionId;
+  sectionId: LayerSectionId;
   slug: LayerSlug;
   groups: GroupState;
 }) {
@@ -272,12 +285,82 @@ function ChangesetRows() {
   );
 }
 
+/** The Architecture section's rows: the C4 diagrams, each opening its scope. */
+function ArchitectureRows() {
+  const view = useUiStore((s) => s.view);
+  const c4Level = useUiStore((s) => s.c4Level);
+  const c4Scope = useUiStore((s) => s.c4Scope);
+  const showC4 = useUiStore((s) => s.showC4);
+  const { model: c4 } = useC4Model();
+  const rows = useMemo(() => c4NavRows(c4), [c4]);
+  const active = view === 'architecture';
+  // The scope actually drawn (a missing or unknown `?scope=` falls back to the default container).
+  const drawn = active && c4Level === 'component' ? resolveScope(c4, c4Level, c4Scope) : null;
+
+  return (
+    <>
+      <div style={{ position: 'relative' }}>
+        <NavItem
+          label="Context"
+          active={active && c4Level === 'context'}
+          depth={1}
+          onClick={() => showC4('context')}
+          data-testid="nav-c4-context"
+        />
+      </div>
+      <div style={{ position: 'relative' }}>
+        <NavItem
+          label="Containers"
+          count={c4.childrenOf.get(C4_SYSTEM_ID)?.length ?? 0}
+          active={active && c4Level === 'container'}
+          depth={1}
+          onClick={() => showC4('container')}
+          data-testid="nav-c4-containers"
+        />
+      </div>
+      {rows.map((row) => {
+        const name = `${row.name}, ${row.childCount} ${row.childCount === 1 ? 'part' : 'parts'}`;
+        return (
+          <div key={row.id} style={{ position: 'relative' }}>
+            <NavItem
+              label={row.name}
+              count={row.childCount}
+              active={drawn === row.id}
+              depth={1}
+              className="drv-nav-l2 drv-nav-c4"
+              style={{ '--c4-depth': row.depth } as React.CSSProperties}
+              aria-label={name}
+              title={name}
+              onClick={() => showC4('component', row.id)}
+              data-testid={`nav-c4-${row.id}`}
+            />
+          </div>
+        );
+      })}
+      {rows.length === 0 && defaultComponentScope(c4) === null && (
+        <div
+          style={{
+            padding: '8px 10px 8px 34px',
+            fontFamily: "'JetBrains Mono',monospace",
+            fontSize: 11,
+            color: 'rgb(var(--shell-fg-4))',
+          }}
+        >
+          no components
+        </div>
+      )}
+    </>
+  );
+}
+
 export function NavTree() {
   const expandedSections = useUiStore((s) => s.expandedSections);
   const view = useUiStore((s) => s.view);
   const layerId = useUiStore((s) => s.layerId);
   const selectedId = useUiStore((s) => s.selectedId);
   const changesetId = useUiStore((s) => s.changesetId);
+  const c4Level = useUiStore((s) => s.c4Level);
+  const c4Scope = useUiStore((s) => s.c4Scope);
   const treeRef = useRef<HTMLDivElement>(null);
   // The leaf rows render from these, so a cold deep link (store set before the
   // data arrives) reveals the selected leaf once they load, not just its layer.
@@ -320,7 +403,7 @@ export function NavTree() {
     const active = treeRef.current?.querySelectorAll<HTMLElement>('.nav-item--active');
     const deepest = active?.[active.length - 1];
     deepest?.scrollIntoView?.({ block: 'nearest' });
-  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount, selectedGroupOpen]);
+  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount, selectedGroupOpen, c4Level, c4Scope]);
 
   return (
     <div
@@ -335,10 +418,11 @@ export function NavTree() {
           <div key={section.id}>
             <SectionRow section={section} />
             {open && section.id === 'changesets' && <ChangesetRows />}
+            {open && section.id === 'architecture' && <ArchitectureRows />}
             {open &&
-              section.id !== 'changesets' &&
+              (section.id === 'model' || section.id === 'spec') &&
               LAYER_ORDER.map((slug) => (
-                <LayerRow key={slug} sectionId={section.id} slug={slug} groups={groups} />
+                <LayerRow key={slug} sectionId={section.id as LayerSectionId} slug={slug} groups={groups} />
               ))}
           </div>
         );

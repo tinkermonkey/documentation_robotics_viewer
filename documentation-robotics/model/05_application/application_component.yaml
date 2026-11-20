@@ -35,7 +35,9 @@ application.applicationcomponent.app-shell:
   name: App Shell
   description: "The viewer's four-pane frame: topbar, sidebar nav tree, the active
     view's canvas (with its inspector), the DrBot chat drawer and the status
-    bar. Mounts the live model/changeset/annotation refetch hooks."
+    bar. The Architecture view's canvas takes the canvas pane like the Model,
+    Schema and Changesets views, with no inspector column. Mounts the live
+    model/changeset/annotation refetch hooks."
   attributes:
     type: internal
   source_reference:
@@ -54,14 +56,17 @@ application.applicationcomponent.nav-tree:
   type: applicationcomponent
   layer_id: application
   name: Nav Tree
-  description: "Sidebar navigation: an accordion of Model / Schema / Changesets
-    sections, each with the spec's layers (in the order the spec gives). A Model
-    layer opens onto its node types (count, A–Z, collapsed), each holding its
-    elements (A–Z); a Schema layer lists its node types; Changesets lists the
-    changesets. Opening a type group is local tree state and pushes no history.
-    Reveals the current selection, opening its type group and scrolling it into
-    view after any navigation, including a deep link whose element rows only
-    appear once the model or changesets load."
+  description: "Sidebar navigation: an accordion of Architecture / Model / Schema
+    / Changesets sections. Architecture lists the C4 levels (Context,
+    Containers) and, under Containers, each container with its components nested
+    as the C4 model nests them; a row opens that diagram scope. Model, Schema
+    and Changesets each have the spec's layers (in the order the spec gives). A
+    Model layer opens onto its node types (count, A–Z, collapsed), each holding
+    its elements (A–Z); a Schema layer lists its node types; Changesets lists
+    the changesets. Opening a type group is local tree state and pushes no
+    history. Reveals the current selection, opening its type group and scrolling
+    it into view after any navigation, including a deep link whose element rows
+    only appear once the model or changesets load."
   attributes:
     type: internal
   source_reference:
@@ -852,4 +857,47 @@ application.applicationcomponent.type-hive-view:
   metadata:
     created_at: 2026-11-19T18:01:36.768Z
     updated_at: 2026-11-19T18:01:36.768Z
+    version: 1
+application.applicationcomponent.architecture-canvas:
+  id: 61f86250-4104-4dad-97d9-c63735e145b8
+  path: application.applicationcomponent.architecture-canvas
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Architecture Canvas
+  description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+    header with the level control (Context · Containers · Components) and a
+    scope breadcrumb, the C4 Diagram below it, and a details drawer for the
+    selected box listing the model elements behind it, each a link into the
+    Model view. Reads the model through useModel and the spec through useSpec;
+    level, scope and selection live in the UI store and the URL. Shows a plain
+    message when the model yields no C4 elements, and how many model elements
+    the rules left out."
+  attributes:
+    type: internal
+  metadata:
+    created_at: 2026-11-20T15:40:02.899Z
+    updated_at: 2026-11-20T15:40:02.899Z
+    version: 1
+application.applicationcomponent.c4-diagram:
+  id: 45be0003-c860-49b9-b33d-6af1e98954fb
+  path: application.applicationcomponent.c4-diagram
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: C4 Diagram
+  description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+    Heimdall's usePanZoom, with its toolbar; a dashed boundary rectangle titled
+    with the scope; a card per element (name, kind and technology, one line of
+    description; a person and a data store get their own shape); right-angle
+    edges with a label of the predicates and a count. Colours from canvas
+    tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow
+    keys between cards, Enter drills into a card that has parts, Escape clears
+    the selection. Proof of concept for boundary rendering and a C4 card in
+    Heimdall."
+  attributes:
+    type: internal
+  metadata:
+    created_at: 2026-11-20T15:40:02.900Z
+    updated_at: 2026-11-20T15:40:02.900Z
     version: 1

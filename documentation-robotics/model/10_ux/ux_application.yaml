@@ -7,8 +7,9 @@ ux.uxapplication.embedded-architecture-viewer:
   name: Embedded Architecture Viewer
   description: "The Documentation Robotics Viewer: a React app built on the
     Heimdall design system and served by `dr visualize`. Dark shell around a
-    light/dark canvas with a sidebar nav tree, Model / Schema / Changesets views
-    (graph or page mode), an inspector drawer, and the DrBot chat drawer."
+    light/dark canvas with a sidebar nav tree, Architecture (C4 diagrams) /
+    Model / Schema / Changesets views (Model and Schema in graph or page mode),
+    an inspector drawer, and the DrBot chat drawer."
   attributes:
     channel: web
   source_reference:

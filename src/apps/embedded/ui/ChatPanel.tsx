@@ -35,7 +35,9 @@ import { layerLabel } from './domain';
 import { useModel } from '../data/useModel';
 import { useChangesets } from '../data/useChangesets';
 import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
-import { buildChatContext, type ChatContextElement } from '../data/chatContext';
+import { buildChatContext, type ChatContextC4, type ChatContextElement } from '../data/chatContext';
+import { useC4Model } from '../data/c4/useC4Model';
+import { buildC4View } from '../data/c4/c4Views';
 import { toHeimdallMessages, type HeimdallChatRow } from './chatAdapter';
 
 const BASE_SUGGESTIONS = [
@@ -87,6 +89,8 @@ export function ChatPanel() {
   const { derived: changesets } = useChangesets();
 
   const index = useMemo(() => buildModelIndex(model), [model]);
+  const { model: c4Model } = useC4Model();
+  const c4SelectedId = useUiStore((s) => s.c4SelectedId);
   const selectedNode =
     view === 'model' && selectedId ? index.byUuid.get(selectedId) : undefined;
   const selectedName = selectedNode?.name;
@@ -98,10 +102,13 @@ export function ChatPanel() {
       const cs = changesets.list.find((c) => c.id === changesetId);
       return cs ? cs.name : 'changesets';
     }
+    if (view === 'architecture') {
+      return (c4SelectedId && c4Model.byId.get(c4SelectedId)?.name) || 'architecture';
+    }
     if (selectedName) return selectedName;
     if (layerName) return `${layerName} layer`;
     return 'meta-model';
-  }, [view, changesets.list, changesetId, selectedName, layerName]);
+  }, [view, changesets.list, changesetId, selectedName, layerName, c4SelectedId, c4Model]);
 
   // ─── contextual suggestions ───────────────────────────────────────────────
   const suggestions = useMemo(() => {
@@ -141,7 +148,20 @@ export function ChatPanel() {
       if (meta && source && target) selectedEdge = { predicate: meta.predicate, source, target };
     }
     const cs = s.view === 'changesets' ? changesets.list.find((c) => c.id === s.changesetId) : undefined;
+    let c4: ChatContextC4 | undefined;
+    if (s.view === 'architecture') {
+      const c4View = buildC4View(c4Model, s.c4Level, s.c4Scope);
+      const selected = s.c4SelectedId ? c4Model.byId.get(s.c4SelectedId) : undefined;
+      c4 = {
+        level: c4View.level,
+        scopeName: c4View.scope?.name,
+        selected: selected
+          ? { name: selected.name, kind: selected.kind, refs: selected.sources.map((src) => src.ref) }
+          : undefined,
+      };
+    }
     return buildChatContext({
+      c4,
       view: s.view,
       mode: s.mode,
       layerId: s.layerId,

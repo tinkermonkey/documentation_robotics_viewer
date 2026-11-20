@@ -284,7 +284,9 @@ application.applicationservice.chat-context-builder:
   layer_id: application
   name: Chat Context Builder
   description: Builds the <viewer-context> block (view, layer, selected element or
-    changeset) sent ahead of each DrBot message.
+    changeset) sent ahead of each DrBot message. In the Architecture view it
+    names the C4 level, the scope and the selected box with the dotted ids of
+    the model elements behind it.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -827,4 +829,81 @@ application.applicationservice.type-bands:
   metadata:
     created_at: 2026-11-19T18:01:46.735Z
     updated_at: 2026-11-19T18:01:46.735Z
+    version: 1
+application.applicationservice.c4-model-transform:
+  id: 28041603-690b-4ffd-a8a4-409b578995e4
+  path: application.applicationservice.c4-model-transform
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Model Transform
+  description: "data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model
+    (nodes and resolved links) to a C4 model. Rules are data keyed on spec type
+    ids: element rules (type plus an attribute guard to a C4 kind: person,
+    external system, container, component), identity merges (a persona and the
+    business role it references are one person; same-named actors and
+    stakeholders one external system), containment (composes between components,
+    a service under the component that realizes it, unowned components in the
+    app container), folds (tests, features, schemas and API operations attach to
+    the C4 element they cover) and relationship rules (keep, flip serves, skip
+    structure, plus path-derived ones such as person uses what realizes a
+    feature that serves them). Every C4 element and relationship keeps the
+    dotted ids of its sources. Rules that name a type or relationship the loaded
+    spec doesn't define are reported, not applied."
+  attributes:
+    serviceType: synchronous
+  metadata:
+    created_at: 2026-11-20T15:40:02.898Z
+    updated_at: 2026-11-20T15:40:02.898Z
+    version: 1
+application.applicationservice.c4-view-scoping:
+  id: b21b1876-c27b-4641-8322-27f85baa5984
+  path: application.applicationservice.c4-view-scoping
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 View Scoping
+  description: "data/c4/c4Views.ts: a pure function from the C4 model, a level
+    (context, container, component) and a scope element to one diagram: the
+    scope's children, the outside elements they are linked to (each lifted to
+    its nearest ancestor that isn't an ancestor of the scope), and the
+    relationships between them aggregated per pair with a count, their
+    predicates and their source link ids. Technology elements stay out of
+    Context, Container and Component views. Also the scope's ancestor chain for
+    the breadcrumb, and which elements can be drilled into."
+  attributes:
+    serviceType: synchronous
+  metadata:
+    created_at: 2026-11-20T15:40:02.899Z
+    updated_at: 2026-11-20T15:40:02.899Z
+    version: 1
+application.applicationservice.c4-diagram-layout:
+  id: 6b62a496-1289-4a79-b75a-94937c2fb87a
+  path: application.applicationservice.c4-diagram-layout
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Diagram Layout
+  description: "data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top
+    to bottom, nested boundary, right-angle edge routes, edge label boxes) and
+    returns absolute boxes for elements and the boundary plus a polyline and
+    label position per relationship. elkjs is imported lazily, so it loads only
+    when the Architecture view opens; the result is cached per view key. Proof
+    of concept for a native nested layout in Heimdall: nothing outside this
+    module knows ELK's types."
+  attributes:
+    serviceType: asynchronous
+  accepted_gaps:
+    - direction: incoming
+      predicate: depends-on
+      other_spec_node_id: application.applicationservice
+      reason: Only the C4 Diagram component calls the layout; no other data service
+        builds on it, and it is meant to be replaced by a native Heimdall
+        layout.
+      decided_by: agent
+      decided_at: 2026-11-20T15:41:11.847Z
+      changeset: changeset-1795189106448-lycsp34uv
+  metadata:
+    created_at: 2026-11-20T15:40:02.899Z
+    updated_at: 2026-11-20T15:40:02.899Z
     version: 1

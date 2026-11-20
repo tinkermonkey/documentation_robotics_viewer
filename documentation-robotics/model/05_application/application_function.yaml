@@ -59,10 +59,13 @@ application.applicationfunction.ui-store:
   type: applicationfunction
   layer_id: application
   name: UI Store
-  description: "Zustand store for UI state: view, layer, selection, changeset,
-    graph/page mode, nav accordion, graph settings and canvas tone. A first
-    visit gets a light canvas and DrBot closed; preferences persist to
-    localStorage and a persisted choice wins; navigation state is the router's."
+  description: "Zustand store for UI state: view (Model, Schema, Changesets or
+    Architecture), layer, selection, changeset, graph/page mode, nav accordion,
+    graph settings and canvas tone, plus the Architecture view's C4 level, scope
+    element and selected box. A first visit gets a light canvas and DrBot
+    closed; preferences persist to localStorage and a persisted choice wins;
+    navigation state, the C4 level and scope included, is the router's and is
+    not persisted."
   source_reference:
     provenance: extracted
     locations:

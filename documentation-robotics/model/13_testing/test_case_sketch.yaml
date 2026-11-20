@@ -16002,3 +16002,160 @@ testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-pers
     created_at: 2026-11-19T17:50:11.049Z
     updated_at: 2026-11-19T17:50:11.049Z
     version: 1
+testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person:
+  id: 1ceafe70-9bba-4935-b162-ebffaf056dbc
+  path: testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 model merges a persona and its business role into one person
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.907Z
+    updated_at: 2026-11-20T15:40:02.907Z
+    version: 1
+testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container:
+  id: 7ff6bed6-12d4-445d-b2ac-c812f20d9a96
+  path: testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 model nests components by composes and puts unowned ones in the app
+    container
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define:
+  id: 5f1c2fe7-cad5-425c-a1ec-e7bbc9400967
+  path: testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 model reports rules that name types the spec does not define
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship:
+  id: 304e3418-73d6-4f51-9d38-c08e806a08fa
+  path: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 model keeps the source ids of every element and relationship
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links:
+  id: 4d27518b-1aca-4e95-94f2-de4a0cecfd7f
+  path: testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 views lift an outside neighbour to its nearest visible ancestor and
+    count the links
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams:
+  id: 4480801b-06fa-4824-a30a-a63fdea5141d
+  path: testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 views keep technology elements out of context and container diagrams
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary:
+  id: ef74b7a8-0b27-4131-a2b5-6f9aebe41f56
+  path: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 layout places every element inside its boundary
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back:
+  id: f52a2bed-d6ed-4cd8-bfa6-f80af4150d3d
+  path: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: architecture view drills from a container into its components and back
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url:
+  id: ed2f1f59-4379-4a4f-97af-5483d71f9030
+  path: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: architecture view restores level and scope from the URL
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:40:02.909Z
+    updated_at: 2026-11-20T15:40:02.909Z
+    version: 1
+testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship:
+  id: c2f5099b-a3b4-4009-9287-ede8094f534f
+  path: testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 diagram draws the boundary, a card per element and a labelled edge per
+    relationship
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:41:00.413Z
+    updated_at: 2026-11-20T15:41:00.413Z
+    version: 1
+testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter:
+  id: 86359074-697d-4a7d-91ee-6786a55a19dd
+  path: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4 diagram moves between cards with the arrow keys and drills in with Enter
+  attributes:
+    status: draft
+    implementationFormat: automated
+  metadata:
+    created_at: 2026-11-20T15:41:00.414Z
+    updated_at: 2026-11-20T15:41:00.414Z
+    version: 1

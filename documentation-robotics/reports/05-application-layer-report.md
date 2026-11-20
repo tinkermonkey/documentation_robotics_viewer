@@ -16,16 +16,16 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 83    |
-| Intra-Layer Relationships | 184   |
-| Inter-Layer Relationships | 935   |
-| Inbound Relationships     | 871   |
-| Outbound Relationships    | 64    |
+| Elements                  | 88    |
+| Intra-Layer Relationships | 199   |
+| Inter-Layer Relationships | 965   |
+| Inbound Relationships     | 888   |
+| Outbound Relationships    | 77    |
 
 **Cross-Layer References**:
 
 - **Upstream layers**: [API](./07-api-layer-report.md), [APM](./12-apm-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Technology](./06-technology-layer-report.md), [Testing](./13-testing-layer-report.md)
-- **Downstream layers**: [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Data Store](./09-data-store-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Product](./03-product-layer-report.md), [Security](./04-security-layer-report.md)
+- **Downstream layers**: [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Data Store](./09-data-store-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Product](./03-product-layer-report.md), [Security](./04-security-layer-report.md), [UX](./10-ux-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -34,8 +34,10 @@ Application components, services, and interactions.
 | Element                                                          | Type                   | Relationships |
 | ---------------------------------------------------------------- | ---------------------- | ------------- |
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
-| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 14            |
+| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 15            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 2             |
+| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 8             |
+| `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 3             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 11            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 7             |
 | `application.applicationcomponent.change-neighbourhood`          | `applicationcomponent` | 5             |
@@ -54,7 +56,7 @@ Application components, services, and interactions.
 | `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 4             |
 | `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 1             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 2             |
-| `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 8             |
+| `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 9             |
 | `application.applicationcomponent.neighborhood-graph-view`       | `applicationcomponent` | 3             |
 | `application.applicationcomponent.node-type-badge`               | `applicationcomponent` | 5             |
 | `application.applicationcomponent.node-type-tooltip`             | `applicationcomponent` | 2             |
@@ -74,10 +76,13 @@ Application components, services, and interactions.
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
 | `application.applicationfunction.local-review-store`             | `applicationfunction`  | 1             |
-| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 3             |
+| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 4             |
 | `application.applicationinterface.dr-cli-rest-interface`         | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
+| `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 3             |
+| `application.applicationservice.c4-model-transform`              | `applicationservice`   | 3             |
+| `application.applicationservice.c4-view-scoping`                 | `applicationservice`   | 6             |
 | `application.applicationservice.change-origin-helpers`           | `applicationservice`   | 3             |
 | `application.applicationservice.changeset-drift`                 | `applicationservice`   | 4             |
 | `application.applicationservice.changeset-impact-analysis`       | `applicationservice`   | 5             |
@@ -85,7 +90,7 @@ Application components, services, and interactions.
 | `application.applicationservice.changeset-purpose`               | `applicationservice`   | 7             |
 | `application.applicationservice.changeset-review-model`          | `applicationservice`   | 7             |
 | `application.applicationservice.chat-adapter`                    | `applicationservice`   | 2             |
-| `application.applicationservice.chat-context-builder`            | `applicationservice`   | 2             |
+| `application.applicationservice.chat-context-builder`            | `applicationservice`   | 3             |
 | `application.applicationservice.chat-service`                    | `applicationservice`   | 3             |
 | `application.applicationservice.chat-validation`                 | `applicationservice`   | 1             |
 | `application.applicationservice.error-tracker`                   | `applicationservice`   | 4             |
@@ -95,7 +100,7 @@ Application components, services, and interactions.
 | `application.applicationservice.json-rpc-handler`                | `applicationservice`   | 4             |
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 7             |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
-| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 11            |
+| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 12            |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 1             |
 | `application.applicationservice.neighborhood-graph`              | `applicationservice`   | 1             |
 | `application.applicationservice.page-data-builder`               | `applicationservice`   | 4             |
@@ -111,8 +116,8 @@ Application components, services, and interactions.
 | `application.applicationservice.use-cli-version`                 | `applicationservice`   | 2             |
 | `application.applicationservice.use-edge-interaction`            | `applicationservice`   | 1             |
 | `application.applicationservice.use-hover-dwell`                 | `applicationservice`   | 1             |
-| `application.applicationservice.use-model`                       | `applicationservice`   | 12            |
-| `application.applicationservice.use-spec`                        | `applicationservice`   | 8             |
+| `application.applicationservice.use-model`                       | `applicationservice`   | 13            |
+| `application.applicationservice.use-spec`                        | `applicationservice`   | 9             |
 | `application.applicationservice.use-tier1`                       | `applicationservice`   | 3             |
 | `application.applicationservice.use-viewport-history`            | `applicationservice`   | 2             |
 | `application.applicationservice.web-socket-client`               | `applicationservice`   | 4             |
@@ -143,6 +148,7 @@ flowchart TB
   application --> motivation
   application --> product
   application --> security
+  application --> ux
   navigation --> application
   technology --> application
   testing --> application
@@ -180,6 +186,8 @@ flowchart TB
 | `api.operation.references.application.applicationservice`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                                                   | `application.applicationservice.use-changeset-review`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                                                                                                                       | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `apm.metricinstrument.monitors.application.applicationservice`                         | `apm.metricinstrument.web-socket-reconnection-attempt-counter`                                                                                           | `application.applicationservice.web-socket-client`                  | `application` | `monitors`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                                                                            | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                                                                      | `data-model.objectschema.delete-blocker`                            | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                                                                      | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                                                                | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -192,6 +200,17 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                                                                     | `data-model.objectschema.review-decision`                           | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.local-review-store`                                                                                                     | `data-store.collection.local-review-verdicts`                       | `data-store`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.ui-store`                                                                                                               | `data-store.collection.ui-preferences`                              | `data-store`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-layout`                                                                                                       | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                                                                      | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-model-transform`                                                                                                      | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-model-transform`                                                                                                      | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.c4-model-transform`                                                                                                      | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                                                                         | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                                                                         | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-view-scoping`                                                                                                         | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-view-scoping`                                                                                                         | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.serves.ux.view`                                        | `application.applicationservice.c4-view-scoping`                                                                                                         | `ux.view.architecture-view`                                         | `ux`          | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.change-origin-helpers`                                                                                                   | `product.feature.change-origin-badges`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-drift`                                                                                                         | `business.businessservice.changeset-review`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.changeset-drift`                                                                                                         | `motivation.requirement.drift-shows-before-apply`                   | `motivation`  | `satisfies`  | many-to-many | medium   |
@@ -243,7 +262,10 @@ flowchart TB
 | `navigation.navigationflow.realizes.application.applicationprocess`                    | `navigation.navigationflow.authentication-to-model-flow`                                                                                                 | `application.applicationprocess.auth-route`                         | `application` | `realizes`   | many-to-many | medium   |
 | `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.app-shell-sectionview-route`                                                                                                           | `application.applicationcomponent.app-shell`                        | `application` | `depends-on` | many-to-many | medium   |
 | `technology.node.serves.application.applicationcomponent`                              | `technology.node.vite-dev-server`                                                                                                                        | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.elk`                                                                                                                          | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.change-inspector`                 | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.change-link-card`                 | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
@@ -270,6 +292,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`                                                          | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                                         | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`                                           | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
@@ -300,6 +324,15 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                           | `application.applicationcomponent.c4-diagram`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                                     | `application.applicationcomponent.c4-diagram`                       | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary`                                                                              | `application.applicationservice.c4-diagram-layout`                  | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                                                                 | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person`                                                                 | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                                                | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define`                                                                 | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams`                                                         | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links`                                          | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.cancel-pairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide`                                     | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.cancel-pairs-leaves-a-delete-of-a-model-element-no-earlier-add-alone`                                                            | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.cancel-pairs-never-folds-a-delete-that-has-blockers-it-stays-a-blocked-delete-to-resolve`                                        | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
@@ -1074,6 +1107,9 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-model`                          | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-spec`                           | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.web-socket-client`                  | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-diagram-layout`                  | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-model-transform`                 | `application` | `covers`     | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-view-scoping`                    | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.change-origin-helpers`              | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-drift`                    | `application` | `covers`     | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                     | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-impact-analysis`          | `application` | `covers`     | many-to-many | medium   |
@@ -1128,7 +1164,7 @@ Annotation threads on the selected element in the inspector: create, edit, resol
 
 **Type**: `applicationcomponent`
 
-The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas (with its inspector), the DrBot chat drawer and the status bar. Mounts the live model/changeset/annotation refetch hooks.
+The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas (with its inspector), the DrBot chat drawer and the status bar. The Architecture view's canvas takes the canvas pane like the Model, Schema and Changesets views, with no inspector column. Mounts the live model/changeset/annotation refetch hooks.
 
 #### Attributes
 
@@ -1153,6 +1189,7 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | inter-layer | `testing.testcasesketch.shell-the-light-dark-segmented-control-toggles-body-dark-canvas-and-flips-a-canvas-color`                | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.shell-topbar-nav-rail-and-statusbar-are-present-and-sized-54-244-28`                                     | `tests`       | inbound   |
 | intra-layer | `application.applicationfunction.ui-store`                                                                                       | `assigned-to` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                           | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-canvas`                                                                              | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-inspector`                                                                           | `composes`    | outbound  |
 | intra-layer | `application.applicationcomponent.chat-drawer`                                                                                   | `composes`    | outbound  |
@@ -1188,6 +1225,64 @@ Apply confirmation (what lands, what's left out, links deleted with their elemen
 | inter-layer | `testing.testcasesketch.review-apply-applies-with-changes-undecided-says-how-many-land-as-kept-and-drops-nothing-it-wasnt-told-to` | `tests`    | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-review-panel`                                                                          | `composes` | inbound   |
 | intra-layer | `application.applicationservice.changeset-review-model`                                                                            | `serves`   | inbound   |
+
+### Architecture Canvas {#architecture-canvas}
+
+**ID**: `application.applicationcomponent.architecture-canvas`
+
+**Type**: `applicationcomponent`
+
+ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with the level control (Context · Containers · Components) and a scope breadcrumb, the C4 Diagram below it, and a details drawer for the selected box listing the model elements behind it, each a link into the Model view. Reads the model through useModel and the spec through useSpec; level, scope and selection live in the UI store and the URL. Shows a plain message when the model yields no C4 elements, and how many model elements the rules left out.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                 | Predicate     | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------- | ------------- | --------- |
+| inter-layer | `data-model.objectschema.c4-view`                                                               | `accesses`    | outbound  |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                         | `serves`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back` | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                | `tests`       | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                                    | `composes`    | inbound   |
+| intra-layer | `application.applicationfunction.ui-store`                                                      | `assigned-to` | outbound  |
+| intra-layer | `application.applicationcomponent.c4-diagram`                                                   | `composes`    | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                | `realizes`    | outbound  |
+| intra-layer | `application.applicationservice.c4-model-transform`                                             | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-model`                                                      | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-spec`                                                       | `serves`      | inbound   |
+
+### C4 Diagram {#c4-diagram}
+
+**ID**: `application.applicationcomponent.c4-diagram`
+
+**Type**: `applicationcomponent`
+
+ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its toolbar; a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts, Escape clears the selection. Proof of concept for boundary rendering and a C4 card in Heimdall.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                | Predicate  | Direction |
+| ----------- | -------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `data-model.objectschema.c4-view`                                                                              | `accesses` | outbound  |
+| inter-layer | `technology.systemsoftware.elk`                                                                                | `serves`   | inbound   |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                                        | `serves`   | inbound   |
+| inter-layer | `testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship` | `tests`    | inbound   |
+| inter-layer | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`           | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                         | `composes` | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-layout`                                                             | `realizes` | outbound  |
+| intra-layer | `application.applicationservice.c4-diagram-layout`                                                             | `serves`   | inbound   |
 
 ### Change Inspector {#change-inspector}
 
@@ -1864,7 +1959,7 @@ Card presentation of a model element on the graph canvas (the default Display), 
 
 **Type**: `applicationcomponent`
 
-Sidebar navigation: an accordion of Model / Schema / Changesets sections, each with the spec's layers (in the order the spec gives). A Model layer opens onto its node types (count, A–Z, collapsed), each holding its elements (A–Z); a Schema layer lists its node types; Changesets lists the changesets. Opening a type group is local tree state and pushes no history. Reveals the current selection, opening its type group and scrolling it into view after any navigation, including a deep link whose element rows only appear once the model or changesets load.
+Sidebar navigation: an accordion of Architecture / Model / Schema / Changesets sections. Architecture lists the C4 levels (Context, Containers) and, under Containers, each container with its components nested as the C4 model nests them; a row opens that diagram scope. Model, Schema and Changesets each have the spec's layers (in the order the spec gives). A Model layer opens onto its node types (count, A–Z, collapsed), each holding its elements (A–Z); a Schema layer lists its node types; Changesets lists the changesets. Opening a type group is local tree state and pushes no history. Reveals the current selection, opening its type group and scrolling it into view after any navigation, including a deep link whose element rows only appear once the model or changesets load.
 
 #### Attributes
 
@@ -1896,6 +1991,7 @@ Sidebar navigation: an accordion of Model / Schema / Changesets sections, each w
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `composes`    | inbound   |
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                          | `composes`    | inbound   |
 | intra-layer | `application.applicationfunction.ui-store`                                                                                            | `assigned-to` | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.changeset-purpose`                                                                                    | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.nav-tree-groups`                                                                                      | `serves`      | inbound   |
@@ -2423,7 +2519,7 @@ Zustand store (persisted to localStorage as dr-viewer-local-review) holding verd
 
 **Type**: `applicationfunction`
 
-Zustand store for UI state: view, layer, selection, changeset, graph/page mode, nav accordion, graph settings and canvas tone. A first visit gets a light canvas and DrBot closed; preferences persist to localStorage and a persisted choice wins; navigation state is the router's.
+Zustand store for UI state: view (Model, Schema, Changesets or Architecture), layer, selection, changeset, graph/page mode, nav accordion, graph settings and canvas tone, plus the Architecture view's C4 level, scope element and selected box. A first visit gets a light canvas and DrBot closed; preferences persist to localStorage and a persisted choice wins; navigation state, the C4 level and scope included, is the router's and is not persisted.
 
 #### Relationships
 
@@ -2489,6 +2585,7 @@ Zustand store for UI state: view, layer, selection, changeset, graph/page mode, 
 | inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                       | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                       | `tests`       | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                                           | `assigned-to` | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                                 | `assigned-to` | inbound   |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                                                                            | `assigned-to` | inbound   |
 | intra-layer | `application.applicationcomponent.topbar-search`                                                                                                       | `assigned-to` | inbound   |
 
@@ -2547,6 +2644,96 @@ TanStack Router route handling token-based authentication via magic link; extrac
 | ----------- | -------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `navigation.navigationflow.authentication-to-model-flow` | `realizes`   | inbound   |
 | intra-layer | `application.applicationfunction.auth-store`             | `depends-on` | outbound  |
+
+### C4 Diagram Layout {#c4-diagram-layout}
+
+**ID**: `application.applicationservice.c4-diagram-layout`
+
+**Type**: `applicationservice`
+
+data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top to bottom, nested boundary, right-angle edge routes, edge label boxes) and returns absolute boxes for elements and the boundary plus a polyline and label position per relationship. elkjs is imported lazily, so it loads only when the Architecture view opens; the result is cached per view key. Proof of concept for a native nested layout in Heimdall: nothing outside this module knows ELK's types.
+
+#### Attributes
+
+| Name        | Value        |
+| ----------- | ------------ |
+| serviceType | asynchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                             | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-view`                                           | `accesses`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                  | `realizes`   | outbound  |
+| inter-layer | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary` | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`           | `covers`     | inbound   |
+| intra-layer | `application.applicationcomponent.c4-diagram`                               | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.c4-view-scoping`                            | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.c4-diagram`                               | `serves`     | outbound  |
+
+### C4 Model Transform {#c4-model-transform}
+
+**ID**: `application.applicationservice.c4-model-transform`
+
+**Type**: `applicationservice`
+
+data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model (nodes and resolved links) to a C4 model. Rules are data keyed on spec type ids: element rules (type plus an attribute guard to a C4 kind: person, external system, container, component), identity merges (a persona and the business role it references are one person; same-named actors and stakeholders one external system), containment (composes between components, a service under the component that realizes it, unowned components in the app container), folds (tests, features, schemas and API operations attach to the C4 element they cover) and relationship rules (keep, flip serves, skip structure, plus path-derived ones such as person uses what realizes a feature that serves them). Every C4 element and relationship keeps the dotted ids of its sources. Rules that name a type or relationship the loaded spec doesn't define are reported, not applied.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                                           | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-model`                                                                        | `accesses`   | outbound  |
+| inter-layer | `business.businessservice.architecture-model-visualization`                                               | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                                | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person`                  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define`                  | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                         | `covers`     | inbound   |
+| intra-layer | `application.applicationservice.model-graph-transform`                                                    | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                    | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                          | `depends-on` | inbound   |
+
+### C4 View Scoping {#c4-view-scoping}
+
+**ID**: `application.applicationservice.c4-view-scoping`
+
+**Type**: `applicationservice`
+
+data/c4/c4Views.ts: a pure function from the C4 model, a level (context, container, component) and a scope element to one diagram: the scope's children, the outside elements they are linked to (each lifted to its nearest ancestor that isn't an ancestor of the scope), and the relationships between them aggregated per pair with a count, their predicates and their source link ids. Technology elements stay out of Context, Container and Component views. Also the scope's ancestor chain for the breadcrumb, and which elements can be drilled into.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                 | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-model`                                                                              | `accesses`   | outbound  |
+| inter-layer | `data-model.objectschema.c4-view`                                                                               | `accesses`   | outbound  |
+| inter-layer | `business.businessservice.architecture-model-visualization`                                                     | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                                      | `realizes`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                                                                                     | `serves`     | outbound  |
+| inter-layer | `testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams`                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links` | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                               | `covers`     | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                          | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-layout`                                                              | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.c4-model-transform`                                                             | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                          | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.nav-tree`                                                                     | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.chat-context-builder`                                                           | `depends-on` | inbound   |
 
 ### Change Origin Helpers {#change-origin-helpers}
 
@@ -2873,7 +3060,7 @@ Maps the chat store's message parts onto Heimdall's chat message, tool and think
 
 **Type**: `applicationservice`
 
-Builds the &lt;viewer-context&gt; block (view, layer, selected element or changeset) sent ahead of each DrBot message.
+Builds the &lt;viewer-context&gt; block (view, layer, selected element or changeset) sent ahead of each DrBot message. In the Architecture view it names the C4 level, the scope and the selected box with the dotted ids of the model elements behind it.
 
 #### Attributes
 
@@ -2883,16 +3070,17 @@ Builds the &lt;viewer-context&gt; block (view, layer, selected element or change
 
 #### Relationships
 
-| Type        | Related Element                                                                                                    | Predicate  | Direction |
-| ----------- | ------------------------------------------------------------------------------------------------------------------ | ---------- | --------- |
-| inter-layer | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                        | `tests`    | inbound   |
-| inter-layer | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                | `tests`    | inbound   |
-| inter-layer | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`     | `tests`    | inbound   |
-| inter-layer | `testing.testcasesketch.build-chat-context-returns-null-when-nothing-is-open-beyond-the-view`                      | `tests`    | inbound   |
-| inter-layer | `testing.testcasesketch.build-chat-context-says-when-only-a-layer-is-open`                                         | `tests`    | inbound   |
-| inter-layer | `testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone` | `tests`    | inbound   |
-| intra-layer | `application.applicationcomponent.chat-panel`                                                                      | `realizes` | inbound   |
-| intra-layer | `application.applicationcomponent.chat-panel`                                                                      | `serves`   | outbound  |
+| Type        | Related Element                                                                                                    | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`     | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.build-chat-context-returns-null-when-nothing-is-open-beyond-the-view`                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.build-chat-context-says-when-only-a-layer-is-open`                                         | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone` | `tests`      | inbound   |
+| intra-layer | `application.applicationcomponent.chat-panel`                                                                      | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                   | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.chat-panel`                                                                      | `serves`     | outbound  |
 
 ### Chat Service {#chat-service}
 
@@ -3269,6 +3457,7 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | inter-layer | `testing.testcasesketch.slugify-name-trims-both-leading-and-trailing-hyphen-runs`                                                    | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                    | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                      | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.c4-model-transform`                                                                                  | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.changeset-impact-analysis`                                                                           | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.layered-reach`                                                                                       | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                                | `depends-on` | outbound  |
@@ -3791,6 +3980,7 @@ React Query hook over GET /api/model, deriving the model graph index; useLiveMod
 | intra-layer | `application.applicationservice.generated-api-client`                                                                        | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                       | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                 | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                       | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-link-card`                                                                          | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-neighbourhood`                                                                      | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                          | `serves`     | outbound  |
@@ -3824,6 +4014,7 @@ React Query hook over GET /api/spec: per-layer node schemas and relationship sch
 | inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `covers`     | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                                 | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.spec-graph-transform`                                                                                 | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                       | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                                   | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                          | `serves`     | outbound  |
@@ -3922,4 +4113,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0

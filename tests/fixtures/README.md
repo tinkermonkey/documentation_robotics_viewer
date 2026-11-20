@@ -8,6 +8,7 @@ time).
 |---|---|---|
 | `model.json` | `GET /api/model` | `{ nodes (285), links (445) }` |
 | `spec.json` | `GET /api/spec` | `schema-collection` (16 layer schemas) |
+| `spec-catalog.json` | derived from `GET /api/spec` (spec 0.14.0) | node type ids and `source\|predicate\|target` relationship triples only: what `data/c4/c4Rules.ts` is checked against. `spec.json` above is an older capture (0.8.4, no Product layer), so the C4 rule check needs this one |
 | `changesets.json` | `GET /api/changesets` | `{ version, changesets: { [id]: … } }` (3 changesets) |
 | `changeset-detail.json` | `GET /api/changesets/<first id>` | `{ id, name, stats, changes: [...] }` |
 

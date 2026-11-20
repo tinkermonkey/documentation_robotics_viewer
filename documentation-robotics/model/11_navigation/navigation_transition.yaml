@@ -5,9 +5,9 @@ navigation.navigationtransition.tab-navigation-transition:
   type: navigationtransition
   layer_id: navigation
   name: Tab Navigation Transition
-  description: "Switching between the Model, Schema and Changesets sections in the
-    sidebar nav tree (an accordion: opening a section collapses the others). The
-    section is the route's :section segment."
+  description: "Switching between the Architecture, Model, Schema and Changesets
+    sections in the sidebar nav tree (an accordion: opening a section collapses
+    the others). The section is the route's :section segment."
   attributes:
     from: any-route
     to: section-root
@@ -28,10 +28,12 @@ navigation.navigationtransition.layer-deep-link-transition:
   type: navigationtransition
   layer_id: navigation
   name: Layer Deep-Link Transition
-  description: "Deep links into a layer, element or changeset: the router two-way
-    syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph
-    viewport) with the UI store, so a shared link, reload or back/forward
-    restores the selection."
+  description: "Deep links into a layer, element, changeset or C4 diagram: the
+    router two-way syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for
+    the graph viewport), and ?level= / ?scope= in the Architecture view, with
+    the UI store, so a shared link, reload or back/forward restores the
+    selection. A drill-down in the Architecture view pushes a history entry;
+    selecting a box replaces it."
   attributes:
     from: model-graph-view
     to: model-graph-view

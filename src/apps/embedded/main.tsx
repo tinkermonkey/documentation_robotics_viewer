@@ -13,6 +13,7 @@ import '@tinkermonkey/heimdall-ui/fonts';
 import './ui/domain-and-nav.css';
 import './ui/changeset-review.css';
 import './ui/topbar-search.css';
+import './ui/c4-diagram.css';
 
 // Handle token from magic link BEFORE router initializes
 // Magic link format: /?token=xyz#/model/graph

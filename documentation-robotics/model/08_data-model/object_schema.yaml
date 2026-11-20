@@ -526,3 +526,36 @@ data-model.objectschema.delete-blocker:
     created_at: 2026-11-18T16:27:42.057Z
     updated_at: 2026-11-18T16:27:42.057Z
     version: 1
+data-model.objectschema.c4-model:
+  id: b2d2f531-9748-4ec5-ba44-5c8c3330e456
+  path: data-model.objectschema.c4-model
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: C4 Model
+  description: "The C4 reading of a DR model: elements (id, kind, name,
+    technology, description, parent, the dotted ids of their sources, what was
+    folded onto them) and relationships (source, target, predicates with counts,
+    source link ids), plus the model elements no rule placed."
+  attributes:
+    type: object
+  metadata:
+    created_at: 2026-11-20T15:40:02.902Z
+    updated_at: 2026-11-20T15:40:02.902Z
+    version: 1
+data-model.objectschema.c4-view:
+  id: 291eb141-e409-477d-a7f4-96f6844fe7e2
+  path: data-model.objectschema.c4-view
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: C4 View
+  description: "One C4 diagram: level, scope element, the elements in scope, the
+    outside elements linked to them, the aggregated relationships, and the
+    scope's ancestor chain."
+  attributes:
+    type: object
+  metadata:
+    created_at: 2026-11-20T15:40:02.904Z
+    updated_at: 2026-11-20T15:40:02.904Z
+    version: 1

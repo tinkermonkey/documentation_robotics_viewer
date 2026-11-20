@@ -57,6 +57,46 @@ describe('buildChatContext', () => {
   });
 });
 
+describe('buildChatContext in the Architecture view', () => {
+  const base = { view: 'architecture' as const, mode: 'graph' as const, layerId: null };
+
+  it('names the diagram and the selected box with the model elements behind it', () => {
+    const context = buildChatContext({
+      ...base,
+      c4: {
+        level: 'component',
+        scopeName: 'Graph Canvas',
+        selected: {
+          name: 'Architecture Reviewer',
+          kind: 'person',
+          refs: ['business.businessrole.architecture-reviewer', 'product.persona.architecture-reviewer'],
+        },
+      },
+    })!;
+    expect(context).toContain('View: Architecture (C4 diagrams derived from the model)');
+    expect(context).toContain('Diagram: Components of "Graph Canvas"');
+    expect(context).toContain(
+      'Selected box: "Architecture Reviewer" (C4 person; model elements: business.businessrole.architecture-reviewer, product.persona.architecture-reviewer)',
+    );
+    // No graph/page mode and no layer: neither applies to a C4 diagram.
+    expect(context).not.toContain('graph view');
+    expect(context).not.toContain('Layer:');
+  });
+
+  it('says when nothing is selected, and that a stand-in box has no model element', () => {
+    expect(buildChatContext({ ...base, c4: { level: 'context' } })).toContain(
+      'Diagram: System Context\nNothing selected on the diagram.',
+    );
+    expect(
+      buildChatContext({ ...base, c4: { level: 'container', scopeName: 'S', selected: { name: 'S', kind: 'system', refs: [] } } }),
+    ).toContain('Selected box: "S" (C4 system; model elements: no model element of its own)');
+  });
+
+  it('returns null before the C4 model is known', () => {
+    expect(buildChatContext(base)).toBeNull();
+  });
+});
+
 describe('withChatContext', () => {
   it('puts the context block before the question, or leaves the question alone', () => {
     expect(withChatContext('What does this do?', '<viewer-context>\nX\n</viewer-context>')).toBe(

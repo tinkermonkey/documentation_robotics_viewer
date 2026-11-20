@@ -16,11 +16,11 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 28    |
+| Elements                  | 30    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 23    |
-| Inbound Relationships     | 12    |
-| Outbound Relationships    | 11    |
+| Inter-Layer Relationships | 30    |
+| Inbound Relationships     | 18    |
+| Outbound Relationships    | 12    |
 
 **Cross-Layer References**:
 
@@ -34,6 +34,8 @@ flowchart LR
   subgraph data_model
     data_model_objectschema_annotation["Annotation"]
     data_model_objectschema_annotation_create["AnnotationCreate"]
+    data_model_objectschema_c4_model["C4 Model"]
+    data_model_objectschema_c4_view["C4 View"]
     data_model_objectschema_change_origin["ChangeOrigin"]
     data_model_objectschema_changeset_detail["ChangesetDetail"]
     data_model_objectschema_chat_conversation["ChatConversation"]
@@ -110,6 +112,8 @@ flowchart TB
 | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
 | `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                                                                    | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`            | `security`   | `references` | unknown      | unknown  |
 | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                             | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                       | `data-model.objectschema.delete-blocker`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                       | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
@@ -120,7 +124,12 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                       | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                          | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                          | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-model`                                                                        | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-detail`                                                                | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.extracted-reference`                                                             | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.model-metadata`                                                                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
@@ -172,6 +181,51 @@ Request payload for creating a new annotation; requires target elementId and con
 | Type        | Related Element                      | Predicate     | Direction |
 | ----------- | ------------------------------------ | ------------- | --------- |
 | intra-layer | `data-model.objectschema.annotation` | `specializes` | outbound  |
+
+### C4 Model {#c4-model}
+
+**ID**: `data-model.objectschema.c4-model`
+
+**Type**: `objectschema`
+
+The C4 reading of a DR model: elements (id, kind, name, technology, description, parent, the dotted ids of their sources, what was folded onto them) and relationships (source, target, predicates with counts, source link ids), plus the model elements no rule placed.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate  | Direction |
+| ----------- | --------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-view-scoping`    | `accesses` | inbound   |
+| inter-layer | `business.businessobject.architecture-model`        | `realizes` | outbound  |
+
+### C4 View {#c4-view}
+
+**ID**: `data-model.objectschema.c4-view`
+
+**Type**: `objectschema`
+
+One C4 diagram: level, scope element, the elements in scope, the outside elements linked to them, the aggregated relationships, and the scope's ancestor chain.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.c4-diagram`          | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-layout`     | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-view-scoping`       | `accesses` | inbound   |
 
 ### ChangeOrigin {#changeorigin}
 
@@ -717,4 +771,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0

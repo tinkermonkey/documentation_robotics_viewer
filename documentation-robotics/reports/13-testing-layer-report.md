@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 824   |
+| Elements                  | 835   |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 951   |
+| Inter-Layer Relationships | 972   |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 951   |
+| Outbound Relationships    | 972   |
 
 **Cross-Layer References**:
 
@@ -48,6 +48,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`                                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`                                           | `testcasesketch`      | 0             |
@@ -78,6 +80,15 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                           | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary`                                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person`                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define`                                                                 | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide`                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-leaves-a-delete-of-a-model-element-no-earlier-add-alone`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.cancel-pairs-never-folds-a-delete-that-has-blockers-it-stays-a-blocked-delete-to-resolve`                                        | `testcasesketch`      | 0             |
@@ -901,6 +912,7 @@ flowchart TB
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                                                   | `ef84b64d-883c-4471-9b56-a58574bac2b9`                             | `motivation`  | `supports`  | unknown      | unknown  |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `application.applicationcomponent.app-shell`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-create-edit-reply-resolve-delete-an-annotation`                                                                      | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-create-adds-an-annotation-and-the-element-list-refetches-2bad9889`                      | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.annotations-mutations-invalidate-refetch-delete-removes-an-annotation-and-the-list-refetches-cdc2828e`                           | `application.applicationservice.use-annotations`                   | `application` | `tests`     | many-to-many | medium   |
@@ -912,6 +924,11 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `application.applicationcomponent.annotations-section`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`                                                          | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`                                                          | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`                                                          | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                                         | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                                       | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                                         | `navigation.route.app-shell-sectionview-route`                     | `navigation`  | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-names-the-selected-element-by-display-name-dotted-id-type-and-uuid`                                           | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
@@ -942,6 +959,18 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`                                           | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                                     | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                                     | `application.applicationcomponent.c4-diagram`                      | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                                                     | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary`                                                                              | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                                                                 | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person`                                                                 | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                                                | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define`                                                                 | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams`                                                         | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links`                                          | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide`                                     | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-leaves-a-delete-of-a-model-element-no-earlier-add-alone`                                                            | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.cancel-pairs-never-folds-a-delete-that-has-blockers-it-stays-a-blocked-delete-to-resolve`                                        | `application.applicationservice.changeset-review-model`            | `application` | `tests`     | many-to-many | medium   |
@@ -1828,6 +1857,9 @@ flowchart TB
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-model`                         | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.use-spec`                          | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                                   | `application.applicationservice.web-socket-client`                 | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-diagram-layout`                 | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-model-transform`                | `application` | `covers`    | many-to-many | medium   |
+| `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.c4-view-scoping`                   | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.change-origin-helpers`             | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-drift`                   | `application` | `covers`    | many-to-many | medium   |
 | `testing.testcoveragetarget.covers.application.applicationservice`                    | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                                        | `application.applicationservice.changeset-impact-analysis`         | `application` | `covers`    | many-to-many | medium   |
@@ -1943,6 +1975,7 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                              | Predicate | Direction |
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.app-shell` | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                  | `tests`   | outbound  |
 
 ### annotations &gt; create → edit → reply → resolve → delete an annotation {#annotations-create-edit-reply-resolve-delete-an-annotation}
 
@@ -2141,6 +2174,47 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                        | Predicate | Direction |
 | ----------- | ------------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationcomponent.annotations-section` | `tests`   | outbound  |
+
+### architecture view drills from a container into its components and back {#architecture-view-drills-from-a-container-into-its-components-and-back}
+
+**ID**: `testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`             | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                            | `tests`   | outbound  |
+
+### architecture view restores level and scope from the URL {#architecture-view-restores-level-and-scope-from-the-url}
+
+**ID**: `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `navigation.route.app-shell-sectionview-route`         | `tests`   | outbound  |
 
 ### buildChatContext &gt; describes a Schema node type and a relationship {#buildchatcontext-describes-a-schema-node-type-and-a-relationship}
 
@@ -2683,6 +2757,180 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                         | Predicate | Direction |
 | ----------- | ------------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-review-model` | `tests`   | outbound  |
+
+### c4 diagram draws the boundary, a card per element and a labelled edge per relationship {#c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship}
+
+**ID**: `testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate | Direction |
+| ----------- | --------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.c4-diagram` | `tests`   | outbound  |
+
+### c4 diagram moves between cards with the arrow keys and drills in with Enter {#c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter}
+
+**ID**: `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                | Predicate   | Direction |
+| ----------- | ---------------------------------------------- | ----------- | --------- |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance` | `satisfies` | outbound  |
+| inter-layer | `application.applicationcomponent.c4-diagram`  | `tests`     | outbound  |
+| inter-layer | `ux.view.architecture-view`                    | `tests`     | outbound  |
+
+### c4 layout places every element inside its boundary {#c4-layout-places-every-element-inside-its-boundary}
+
+**ID**: `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout` | `tests`   | outbound  |
+
+### c4 model keeps the source ids of every element and relationship {#c4-model-keeps-the-source-ids-of-every-element-and-relationship}
+
+**ID**: `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                            | Predicate   | Direction |
+| ----------- | ---------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams` | `satisfies` | outbound  |
+| inter-layer | `application.applicationservice.c4-model-transform`        | `tests`     | outbound  |
+
+### c4 model merges a persona and its business role into one person {#c4-model-merges-a-persona-and-its-business-role-into-one-person}
+
+**ID**: `testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model nests components by composes and puts unowned ones in the app container {#c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container}
+
+**ID**: `testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 model reports rules that name types the spec does not define {#c4-model-reports-rules-that-name-types-the-spec-does-not-define}
+
+**ID**: `testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### c4 views keep technology elements out of context and container diagrams {#c4-views-keep-technology-elements-out-of-context-and-container-diagrams}
+
+**ID**: `testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
+
+### c4 views lift an outside neighbour to its nearest visible ancestor and count the links {#c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links}
+
+**ID**: `testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate | Direction |
+| ----------- | ------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping` | `tests`   | outbound  |
 
 ### cancelPairs &gt; folds an element add and its delete; an update between stays a change to decide {#cancelpairs-folds-an-element-add-and-its-delete-an-update-between-stays-a-change-to-decide}
 
@@ -16859,6 +17107,9 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 | Type        | Related Element                                                    | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout`                 | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.c4-model-transform`                | `covers`   | outbound  |
+| inter-layer | `application.applicationservice.c4-view-scoping`                   | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.change-origin-helpers`             | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.changeset-drift`                   | `covers`   | outbound  |
 | inter-layer | `application.applicationservice.changeset-impact-analysis`         | `covers`   | outbound  |
@@ -16878,4 +17129,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-20T00:56:27.103Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0

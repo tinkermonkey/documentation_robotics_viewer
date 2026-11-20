@@ -1,0 +1,1704 @@
+- type: add
+  elementId: motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: motivation
+  after:
+    id: ef8acbe2-363e-48b5-b457-b344f315715b
+    path: motivation.requirement.architecture-reads-as-c4-diagrams
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Architecture reads as C4 diagrams
+    description: A person can read the modelled system as the established C4
+      diagrams (Context, Container, Component), derived from the DR model by
+      rule, without learning DR's layers or node types. Every box and arrow
+      traces back to the model elements it came from, and nothing is drawn that
+      the model doesn't hold.
+    attributes:
+      requirementType: functional
+      priority: high
+    metadata:
+      created_at: 2026-11-20T15:40:02.878Z
+      updated_at: 2026-11-20T15:40:02.878Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 0
+- type: add
+  elementId: product.feature.c4-architecture-diagrams
+  layerName: product
+  after:
+    id: 36272138-53f2-429a-be42-3e555869131b
+    path: product.feature.c4-architecture-diagrams
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Architecture Diagrams
+    description: "The model as a C4 diagram set in a top-level Architecture view:
+      System Context, Containers and Components, with drill-down into any
+      container or component that has parts. People, the system, external
+      systems, containers and components are derived from the DR model by rules
+      keyed on spec types; a box opens the model elements behind it. Proof of
+      concept: base diagrams only, no changeset overlay, Deployment or Dynamic
+      diagrams yet."
+    attributes:
+      priority: high
+      status: planned
+      size: l
+    metadata:
+      created_at: 2026-11-20T15:40:02.895Z
+      updated_at: 2026-11-20T15:40:02.895Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationservice.c4-model-transform
+  layerName: application
+  after:
+    id: 28041603-690b-4ffd-a8a4-409b578995e4
+    path: application.applicationservice.c4-model-transform
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 Model Transform
+    description: "data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model
+      (nodes and resolved links) to a C4 model. Rules are data keyed on spec
+      type ids: element rules (type plus an attribute guard to a C4 kind:
+      person, external system, container, component), identity merges (a persona
+      and the business role it references are one person; same-named actors and
+      stakeholders one external system), containment (composes between
+      components, a service under the component that realizes it, unowned
+      components in the app container), folds (tests, features, schemas and API
+      operations attach to the C4 element they cover) and relationship rules
+      (keep, flip serves, skip structure, plus path-derived ones such as person
+      uses what realizes a feature that serves them). Every C4 element and
+      relationship keeps the dotted ids of its sources. Rules that name a type
+      or relationship the loaded spec doesn't define are reported, not applied."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-20T15:40:02.898Z
+      updated_at: 2026-11-20T15:40:02.898Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationservice.c4-view-scoping
+  layerName: application
+  after:
+    id: b21b1876-c27b-4641-8322-27f85baa5984
+    path: application.applicationservice.c4-view-scoping
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 View Scoping
+    description: "data/c4/c4Views.ts: a pure function from the C4 model, a level
+      (context, container, component) and a scope element to one diagram: the
+      scope's children, the outside elements they are linked to (each lifted to
+      its nearest ancestor that isn't an ancestor of the scope), and the
+      relationships between them aggregated per pair with a count, their
+      predicates and their source link ids. Technology elements stay out of
+      Context, Container and Component views. Also the scope's ancestor chain
+      for the breadcrumb, and which elements can be drilled into."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 3
+- type: add
+  elementId: application.applicationservice.c4-diagram-layout
+  layerName: application
+  after:
+    id: 6b62a496-1289-4a79-b75a-94937c2fb87a
+    path: application.applicationservice.c4-diagram-layout
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 Diagram Layout
+    description: "data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top
+      to bottom, nested boundary, right-angle edge routes, edge label boxes) and
+      returns absolute boxes for elements and the boundary plus a polyline and
+      label position per relationship. elkjs is imported lazily, so it loads
+      only when the Architecture view opens; the result is cached per view key.
+      Proof of concept for a native nested layout in Heimdall: nothing outside
+      this module knows ELK's types."
+    attributes:
+      serviceType: asynchronous
+    metadata:
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: Only the C4 Diagram component calls the layout; no other data service
+          builds on it, and it is meant to be replaced by a native Heimdall
+          layout.
+        decided_by: agent
+        decided_at: 2026-11-20T15:41:11.847Z
+        changeset: changeset-1795189106448-lycsp34uv
+  timestamp: 2026-11-20T15:41:11.858Z
+  sequenceNumber: 4
+- type: add
+  elementId: application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Diagram below it, and a details drawer for the
+      selected box listing the model elements behind it, each a link into the
+      Model view. Reads the model through useModel and the spec through useSpec;
+      level, scope and selection live in the UI store and the URL. Shows a plain
+      message when the model yields no C4 elements, and how many model elements
+      the rules left out."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 5
+- type: add
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its toolbar; a dashed boundary rectangle
+      titled with the scope; a card per element (name, kind and technology, one
+      line of description; a person and a data store get their own shape);
+      right-angle edges with a label of the predicates and a count. Colours from
+      canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop
+      with arrow keys between cards, Enter drills into a card that has parts,
+      Escape clears the selection. Proof of concept for boundary rendering and a
+      C4 card in Heimdall."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 6
+- type: add
+  elementId: technology.systemsoftware.elk
+  layerName: technology
+  after:
+    id: 76b6e459-9e27-483e-ad4b-dff8dda62807
+    path: technology.systemsoftware.elk
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: ELK
+    description: elkjs (Eclipse Layout Kernel compiled to JavaScript), pinned to an
+      exact version, EPL-2.0. Lays out nested graphs with right-angle edge
+      routes. Loaded as a lazy chunk by the C4 diagram layout only; a stand-in
+      until Heimdall has a native nested layout.
+    attributes:
+      softwareType: middleware
+    metadata:
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 7
+- type: add
+  elementId: data-model.objectschema.c4-model
+  layerName: data-model
+  after:
+    id: b2d2f531-9748-4ec5-ba44-5c8c3330e456
+    path: data-model.objectschema.c4-model
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Model
+    description: "The C4 reading of a DR model: elements (id, kind, name,
+      technology, description, parent, the dotted ids of their sources, what was
+      folded onto them) and relationships (source, target, predicates with
+      counts, source link ids), plus the model elements no rule placed."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-20T15:40:02.902Z
+      updated_at: 2026-11-20T15:40:02.902Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 8
+- type: add
+  elementId: data-model.objectschema.c4-view
+  layerName: data-model
+  after:
+    id: 291eb141-e409-477d-a7f4-96f6844fe7e2
+    path: data-model.objectschema.c4-view
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 View
+    description: "One C4 diagram: level, scope element, the elements in scope, the
+      outside elements linked to them, the aggregated relationships, and the
+      scope's ancestor chain."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-20T15:40:02.904Z
+      updated_at: 2026-11-20T15:40:02.904Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 9
+- type: add
+  elementId: ux.view.architecture-view
+  layerName: ux
+  after:
+    id: a69be5e5-d12d-4753-b45a-7560b165c116
+    path: ux.view.architecture-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Architecture View
+    description: "The model as C4 diagrams (#/architecture): a level control
+      (Context · Containers · Components), a breadcrumb of the scope, and the
+      diagram. Clicking a box selects it and opens its details; a box with parts
+      drills into them."
+    attributes:
+      type: page
+      title: Architecture
+      routable: true
+    metadata:
+      created_at: 2026-11-20T15:40:02.904Z
+      updated_at: 2026-11-20T15:40:02.904Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 10
+- type: add
+  elementId: ux.subview.c4-diagram
+  layerName: ux
+  after:
+    id: b543a98a-b9ab-4a68-aeef-b34f9d3de76c
+    path: ux.subview.c4-diagram
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Diagram
+    description: "Architecture view, the diagram area: the scope's boundary, a card
+      per person, system, container or component, and labelled arrows between
+      them, with pan, zoom and fit."
+    attributes:
+      title: C4 Diagram
+    metadata:
+      created_at: 2026-11-20T15:40:02.906Z
+      updated_at: 2026-11-20T15:40:02.906Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 11
+- type: add
+  elementId: testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person
+  layerName: testing
+  after:
+    id: 1ceafe70-9bba-4935-b162-ebffaf056dbc
+    path: testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 model merges a persona and its business role into one person
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.907Z
+      updated_at: 2026-11-20T15:40:02.907Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 12
+- type: add
+  elementId: testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+  layerName: testing
+  after:
+    id: 7ff6bed6-12d4-445d-b2ac-c812f20d9a96
+    path: testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 model nests components by composes and puts unowned ones in the app
+      container
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 13
+- type: add
+  elementId: testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define
+  layerName: testing
+  after:
+    id: 5f1c2fe7-cad5-425c-a1ec-e7bbc9400967
+    path: testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 model reports rules that name types the spec does not define
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 14
+- type: add
+  elementId: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship
+  layerName: testing
+  after:
+    id: 304e3418-73d6-4f51-9d38-c08e806a08fa
+    path: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 model keeps the source ids of every element and relationship
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 15
+- type: add
+  elementId: testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links
+  layerName: testing
+  after:
+    id: 4d27518b-1aca-4e95-94f2-de4a0cecfd7f
+    path: testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 views lift an outside neighbour to its nearest visible ancestor and
+      count the links
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 16
+- type: add
+  elementId: testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams
+  layerName: testing
+  after:
+    id: 4480801b-06fa-4824-a30a-a63fdea5141d
+    path: testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 views keep technology elements out of context and container diagrams
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 17
+- type: add
+  elementId: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary
+  layerName: testing
+  after:
+    id: ef74b7a8-0b27-4131-a2b5-6f9aebe41f56
+    path: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 layout places every element inside its boundary
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 18
+- type: add
+  elementId: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+  layerName: testing
+  after:
+    id: f52a2bed-d6ed-4cd8-bfa6-f80af4150d3d
+    path: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: architecture view drills from a container into its components and back
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 19
+- type: add
+  elementId: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url
+  layerName: testing
+  after:
+    id: ed2f1f59-4379-4a4f-97af-5483d71f9030
+    path: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: architecture view restores level and scope from the URL
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:40:02.909Z
+      updated_at: 2026-11-20T15:40:02.909Z
+      version: 1
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: motivation.requirement.architecture-reads-as-c4-diagrams::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.architecture-reads-as-c4-diagrams
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: product.feature.c4-architecture-diagrams::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.c4-architecture-diagrams
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: product.feature.c4-architecture-diagrams::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.c4-architecture-diagrams
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: product.feature.c4-architecture-diagrams::serves::product.persona.model-author
+  layerName: product
+  after:
+    source: product.feature.c4-architecture-diagrams
+    target: product.persona.model-author
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: product.feature.c4-architecture-diagrams::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: product
+  after:
+    source: product.feature.c4-architecture-diagrams
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: product.feature.c4-architecture-diagrams::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.c4-architecture-diagrams
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::realizes::product.feature.c4-architecture-diagrams
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: product.feature.c4-architecture-diagrams
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::depends-on::application.applicationservice.model-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: application.applicationservice.model-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::accesses::data-model.objectschema.c4-model
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: data-model.objectschema.c4-model
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: application.applicationservice.c4-model-transform::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.c4-model-transform
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::realizes::product.feature.c4-architecture-diagrams
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: product.feature.c4-architecture-diagrams
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::depends-on::application.applicationservice.c4-model-transform
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: application.applicationservice.c4-model-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::accesses::data-model.objectschema.c4-model
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: data-model.objectschema.c4-model
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::accesses::data-model.objectschema.c4-view
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: data-model.objectschema.c4-view
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-layout::depends-on::application.applicationservice.c4-view-scoping
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-layout
+    target: application.applicationservice.c4-view-scoping
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-layout::accesses::data-model.objectschema.c4-view
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-layout
+    target: data-model.objectschema.c4-view
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-layout::serves::application.applicationcomponent.c4-diagram
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-layout
+    target: application.applicationcomponent.c4-diagram
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationcomponent.app-shell::composes::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationcomponent.app-shell
+    target: application.applicationcomponent.architecture-canvas
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::composes::application.applicationcomponent.c4-diagram
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: application.applicationcomponent.c4-diagram
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::realizes::application.applicationservice.c4-view-scoping
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: application.applicationservice.c4-view-scoping
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::assigned-to::application.applicationfunction.ui-store
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: application.applicationfunction.ui-store
+    predicate: assigned-to
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: application.applicationcomponent.c4-diagram::realizes::application.applicationservice.c4-diagram-layout
+  layerName: application
+  after:
+    source: application.applicationcomponent.c4-diagram
+    target: application.applicationservice.c4-diagram-layout
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: application.applicationservice.use-model::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.use-model
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 46
+- type: relationship-add
+  elementId: application.applicationservice.use-spec::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.use-spec
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.architecture-canvas
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: technology.systemsoftware.heimdall-ui::serves::application.applicationcomponent.c4-diagram
+  layerName: technology
+  after:
+    source: technology.systemsoftware.heimdall-ui
+    target: application.applicationcomponent.c4-diagram
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: technology.systemsoftware.elk::serves::application.applicationcomponent.c4-diagram
+  layerName: technology
+  after:
+    source: technology.systemsoftware.elk
+    target: application.applicationcomponent.c4-diagram
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 50
+- type: relationship-add
+  elementId: data-model.objectschema.c4-model::realizes::business.businessobject.architecture-model
+  layerName: data-model
+  after:
+    source: data-model.objectschema.c4-model
+    target: business.businessobject.architecture-model
+    predicate: realizes
+    layer: data-model
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 51
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.architecture-view
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.architecture-view
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 52
+- type: relationship-add
+  elementId: ux.view.architecture-view::realizes::product.feature.c4-architecture-diagrams
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: product.feature.c4-architecture-diagrams
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 53
+- type: relationship-add
+  elementId: ux.view.architecture-view::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 54
+- type: relationship-add
+  elementId: ux.view.architecture-view::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 55
+- type: relationship-add
+  elementId: ux.view.architecture-view::serves::business.businessrole.architecture-reviewer
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: business.businessrole.architecture-reviewer
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: ux.view.architecture-view::serves::business.businessrole.model-author
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: business.businessrole.model-author
+    predicate: serves
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: ux.view.architecture-view::references::business.businessobject.architecture-model
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: business.businessobject.architecture-model
+    predicate: references
+    layer: ux
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: ux.view.architecture-view::depends-on::technology.systemsoftware.elk
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: technology.systemsoftware.elk
+    predicate: depends-on
+    layer: ux
+    targetLayer: technology
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: ux.view.architecture-view::composes::ux.subview.c4-diagram
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: ux.subview.c4-diagram
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.architecture-view
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.architecture-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-model-merges-a-persona-and-its-business-role-into-one-person
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-model-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-model-reports-rules-that-name-types-the-spec-does-not-define
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 65
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 66
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-views-lift-an-outside-neighbour-to-its-nearest-visible-ancestor-and-count-the-links
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-views-keep-technology-elements-out-of-context-and-container-diagrams
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 68
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary::tests::application.applicationservice.c4-diagram-layout
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary
+    target: application.applicationservice.c4-diagram-layout
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 69
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 70
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back::tests::product.feature.c4-architecture-diagrams
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+    target: product.feature.c4-architecture-diagrams
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 71
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back::tests::ux.view.architecture-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-drills-from-a-container-into-its-components-and-back
+    target: ux.view.architecture-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 72
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url::tests::navigation.route.app-shell-sectionview-route
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url
+    target: navigation.route.app-shell-sectionview-route
+    predicate: tests
+    layer: testing
+    targetLayer: navigation
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 73
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:02.930Z
+  sequenceNumber: 74
+- type: update
+  elementId: application.applicationcomponent.app-shell
+  layerName: application
+  before:
+    id: 069d7627-9798-4334-9c79-f20fb7294746
+    path: application.applicationcomponent.app-shell
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: App Shell
+    description: "The viewer's four-pane frame: topbar, sidebar nav tree, the active
+      view's canvas (with its inspector), the DrBot chat drawer and the status
+      bar. Mounts the live model/changeset/annotation refetch hooks."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata: &a3
+      created_at: 2026-11-12T13:44:46.072Z
+      updated_at: 2026-11-12T13:44:46.072Z
+      version: 1
+  after:
+    id: 069d7627-9798-4334-9c79-f20fb7294746
+    path: application.applicationcomponent.app-shell
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: App Shell
+    description: "The viewer's four-pane frame: topbar, sidebar nav tree, the active
+      view's canvas (with its inspector), the DrBot chat drawer and the status
+      bar. The Architecture view's canvas takes the canvas pane like the Model,
+      Schema and Changesets views, with no inspector column. Mounts the live
+      model/changeset/annotation refetch hooks."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-20T15:40:21.786Z
+  sequenceNumber: 75
+- type: update
+  elementId: application.applicationcomponent.nav-tree
+  layerName: application
+  before:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Model / Schema / Changesets
+      sections, each with the spec's layers (in the order the spec gives). A
+      Model layer opens onto its node types (count, A–Z, collapsed), each
+      holding its elements (A–Z); a Schema layer lists its node types;
+      Changesets lists the changesets. Opening a type group is local tree state
+      and pushes no history. Reveals the current selection, opening its type
+      group and scrolling it into view after any navigation, including a deep
+      link whose element rows only appear once the model or changesets load."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata: &a6
+      created_at: 2026-11-12T13:44:46.089Z
+      updated_at: 2026-11-12T13:44:46.089Z
+      version: 1
+  after:
+    id: 8fb31e5b-72b0-4e1a-9952-66dd14cfe4bb
+    path: application.applicationcomponent.nav-tree
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Nav Tree
+    description: "Sidebar navigation: an accordion of Architecture / Model / Schema
+      / Changesets sections. Architecture lists the C4 levels (Context,
+      Containers) and, under Containers, each container with its components
+      nested as the C4 model nests them; a row opens that diagram scope. Model,
+      Schema and Changesets each have the spec's layers (in the order the spec
+      gives). A Model layer opens onto its node types (count, A–Z, collapsed),
+      each holding its elements (A–Z); a Schema layer lists its node types;
+      Changesets lists the changesets. Opening a type group is local tree state
+      and pushes no history. Reveals the current selection, opening its type
+      group and scrolling it into view after any navigation, including a deep
+      link whose element rows only appear once the model or changesets load."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-20T15:40:22.042Z
+  sequenceNumber: 76
+- type: update
+  elementId: application.applicationfunction.ui-store
+  layerName: application
+  before:
+    id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+    path: application.applicationfunction.ui-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: UI Store
+    description: "Zustand store for UI state: view, layer, selection, changeset,
+      graph/page mode, nav accordion, graph settings and canvas tone. A first
+      visit gets a light canvas and DrBot closed; preferences persist to
+      localStorage and a persisted choice wins; navigation state is the
+      router's."
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/uiStore.ts
+          symbol: useUiStore
+    metadata: &a8
+      created_at: 2026-11-12T13:44:46.094Z
+      updated_at: 2026-11-12T13:44:46.094Z
+      version: 1
+  after:
+    id: c95e3e6c-bba2-4761-8b32-fcc6f3f4c1ff
+    path: application.applicationfunction.ui-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: UI Store
+    description: "Zustand store for UI state: view (Model, Schema, Changesets or
+      Architecture), layer, selection, changeset, graph/page mode, nav
+      accordion, graph settings and canvas tone, plus the Architecture view's C4
+      level, scope element and selected box. A first visit gets a light canvas
+      and DrBot closed; preferences persist to localStorage and a persisted
+      choice wins; navigation state, the C4 level and scope included, is the
+      router's and is not persisted."
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-20T15:40:22.289Z
+  sequenceNumber: 77
+- type: update
+  elementId: application.applicationservice.chat-context-builder
+  layerName: application
+  before:
+    id: 3c551f82-499b-4cf7-9b71-285cf8f4f14b
+    path: application.applicationservice.chat-context-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Chat Context Builder
+    description: Builds the <viewer-context> block (view, layer, selected element or
+      changeset) sent ahead of each DrBot message.
+    attributes: &a9
+      serviceType: synchronous
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/chatContext.ts
+          symbol: buildChatContext
+    metadata: &a11
+      created_at: 2026-11-12T13:44:46.093Z
+      updated_at: 2026-11-12T13:44:46.093Z
+      version: 1
+  after:
+    id: 3c551f82-499b-4cf7-9b71-285cf8f4f14b
+    path: application.applicationservice.chat-context-builder
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Chat Context Builder
+    description: Builds the <viewer-context> block (view, layer, selected element or
+      changeset) sent ahead of each DrBot message. In the Architecture view it
+      names the C4 level, the scope and the selected box with the dotted ids of
+      the model elements behind it.
+    attributes: *a9
+    source_reference: *a10
+    metadata: *a11
+  timestamp: 2026-11-20T15:40:22.540Z
+  sequenceNumber: 78
+- type: update
+  elementId: navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  before:
+    id: 68cfdda4-3413-4827-98c4-b44fec8346d2
+    path: navigation.route.app-shell-sectionview-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: App Shell Section/View Route
+    description: Parameterized route at /#/:section/:view (section = model | spec |
+      changesets; view is a per-section default, e.g. graph or list) that
+      renders AppShell; a two-way effect keeps uiStore.view and the URL hash in
+      sync. Replaced the previous six separate per-section redirect + view
+      routes (model/spec/changesets redirect-route and view-route pairs) with a
+      single generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION
+      maps in the June 2026 Heimdall UX rebuild; protected — requires a valid
+      auth token via authStore.
+    attributes: &a12
+      type: protected
+    source_reference: &a13
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: appShellRoute
+    metadata: &a14
+      created_at: 2026-09-19T15:17:21.969Z
+      updated_at: 2026-09-19T15:17:21.969Z
+      version: 1
+  after:
+    id: 68cfdda4-3413-4827-98c4-b44fec8346d2
+    path: navigation.route.app-shell-sectionview-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: App Shell Section/View Route
+    description: Parameterized route at /#/:section/:view (section = model | spec |
+      changesets | architecture; view is a per-section default, e.g. graph,
+      list, or diagram for architecture) that renders AppShell; a two-way effect
+      keeps uiStore.view and the URL hash in sync. The architecture section
+      carries ?level= (context | container | component), ?scope= (the dotted id
+      of the element whose parts are shown) and ?node= (the selected box).
+      Replaced the previous six separate per-section redirect + view routes
+      (model/spec/changesets redirect-route and view-route pairs) with a single
+      generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in
+      the June 2026 Heimdall UX rebuild; protected — requires a valid auth token
+      via authStore.
+    attributes: *a12
+    source_reference: *a13
+    metadata: *a14
+  timestamp: 2026-11-20T15:40:22.822Z
+  sequenceNumber: 79
+- type: update
+  elementId: navigation.navigationtransition.tab-navigation-transition
+  layerName: navigation
+  before:
+    id: 6194b2d5-7baf-49ca-b7c3-8e96b5405e06
+    path: navigation.navigationtransition.tab-navigation-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Tab Navigation Transition
+    description: "Switching between the Model, Schema and Changesets sections in the
+      sidebar nav tree (an accordion: opening a section collapses the others).
+      The section is the route's :section segment."
+    attributes: &a15
+      from: any-route
+      to: section-root
+      trigger: user-click
+    source_reference: &a16
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/NavTree.tsx
+          symbol: NavTree
+    metadata: &a17
+      created_at: 2026-03-20T13:26:14.912Z
+      updated_at: 2026-03-20T13:26:14.912Z
+      version: 1
+  after:
+    id: 6194b2d5-7baf-49ca-b7c3-8e96b5405e06
+    path: navigation.navigationtransition.tab-navigation-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Tab Navigation Transition
+    description: "Switching between the Architecture, Model, Schema and Changesets
+      sections in the sidebar nav tree (an accordion: opening a section
+      collapses the others). The section is the route's :section segment."
+    attributes: *a15
+    source_reference: *a16
+    metadata: *a17
+  timestamp: 2026-11-20T15:40:23.109Z
+  sequenceNumber: 80
+- type: update
+  elementId: navigation.navigationtransition.layer-deep-link-transition
+  layerName: navigation
+  before:
+    id: ff98ecbb-8bc5-4687-bcea-8d208c56496c
+    path: navigation.navigationtransition.layer-deep-link-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Layer Deep-Link Transition
+    description: "Deep links into a layer, element or changeset: the router two-way
+      syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for the graph
+      viewport) with the UI store, so a shared link, reload or back/forward
+      restores the selection."
+    attributes: &a18
+      from: model-graph-view
+      to: model-graph-view
+      trigger: programmatic
+    source_reference: &a19
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: AppShellRoute
+    metadata: &a20
+      created_at: 2026-03-20T13:26:31.679Z
+      updated_at: 2026-03-20T13:26:31.679Z
+      version: 1
+  after:
+    id: ff98ecbb-8bc5-4687-bcea-8d208c56496c
+    path: navigation.navigationtransition.layer-deep-link-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Layer Deep-Link Transition
+    description: "Deep links into a layer, element, changeset or C4 diagram: the
+      router two-way syncs ?layer= / ?node= / ?edge= / ?changeset= (and ?vp= for
+      the graph viewport), and ?level= / ?scope= in the Architecture view, with
+      the UI store, so a shared link, reload or back/forward restores the
+      selection. A drill-down in the Architecture view pushes a history entry;
+      selecting a box replaces it."
+    attributes: *a18
+    source_reference: *a19
+    metadata: *a20
+  timestamp: 2026-11-20T15:40:23.408Z
+  sequenceNumber: 81
+- type: update
+  elementId: ux.uxapplication.embedded-architecture-viewer
+  layerName: ux
+  before:
+    id: e346087f-72f5-4d98-993f-a830357b81e2
+    path: ux.uxapplication.embedded-architecture-viewer
+    spec_node_id: ux.uxapplication
+    type: uxapplication
+    layer_id: ux
+    name: Embedded Architecture Viewer
+    description: "The Documentation Robotics Viewer: a React app built on the
+      Heimdall design system and served by `dr visualize`. Dark shell around a
+      light/dark canvas with a sidebar nav tree, Model / Schema / Changesets
+      views (graph or page mode), an inspector drawer, and the DrBot chat
+      drawer."
+    attributes: &a21
+      channel: web
+    source_reference: &a22
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/AppShell.tsx
+          symbol: AppShell
+    metadata: &a23
+      created_at: 2026-03-20T13:22:20.438Z
+      updated_at: 2026-03-20T13:22:20.438Z
+      version: 1
+  after:
+    id: e346087f-72f5-4d98-993f-a830357b81e2
+    path: ux.uxapplication.embedded-architecture-viewer
+    spec_node_id: ux.uxapplication
+    type: uxapplication
+    layer_id: ux
+    name: Embedded Architecture Viewer
+    description: "The Documentation Robotics Viewer: a React app built on the
+      Heimdall design system and served by `dr visualize`. Dark shell around a
+      light/dark canvas with a sidebar nav tree, Architecture (C4 diagrams) /
+      Model / Schema / Changesets views (Model and Schema in graph or page
+      mode), an inspector drawer, and the DrBot chat drawer."
+    attributes: *a21
+    source_reference: *a22
+    metadata: *a23
+  timestamp: 2026-11-20T15:40:23.709Z
+  sequenceNumber: 82
+- type: relationship-add
+  elementId: testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26::tests::ux.view.architecture-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26
+    target: ux.view.architecture-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-20T15:40:23.963Z
+  sequenceNumber: 83
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:23.963Z
+  sequenceNumber: 85
+- type: relationship-add
+  elementId: application.applicationservice.chat-context-builder::depends-on::application.applicationservice.c4-view-scoping
+  layerName: application
+  after:
+    source: application.applicationservice.chat-context-builder
+    target: application.applicationservice.c4-view-scoping
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T15:40:23.963Z
+  sequenceNumber: 86
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+  layerName: testing
+  after:
+    id: c2f5099b-a3b4-4009-9287-ede8094f534f
+    path: testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 diagram draws the boundary, a card per element and a labelled edge per
+      relationship
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:41:00.413Z
+      updated_at: 2026-11-20T15:41:00.413Z
+      version: 1
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 88
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+  layerName: testing
+  after:
+    id: 86359074-697d-4a7d-91ee-6786a55a19dd
+    path: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4 diagram moves between cards with the arrow keys and drills in with Enter
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-20T15:41:00.414Z
+      updated_at: 2026-11-20T15:41:00.414Z
+      version: 1
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 89
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship::tests::application.applicationcomponent.c4-diagram
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-draws-the-boundary-a-card-per-element-and-a-labelled-edge-per-relationship
+    target: application.applicationcomponent.c4-diagram
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 90
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter::tests::application.applicationcomponent.c4-diagram
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+    target: application.applicationcomponent.c4-diagram
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 91
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 92
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.c4-model-transform
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 93
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.c4-view-scoping
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 94
+- type: relationship-add
+  elementId: testing.testcoveragetarget.service-and-store-unit-test-coverage::covers::application.applicationservice.c4-diagram-layout
+  layerName: testing
+  after:
+    source: testing.testcoveragetarget.service-and-store-unit-test-coverage
+    target: application.applicationservice.c4-diagram-layout
+    predicate: covers
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 95
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 96
+- type: relationship-add
+  elementId: application.applicationservice.c4-view-scoping::serves::ux.view.architecture-view
+  layerName: application
+  after:
+    source: application.applicationservice.c4-view-scoping
+    target: ux.view.architecture-view
+    predicate: serves
+    layer: application
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 97
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-layout::realizes::product.feature.c4-architecture-diagrams
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-layout
+    target: product.feature.c4-architecture-diagrams
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 98
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.c4-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: data-model.objectschema.c4-view
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 99
+- type: relationship-add
+  elementId: application.applicationcomponent.c4-diagram::accesses::data-model.objectschema.c4-view
+  layerName: application
+  after:
+    source: application.applicationcomponent.c4-diagram
+    target: data-model.objectschema.c4-view
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 100
+- type: relationship-add
+  elementId: technology.systemsoftware.elk::satisfies::motivation.constraint.browser-only-deployment
+  layerName: technology
+  after:
+    source: technology.systemsoftware.elk
+    target: motivation.constraint.browser-only-deployment
+    predicate: satisfies
+    layer: technology
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 101
+- type: relationship-add
+  elementId: ux.view.architecture-view::supports::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: supports
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-20T15:41:00.438Z
+  sequenceNumber: 102
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter::tests::ux.view.architecture-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter
+    target: ux.view.architecture-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-20T15:41:11.567Z
+  sequenceNumber: 103
