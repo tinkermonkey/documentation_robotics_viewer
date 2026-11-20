@@ -29,6 +29,7 @@ import { OpChip, OriginBadge, OriginDetails, OutcomeChip, VerdictChip, plural } 
 import { buildDiffLines } from '../data/changesets';
 import { originOf, originTitle } from '../data/tier1';
 import { useCreateAnnotation } from '../data/useAnnotations';
+import { useTypeName } from '../data/useTypeName';
 import type { ChangesetReviewState } from '../data/useChangesetReview';
 import {
   KIND_LABEL,
@@ -136,7 +137,10 @@ function LayerBand({ item }: { item: ReviewItem }) {
       ? `within ${layerLabel(item.ends.source.layerId)}`
       : `${layerLabel(item.ends.source.layerId)} → ${layerLabel(item.ends.target.layerId)}`
     : `${layerLabel(item.layerId)} layer`;
-  const type = item.link ? item.link.predicate : (item.record.after ?? item.record.before)?.type;
+  const typeNameOf = useTypeName();
+  const rawType = item.link ? item.link.predicate : (item.record.after ?? item.record.before)?.type;
+  // A predicate stays as written; an element's type reads by its name (#605).
+  const type = typeof rawType === 'string' && rawType && !item.link ? typeNameOf(item.layerId, rawType) : rawType;
   return (
     <div
       className="drv-band"
@@ -154,8 +158,8 @@ function LayerBand({ item }: { item: ReviewItem }) {
         </span>
         {typeof type === 'string' && type && (
           <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-            <span className="drv-eyebrow">{item.link ? 'predicate' : 'as a'}</span>
-            <span className="drv-mono" style={{ fontSize: 12.5, color: 'rgb(var(--canvas-fg-1))' }}>
+            <span className="drv-eyebrow">{item.link ? 'predicate' : /^[aeiou]/i.test(type) ? 'as an' : 'as a'}</span>
+            <span className={item.link ? 'drv-mono' : undefined} style={{ fontSize: 12.5, color: 'rgb(var(--canvas-fg-1))' }}>
               {type}
             </span>
           </span>
@@ -621,7 +625,7 @@ function RelatedRow({
           {other && (
             <span className="drv-end__dot" style={{ background: layerColor(other.layerId), width: 6, height: 6, display: 'inline-block', marginRight: 4 }} />
           )}
-          {other ? `${layerLabel(other.layerId).toLowerCase()} · ${other.type}` : item.typeLabel}
+          {other ? `${layerLabel(other.layerId).toLowerCase()} · ${other.typeName}` : item.typeLabel}
           {at ? ` · at the ${at}` : ''} · change {item.seq}
         </span>
       </span>

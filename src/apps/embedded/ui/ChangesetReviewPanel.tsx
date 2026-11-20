@@ -197,8 +197,8 @@ function ReviewLegend({ outcome }: { outcome: ChangeOutcome | null }) {
       )}
       <span className="drv-legend__item">
         <span className="drv-toolbar__label">LINK ENDS</span>
-        <LinkEndChip end={{ id: '', name: 'added here', layerId: '', type: '', isNew: true }} />
-        <LinkEndChip end={{ id: '', name: 'in the model', layerId: '', type: '', isNew: false }} />
+        <LinkEndChip end={{ id: '', name: 'added here', layerId: '', type: '', typeName: '', isNew: true }} />
+        <LinkEndChip end={{ id: '', name: 'in the model', layerId: '', type: '', typeName: '', isNew: false }} />
       </span>
       <span className="drv-legend__item">
         <span className="drv-field">amber</span> marks the field an update changes

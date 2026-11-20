@@ -29,6 +29,7 @@
 import { layerLabel } from '../ui/domain';
 import { normalizeOp, type ChangeRecord, type DeleteBlocker } from './changesets';
 import { passesOriginFilter, type OriginFilter } from './tier1';
+import { typeLabel as typeLabelOf } from './typeLabel';
 
 // ─── Wire types (CONTRACT §1) ─────────────────────────────────────────────────
 
@@ -95,6 +96,8 @@ export interface LinkEnd {
   layerId: string;
   /** Element type (from the dotted id `{layer}.{type}.{slug}`). */
   type: string;
+  /** The type's display name ("Application Component", #605). */
+  typeName: string;
   /** This changeset adds the element. */
   isNew: boolean;
 }
@@ -158,6 +161,12 @@ export function nameFromId(id: string): string {
 }
 
 export type NameOf = (dottedId: string) => string | undefined;
+
+/** A node type's display name, given its layer and type id (#605: `useTypeName` passes the spec's). */
+export type TypeNameOf = (layerId: string, type: string) => string;
+
+/** Without the spec: the type id split into words ("applicationcomponent" → "Application Component"). */
+export const typeNameFromId: TypeNameOf = (layerId, type) => typeLabelOf(type, layerId).singular;
 
 export function changeKind(record: ChangeRecord): ChangeKind {
   const isRel = (record.type ?? '').includes('relationship');
@@ -334,6 +343,7 @@ export function toReviewItems(
   changes: ChangeRecord[],
   pairs: CancelPair[],
   nameOf: NameOf = () => undefined,
+  typeNameOf: TypeNameOf = typeNameFromId,
 ): ReviewItem[] {
   const cancelled = pairMembers(pairs);
   const addedIds = new Set(
@@ -351,7 +361,7 @@ export function toReviewItems(
   const nameFor = (id: string) => nameOf(id) ?? nameFromId(id);
   const endOf = (id: string): LinkEnd => {
     const [layerId = '', type = 'element'] = id.split('.');
-    return { id, name: nameFor(id), layerId, type, isNew: addedIds.has(id) };
+    return { id, name: nameFor(id), layerId, type, typeName: typeNameOf(layerId, type), isNew: addedIds.has(id) };
   };
 
   return changes
@@ -391,7 +401,8 @@ export function toReviewItems(
       }
 
       const name = asString(obj.name) ?? nameFor(elementId);
-      const typeLabel = `${layerLabel(layerId).toLowerCase()} · ${type}`;
+      const typeName = typeNameOf(layerId, type);
+      const typeLabel = `${layerLabel(layerId).toLowerCase()} · ${typeName}`;
 
       if (kind === 'update') {
         const fields = changedPaths(record.before, record.after);
@@ -432,7 +443,7 @@ export function toReviewItems(
         name,
         typeLabel,
         fields: [],
-        summary: description ?? (kind === 'add' ? `Adds this ${type}` : `Removes this ${type}`),
+        summary: description ?? (kind === 'add' ? `Adds this ${typeName}` : `Removes this ${typeName}`),
         chips,
         blockers,
         ...(kind === 'add' ? { linksOut: out, linksIn: into } : {}),
@@ -714,6 +725,8 @@ export interface ReviewModelInput {
   unstaged?: UnstagedChange[];
   review?: ChangesetReview;
   nameOf?: NameOf;
+  /** A node type's display name; without one, the type id split into words. */
+  typeNameOf?: TypeNameOf;
   /**
    * Per delete sequence (as a string), the blocker relationship ids the delete
    * had when this browser kept it ("Delete the links too" covers those). A kept
@@ -766,6 +779,7 @@ export function buildReviewModel({
   unstaged = [],
   review,
   nameOf: modelNameOf = () => undefined,
+  typeNameOf = typeNameFromId,
   acknowledgedBlockers,
 }: ReviewModelInput): ReviewModel {
   // The changeset's own adds name elements the model doesn't have yet.
@@ -777,13 +791,13 @@ export function buildReviewModel({
   const nameOf: NameOf = (id) => modelNameOf(id) ?? addedNames.get(id);
 
   const pairs = cancelPairs(changes, nameOf);
-  const items = toReviewItems(changes, pairs, nameOf);
+  const items = toReviewItems(changes, pairs, nameOf, typeNameOf);
   const bySeq = new Map(items.map((i) => [i.seq, i]));
   // Pair members aren't reviewed, but the server's drop cascade reaches them
   // too (a link add to a dropped element is left out even when a later link
   // delete would have cancelled it), so the preview includes them.
   const members = pairMembers(pairs);
-  const pairItems = toReviewItems(changes, [], nameOf).filter((i) => members.has(i.seq));
+  const pairItems = toReviewItems(changes, [], nameOf, typeNameOf).filter((i) => members.has(i.seq));
   const revisedMap = revisions(unstaged);
 
   const decisions = new Map<number, ReviewDecision>();

@@ -76,7 +76,7 @@ export function LinkEndChip({ end }: { end: LinkEnd }) {
       className={`drv-end${end.isNew ? ' drv-end--new' : ''}`}
       data-testid="link-end"
       data-new={end.isNew || undefined}
-      title={`${end.name} · ${layerLabel(end.layerId)} · ${end.type}${end.isNew ? ' · added by this changeset' : ''}`}
+      title={`${end.name} · ${layerLabel(end.layerId)} · ${end.typeName}${end.isNew ? ' · added by this changeset' : ''}`}
     >
       <span aria-hidden="true" className="drv-end__dot" style={{ background: layerColor(end.layerId) }} />
       <span className="drv-end__name">{end.name}</span>
@@ -101,9 +101,9 @@ export function LinkChain({ ends, predicate }: { ends: { source: LinkEnd; target
   );
 }
 
-/** "feature → requirement · Product → Motivation" (the layers only when they differ). */
+/** "Feature → Requirement · Product → Motivation" (the layers only when they differ). */
 export function linkEndsLabel(ends: { source: LinkEnd; target: LinkEnd }): string {
-  const types = `${ends.source.type} → ${ends.target.type}`;
+  const types = `${ends.source.typeName} → ${ends.target.typeName}`;
   return ends.source.layerId === ends.target.layerId
     ? `${types} · within ${layerLabel(ends.source.layerId)}`
     : `${types} · ${layerLabel(ends.source.layerId)} → ${layerLabel(ends.target.layerId)}`;

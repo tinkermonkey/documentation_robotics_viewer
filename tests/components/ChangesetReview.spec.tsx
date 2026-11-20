@@ -250,7 +250,7 @@ describe('review — deciding changes (dr CLI with review)', () => {
     expect(chain).toHaveTextContent('depends-on');
     expect(within(row(27)).getAllByTestId('link-end').map((e) => e.hasAttribute('data-new'))).toEqual([true, false]);
     expect(row(19)).not.toHaveTextContent('new source');
-    expect(row(27)).toHaveTextContent('objectschema → objectschema · within Data Model');
+    expect(row(27)).toHaveTextContent('Object Schema → Object Schema · within Data Model');
   });
 
   it("heads an added element's inspector with its layer, labelled rows and links grouped by direction", async () => {
@@ -258,7 +258,7 @@ describe('review — deciding changes (dr CLI with review)', () => {
     renderReview(1);
     const inspector = await screen.findByTestId('change-inspector');
     expect(within(inspector).getByTestId('change-layer-band')).toHaveTextContent(/Adds to\s*Application layer/);
-    expect(within(inspector).getByTestId('change-layer-band')).toHaveTextContent('applicationservice');
+    expect(within(inspector).getByTestId('change-layer-band')).toHaveTextContent(/as an\s*Application Service/);
     const kv = within(inspector).getByTestId('change-kv');
     expect(kv).toHaveTextContent('Change+ element new in this changeset');
     expect(kv).toHaveTextContent('Your decision');

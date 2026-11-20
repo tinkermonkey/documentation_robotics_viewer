@@ -4,17 +4,17 @@ description: "#605: one display name for a node type (singular, plural, short
   form without the layer word), used by the nav tree groups, the by-type lanes
   and hive, Impact group nodes, and Schema/page headers."
 created: 2026-11-20T14:04:27.106Z
-modified: 2026-11-20T14:43:16.171Z
+modified: 2026-11-20T14:49:13.843Z
 status: staged
 baseSnapshot: sha256:9281e43515c8b5e0e3535df0be09357c5ec81e5c402031443ce6e0da94df966e
 origin:
   kind: plan
 purpose: plan
 stats:
-  additions: 18
-  modifications: 11
+  additions: 27
+  modifications: 12
   deletions: 0
-lastSequence: 33
+lastSequence: 44
 unstaged:
   - sequence: 0
     removedAt: 25
@@ -151,4 +151,38 @@ unstaged:
             - file: tests/unit/navTreeGroups.spec.ts
               symbol: Nav Tree Groups > groups a layer's elements by type with counts, sorted
       timestamp: 2026-11-20T14:13:53.461Z
+    rewritten: true
+  - sequence: 0
+    removedAt: 34
+    change:
+      type: add
+      elementId: application.applicationservice.node-type-label
+      layerName: application
+      after:
+        id: 9d94af2b-192f-4710-b0e1-a12f1f4a8284
+        path: application.applicationservice.node-type-label
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Node Type Label
+        description: "data/typeLabel.ts: one display name for a node type, from the
+          spec's title (else the type id) and its layer: singular and plural,
+          split into words (\"Application Component\"), and a short plural that
+          drops the layer's own leading word (\"Components\"). The short form is
+          only used where the view is scoped to one layer (nav tree type groups,
+          by-type lanes and hive); views that mix layers use the full form.
+          withCount gives \"Components · 37\". Type ids stay ids wherever they
+          are ids."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-20T14:04:49.110Z
+          updated_at: 2026-11-20T14:04:49.110Z
+          version: 1
+        source_reference:
+          provenance: manual
+          locations:
+            - file: src/apps/embedded/data/typeLabel.ts
+              symbol: typeLabel
+      timestamp: 2026-11-20T14:13:52.945Z
     rewritten: true

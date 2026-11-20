@@ -201,6 +201,10 @@ For local dev use `dr visualize --no-auth`.
   Components") and `short` (the plural without the layer's own leading word: "Components"). `short` only where
   the view is scoped to one layer (Model nav tree type groups, by-type lanes and hive); where layers mix (topbar
   search, the Impact tab's group nodes, Schema view, page headers and tables, `titleForSpecNode`) the full form.
+  One element's type beside its layer ("application · Application Service": review rows, link ends, the change
+  inspector's band and related rows, its neighbourhood, the Impact matches and focus line) is the full singular
+  from `data/useTypeName.ts`; the pure review model takes it as `typeNameOf` (`ReviewItem.typeLabel`,
+  `LinkEnd.typeName`) and falls back to the type id split into words.
   A count reads `withCount` → "Components · 37". Type ids stay ids (dotted ids, `NodeTypeBadge`, crumbs, the
   spec page's `title` fact, node-type tooltips). A bare lower-case id still splits at its layer's word
   ("applicationservice" → "Application Service"); compounds like OAuth / OpenAPI stay whole.

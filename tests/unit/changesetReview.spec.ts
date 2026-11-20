@@ -124,6 +124,24 @@ describe('toReviewItems', () => {
     expect(items.map((i) => i.seq)).not.toContain(37);
   });
 
+  it('names element and link-end types by their display name (#605)', () => {
+    const one = toReviewItems([el(0, 'add', A)], []);
+    expect(one[0].typeLabel).toBe('application · Application Service');
+    const bare = toReviewItems(
+      [el(0, 'add', A, { after: { name: 'Alpha', type: 'applicationservice', layer_id: 'application' } })],
+      [],
+    );
+    expect(bare[0].summary).toBe('Adds this Application Service');
+    const link = items.find((i) => i.seq === 27)!;
+    expect(link.ends?.source.type).toBe('objectschema');
+    // Without the spec, an id the layer word can't split stays one word; the
+    // viewer passes the spec's title ("Object Schema", see ChangesetReview.spec).
+    expect(link.ends?.source.typeName).toBe('Objectschema');
+    // The spec's title wins when the caller passes one.
+    const named = toReviewItems([el(0, 'add', A)], [], undefined, (_layer, type) => `T:${type}`);
+    expect(named[0].typeLabel).toBe('application · T:applicationservice');
+  });
+
   it('weighs updates routine, adds new elements, link adds new links', () => {
     const byWeight = (w: string) => items.filter((i) => i.weight === w).map((i) => i.seq);
     expect(byWeight('routine')).toEqual([0, 13, 14, 15, 16, 17, 18]);

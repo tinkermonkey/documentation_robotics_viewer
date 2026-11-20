@@ -12,9 +12,14 @@
       spec's title (else the type id) and its layer: singular and plural, split
       into words (\"Application Component\"), and a short plural that drops the
       layer's own leading word (\"Components\"). The short form is only used
-      where the view is scoped to one layer (nav tree type groups, by-type lanes
-      and hive); views that mix layers use the full form. withCount gives
-      \"Components · 37\". Type ids stay ids wherever they are ids."
+      where the view is scoped to one layer (by-type lanes and hive, and the nav
+      tree type groups, whose count stays in the NavItem badge); views that mix
+      layers use the full form. withCount gives \"Components · 37\" for lane and
+      hive titles. data/useTypeName.ts gives the full singular from the live
+      spec for one element's type beside its layer (\"application · Application
+      Service\"): review rows, link ends, the change inspector and its
+      neighbourhood, the Impact matches and focus line. Type ids stay ids
+      wherever they are ids."
     attributes:
       serviceType: synchronous
     metadata:
@@ -26,7 +31,7 @@
       locations:
         - file: src/apps/embedded/data/typeLabel.ts
           symbol: typeLabel
-  timestamp: 2026-11-20T14:13:52.945Z
+  timestamp: 2026-11-20T14:49:05.800Z
   sequenceNumber: 0
 - type: add
   elementId: testing.testcasesketch.node-type-label-splits-pluralizes-and-drops-the-layer-word
@@ -767,3 +772,177 @@
           symbol: buildSearchIndex
   timestamp: 2026-11-20T14:14:13.535Z
   sequenceNumber: 32
+- type: update
+  elementId: application.applicationservice.changeset-review-model
+  layerName: application
+  before:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, layer and whether this changeset adds it (replacing the 'new
+      source' / 'new target' / 'both ends new' chips); an element item counts
+      its new links out and in. Apply needs a decision only where one is
+      required (#573): canApply holds while a blocked delete is undecided, a
+      change waits on DrBot or a drop conflicts, and otherwise undecided changes
+      land as kept (apply.undecided lists them); ready still means every change
+      has a verdict. The commit body is unchanged: drop names only dropped
+      changes, deleteBlockedLinks only kept blocked deletes."
+    attributes: &a29
+      serviceType: synchronous
+    source_reference: &a30
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/changesetReview.ts
+          symbol: buildReviewModel
+    metadata: &a31
+      created_at: 2026-11-17T22:03:59.328Z
+      updated_at: 2026-11-17T22:03:59.328Z
+      version: 1
+  after:
+    id: fc29b9bf-4f62-4236-a64d-6c17a31a5380
+    path: application.applicationservice.changeset-review-model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Review Model
+    description: "Pure review model over a changeset: review items, groups,
+      cancel-out pairs, effective decisions, drop cascade, conflicts,
+      since-your-review diff and the apply plan. A link item carries each end's
+      name, type, the type's display name, layer and whether this changeset adds
+      it (replacing the 'new source' / 'new target' / 'both ends new' chips); an
+      element item counts its new links out and in. Types read by their display
+      name (#605): the caller passes typeNameOf (the spec's title), else the
+      type id is split into words. Apply needs a decision only where one is
+      required (#573): canApply holds while a blocked delete is undecided, a
+      change waits on DrBot or a drop conflicts, and otherwise undecided changes
+      land as kept (apply.undecided lists them); ready still means every change
+      has a verdict. The commit body is unchanged: drop names only dropped
+      changes, deleteBlockedLinks only kept blocked deletes."
+    attributes: *a29
+    source_reference: *a30
+    metadata: *a31
+  timestamp: 2026-11-20T14:49:06.047Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.changeset-review-model::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-review-model
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: application.applicationservice.use-changeset-review::depends-on::application.applicationservice.node-type-label
+  layerName: application
+  after:
+    source: application.applicationservice.use-changeset-review
+    target: application.applicationservice.node-type-label
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-inspector
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-inspector
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-link-card
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-link-card
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.change-neighbourhood
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.change-neighbourhood
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: application.applicationservice.node-type-label::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.node-type-label
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:06.267Z
+  sequenceNumber: 42
+- type: add
+  elementId: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+  layerName: testing
+  after:
+    id: 6cbdf2cb-fd2e-47c6-9dfe-1f9d37ab0eb9
+    path: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: toReviewItems names element and link-end types by their display name
+    attributes:
+      status: draft
+      implementationFormat: automated
+      description: A review item's type line reads 'application · Application Service'
+        and its summary 'Adds this Application Service'; a link end keeps its
+        type id and adds typeName; a caller's typeNameOf (the spec's title) wins
+        over splitting the id.
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/changesetReview.spec.ts
+          symbol: names element and link-end types by their display name (#605)
+    metadata:
+      created_at: 2026-11-20T14:49:13.812Z
+      updated_at: 2026-11-20T14:49:13.812Z
+      version: 1
+  timestamp: 2026-11-20T14:49:13.837Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name::tests::application.applicationservice.changeset-review-model
+  layerName: testing
+  after:
+    source: testing.testcasesketch.to-review-items-names-element-and-link-end-types-by-their-display-name
+    target: application.applicationservice.changeset-review-model
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-20T14:49:13.837Z
+  sequenceNumber: 44

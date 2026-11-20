@@ -22,6 +22,7 @@ import { useModel } from '../data/useModel';
 import { changesetImpact } from '../data/changesetImpact';
 import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
 import type { ReviewItem, ReviewModel } from '../data/changesetReview';
+import { useTypeName } from '../data/useTypeName';
 
 const FOLLOW_OPTIONS = FOLLOW_DEPTHS.map((d) => ({ value: d, label: followOptionLabel(d) }));
 /** Elements a lane lists before "+N more". */
@@ -33,6 +34,7 @@ export function ChangeNeighbourhood({ item, model }: { item: ReviewItem; model: 
   const selectChange = useUiStore((s) => s.selectChange);
   const focusImpact = useUiStore((s) => s.focusImpact);
   const { derived } = useModel();
+  const typeNameOf = useTypeName();
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
 
   const focus = useMemo(() => (item.link ? [item.link.source, item.link.target] : [item.elementId]), [item]);
@@ -95,7 +97,7 @@ export function ChangeNeighbourhood({ item, model }: { item: ReviewItem; model: 
                     const far = (impact.hopOf.get(n.id) ?? 0) > 1;
                     const isOrigin = origins.has(n.id);
                     const o = op ? OP_OUTLINE[op] : undefined;
-                    const label = `${n.label} · ${n.kind ?? 'element'}${o ? ` · ${o.label}` : ''}${isOrigin ? ' · this change' : ''}`;
+                    const label = `${n.label} · ${n.kind ? typeNameOf(layerId, n.kind) : 'element'}${o ? ` · ${o.label}` : ''}${isOrigin ? ' · this change' : ''}`;
                     const cls = `drv-hood__node${isOrigin ? ' drv-hood__node--focus' : ''}${far ? ' drv-hood__node--far' : ''}`;
                     const style = o && op !== 'add' ? { outline: `${op === 'relink' ? 3 : 2}px ${o.style} rgb(var(${o.token}))` } : undefined;
                     const body = (
