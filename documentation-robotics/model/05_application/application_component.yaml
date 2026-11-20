@@ -418,10 +418,11 @@ application.applicationcomponent.tier1-panel:
   description: Read-only card in the changeset inbox showing Tier 1's state (on,
     warming, capped, no credentials, misconfigured, off), provider and model,
     this month's spend against the cap, the warming fill's progress (cards done
-    of total, time left, cost so far), whether Tier 1 stages without the agent
-    or only suggests (with the server's reason), and OpenRouter's routing
-    (allowed upstreams, no fallbacks, no data collection, zero data retention),
-    from GET /api/tier1. Hidden on an older dr CLI (404).
+    of total, time left, cost so far), its mode (stages and hides non-elements
+    without the agent, only hides non-elements, or only suggests, with the
+    server's reason), and OpenRouter's routing (allowed upstreams, no fallbacks,
+    no data collection, zero data retention), from GET /api/tier1. Hidden on an
+    older dr CLI (404).
   attributes:
     type: internal
   source_reference:
@@ -778,15 +779,6 @@ application.applicationcomponent.markdown-text:
     locations:
       - file: src/apps/embedded/ui/MarkdownText.tsx
         symbol: MarkdownText
-  accepted_gaps:
-    - direction: incoming
-      predicate: serves
-      other_spec_node_id: application.applicationservice
-      reason: "A presentation-only leaf: callers hand it the text as a prop, no data
-        service feeds it."
-      decided_by: agent
-      decided_at: 2026-11-19T17:46:42.460Z
-      changeset: changeset-1795110378807-ocbe9zrml
   metadata:
     created_at: 2026-11-19T17:46:28.982Z
     updated_at: 2026-11-19T17:46:28.982Z
@@ -808,6 +800,11 @@ application.applicationcomponent.topbar-search:
     canvas/shell tokens."
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TopbarSearch.tsx
+        symbol: TopbarSearch
   metadata:
     created_at: 2026-11-19T17:48:18.602Z
     updated_at: 2026-11-19T17:48:18.602Z
@@ -825,6 +822,11 @@ application.applicationcomponent.type-lanes-view:
     selection through the Canvas's selectFromCanvas.
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeLanesView.tsx
+        symbol: TypeLanesView
   accepted_gaps:
     - direction: outgoing
       predicate: uses
@@ -850,6 +852,11 @@ application.applicationcomponent.type-hive-view:
     busiest per axis labelled; selection shared with the Inspector drawer.
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeHiveView.tsx
+        symbol: TypeHiveView
   accepted_gaps:
     - direction: outgoing
       predicate: uses

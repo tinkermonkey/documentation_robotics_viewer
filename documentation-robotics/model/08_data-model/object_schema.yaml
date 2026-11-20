@@ -526,3 +526,72 @@ data-model.objectschema.delete-blocker:
     created_at: 2026-11-18T16:27:42.057Z
     updated_at: 2026-11-18T16:27:42.057Z
     version: 1
+data-model.objectschema.changeset-summary:
+  id: 348601da-6f66-4185-ab7d-73b9c33314fc
+  path: data-model.objectschema.changeset-summary
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChangesetSummary
+  description: "One entry of GET /api/changesets's list, as the viewer reads it:
+    id, name, status, created, change count, description, origin, revision,
+    review progress (decided, total, asked), purpose, the actions the server
+    allows, for a verification record the plan it verifies, and the base drift
+    summary (state, blocksCommit, message). Fields a dr CLI doesn't send stay
+    absent."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useChangesets.ts
+        symbol: ChangesetSummary
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+data-model.objectschema.commit-body:
+  id: d87ddf3d-f7c1-466b-804c-48499379afac
+  path: data-model.objectschema.commit-body
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: CommitBody
+  description: "POST /api/changesets/:id/commit's optional body, the reviewed
+    Apply: drop (the sequences left out) and deleteBlockedLinks (the deletes
+    whose blocking links go with their elements). The viewer always sends both
+    lists when the server supports review, so the reviewed-commit rules apply;
+    an older dr CLI gets no body."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/changesetReview.ts
+        symbol: CommitBody
+  metadata:
+    created_at: 2026-11-20T15:45:55.289Z
+    updated_at: 2026-11-20T15:45:55.289Z
+    version: 1
+data-model.objectschema.changeset-action-result:
+  id: 464ef122-f6c8-4fac-be44-f754f863aab4
+  path: data-model.objectschema.changeset-action-result
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: ChangesetActionResult
+  description: "The response of POST /api/changesets/:id/commit and /discard: id,
+    name, status, and for a commit the changes applied, skipped and failed,
+    every sequence left out (dropped, cascades included) and the blocking links
+    deleted with their elements (linksDeleted)."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useChangesets.ts
+        symbol: ChangesetActionResult
+  metadata:
+    created_at: 2026-11-20T15:45:55.289Z
+    updated_at: 2026-11-20T15:45:55.289Z
+    version: 1

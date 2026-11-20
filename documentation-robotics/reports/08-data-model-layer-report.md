@@ -16,11 +16,11 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 28    |
+| Elements                  | 31    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 23    |
-| Inbound Relationships     | 12    |
-| Outbound Relationships    | 11    |
+| Inter-Layer Relationships | 36    |
+| Inbound Relationships     | 24    |
+| Outbound Relationships    | 12    |
 
 **Cross-Layer References**:
 
@@ -29,53 +29,41 @@ Data entities, relationships, and data structure definitions.
 
 ## Intra-Layer Relationships
 
-```mermaid
-flowchart LR
-  subgraph data_model
-    data_model_objectschema_annotation["Annotation"]
-    data_model_objectschema_annotation_create["AnnotationCreate"]
-    data_model_objectschema_change_origin["ChangeOrigin"]
-    data_model_objectschema_changeset_detail["ChangesetDetail"]
-    data_model_objectschema_chat_conversation["ChatConversation"]
-    data_model_objectschema_chat_message["ChatMessage"]
-    data_model_objectschema_delete_blocker["DeleteBlocker"]
-    data_model_objectschema_extracted_reference["ExtractedReference"]
-    data_model_objectschema_json_rpc_request["JsonRpcRequest"]
-    data_model_objectschema_layer["Layer"]
-    data_model_objectschema_meta_model["MetaModel"]
-    data_model_objectschema_model_element["ModelElement"]
-    data_model_objectschema_model_metadata["ModelMetadata"]
-    data_model_objectschema_predicate_definition["PredicateDefinition"]
-    data_model_objectschema_reference["Reference"]
-    data_model_objectschema_relationship["Relationship"]
-    data_model_objectschema_relationship_type["RelationshipType"]
-    data_model_objectschema_review_decision["ReviewDecision"]
-    data_model_objectschema_source_reference["SourceReference"]
-    data_model_objectschema_spec_layer_data["SpecLayerData"]
-    data_model_objectschema_spec_node_relationship["SpecNodeRelationship"]
-    data_model_objectschema_tier1status["Tier1Status"]
-    data_model_objectschema_tool_invocation_content["ToolInvocationContent"]
-    data_model_objectschema_web_socket_event_map["WebSocketEventMap"]
-    data_model_objectschema_web_socket_message["WebSocketMessage"]
-    data_model_schemadefinition_annotation_id["AnnotationId"]
-    data_model_schemadefinition_changeset_id["ChangesetId"]
-    data_model_schemadefinition_element_id["ElementId"]
-    data_model_objectschema_annotation_create -->|specializes| data_model_objectschema_annotation
-    data_model_objectschema_chat_conversation -->|specializes| data_model_objectschema_chat_message
-    data_model_objectschema_meta_model -->|specializes| data_model_objectschema_layer
-    data_model_objectschema_model_element -->|specializes| data_model_objectschema_relationship
-    data_model_objectschema_predicate_definition -->|specializes| data_model_objectschema_relationship
-    data_model_objectschema_relationship_type -->|specializes| data_model_objectschema_relationship
-    data_model_objectschema_source_reference -->|specializes| data_model_objectschema_model_element
-    data_model_objectschema_spec_layer_data -->|specializes| data_model_objectschema_spec_node_relationship
-    data_model_objectschema_tool_invocation_content -->|specializes| data_model_objectschema_chat_message
-    data_model_objectschema_web_socket_event_map -->|specializes| data_model_objectschema_web_socket_message
-    data_model_objectschema_web_socket_message -->|specializes| data_model_objectschema_json_rpc_request
-    data_model_schemadefinition_annotation_id -->|specializes| data_model_schemadefinition_changeset_id
-    data_model_schemadefinition_element_id -->|composes| data_model_schemadefinition_annotation_id
-    data_model_schemadefinition_element_id -->|specializes| data_model_schemadefinition_annotation_id
-  end
-```
+*This layer has >30 elements. Summary table shown instead of diagram.*
+
+| Element                                           | Type               | Relationships |
+| ------------------------------------------------- | ------------------ | ------------- |
+| `data-model.objectschema.annotation`              | `objectschema`     | 1             |
+| `data-model.objectschema.annotation-create`       | `objectschema`     | 1             |
+| `data-model.objectschema.change-origin`           | `objectschema`     | 0             |
+| `data-model.objectschema.changeset-action-result` | `objectschema`     | 0             |
+| `data-model.objectschema.changeset-detail`        | `objectschema`     | 0             |
+| `data-model.objectschema.changeset-summary`       | `objectschema`     | 0             |
+| `data-model.objectschema.chat-conversation`       | `objectschema`     | 1             |
+| `data-model.objectschema.chat-message`            | `objectschema`     | 2             |
+| `data-model.objectschema.commit-body`             | `objectschema`     | 0             |
+| `data-model.objectschema.delete-blocker`          | `objectschema`     | 0             |
+| `data-model.objectschema.extracted-reference`     | `objectschema`     | 0             |
+| `data-model.objectschema.json-rpc-request`        | `objectschema`     | 1             |
+| `data-model.objectschema.layer`                   | `objectschema`     | 1             |
+| `data-model.objectschema.meta-model`              | `objectschema`     | 1             |
+| `data-model.objectschema.model-element`           | `objectschema`     | 2             |
+| `data-model.objectschema.model-metadata`          | `objectschema`     | 0             |
+| `data-model.objectschema.predicate-definition`    | `objectschema`     | 1             |
+| `data-model.objectschema.reference`               | `objectschema`     | 0             |
+| `data-model.objectschema.relationship`            | `objectschema`     | 3             |
+| `data-model.objectschema.relationship-type`       | `objectschema`     | 1             |
+| `data-model.objectschema.review-decision`         | `objectschema`     | 0             |
+| `data-model.objectschema.source-reference`        | `objectschema`     | 1             |
+| `data-model.objectschema.spec-layer-data`         | `objectschema`     | 1             |
+| `data-model.objectschema.spec-node-relationship`  | `objectschema`     | 1             |
+| `data-model.objectschema.tier1status`             | `objectschema`     | 0             |
+| `data-model.objectschema.tool-invocation-content` | `objectschema`     | 1             |
+| `data-model.objectschema.web-socket-event-map`    | `objectschema`     | 1             |
+| `data-model.objectschema.web-socket-message`      | `objectschema`     | 2             |
+| `data-model.schemadefinition.annotation-id`       | `schemadefinition` | 3             |
+| `data-model.schemadefinition.changeset-id`        | `schemadefinition` | 1             |
+| `data-model.schemadefinition.element-id`          | `schemadefinition` | 2             |
 
 ## Inter-Layer Dependencies
 
@@ -110,9 +98,15 @@ flowchart TB
 | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
 | `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                                                                    | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`            | `security`   | `references` | unknown      | unknown  |
 | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                       | `data-model.objectschema.delete-blocker`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                       | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                       | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-inbox`                                                        | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-inspector`                                                    | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.changeset-action-result` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.drift-notice`                                                           | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`                                                           | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
@@ -120,8 +114,15 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.change-origin-helpers`                                                    | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-impact-analysis`                                                | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-action-result` | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-detail`                                                                | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-summary`                                                               | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.extracted-reference`                                                             | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.model-metadata`                                                                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.reference`                                                                       | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
@@ -189,9 +190,31 @@ Who decided a staged change: by (tier0, tier1, agent) with rule, provider, model
 
 #### Relationships
 
-| Type        | Related Element                                 | Predicate  | Direction |
-| ----------- | ----------------------------------------------- | ---------- | --------- |
-| inter-layer | `application.applicationcomponent.review-parts` | `accesses` | inbound   |
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.review-parts`        | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.change-origin-helpers` | `accesses` | inbound   |
+
+### ChangesetActionResult {#changesetactionresult}
+
+**ID**: `data-model.objectschema.changeset-action-result`
+
+**Type**: `objectschema`
+
+The response of POST /api/changesets/:id/commit and /discard: id, name, status, and for a commit the changes applied, skipped and failed, every sequence left out (dropped, cascades included) and the blocking links deleted with their elements (linksDeleted).
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.use-changesets`           | `accesses` | inbound   |
 
 ### ChangesetDetail {#changesetdetail}
 
@@ -209,12 +232,37 @@ GET /api/changesets/:id's body: the changeset with its changes, revision, unstag
 
 #### Relationships
 
-| Type        | Related Element                                           | Predicate  | Direction |
-| ----------- | --------------------------------------------------------- | ---------- | --------- |
-| inter-layer | `application.applicationcomponent.changeset-canvas`       | `accesses` | inbound   |
-| inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
-| inter-layer | `application.applicationcomponent.drift-notice`           | `accesses` | inbound   |
-| inter-layer | `business.businessobject.changeset`                       | `realizes` | outbound  |
+| Type        | Related Element                                            | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-canvas`        | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.changeset-inspector`     | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.changeset-review-panel`  | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.drift-notice`            | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.changeset-impact-analysis` | `accesses` | inbound   |
+| inter-layer | `business.businessobject.changeset`                        | `realizes` | outbound  |
+
+### ChangesetSummary {#changesetsummary}
+
+**ID**: `data-model.objectschema.changeset-summary`
+
+**Type**: `objectschema`
+
+One entry of GET /api/changesets's list, as the viewer reads it: id, name, status, created, change count, description, origin, revision, review progress (decided, total, asked), purpose, the actions the server allows, for a verification record the plan it verifies, and the base drift summary (state, blocksCommit, message). Fields a dr CLI doesn't send stay absent.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate  | Direction |
+| ----------- | --------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-canvas` | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.changeset-inbox`  | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.use-changesets`     | `accesses` | inbound   |
+| inter-layer | `business.businessobject.changeset`                 | `realizes` | outbound  |
 
 ### ChatConversation {#chatconversation}
 
@@ -254,9 +302,31 @@ Multi-part chat conversation message; contains a role (user/assistant/system), o
 
 | Type        | Related Element                                   | Predicate     | Direction |
 | ----------- | ------------------------------------------------- | ------------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`      | `accesses`    | inbound   |
 | inter-layer | `application.applicationfunction.chat-store`      | `accesses`    | inbound   |
 | intra-layer | `data-model.objectschema.chat-conversation`       | `specializes` | inbound   |
 | intra-layer | `data-model.objectschema.tool-invocation-content` | `specializes` | inbound   |
+
+### CommitBody {#commitbody}
+
+**ID**: `data-model.objectschema.commit-body`
+
+**Type**: `objectschema`
+
+POST /api/changesets/:id/commit's optional body, the reviewed Apply: drop (the sequences left out) and deleteBlockedLinks (the deletes whose blocking links go with their elements). The viewer always sends both lists when the server supports review, so the reviewed-commit rules apply; an older dr CLI gets no body.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.changeset-review-model`   | `accesses` | inbound   |
 
 ### DeleteBlocker {#deleteblocker}
 
@@ -501,6 +571,7 @@ A reviewer's verdict on one change (keep, drop, ask) by sequence, with note, the
 | ----------- | --------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
 | inter-layer | `application.applicationfunction.local-review-store`      | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.changeset-review-model`   | `accesses` | inbound   |
 
 ### SourceReference {#sourcereference}
 
@@ -717,4 +788,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-19T20:25:27.206Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:34.131Z | Model Version: 0.1.0

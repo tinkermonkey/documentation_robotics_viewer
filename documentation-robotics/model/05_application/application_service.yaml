@@ -882,3 +882,100 @@ application.applicationservice.node-type-label:
     created_at: 2026-11-20T14:04:49.110Z
     updated_at: 2026-11-20T14:04:49.110Z
     version: 1
+application.applicationservice.chat-panel-layout:
+  id: 89067a7b-ecf4-46aa-a5e9-948ee52a4c23
+  path: application.applicationservice.chat-panel-layout
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Panel Layout
+  description: "ui/chatPanelLayout.ts: the pure placement rule for the floating
+    DrBot panel. Given the anchor area, whether the Inspector drawer is open and
+    its width, and the panel size, it places the panel beside the drawer
+    (top-right, left of it), over the drawer (when panel + drawer + 240px of
+    graph don't fit, setting chatCoversDrawer) or filling the area (under
+    720px). Also clamps the persisted panel size (340-820px wide, at least 360px
+    tall) and dock width (320-760px), and maps resize keys (arrows, Shift,
+    Home/End) to a new width."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/chatPanelLayout.ts
+        symbol: chatPanelLayout
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.chat-anchor:
+  id: 6a15565c-d8eb-490a-8234-b2f363f6a2c0
+  path: application.applicationservice.chat-anchor
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Chat Anchor
+  description: "ui/chatAnchor.ts: useChatAnchor(ref) lets a view register the area
+    the DrBot panel anchors to (Canvas's graph area, ChangesetCanvas's body) in
+    a small Zustand store; the chat drawer reads it and places the panel from
+    the anchor's rect through a ResizeObserver. Also names the topbar launcher's
+    test id so Escape can return focus to it."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/chatAnchor.ts
+        symbol: useChatAnchor
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.markdown-excerpt:
+  id: 1a1d357f-d896-4b12-a3ae-f0ddbb23dfed
+  path: application.applicationservice.markdown-excerpt
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Markdown Excerpt
+  description: "ui/markdownExcerpt.ts: descriptionExcerpt takes the first
+    paragraph of a markdown description and drops list and heading markup (plain
+    text unchanged, single newlines folded); inlineTokens splits that line into
+    text, code-span and emphasis tokens, links as plain text. Used by
+    MarkdownExcerpt for the one-paragraph inline description on a changeset
+    inbox card, with no raw HTML."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/markdownExcerpt.ts
+        symbol: descriptionExcerpt
+  metadata:
+    created_at: 2026-11-20T15:45:01.924Z
+    updated_at: 2026-11-20T15:45:01.924Z
+    version: 1
+application.applicationservice.use-type-name:
+  id: a0bc9cdf-0a88-4a77-b40d-90b6643f578b
+  path: application.applicationservice.use-type-name
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useTypeName
+  description: "data/useTypeName.ts: a node type's full singular display name from
+    the live spec (\"Application Service\"), for views that name one element's
+    type beside its layer: review rows and link ends (through the review model's
+    typeNameOf), the change inspector's band, related rows and neighbourhood,
+    and the Impact matches and focus line. Before the spec loads, the type id
+    split into words stands in."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useTypeName.ts
+        symbol: useTypeName
+  metadata:
+    created_at: 2026-11-20T15:48:29.376Z
+    updated_at: 2026-11-20T15:48:29.376Z
+    version: 1

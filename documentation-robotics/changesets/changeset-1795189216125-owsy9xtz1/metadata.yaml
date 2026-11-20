@@ -1,0 +1,368 @@
+id: changeset-1795189216125-owsy9xtz1
+name: model-sync-2026-11-20
+description: As-built extraction of the code at 501a382, files changed since
+  ac20e00c83884c7a6542d7ffe052cb254290f237. Staged by codebase_extract.
+created: 2026-11-20T15:40:16.130Z
+modified: 2026-11-20T15:49:34.113Z
+status: committed
+baseSnapshot: sha256:6ac99c4bc82077459b11d9e7ca21a2c84da8b314650d9b6eb99e28efbd707cb2
+origin:
+  kind: extract
+purpose: reconcile
+stats:
+  additions: 261
+  modifications: 25
+  deletions: 10
+lastSequence: 321
+unstaged:
+  - sequence: 0
+    removedAt: 219
+    change:
+      type: add
+      elementId: testing.testcasesketch.canvas-model-view-by-type-594-model-view-control-switches-between-graph-lanes-and-hive-and-persists
+      layerName: testing
+      after:
+        id: 6c39c632-db1e-437c-8b38-5d2a142897e7
+        path: testing.testcasesketch.canvas-model-view-by-type-594-model-view-control-switches-between-graph-lanes-and-hive-and-persists
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: Canvas — Model view by type (#594) > model view control switches between
+          graph lanes and hive and persists
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/Canvas.spec.tsx
+              symbol: Canvas — Model view by type (#594) > model view control switches between
+                graph lanes and hive and persists
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 6
+    removedAt: 220
+    change:
+      type: add
+      elementId: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-resizes-within-340820px-by-keyboard-and-605d529f
+      layerName: testing
+      after:
+        id: 09741e19-3c96-4cdd-9b93-0f11e4f5162a
+        path: testing.testcasesketch.drbot-panel-resizes-from-its-edge-and-docks-as-a-column-resizes-within-340820px-by-keyboard-and-605d529f
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: drbot panel resizes from its edge and docks as a column > resizes within
+          340–820px by keyboard and pointer, and persists the size
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/ChatDrawer.spec.tsx
+              symbol: drbot panel resizes from its edge and docks as a column > resizes within
+                340–820px by keyboard and pointer, and persists the size
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 8
+    removedAt: 221
+    change:
+      type: add
+      elementId: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-sits-left-of-the-drawer-at-1440px-without-23bea82c
+      layerName: testing
+      after:
+        id: c7d572ca-36b8-40b7-9f1c-a03e08384d42
+        path: testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-sits-left-of-the-drawer-at-1440px-without-23bea82c
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: drbot panel steps left of an open inspector drawer > sits left of the
+          drawer at 1440px, without reflowing the graph area
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/ChatDrawer.spec.tsx
+              symbol: drbot panel steps left of an open inspector drawer > sits left of the
+                drawer at 1440px, without reflowing the graph area
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 10
+    removedAt: 222
+    change:
+      type: add
+      elementId: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-overlays-the-drawer-at-1000px-never-the-nav-a2c4cf5c
+      layerName: testing
+      after:
+        id: d7a03bd8-15a0-4ff3-9e8f-525992d9039a
+        path: testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit-overlays-the-drawer-at-1000px-never-the-nav-a2c4cf5c
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: drbot panel takes the drawer's place when both don't fit > overlays the
+          drawer at 1000px, never the nav rail, and the drawer returns on close
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/ChatDrawer.spec.tsx
+              symbol: drbot panel takes the drawer's place when both don't fit > overlays the
+                drawer at 1000px, never the nav rail, and the drawer returns on
+                close
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 12
+    removedAt: 223
+    change:
+      type: add
+      elementId: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-focuses-the-composer-on-7ab32c1a
+      layerName: testing
+      after:
+        id: 76e544cb-3f84-4cdf-a041-a0228c5e7af2
+        path: testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher-focuses-the-composer-on-7ab32c1a
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: escape inside the drbot panel closes it and returns focus to the launcher
+          > focuses the composer on open, closes on Escape, keeps the thread
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/ChatDrawer.spec.tsx
+              symbol: escape inside the drbot panel closes it and returns focus to the
+                launcher > focuses the composer on open, closes on Escape, keeps
+                the thread
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 15
+    removedAt: 224
+    change:
+      type: add
+      elementId: testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-as-written
+      layerName: testing
+      after:
+        id: d3362147-d4de-482b-bc8f-08b96ad8d7a6
+        path: testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-as-written
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: MarkdownText > renders headings, lists, code and links as written
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/MarkdownText.spec.tsx
+              symbol: MarkdownText > renders headings, lists, code and links as written
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 21
+    removedAt: 225
+    change:
+      type: add
+      elementId: testing.testcasesketch.page-view-description-section-593-shows-the-description-above-the-stats-and-facts-rendered-as-4dc531fc
+      layerName: testing
+      after:
+        id: e948e135-189d-4d63-9211-a8dc10a50aaa
+        path: testing.testcasesketch.page-view-description-section-593-shows-the-description-above-the-stats-and-facts-rendered-as-4dc531fc
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: PageView — description section (#593) > shows the description above the
+          stats and facts, rendered as markdown
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/components/PageView.spec.tsx
+              symbol: PageView — description section (#593) > shows the description above the
+                stats and facts, rendered as markdown
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 41
+    removedAt: 226
+    change:
+      type: add
+      elementId: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-a3a41629
+      layerName: testing
+      after:
+        id: 47f43b9c-edb5-4168-b1a5-580e70a0b802
+        path: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-a3a41629
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: search index > ranks exact, prefix, word-prefix, substring then fuzzy
+          matches and returns highlight ranges
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/unit/search.spec.ts
+              symbol: search index > ranks exact, prefix, word-prefix, substring then fuzzy
+                matches and returns highlight ranges
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 187
+    removedAt: 227
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-a3a41629::tests::application.applicationservice.search-index
+      layerName: testing
+      after:
+        source: testing.testcasesketch.search-index-ranks-exact-prefix-word-prefix-substring-then-fuzzy-matches-and-returns-highlight-a3a41629
+        target: application.applicationservice.search-index
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 46
+    removedAt: 228
+    change:
+      type: add
+      elementId: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-drops-the-layer-word-and-makes-the-type-plural
+      layerName: testing
+      after:
+        id: 7e0240b1-c2a9-4634-b285-882a982b7c42
+        path: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-drops-the-layer-word-and-makes-the-type-plural
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: type bands name types without the layer prefix > drops the layer word and
+          makes the type plural
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/unit/typeBands.spec.ts
+              symbol: type bands name types without the layer prefix > drops the layer word
+                and makes the type plural
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 190
+    removedAt: 229
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-drops-the-layer-word-and-makes-the-type-plural::tests::application.applicationservice.node-type-label
+      layerName: testing
+      after:
+        source: testing.testcasesketch.type-bands-name-types-without-the-layer-prefix-drops-the-layer-word-and-makes-the-type-plural
+        target: application.applicationservice.node-type-label
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 49
+    removedAt: 230
+    change:
+      type: add
+      elementId: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-finds-an-order-with-no-more-lane-skipping-than-any-917e8c96
+      layerName: testing
+      after:
+        id: 7cb48029-7b90-4833-ae24-3991aae78c1c
+        path: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-finds-an-order-with-no-more-lane-skipping-than-any-917e8c96
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: type bands order linked types next to each other > finds an order with no
+          more lane-skipping than any other order
+        attributes:
+          status: automated
+        source_reference:
+          provenance: extracted
+          locations:
+            - file: tests/unit/typeBands.spec.ts
+              symbol: type bands order linked types next to each other > finds an order with
+                no more lane-skipping than any other order
+        metadata:
+          created_at: 2026-11-20T15:40:16.037Z
+          updated_at: 2026-11-20T15:40:16.037Z
+          version: 1
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call
+  - sequence: 193
+    removedAt: 231
+    change:
+      type: relationship-add
+      elementId: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-finds-an-order-with-no-more-lane-skipping-than-any-917e8c96::tests::application.applicationservice.type-bands
+      layerName: testing
+      after:
+        source: testing.testcasesketch.type-bands-order-linked-types-next-to-each-other-finds-an-order-with-no-more-lane-skipping-than-any-917e8c96
+        target: application.applicationservice.type-bands
+        predicate: tests
+        layer: testing
+        targetLayer: application
+        category: structural
+      timestamp: 2026-11-20T15:40:16.142Z
+      origin:
+        by: tier0
+        rule: js_test_case_call

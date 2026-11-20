@@ -18,8 +18,8 @@ Product features, capabilities, personas, and milestones.
 | ------------------------- | ----- |
 | Elements                  | 28    |
 | Intra-Layer Relationships | 51    |
-| Inter-Layer Relationships | 60    |
-| Inbound Relationships     | 42    |
+| Inter-Layer Relationships | 61    |
+| Inbound Relationships     | 43    |
 | Outbound Relationships    | 18    |
 
 **Cross-Layer References**:
@@ -193,6 +193,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null`                          | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`                                | `product.feature.tier1-warming-progress`                           | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                           | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                     | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
@@ -615,6 +616,7 @@ Find an element or a Schema node type by name from the topbar: type-ahead result
 | inter-layer | `motivation.requirement.find-anything-by-name`                                                                                | `satisfies` | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                | `satisfies` | outbound  |
 | inter-layer | `testing.testcasesketch.topbar-search-a-node-type-result-opens-it-in-the-schema-view`                                         | `tests`     | inbound   |
+| inter-layer | `testing.testcasesketch.topbar-search-says-so-when-nothing-matches`                                                           | `tests`     | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `tests`     | inbound   |
 | inter-layer | `ux.view.topbar-search`                                                                                                       | `realizes`  | inbound   |
 | intra-layer | `product.softwarecapability.model-visualization`                                                                              | `realizes`  | outbound  |
@@ -931,4 +933,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-20T15:39:35.548Z | Model Version: 0.1.0
+Generated: 2026-11-20T15:49:34.131Z | Model Version: 0.1.0

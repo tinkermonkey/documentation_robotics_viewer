@@ -132,6 +132,11 @@ ux.subview.lanes-by-type:
   description: "Model view, View = Lanes by type: one lane per node type in the
     selected DR layer, titled with the plural type name and count; selection
     shared with the Inspector drawer."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeLanesView.tsx
+        symbol: TypeLanesView
   metadata:
     created_at: 2026-11-19T18:01:36.765Z
     updated_at: 2026-11-19T18:01:36.765Z
@@ -146,6 +151,11 @@ ux.subview.hive-by-type:
   description: "Model view, View = Hive by type: one axis per node type, busiest
     elements farthest out, links as curves; offered only for layers with 3 or
     more types."
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/TypeHiveView.tsx
+        symbol: TypeHiveView
   metadata:
     created_at: 2026-11-19T18:01:36.767Z
     updated_at: 2026-11-19T18:01:36.767Z
