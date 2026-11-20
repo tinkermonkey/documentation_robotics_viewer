@@ -6,6 +6,7 @@ triggers:
     "product",
     "feature",
     "persona",
+    "software capability",
     "capability",
     "milestone",
     "user workflow",
@@ -20,7 +21,7 @@ version: 0.8.4
 
 **Layer Number:** 03
 **Specification:** Metadata Model Spec v0.8.4
-**Purpose:** Defines product personas, capabilities, features, user workflows, and milestones that represent what the product does and for whom.
+**Purpose:** Defines product personas, software capabilities, features, user workflows, and milestones that represent what the product does and for whom.
 
 ---
 
@@ -29,7 +30,7 @@ version: 0.8.4
 The Product Layer captures the **product management dimension** of architecture:
 
 - **WHO** - Personas and target user archetypes
-- **WHAT** - Capabilities and features the product delivers
+- **WHAT** - Software capabilities and features the product delivers
 - **HOW** - User workflows describing how users accomplish goals
 - **WHEN** - Milestones representing delivery roadmap
 - **WHY** - Linkage to business goals and requirements
@@ -45,13 +46,14 @@ This layer uses a **custom specification** designed for product planning, priori
 > **CLI Introspection:** Run `dr schema types product` for the authoritative, always-current list of node types.
 > Run `dr schema node <type-id>` for full attribute details on any type.
 
-| Entity Type      | Description                                                | Key Attributes                                                                                        |
-| ---------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **Persona**      | User archetype with shared goals, behaviors, pain points   | category (primary, secondary, served, negative), proficiency (novice, intermediate, advanced, expert) |
-| **Capability**   | Product ability independent of implementation              | status (proposed, planned, developing, delivered, deprecated), properties                             |
-| **Feature**      | User-visible unit of functionality delivering capabilities | priority (critical, high, medium, low, informational), status, size (xs, s, m, l, xl)                 |
-| **UserWorkflow** | Sequence of user-facing steps to accomplish a goal         | complexity (simple, moderate, complex), properties                                                    |
-| **Milestone**    | Time-bound delivery target grouping features/capabilities  | status (proposed, planned, active, completed, cancelled)                                              |
+| Entity Type            | Description                                                                                 | Key Attributes                                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Persona**            | User archetype with shared goals, behaviors, pain points                                    | category (primary, secondary, served, negative), proficiency (novice, intermediate, advanced, expert) |
+| **SoftwareCapability** | Ability of the software platform, independent of implementation (not a business capability) | status (proposed, planned, developing, delivered, deprecated), properties                             |
+| **Feature**            | User-visible unit of functionality delivering software capabilities                         | priority (critical, high, medium, low, informational), status, size (xs, s, m, l, xl)                 |
+| **UserWorkflow**       | Sequence of user-facing steps to accomplish a goal                                          | complexity (simple, moderate, complex), properties                                                    |
+| **WorkflowStep**       | One ordered, user-facing step within a UserWorkflow                                         | sequence, action, outcome, optional, properties                                                       |
+| **Milestone**          | Time-bound delivery target grouping features and software capabilities                      | status (proposed, planned, active, completed, cancelled)                                              |
 
 ---
 
@@ -59,54 +61,56 @@ This layer uses a **custom specification** designed for product planning, priori
 
 The Product layer models product structure and planning via these core relationships:
 
-| Source                 | Predicate       | Destination          | Cardinality  | Rationale                                      |
-| ---------------------- | --------------- | -------------------- | ------------ | ---------------------------------------------- |
-| `product.capability`   | `aggregates`    | `product.capability` | many-to-many | Capability decomposition into sub-capabilities |
-| `product.feature`      | `realizes`      | `product.capability` | many-to-many | Feature delivers a capability                  |
-| `product.feature`      | `serves`        | `product.persona`    | many-to-many | Feature targets a persona                      |
-| `product.feature`      | `scheduled-for` | `product.milestone`  | many-to-many | Feature assigned to delivery milestone         |
-| `product.capability`   | `scheduled-for` | `product.milestone`  | many-to-many | Capability assigned to milestone               |
-| `product.userworkflow` | `serves`        | `product.persona`    | many-to-many | Workflow designed for a persona                |
-| `product.userworkflow` | `composes`      | `product.feature`    | many-to-many | Workflow composed of features                  |
-| `product.milestone`    | `precedes`      | `product.milestone`  | many-to-many | Milestone sequencing                           |
-| `product.feature`      | `depends-on`    | `product.feature`    | many-to-many | Feature dependency                             |
+| Source Type        | Predicate     | Target Type        | Example                                                         |
+| ------------------ | ------------- | ------------------ | --------------------------------------------------------------- |
+| SoftwareCapability | aggregates    | SoftwareCapability | "Authentication" aggregates "Multi-Factor Auth"                 |
+| SoftwareCapability | depends-on    | SoftwareCapability | "Order Tracking" depends on "Send Email"                        |
+| SoftwareCapability | scheduled-for | Milestone          | "Customer Segmentation" scheduled for "Q3 2024 Release"         |
+| Feature            | realizes      | SoftwareCapability | "Two-Factor Login" realizes "Authentication"                    |
+| Feature            | serves        | Persona            | "CSV Export" serves "Data Analyst"                              |
+| Feature            | scheduled-for | Milestone          | "Live Cursor Tracking" scheduled for "Q4 Collaboration Release" |
+| Feature            | depends-on    | Feature            | "Scheduled Reports" depends on "Custom Dashboards"              |
+| Milestone          | precedes      | Milestone          | "Q3 Security Release" precedes "Q4 Collaboration Release"       |
+| UserWorkflow       | composes      | WorkflowStep       | "Password Reset" composes "Request Reset Link"                  |
+| UserWorkflow       | serves        | Persona            | "Checkout" serves "Busy Parent"                                 |
+| WorkflowStep       | flows-to      | WorkflowStep       | "Request Reset Link" flows to "Receive Reset Email"             |
+| WorkflowStep       | uses          | Feature            | "Choose New Password" uses "Password Reset"                     |
 
 ---
 
 ## Cross-Layer References
 
-### Outgoing References (Product → Motivation)
+### Outgoing References (Product → Other Layers)
 
-Product layer references Motivation layer to justify product decisions with strategic goals:
+Product elements point to Motivation to justify product decisions, and to Business to align with organizational services and roles:
 
-| Predicate        | Source       | Target      | Rationale                                    |
-| ---------------- | ------------ | ----------- | -------------------------------------------- |
-| `realizes`       | Persona      | Stakeholder | Persona concretizes stakeholder archetypes   |
-| `satisfies`      | Feature      | Requirement | Feature satisfies business/user requirements |
-| `supports`       | Capability   | Goal        | Capability supports strategic goals          |
-| `delivers`       | UserWorkflow | Outcome     | Workflow delivers business outcomes          |
-| `delivers-value` | Feature      | Value       | Feature delivers business value              |
-| `fulfills`       | Capability   | Requirement | Capability fulfills requirements             |
+| Source Type        | Predicate  | Target Type                 | Example                                              |
+| ------------------ | ---------- | --------------------------- | ---------------------------------------------------- |
+| Persona            | references | `motivation.stakeholder`    | "Busy Parent" realizes "Retail Customers"            |
+| Feature            | satisfies  | `motivation.requirement`    | "Two-Factor Login" satisfies "User Account Security" |
+| Feature            | delivers   | `motivation.value`          | "One-Click Reorder" delivers "Customer Convenience"  |
+| SoftwareCapability | supports   | `motivation.goal`           | "Authentication" supports "Customer Trust"           |
+| SoftwareCapability | satisfies  | `motivation.requirement`    | "Data Export" satisfies "Data Portability"           |
+| UserWorkflow       | delivers   | `motivation.outcome`        | "Checkout" delivers "Cart Abandonment Reduced 15%"   |
+| SoftwareCapability | realizes   | `business.businessfunction` | "Subscription Billing" realizes "Billing"            |
+| UserWorkflow       | realizes   | `business.businessprocess`  | "Checkout" aggregates "Order Fulfillment"            |
+| Persona            | references | `business.businessrole`     | "Power User" serves "Data Analyst" role              |
 
-### Outgoing References (Product → Business)
+### Incoming References (Other Layers → Product)
 
-Product layer references Business layer to align with organizational services and roles:
+Other layers reference Product elements to record what implements, exposes or verifies them:
 
-| Predicate    | Source       | Target           | Rationale                               |
-| ------------ | ------------ | ---------------- | --------------------------------------- |
-| `realizes`   | Feature      | BusinessService  | Feature realizes a business service     |
-| `aggregates` | UserWorkflow | BusinessProcess  | Workflow aggregates business processes  |
-| `realizes`   | Capability   | BusinessFunction | Capability realizes a business function |
-| `serves`     | Persona      | BusinessRole     | Persona is served by a business role    |
-
-### Incoming References (Lower Layers → Product)
-
-Higher layers (Security through Testing) reference Product layer for feature-level concerns:
-
-- Application → Feature: Application components implement features
-- UX → Feature: UI views render features
-- Testing → Feature: Test cases validate features
-- API → Feature: API operations expose features
+| Source Type                      | Predicate | Target Type        | Example                                                   |
+| -------------------------------- | --------- | ------------------ | --------------------------------------------------------- |
+| `application.applicationservice` | realizes  | SoftwareCapability | "EmailService" realizes "Send Email"                      |
+| `technology.technologyservice`   | realizes  | SoftwareCapability | "SMTP Relay" realizes "Send Email"                        |
+| `application.applicationservice` | realizes  | Feature            | "ExportService" realizes "CSV Export"                     |
+| `api.operation`                  | exposes   | Feature            | "GET /reports/{id}/csv" exposes "CSV Export"              |
+| `ux.view`                        | realizes  | Feature            | "Cart Page" realizes "Shopping Cart"                      |
+| `navigation.navigationflow`      | realizes  | UserWorkflow       | "password-reset" flow realizes "Password Reset"           |
+| `navigation.flowstep`            | realizes  | WorkflowStep       | "/reset/new-password" step realizes "Choose New Password" |
+| `testing.testcasesketch`         | tests     | Feature            | "MFA login happy path" tests "Two-Factor Login"           |
+| `testing.testcoveragetarget`     | covers    | Feature            | "Export coverage target" covers "CSV Export"              |
 
 ---
 
@@ -140,7 +144,7 @@ Persona: "Sales Representative"
 ├── category: primary
 ├── proficiency: intermediate
 ├── realizes → Stakeholder: "Sales Team"
-├── served-by → BusinessRole: "Sales Manager"
+├── serves → BusinessRole: "Sales Representative"
 └── pain-points:
     - Time-consuming manual data entry
     - Limited visibility into customer interactions
@@ -148,14 +152,21 @@ Persona: "Sales Representative"
 
 ---
 
-## Capability Definition
+## SoftwareCapability Definition
 
-A Capability is an **ability the product possesses**, independent of how it's implemented.
+A SoftwareCapability is an **ability of the software platform**, stated as what the software can do (for example "Save documents to files" or "Full-text search"), independent of the features that expose it and the services that implement it. Features realize software capabilities, and a software capability realizes the business function it carries out: "Save documents to files" realizes the business function "Share data".
+
+**Distinction from BusinessCapability (Business layer):**
+
+- **BusinessCapability** - an ability the _organization_ has ("Share data with partners"), which would remain if different software, or none, provided it. Business functions and processes realize it. It is ArchiMate's Capability.
+- **SoftwareCapability** - an ability of the _software platform_ ("Save documents to files"). It reaches the business layer by realizing business functions, which in turn realize business capabilities.
+
+If removing the software would remove the ability, it is a software capability; if the organization would still need the ability and find another way to provide it, it is a business capability.
 
 **Distinction from BusinessFunction (Business layer):**
 
-- **BusinessFunction** - Internal organizational grouping of behavior
-- **Capability** - Externally-facing product ability
+- **BusinessFunction** - a standing area of organizational work, performed by roles
+- **SoftwareCapability** - what the software can do that carries such work out
 
 **Lifecycle Statuses:**
 
@@ -166,15 +177,15 @@ A Capability is an **ability the product possesses**, independent of how it's im
 - **Deprecated** - No longer supported
 
 **Decomposition:**
-Capabilities decompose into sub-capabilities via `aggregates` relationships for complex capabilities.
+Software capabilities decompose into narrower software capabilities via `aggregates` relationships.
 
 **Example:**
 
 ```
-Capability: "Customer Data Management"
+SoftwareCapability: "Customer Data Management"
 ├── status: developing
-├── aggregates → Capability: "Customer CRUD"
-├── aggregates → Capability: "Customer Segmentation"
+├── aggregates → SoftwareCapability: "Customer CRUD"
+├── aggregates → SoftwareCapability: "Customer Segmentation"
 ├── realizes → BusinessFunction: "Customer Lifecycle Management"
 └── supports → Goal: "Improve Customer Retention"
 ```
@@ -183,7 +194,7 @@ Capability: "Customer Data Management"
 
 ## Feature Definition
 
-A Feature is a **user-visible unit of functionality** that delivers one or more capabilities and is the primary unit of product planning.
+A Feature is a **user-visible unit of functionality** that delivers one or more software capabilities and is the primary unit of product planning.
 
 **Distinction from Requirement (Motivation layer):**
 
@@ -213,7 +224,7 @@ Feature: "Two-Factor Authentication"
 ├── priority: high
 ├── status: developing
 ├── size: m
-├── realizes → Capability: "Account Security"
+├── realizes → SoftwareCapability: "Account Security"
 ├── serves → Persona: "Security-Conscious User"
 ├── satisfies → Requirement: "Support TOTP and SMS 2FA"
 └── scheduled-for → Milestone: "Q3 Security Release"
@@ -259,9 +270,31 @@ Steps:
 
 ---
 
+**Steps as elements (WorkflowStep):**
+
+Model the steps as `product.workflowstep` elements when you need to trace which features each step
+relies on, or to link steps to navigation routes. A workflow reaches features, and through them software
+capabilities, only through its steps: the workflow composes steps, each step `uses` the features it
+exercises, and those features realize software capabilities. Example: the _Password reset_ workflow
+composes steps, and the platform's _Send email_ capability is reached through the feature that uses it:
+
+```
+UserWorkflow: "Password Reset"
+├── composes → WorkflowStep 1 "Request reset link"   (uses → Feature: Password Reset)
+├── composes → WorkflowStep 2 "Receive reset email"  (uses → Feature: Reset Email)
+├── composes → WorkflowStep 3 "Choose new password"  (uses → Feature: Password Reset)
+└── realizes ← NavigationFlow: "password-reset"       (its FlowSteps realize the WorkflowSteps)
+
+Feature: "Reset Email"     → realizes SoftwareCapability: "Send Email"
+SoftwareCapability: "Send Email"  ← realizes application.applicationservice "EmailService"
+                                  ← realizes technology.technologyservice "SMTP relay"
+```
+
+---
+
 ## Milestone Definition
 
-A Milestone is a **time-bound delivery target** grouping features or capabilities.
+A Milestone is a **time-bound delivery target** grouping features or software capabilities.
 
 **Lifecycle Statuses:**
 
@@ -283,9 +316,9 @@ Milestone: "Q3 2024 Release"
 │   ├── Feature: "Two-Factor Authentication"
 │   ├── Feature: "Audit Logging"
 │   └── Feature: "API Rate Limiting"
-├── scheduled-capabilities:
-│   ├── Capability: "Account Security"
-│   └── Capability: "System Reliability"
+├── scheduled-software-capabilities:
+│   ├── SoftwareCapability: "Account Security"
+│   └── SoftwareCapability: "System Reliability"
 ├── precedes → Milestone: "Q4 2024 Release"
 └── includes → Outcome: "Improved User Trust"
 ```
@@ -316,7 +349,7 @@ if feature_flags.is_enabled("new_checkout", rollout_percentage=10):
 ```python
 # TODO: Implement user segmentation for Q3 milestone
 # Feature: "User Segmentation" (priority: high)
-# Capability: "Customer Segmentation"
+# SoftwareCapability: "Customer Segmentation"
 # Milestone: "Q3 2024 Release"
 def segment_users_by_behavior():
     pass
@@ -325,7 +358,7 @@ def segment_users_by_behavior():
 **Maps to:**
 
 - Feature: "User Segmentation" (priority: high)
-- Capability: "Customer Segmentation"
+- SoftwareCapability: "Customer Segmentation"
 - Milestone: "Q3 2024 Release"
 
 ### Pattern 3: User Role / Persona References
@@ -362,10 +395,10 @@ const workflowByPersona = {
 - UserWorkflow: "Basic Checkout Flow" (complexity: simple) → serves → Persona: "Basic User"
 - UserWorkflow: "Power User Ordering" (complexity: complex) → serves → Persona: "Power User"
 
-### Pattern 4: Capability Requirements
+### Pattern 4: Software Capability Requirements
 
 ```yaml
-# Product capability definition
+# Software capability definition
 capabilities:
   authentication:
     - password-based
@@ -381,8 +414,8 @@ capabilities:
 
 **Maps to:**
 
-- Capability: "Authentication" → aggregates → [Password-Based Auth, OAuth2, SAML, Multi-Factor Auth]
-- Capability: "Reporting" → aggregates → [Real-Time Dashboards, Scheduled Reports, Custom Queries, Data Export]
+- SoftwareCapability: "Authentication" → aggregates → [Password-Based Auth, OAuth2, SAML, Multi-Factor Auth]
+- SoftwareCapability: "Reporting" → aggregates → [Real-Time Dashboards, Scheduled Reports, Custom Queries, Data Export]
 
 ### Pattern 5: Persona Attributes in Code
 
@@ -428,19 +461,19 @@ dr add product persona "admin" \
   --attributes '{"category":"primary","proficiency":"expert"}'
 ```
 
-### Step 2: Define Product Capabilities
+### Step 2: Define Software Capabilities
 
 ```bash
 # Product-level abilities (outcome-focused)
-dr add product capability "user-authentication" \
+dr add product softwarecapability "user-authentication" \
   --description "Authenticate and authorize users" \
   --attributes '{"status":"planned"}'
 
-dr add product capability "data-export" \
+dr add product softwarecapability "data-export" \
   --description "Export user data in multiple formats" \
   --attributes '{"status":"proposed"}'
 
-dr add product capability "real-time-collaboration" \
+dr add product softwarecapability "real-time-collaboration" \
   --description "Enable multiple users to collaborate simultaneously" \
   --attributes '{"status":"developing"}'
 ```
@@ -462,18 +495,18 @@ dr add product feature "live-cursor-tracking" \
   --attributes '{"priority":"high","size":"l","status":"proposed"}'
 ```
 
-### Step 4: Map Features to Capabilities
+### Step 4: Map Features to Software Capabilities
 
 ```bash
-# Features realize capabilities
+# Features realize software capabilities
 dr relationship add product.feature.multi-factor-authentication \
-  product.capability.user-authentication --predicate realizes
+  product.softwarecapability.user-authentication --predicate realizes
 
 dr relationship add product.feature.csv-export \
-  product.capability.data-export --predicate realizes
+  product.softwarecapability.data-export --predicate realizes
 
 dr relationship add product.feature.live-cursor-tracking \
-  product.capability.real-time-collaboration --predicate realizes
+  product.softwarecapability.real-time-collaboration --predicate realizes
 ```
 
 ### Step 5: Map Features to Personas
@@ -507,15 +540,18 @@ dr add product user-workflow "collaboration-session" \
   --attributes '{"complexity":"complex"}'
 ```
 
-### Step 7: Map Workflows to Features
+### Step 7: Map Workflows to Features Through Steps
 
 ```bash
-# Workflows compose features
-dr relationship add product.user-workflow.secure-authentication-flow \
-  product.feature.multi-factor-authentication --predicate composes
+# A workflow composes its steps; each step uses the features it exercises
+dr add product workflowstep "enter-verification-code" \
+  --description "The user enters the code sent to their phone"
 
-dr relationship add product.user-workflow.collaboration-session \
-  product.feature.live-cursor-tracking --predicate composes
+dr relationship add product.userworkflow.secure-authentication-flow \
+  product.workflowstep.enter-verification-code --predicate composes
+
+dr relationship add product.workflowstep.enter-verification-code \
+  product.feature.multi-factor-authentication --predicate uses
 ```
 
 ### Step 8: Define Milestones
@@ -549,15 +585,16 @@ dr relationship add product.feature.live-cursor-tracking \
 dr relationship add product.feature.multi-factor-authentication \
   motivation.requirement.user-account-security --predicate satisfies
 
-dr relationship add product.capability.user-authentication \
+dr relationship add product.softwarecapability.user-authentication \
   motivation.goal.customer-trust --predicate supports
 
-# Link to Business layer
-dr relationship add product.feature.csv-export \
-  business.business-service.data-analytics --predicate realizes
+# Link to Business layer: software capabilities realize the business functions they carry out
+dr relationship add product.softwarecapability.data-export \
+  business.businessfunction.data-sharing --predicate realizes
 
+# A persona references the business role it stands for
 dr relationship add product.persona.power-user \
-  business.business-role.data-analyst --predicate serves
+  business.businessrole.data-analyst --predicate references
 ```
 
 ---
@@ -567,13 +604,13 @@ dr relationship add product.persona.power-user \
 ### Pattern 1: Feature Hierarchy
 
 ```
-Capability: "Order Management"
-├── aggregates → Capability: "Order Placement"
-│   └── realizes → Feature: "Shopping Cart"
-├── aggregates → Capability: "Order Tracking"
-│   └── realizes → Feature: "Order History"
-└── aggregates → Capability: "Order Fulfillment"
-    └── realizes → Feature: "Shipment Tracking"
+SoftwareCapability: "Order Management"
+├── aggregates → SoftwareCapability: "Order Placement"
+│   └── realizes ← Feature: "Shopping Cart"
+├── aggregates → SoftwareCapability: "Order Tracking"
+│   └── realizes ← Feature: "Order History"
+└── aggregates → SoftwareCapability: "Order Fulfillment"
+    └── realizes ← Feature: "Shipment Tracking"
 ```
 
 ### Pattern 2: Persona-Driven Features
@@ -581,9 +618,9 @@ Capability: "Order Management"
 ```
 Persona: "Enterprise Administrator"
 ├── proficiency: expert
-├── served-by → Feature: "Bulk User Import"
-├── served-by → Feature: "Advanced Reporting"
-├── served-by → Feature: "API Key Management"
+├── serves ← Feature: "Bulk User Import"
+├── serves ← Feature: "Advanced Reporting"
+├── serves ← Feature: "API Key Management"
 └── serves → BusinessRole: "IT Operations"
 ```
 
@@ -591,14 +628,12 @@ Persona: "Enterprise Administrator"
 
 ```
 Milestone: "Q1 2025 MVP"
-├── scheduled-features:
-│   ├── Feature: "User Authentication"
-│   ├── Feature: "Basic Search"
-│   └── Feature: "Profile Management"
-├── precedes → Milestone: "Q2 2025 Enhancement"
-│   ├── scheduled-features:
-│   │   ├── Feature: "Advanced Search"
-│   │   └── Feature: "Real-Time Notifications"
+├── scheduled-for ← Feature: "User Authentication"
+├── scheduled-for ← Feature: "Basic Search"
+├── scheduled-for ← Feature: "Profile Management"
+└── precedes → Milestone: "Q2 2025 Enhancement"
+    ├── scheduled-for ← Feature: "Advanced Search"
+    └── scheduled-for ← Feature: "Real-Time Notifications"
 ```
 
 ### Pattern 4: Workflow with Multiple Features
@@ -619,8 +654,8 @@ UserWorkflow: "Power User Data Analysis"
 ## Best Practices
 
 1. **Start with Personas, End with Workflows** - Understand users first, model journeys last
-2. **Features Deliver Capabilities** - Every feature should map to at least one capability
-3. **Capabilities Support Goals** - Link capabilities to motivation layer goals for justification
+2. **Features Realize Software Capabilities** - Every feature should realize at least one software capability
+3. **Software Capabilities Support Goals** - Link software capabilities to motivation layer goals for justification
 4. **Milestones Sequence Logically** - Plan dependencies and prerequisites
 5. **Workflows are User-Centric** - Name them from the user's perspective, not system perspective
 6. **Complexity Reflects User Experience** - Complex workflows should have features to manage that complexity
@@ -633,15 +668,15 @@ UserWorkflow: "Power User Data Analysis"
 
 ## Validation Tips
 
-| Issue               | Cause                                 | Fix                                   |
-| ------------------- | ------------------------------------- | ------------------------------------- |
-| Orphaned Feature    | Feature doesn't realize a capability  | Add capability or remove feature      |
-| Unused Persona      | Persona serves no features            | Add features for persona or remove    |
-| Unmapped Capability | Capability doesn't support a goal     | Link to Motivation goal or remove     |
-| Incomplete Workflow | Workflow has no features              | Add feature composition or simplify   |
-| Future Milestone    | Milestone has no scheduled features   | Add features or mark as candidate     |
-| Vague Persona       | Persona lacks proficiency or category | Define proficiency level and category |
-| Unlinked Feature    | Feature doesn't satisfy a requirement | Add requirement link or remove        |
+| Issue               | Cause                                         | Fix                                   |
+| ------------------- | --------------------------------------------- | ------------------------------------- |
+| Orphaned Feature    | Feature doesn't realize a software capability | Add one or remove feature             |
+| Unused Persona      | Persona serves no features                    | Add features for persona or remove    |
+| Unmapped Capability | SoftwareCapability doesn't support a goal     | Link to Motivation goal or remove     |
+| Incomplete Workflow | Workflow has no features                      | Add feature composition or simplify   |
+| Future Milestone    | Milestone has no scheduled features           | Add features or mark as candidate     |
+| Vague Persona       | Persona lacks proficiency or category         | Define proficiency level and category |
+| Unlinked Feature    | Feature doesn't satisfy a requirement         | Add requirement link or remove        |
 
 ---
 
@@ -651,7 +686,7 @@ UserWorkflow: "Power User Data Analysis"
 
 ```bash
 dr add product persona <name> --description <desc> --attributes '{"category":"<category>","proficiency":"<proficiency>"}'
-dr add product capability <name> --description <desc> --attributes '{"status":"<status>"}'
+dr add product softwarecapability <name> --description <desc> --attributes '{"status":"<status>"}'
 dr add product feature <name> --description <desc> --attributes '{"priority":"<priority>","status":"<status>","size":"<size>"}'
 dr add product user-workflow <name> --description <desc> --attributes '{"complexity":"<complexity>"}'
 dr add product milestone <name> --description <desc> --attributes '{"status":"<status>"}'
@@ -660,8 +695,8 @@ dr add product milestone <name> --description <desc> --attributes '{"status":"<s
 **Relationship Commands:**
 
 ```bash
-dr relationship add <capability> <capability> --predicate aggregates
-dr relationship add <feature> <capability> --predicate realizes
+dr relationship add <software-capability> <software-capability> --predicate aggregates
+dr relationship add <feature> <software-capability> --predicate realizes
 dr relationship add <feature> <persona> --predicate serves
 dr relationship add <workflow> <feature> --predicate composes
 dr relationship add <feature> <milestone> --predicate scheduled-for
@@ -673,7 +708,7 @@ dr relationship add <milestone> <milestone> --predicate precedes
 ```bash
 dr relationship add <persona> <stakeholder> --predicate realizes
 dr relationship add <feature> <requirement> --predicate satisfies
-dr relationship add <capability> <goal> --predicate supports
+dr relationship add <software-capability> <goal> --predicate supports
 dr relationship add <workflow> <outcome> --predicate delivers
 dr relationship add <feature> <business-service> --predicate realizes
 ```

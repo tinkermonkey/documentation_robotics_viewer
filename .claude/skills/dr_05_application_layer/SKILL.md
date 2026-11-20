@@ -51,7 +51,8 @@ This layer uses **ArchiMate 3.2 Application Layer** standard with optional prope
 | **ApplicationProcess**       | Sequence of application behaviors (orchestration/saga) | Can reference orchestration definitions (Temporal, Conductor, Camunda)           |
 | **ApplicationEvent**         | Application state change notification                  | Types: domain-event, integration-event, system-event, audit-event                |
 | **ApplicationService**       | Service that exposes application functionality         | Types: synchronous, asynchronous, batch, streaming, webhook                      |
-| **DataObject**               | Data structured for automated processing               | Includes schema reference, PII marking, retention policies                       |
+| **DataObject**               | A domain object, or data with no declared shape        | A declared shape (interface, record, DTO) is a `data-model.objectschema` instead |
+| **Message**                  | Named unit of data sent to a receiver that acts on it  | messageType (required): command, request, reply, document                        |
 
 ---
 
@@ -67,9 +68,15 @@ IS this a React component, UI widget, or view?
   → ApplicationComponent (type: generic) — link to ux.component.* for UI detail
 
 IS this a Zustand store, Redux slice, or other state container?
-  → ApplicationFunction (performs automated state management behavior)
-  NOT ApplicationComponent — stores are behavior, not deployable modules
-  Cross-reference: assign the function to the parent ApplicationComponent that owns it
+  → DataObject when its actions only set, derive from or reset its own state (a domain
+  object: state plus the rules for changing it). The components and functions that read
+  or change it `accesses` it, and the interface that types it (state and actions) is a
+  data-model.objectschema that `realizes` it.
+  → ApplicationComponent when its actions also call services or do I/O (fetching, saving).
+    Persisting the state to browser storage (localStorage, IndexedDB, a persist middleware)
+    is I/O: a persisted store is an ApplicationComponent.
+  NOT ApplicationFunction or ApplicationService — a store is state that is held, not
+  behavior that is performed or a contract that is offered
 
 IS this a class/function that provides a capability to other parts of the system
   (business logic, data transformation, orchestration)?
@@ -96,9 +103,28 @@ IS this a state change notification or domain event
   (model.updated, annotation.added)?
   → ApplicationEvent (eventType: domain/integration/system)
 
-IS this a data structure, DTO, or typed payload
-  (ModelData, Annotation, Changeset)?
-  → DataObject
+IS this sent to a receiver that is expected to act on it
+  (a command, a request or its reply, a queued job, a protocol frame such as subscribe)?
+  → Message (messageType: command/request/reply/document)
+  NOTE: An announcement that something happened, published to whoever subscribes,
+  is an ApplicationEvent. Each kind of message is one Message element; the transport
+  (WebSocket, queue, bus) does not decide the type.
+
+IS this a declaration that only states a shape: an interface, type alias, record,
+  struct, dataclass or DTO (ModelData, Annotation, Changeset)?
+  → data-model.objectschema (NOT DataObject), whether or not the shape is persisted
+  or published. Behaviour that takes or returns it `accesses` the schema. DTO, view
+  model and read model name what a shape is used for; the declaration is the schema.
+
+IS this an interface or type for one value, with state fields beside callbacks over
+  that state (a store's state and actions, a context value)?
+  → data-model.objectschema (NOT ApplicationService). An interface is a service only
+  when it is a contract that classes implement and callers depend on.
+
+IS this a domain object: state together with the rules that keep it valid, with methods
+  that only validate, derive from or change its own fields (a value object, an in-memory
+  aggregate), or data passed around with no declared shape (any, dict, parsed JSON)?
+  → DataObject (an object schema `realizes` it when it implements a declared shape)
 
 IS this a collection of components that together form a subsystem
   (all layout engines, all application services)?
@@ -111,16 +137,18 @@ IS this a collection of components that together form a subsystem
 
 Explicit DO NOT rules with rationale:
 
-| Misclassification                            | Correct Classification                                                                               | Why                                                                                                              |
-| -------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Zustand store as `ApplicationService`        | `ApplicationFunction` (performs automated state management behavior)                                 | Stores are behavior, not deployable modules — assign to parent ApplicationComponent                              |
-| Zustand store as `ApplicationComponent`      | `ApplicationFunction` (performs automated state management behavior)                                 | ArchiMate `ApplicationFunction` = "automated behavior performed by a component" — maps exactly to Zustand stores |
-| WebSocket client as `ApplicationService`     | `ApplicationInterface` (protocol: WebSocket)                                                         | A WebSocket connection is an interface/access point, not a service                                               |
-| Layout algorithm as `ApplicationService`     | `ApplicationFunction`                                                                                | Stateless algorithm = function, not a service with a contract                                                    |
-| Layout engine CLASS as `ApplicationFunction` | `ApplicationComponent` (type: internal)                                                              | A class implementing an interface IS a deployable, replaceable module — not a stateless function                 |
-| Export function as `ApplicationService`      | `ApplicationFunction` if purely internal; `ApplicationService` only if it exposes an output contract | If purely internal algorithm: function. If it has an external contract (API, file): service                      |
-| React UI component as `ApplicationService`   | `ApplicationComponent` (type: generic) with UX cross-reference                                       | UI components are components; link to UX layer for rendering details                                             |
-| Fetch interceptor / auth header injector     | `ApplicationFunction`                                                                                | Stateless function that wraps fetch — NOT a service; cross-reference `security.securitypolicy.*`                 |
+| Misclassification                            | Correct Classification                                                                               | Why                                                                                                                                                                          |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Zustand store as `ApplicationService`        | `DataObject` (state plus the rules for changing it)                                                  | A store is one value that components read and change, not a contract that classes implement; its state-and-actions interface is a `data-model.objectschema` that realizes it |
+| Zustand store as `ApplicationFunction`       | `DataObject`, or `ApplicationComponent` when its actions call services or do I/O                     | A store is state that is held, with rules over that state; an `ApplicationFunction` is behavior a component performs                                                         |
+| WebSocket client as `ApplicationService`     | `ApplicationInterface` (protocol: WebSocket)                                                         | A WebSocket connection is an interface/access point, not a service                                                                                                           |
+| Layout algorithm as `ApplicationService`     | `ApplicationFunction`                                                                                | Stateless algorithm = function, not a service with a contract                                                                                                                |
+| Layout engine CLASS as `ApplicationFunction` | `ApplicationComponent` (type: internal)                                                              | A class implementing an interface IS a deployable, replaceable module — not a stateless function                                                                             |
+| Export function as `ApplicationService`      | `ApplicationFunction` if purely internal; `ApplicationService` only if it exposes an output contract | If purely internal algorithm: function. If it has an external contract (API, file): service                                                                                  |
+| React UI component as `ApplicationService`   | `ApplicationComponent` (type: generic) with UX cross-reference                                       | UI components are components; link to UX layer for rendering details                                                                                                         |
+| Fetch interceptor / auth header injector     | `ApplicationFunction`                                                                                | Stateless function that wraps fetch — NOT a service; cross-reference `security.securitypolicy.*`                                                                             |
+| Interface, DTO or record as `DataObject`     | `data-model.objectschema`                                                                            | A declaration that only states a shape is a schema; a DataObject is a domain object, or untyped data                                                                         |
+| Protocol message as `ApplicationEvent`       | `Message` (messageType: command, request, reply or document)                                         | A message is sent to a receiver expected to act on it; an event announces what happened to whoever subscribes                                                                |
 
 ---
 
@@ -131,31 +159,48 @@ Explicit DO NOT rules with rationale:
 | Source Type              | Predicate   | Target Type            | Example                                                                                  |
 | ------------------------ | ----------- | ---------------------- | ---------------------------------------------------------------------------------------- |
 | ApplicationCollaboration | aggregates  | ApplicationComponent   | "Payment Ecosystem" aggregates "PaymentService", "FraudDetection", "NotificationService" |
-| ApplicationComponent     | composes    | ApplicationInterface   | Component exposes interface for external access                                          |
-| ApplicationProcess       | composes    | ApplicationProcess     | Workflow composed of sub-processes (saga pattern)                                        |
-| ApplicationComponent     | assigned-to | ApplicationFunction    | Component performs specific function                                                     |
-| ApplicationCollaboration | assigned-to | ApplicationInteraction | Collaboration executes interaction pattern                                               |
+| ApplicationCollaboration | assigned-to | ApplicationInteraction | "Checkout Collaboration" assigned-to "Checkout Handshake" interaction                    |
+| ApplicationCollaboration | realizes    | ApplicationService     | "Payment Ecosystem" realizes "Payment Service"                                           |
+| ApplicationComponent     | provides    | ApplicationInterface   | "UserService" provides "User REST API"                                                   |
+| ApplicationComponent     | assigned-to | ApplicationFunction    | "UserService" assigned-to "Token Validation"                                             |
+| ApplicationComponent     | assigned-to | ApplicationProcess     | "OrderOrchestrator" assigned-to "Order Fulfillment Saga"                                 |
 | ApplicationComponent     | realizes    | ApplicationService     | "UserManagementAPI" realizes "User Management Service"                                   |
+| ApplicationComponent     | uses        | ApplicationComponent   | "OrderService" uses "InventoryService"                                                   |
 | ApplicationFunction      | realizes    | ApplicationService     | "Authentication Function" realizes "Auth Service"                                        |
 | ApplicationProcess       | realizes    | ApplicationService     | "Order Processing Workflow" realizes "Order Service"                                     |
-| ApplicationService       | realizes    | ApplicationInterface   | Service exposes interface                                                                |
-| DataObject               | specializes | DataObject             | "CustomerOrder" specializes "Order"                                                      |
+| ApplicationInterface     | assigned-to | ApplicationService     | "User REST API" assigned-to "User Management Service" (interface exposes the service)    |
+| DataObject               | composes    | DataObject             | "Order" composes "OrderLineItem"                                                         |
+| DataObject               | aggregates  | DataObject             | "Cart" aggregates "Product" references                                                   |
+| ApplicationInteraction   | aggregates  | Message                | "Topic Subscription" aggregates "Subscribe" and "Unsubscribe"                            |
 
 ### Behavioral Relationships
 
-| Source Type            | Predicate | Target Type          | Example                                         |
-| ---------------------- | --------- | -------------------- | ----------------------------------------------- |
-| ApplicationEvent       | triggers  | ApplicationComponent | "OrderCreated" triggers "InventoryService"      |
-| ApplicationEvent       | triggers  | ApplicationFunction  | "UserLoggedIn" triggers "AuditLogging" function |
-| ApplicationEvent       | triggers  | ApplicationProcess   | "PaymentFailed" triggers "RefundProcess"        |
-| ApplicationProcess     | triggers  | ApplicationEvent     | Workflow completion triggers event              |
-| ApplicationService     | flows-to  | ApplicationService   | Synchronous service-to-service call             |
-| ApplicationProcess     | flows-to  | ApplicationProcess   | Sequential process orchestration                |
-| ApplicationService     | accesses  | DataObject           | Service reads/writes data                       |
-| ApplicationFunction    | accesses  | DataObject           | Function operates on data                       |
-| ApplicationProcess     | accesses  | DataObject           | Workflow manipulates data                       |
-| ApplicationInteraction | accesses  | DataObject           | Interaction pattern involves data exchange      |
-| ApplicationInterface   | serves    | ApplicationComponent | Interface provides access to component          |
+| Source Type            | Predicate  | Target Type            | Example                                                           |
+| ---------------------- | ---------- | ---------------------- | ----------------------------------------------------------------- |
+| ApplicationEvent       | triggers   | ApplicationProcess     | "PaymentFailed" triggers "Refund Process"                         |
+| ApplicationEvent       | triggers   | ApplicationInteraction | "CheckoutStarted" triggers "Checkout Handshake"                   |
+| ApplicationProcess     | triggers   | ApplicationEvent       | "Place Order" triggers "OrderCreated"                             |
+| ApplicationEvent       | triggers   | ApplicationFunction    | "UserLoggedIn" triggers "Audit Logging" (event handler)           |
+| ApplicationFunction    | triggers   | ApplicationEvent       | "Publish Order" triggers "OrderCreated"                           |
+| ApplicationInteraction | triggers   | ApplicationEvent       | "Checkout Handshake" triggers "CheckoutCompleted"                 |
+| ApplicationProcess     | flows-to   | ApplicationProcess     | "Reserve Inventory" flows-to "Process Payment"                    |
+| ApplicationFunction    | flows-to   | ApplicationFunction    | "Parse Document" flows-to "Embed Chunks"                          |
+| ApplicationService     | flows-to   | ApplicationService     | "Checkout Service" flows-to "Payment Service" (synchronous call)  |
+| ApplicationService     | depends-on | ApplicationService     | "Order Service" depends-on "Inventory Service"                    |
+| ApplicationService     | serves     | ApplicationComponent   | "Auth Service" serves "WebApp"                                    |
+| ApplicationService     | serves     | ApplicationProcess     | "Payment Service" serves "Order Fulfillment Saga"                 |
+| ApplicationInterface   | depends-on | ApplicationFunction    | "API Gateway" depends-on "Rate Limiting"                          |
+| ApplicationService     | serves     | ApplicationInteraction | "Payment Service" serves "Checkout Handshake"                     |
+| ApplicationService     | accesses   | DataObject             | "User Management Service" accesses "User"                         |
+| ApplicationComponent   | accesses   | DataObject             | "OrderService" accesses "Order"                                   |
+| ApplicationFunction    | accesses   | DataObject             | "Data Validation" accesses "Order"                                |
+| ApplicationProcess     | accesses   | DataObject             | "Order Fulfillment Saga" accesses "Order"                         |
+| ApplicationEvent       | accesses   | DataObject             | "OrderCreated" accesses "Order" (event payload)                   |
+| ApplicationInteraction | accesses   | DataObject             | "Checkout Handshake" accesses "PaymentIntent"                     |
+| ApplicationFunction    | triggers   | Message                | "Subscribe To Topic" triggers "Subscribe" (the function sends it) |
+| ApplicationProcess     | triggers   | Message                | "Order Fulfillment Saga" triggers "Ship Order"                    |
+| Message                | triggers   | ApplicationFunction    | "Ship Order" triggers "Ship Order Handler" (its handler)          |
+| Message                | triggers   | ApplicationProcess     | "Start Import" triggers "Import Pipeline"                         |
 
 ---
 
@@ -163,31 +208,60 @@ Explicit DO NOT rules with rationale:
 
 ### Outgoing References (Application → Other Layers)
 
-| Target Layer             | Reference Type                                          | Example                                    |
-| ------------------------ | ------------------------------------------------------- | ------------------------------------------ |
-| **Layer 1 (Motivation)** | ApplicationService supports **Goal**                    | Service achieves business goals            |
-| **Layer 1 (Motivation)** | ApplicationService delivers **Value**                   | Service delivers business value            |
-| **Layer 1 (Motivation)** | ApplicationService governed by **Principle**            | Service follows architectural principles   |
-| **Layer 1 (Motivation)** | ApplicationFunction fulfills **Requirement**            | Function implements functional requirement |
-| **Layer 2 (Business)**   | ApplicationService realizes **BusinessService**         | Tech realizes business capability          |
-| **Layer 2 (Business)**   | ApplicationProcess supports **BusinessProcess**         | Automates business workflow                |
-| **Layer 2 (Business)**   | DataObject represents **BusinessObject**                | Technical data represents business concept |
-| **Layer 5 (Technology)** | ApplicationComponent deployed-on **Node**               | Service deployed to Kubernetes cluster     |
-| **Layer 5 (Technology)** | ApplicationService uses **TechnologyService**           | Application uses database service          |
-| **Layer 5 (Technology)** | DataObject stored-in **Artifact**                       | Data persisted in database                 |
-| **Layer 6 (API)**        | ApplicationService defined-by **OpenAPI Specification** | Service has OpenAPI contract               |
-| **Layer 7 (Data Model)** | DataObject defined-by **JSON Schema**                   | Data structure defined as schema           |
-| **Layer 11 (APM)**       | ApplicationService tracked-by **BusinessMetric**        | Service performance monitored              |
-| **Layer 11 (APM)**       | ApplicationService has-sla **SLA Target**               | Latency, availability targets              |
-| **Layer 11 (APM)**       | ApplicationService traced-by **APM**                    | Distributed tracing enabled                |
+| Source Type            | Predicate      | Target Type                     | Example                                                                                                                              |
+| ---------------------- | -------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ApplicationService     | realizes       | `business.businessservice`      | "Order API" realizes "Order Management"                                                                                              |
+| ApplicationService     | serves         | `business.businessprocess`      | "Payment Service" serves "Checkout" business process                                                                                 |
+| ApplicationService     | accesses       | `business.businessobject`       | "Order API" accesses "Customer Order"                                                                                                |
+| ApplicationProcess     | realizes       | `business.businessprocess`      | "Order Fulfillment Saga" realizes "Fulfill Order"                                                                                    |
+| ApplicationFunction    | realizes       | `business.businessfunction`     | "Credit Scoring" realizes "Risk Assessment"                                                                                          |
+| ApplicationEvent       | triggers       | `business.businessprocess`      | "PaymentFailed" triggers "Dunning" process                                                                                           |
+| ApplicationInterface   | serves         | `business.businessrole`         | "Admin Console" serves "Support Agent"                                                                                               |
+| ApplicationService     | realizes       | `motivation.goal`               | "User Management API" realizes "Improve User Experience"                                                                             |
+| ApplicationService     | delivers       | `motivation.value`              | "Instant Checkout" delivers "Convenience"                                                                                            |
+| ApplicationFunction    | satisfies      | `motivation.requirement`        | "Token Validation" satisfies "Sessions Expire After 30 Min"                                                                          |
+| ApplicationService     | realizes       | `product.softwarecapability`    | "Search Service" realizes "Product Discovery"                                                                                        |
+| ApplicationService     | realizes       | `product.feature`               | "Graph Layout Service" realizes "Interactive Graph View"                                                                             |
+| ApplicationService     | requires       | `security.authenticationconfig` | "Order API" requires "OAuth2 JWT Auth"                                                                                               |
+| ApplicationService     | constrained-by | `security.securitypolicy`       | "Patient Records Service" constrained-by "HIPAA Access Policy"                                                                       |
+| ApplicationComponent   | realizes       | `security.countermeasure`       | "Fetch Interceptor" realizes "Bearer Token Injection"                                                                                |
+| ApplicationComponent   | accesses       | `security.secureresource`       | "OrderService" accesses "Order Records"                                                                                              |
+| ApplicationComponent   | accesses       | `data-model.objectschema`       | "OrderRepository" accesses the "Order" entity class                                                                                  |
+| ApplicationFunction    | accesses       | `data-model.objectschema`       | "saveOrder" accesses the "Order" entity class                                                                                        |
+| ApplicationService     | accesses       | `data-model.objectschema`       | "Customer Service" accesses the "CustomerDto" it returns                                                                             |
+| ApplicationProcess     | accesses       | `data-model.objectschema`       | "Import Pipeline" accesses the "ImportState" it passes along                                                                         |
+| ApplicationInteraction | accesses       | `data-model.objectschema`       | "Checkout Handshake" accesses the "PaymentIntent" record                                                                             |
+| ApplicationEvent       | accesses       | `data-model.objectschema`       | "OrderPlaced" accesses its "OrderSummary" payload type                                                                               |
+| ApplicationComponent   | accesses       | `data-model.schemadefinition`   | "PayloadValidator" accesses the "Address" definition                                                                                 |
+| ApplicationFunction    | accesses       | `data-model.schemadefinition`   | "buildInvoice" accesses the "Invoice" definition                                                                                     |
+| ApplicationEvent       | accesses       | `data-model.schemadefinition`   | "OrderPlaced" accesses its "OrderPlacedPayload" definition                                                                           |
+| ApplicationComponent   | accesses       | `data-store.collection`         | "OrderRepository" accesses the `orders` table                                                                                        |
+| ApplicationComponent   | accesses       | `data-store.database`           | "Persistence Layer" accesses `orders-db` as a whole (its connection pool or ORM session; use `collection` when the tables are named) |
+| ApplicationFunction    | accesses       | `data-store.collection`         | "findOrdersByCustomer" accesses `orders`                                                                                             |
+| ApplicationFunction    | accesses       | `data-store.view`               | "monthlyRevenueReport" accesses `monthly_revenue_mv`                                                                                 |
+| ApplicationService     | accesses       | `data-store.collection`         | "Order API" accesses `orders`                                                                                                        |
+| ApplicationService     | accesses       | `data-store.view`               | "Reporting Service" accesses `monthly_revenue_mv`                                                                                    |
+| ApplicationService     | accesses       | `data-store.database`           | "Order API" accesses `orders-db` (use `collection` when the collections are modelled)                                                |
+| ApplicationService     | serves         | `ux.view`                       | "Order API" serves the "Order History" view that loads from it                                                                       |
+| ApplicationService     | references     | `apm.traceconfiguration`        | "Order API" references "Order Service Tracing"                                                                                       |
 
-### Incoming References (Lower Layers → Application)
+### Incoming References (Other Layers → Application)
 
-Lower layers reference Application layer to show:
-
-- **Technology supports Application** - Infrastructure hosts application components
-- **APIs implement Application Services** - OpenAPI specs define service contracts
-- **Data schemas define DataObjects** - JSON schemas provide data structure
+| Source Type                    | Predicate  | Target Type          | Example                                                   |
+| ------------------------------ | ---------- | -------------------- | --------------------------------------------------------- |
+| `technology.node`              | serves     | ApplicationComponent | "K8s Cluster Prod" serves "UserService" (deployment host) |
+| `technology.systemsoftware`    | serves     | ApplicationComponent | "React 18" serves "WebApp"                                |
+| `technology.technologyservice` | serves     | ApplicationService   | "Managed PostgreSQL" serves "Order API"                   |
+| `api.openapidocument`          | realizes   | ApplicationService   | "user-api.yaml" realizes "User Management API"            |
+| `api.operation`                | realizes   | ApplicationFunction  | "POST /auth/token" realizes "Token Issuance"              |
+| `data-model.objectschema`      | realizes   | DataObject           | "CartShape" interface realizes the "Cart" class           |
+| `data-model.objectschema`      | realizes   | Message              | "SubscribePayload" realizes "Subscribe"                   |
+| `business.businessobject`      | references | DataObject           | "Customer Order" references "Order"                       |
+| `ux.actioncomponent`           | triggers   | ApplicationService   | "Place Order" button triggers "Checkout Service"          |
+| `navigation.route`             | lazy-loads | ApplicationComponent | "/settings" lazy-loads "SettingsPanel"                    |
+| `apm.span`                     | monitors   | ApplicationService   | "checkout.process" span monitors "Checkout Service"       |
+| `apm.metricinstrument`         | monitors   | ApplicationService   | "order_processing_latency" monitors "Order API"           |
+| `testing.testcasesketch`       | tests      | ApplicationService   | "Checkout happy path" tests "Checkout Service"            |
 
 ---
 
@@ -297,30 +371,41 @@ class OrderFulfillmentWorkflow:
 
 - ApplicationProcess: "OrderFulfillmentSaga" (pattern: saga)
 - Properties: orchestration-engine=temporal, compensation-enabled=true
-- Composes sub-processes (reserve, pay, ship)
+- Sequences sub-processes (reserve, pay, ship) with `flows-to`
 
-### Pattern 5: Data Transfer Object (DTO)
+### Pattern 5: Typed Data (DTO, Interface, Record) and Data Objects
 
 ```typescript
-// Data object definitions
+// A declaration that only states a shape
 export interface UserDTO {
-  /**
-   * User data object
-   * Schema: schemas/user.schema.json
-   * PII: true (contains email, name)
-   * Retention: 7 years
-   */
   userId: string;
   email: string;
   name: string;
   createdAt: Date;
 }
+
+// A domain object: state plus the rules that keep it valid
+export class Cart implements CartShape {
+  private items: CartItem[] = [];
+  addItem(item: CartItem) {
+    /* ... */
+  }
+  total(): number {
+    /* ... */
+  }
+}
 ```
 
 **Maps to:**
 
-- DataObject: "User"
-- Properties: schema-ref=user.schema.json, pii=true, retention-period=7y
+- `data-model.objectschema`: "UserDTO" (not a DataObject: the interface only declares a shape,
+  whether or not it is persisted or published). The services and functions that take or return
+  it `accesses` the schema.
+- DataObject: "Cart" (a domain object: its methods only change or derive from its own
+  fields). `data-model.objectschema`
+  "CartShape" `realizes` it.
+- A value passed around as `any`, a dict or parsed JSON with no declared shape is a DataObject
+  that no schema realizes. That missing link is how the model shows untyped data.
 
 ### Pattern 6: gRPC Service Interface
 
@@ -468,9 +553,12 @@ dr add application interface "order-grpc" \
 dr add application interface "event-bus" \
   --description "Event bus for async communication"
 
-# Link service to interface
-dr relationship add application.applicationservice.user-management-api \
-  application.applicationinterface.user-api-rest --predicate realizes
+# Link interface to the service it exposes, and component to interface
+dr relationship add application.applicationinterface.user-api-rest \
+  application.applicationservice.user-management-api --predicate assigned-to
+
+dr relationship add application.applicationcomponent.user-service \
+  application.applicationinterface.user-api-rest --predicate provides
 ```
 
 ### Step 4: Define Application Functions
@@ -501,12 +589,12 @@ dr add application event "order-created" \
 dr add application event "payment-processed" \
   --description "Published when payment completes"
 
-# Event triggering
+# Event triggering (processes are defined in Step 7)
 dr relationship add application.applicationevent.order-created \
-  application.applicationcomponent.inventory-service --predicate triggers
+  application.applicationprocess.order-fulfillment-saga --predicate triggers
 
-dr relationship add application.applicationevent.order-created \
-  application.applicationcomponent.email-worker --predicate triggers
+dr relationship add application.applicationprocess.process-payment \
+  application.applicationevent.payment-processed --predicate triggers
 ```
 
 ### Step 6: Define Data Objects
@@ -544,17 +632,10 @@ dr add application process "process-payment" \
 dr add application process "ship-order" \
   --description "Initiate shipping workflow"
 
-# Process composition
+# Process flows (the catalog has no process-composes-process; model saga steps as a flows-to chain)
 dr relationship add application.applicationprocess.order-fulfillment-saga \
-  application.applicationprocess.reserve-inventory --predicate composes
+  application.applicationprocess.reserve-inventory --predicate flows-to
 
-dr relationship add application.applicationprocess.order-fulfillment-saga \
-  application.applicationprocess.process-payment --predicate composes
-
-dr relationship add application.applicationprocess.order-fulfillment-saga \
-  application.applicationprocess.ship-order --predicate composes
-
-# Process flows
 dr relationship add application.applicationprocess.reserve-inventory \
   application.applicationprocess.process-payment --predicate flows-to
 
@@ -567,27 +648,27 @@ dr relationship add application.applicationprocess.process-payment \
 ```bash
 # Link to business layer
 dr relationship add application.applicationservice.order-api \
-  business.service.order-management --predicate realizes
+  business.businessservice.order-management --predicate realizes
 
 # Link to motivation layer
 dr relationship add application.applicationservice.user-management-api \
-  motivation.goal.improve-user-experience --predicate supports
+  motivation.goal.improve-user-experience --predicate realizes
 
-# Link to technology layer
-dr relationship add application.applicationcomponent.user-service \
-  technology.node.k8s-cluster-prod --predicate deployed-on
+# Link from technology layer (the node hosting the component serves it)
+dr relationship add technology.node.k8s-cluster-prod \
+  application.applicationcomponent.user-service --predicate serves
 
-# Link to API layer
-dr relationship add application.applicationservice.user-management-api \
-  api.openapi-document.user-api --predicate defined-by
+# Link from API layer (the OpenAPI document realizes the service contract)
+dr relationship add api.openapidocument.user-api \
+  application.applicationservice.user-management-api --predicate realizes
 
-# Link to data model layer
-dr relationship add application.dataobject.user \
-  data-model.schema.user --predicate defined-by
+# Link from data model layer (the schema realizes the data object)
+dr relationship add data-model.objectschema.user \
+  application.dataobject.user --predicate realizes
 
-# Link to APM layer
-dr relationship add application.applicationservice.order-api \
-  apm.metric.order-processing-latency --predicate tracked-by
+# Link from APM layer
+dr relationship add apm.metricinstrument.order-processing-latency \
+  application.applicationservice.order-api --predicate monitors
 ```
 
 ### Step 9: Validate
@@ -607,36 +688,36 @@ dr validate --relationships
 ApplicationCollaboration: "E-commerce Platform"
 ├── aggregates → ApplicationComponent: "UserService"
 │   ├── realizes → ApplicationService: "User API"
-│   └── deployed-on → Node: "K8s Cluster"
+│   └── ← serves — technology.node: "K8s Cluster"
 ├── aggregates → ApplicationComponent: "OrderService"
 │   ├── realizes → ApplicationService: "Order API"
-│   └── deployed-on → Node: "K8s Cluster"
+│   └── ← serves — technology.node: "K8s Cluster"
 ├── aggregates → ApplicationComponent: "PaymentService"
 │   └── realizes → ApplicationService: "Payment API"
-└── uses → ApplicationInterface: "API Gateway"
+└── provides → ApplicationInterface: "API Gateway"
 ```
 
 ### Pattern 2: Event-Driven Architecture
 
 ```
 ApplicationEvent: "OrderCreated"
-├── triggers → ApplicationComponent: "InventoryService"
-├── triggers → ApplicationComponent: "EmailWorker"
-├── triggers → ApplicationComponent: "AnalyticsService"
-└── published-by → ApplicationComponent: "OrderService"
-    └── uses → ApplicationInterface: "EventBus" (protocol: AMQP)
+├── triggers → ApplicationProcess: "Reserve Inventory" (assigned to "InventoryService")
+├── triggers → ApplicationProcess: "Send Confirmation Email" (assigned to "EmailWorker")
+├── ← depends-on — ApplicationFunction: "Analytics Ingest" (handler in "AnalyticsService")
+└── ← triggers — ApplicationProcess: "Place Order" (assigned to "OrderService")
+    └── "OrderService" provides → ApplicationInterface: "EventBus" (protocol: AMQP)
 ```
 
 ### Pattern 3: Saga Orchestration
 
 ```
 ApplicationProcess: "Order Fulfillment Saga"
-├── composes → ApplicationProcess: "Reserve Inventory"
+├── flows-to → ApplicationProcess: "Reserve Inventory"
 │   ├── flows-to → ApplicationProcess: "Process Payment"
-│   └── compensation → ApplicationProcess: "Release Inventory"
-├── composes → ApplicationProcess: "Process Payment"
+│   └── flows-to (on failure) → ApplicationProcess: "Release Inventory"
+├── ApplicationProcess: "Process Payment"
 │   ├── flows-to → ApplicationProcess: "Ship Order"
-│   └── compensation → ApplicationProcess: "Refund Payment"
+│   └── flows-to (on failure) → ApplicationProcess: "Refund Payment"
 └── properties: orchestration-engine=temporal, pattern=saga
 ```
 
@@ -645,12 +726,12 @@ ApplicationProcess: "Order Fulfillment Saga"
 ```
 ApplicationInterface: "API Gateway"
 ├── protocol: REST
-├── routes-to → ApplicationService: "User API"
-├── routes-to → ApplicationService: "Order API"
-├── routes-to → ApplicationService: "Payment API"
-├── applies → ApplicationFunction: "Authentication"
-├── applies → ApplicationFunction: "Rate Limiting"
-└── applies → ApplicationFunction: "Request Logging"
+├── assigned-to → ApplicationService: "User API"
+├── assigned-to → ApplicationService: "Order API"
+├── assigned-to → ApplicationService: "Payment API"
+├── depends-on → ApplicationFunction: "Authentication"
+├── depends-on → ApplicationFunction: "Rate Limiting"
+└── depends-on → ApplicationFunction: "Request Logging"
 ```
 
 ---
@@ -684,7 +765,7 @@ export function GraphViewer({ nodes, edges }: GraphViewerProps) {
 ```
 
 → `ApplicationComponent` (type: generic)
-→ Cross-reference: `x-uses: [technology.systemsoftware.react, technology.artifact.react-flow]`
+→ Cross-reference: `technology.systemsoftware.react` serves this component (a `technology.systemsoftware` → `serves` → `ApplicationComponent` relationship)
 → Also add `ux.component.graph-viewer` in the UX layer for rendering detail
 
 ### Pattern: Zustand Store
@@ -697,9 +778,11 @@ export const useModelStore = create<ModelStoreState>((set) => ({
 }));
 ```
 
-→ `ApplicationFunction` (performs automated state management behavior)
-→ NOT `ApplicationComponent` — stores are behavior, not deployable modules
-→ Cross-reference: assign to the parent `ApplicationComponent` that owns the store
+→ `DataObject` "model-store" (a domain object: its actions only change or derive from its own state)
+→ `data-model.objectschema` "ModelStoreState" `realizes` it; the components that call `useModelStore` `accesses` it
+→ `ApplicationComponent` instead when the store's actions call services or do I/O, which includes
+saving its state to browser storage (a `persist` middleware writing to localStorage)
+→ NOT `ApplicationFunction` — a store is state that is held, not behavior that is performed
 
 ### Pattern: Stateless Service / Utility (parser, transformer)
 
@@ -796,18 +879,42 @@ export interface Annotation {
 
 ---
 
+## What Extraction by Rule Cannot See
+
+`codebase_extract` hands you a card for each declaration the code graph reports. A file is never a
+card: it is only where an element was found, recorded as the element's source reference. Four kinds
+of content have no declaration in the graph, so no card arrives for them. In a bootstrap, read the
+code for them and stage what you find, naming the file and, where there is one, the symbol.
+
+- **Entry points.** A file of top-level statements that wires a service or an app together
+  (`Program.cs`, `main.tsx`, `index.tsx`, a Python `__main__` block). Model the service or app it
+  starts: an ApplicationComponent, or a `ux.uxapplication` for a UI app.
+- **File-based routes.** A framework that routes by file path (a Next.js `app/**/page.tsx`, files
+  under `routes/` or `pages/`). The path is the declaration: the route is a `navigation.route` and
+  the page a `ux.view`. See the navigation and UX layer skills.
+- **Top-level constants** that hold something modelled: a store, a validation schema, a route
+  table, a declarative API contract. Model the thing by what it is (a store by the decision tree
+  above, a schema as a `data-model.objectschema`), with the constant as its symbol.
+- **Buildable projects.** A directory with a build manifest (`.csproj`, `package.json`, `go.mod`,
+  `pyproject.toml`, `pom.xml`) is a module in the architectural sense, which a file is not. Model
+  it as an ApplicationComponent, sourced at the manifest, when other code depends on it or it is
+  built or deployed as a unit.
+
+Never model a file as an element because it is a file. A module may be one file, part of a file or
+many files.
+
 ## Coverage Completeness Checklist
 
 Before declaring application layer extraction complete, verify ALL 9 entity types have been considered:
 
 ```
-□ ApplicationComponent — deployable units, UI components, layout engine classes (NOT Zustand stores — those are ApplicationFunction)
+□ ApplicationComponent — deployable units, UI components, layout engine classes, stores whose actions call services or do I/O
 □ ApplicationService — capabilities with a business contract (data loader, parser service)
 □ ApplicationInterface — access points: WebSocket endpoint, REST interface, postMessage bridge
-□ ApplicationFunction — stateless algorithms: parse, validate, transform, export, layout; Zustand/Redux stores (state management behavior); fetch interceptors
+□ ApplicationFunction — stateless algorithms: parse, validate, transform, export, layout; fetch interceptors
 □ ApplicationProcess — multi-step pipelines: loading pipeline, export pipeline
 □ ApplicationEvent — state change notifications: model.updated, annotation.added, user events
-□ DataObject — key data structures: ModelData, Annotation, Changeset, GraphNode, LayoutPreset
+□ DataObject — domain objects (value objects, in-memory aggregates, Zustand/Redux stores that only manage their own state) and data with no declared shape; an interface, record or DTO is a `data-model.objectschema` instead
 □ ApplicationCollaboration — component groupings: layout engine suite (groups of deployable ApplicationComponents)
 □ ApplicationInteraction — collective behaviors across multiple components (if applicable)
 
@@ -893,11 +1000,11 @@ dr add application process <name>
 
 ```bash
 dr relationship add <component> <service> --predicate realizes
-dr relationship add <service> <interface> --predicate realizes
+dr relationship add <interface> <service> --predicate assigned-to
+dr relationship add <component> <interface> --predicate provides
 dr relationship add <component> <function> --predicate assigned-to
-dr relationship add <event> <component> --predicate triggers
+dr relationship add <event> <process> --predicate triggers
 dr relationship add <service> <data-object> --predicate accesses
-dr relationship add <process> <sub-process> --predicate composes
 dr relationship add <process-a> <process-b> --predicate flows-to
 ```
 
@@ -905,7 +1012,7 @@ dr relationship add <process-a> <process-b> --predicate flows-to
 
 ```bash
 dr relationship add application.<service> business.<service> --predicate realizes
-dr relationship add application.<component> technology.<node> --predicate deployed-on
-dr relationship add application.<service> api.<openapi-doc> --predicate defined-by
-dr relationship add application.<data-object> data-model.<schema> --predicate defined-by
+dr relationship add technology.<node> application.<component> --predicate serves
+dr relationship add api.<openapi-doc> application.<service> --predicate realizes
+dr relationship add data-model.<object-schema> application.<data-object> --predicate realizes
 ```

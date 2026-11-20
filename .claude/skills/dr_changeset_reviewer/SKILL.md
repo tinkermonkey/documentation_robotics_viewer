@@ -1,3 +1,8 @@
+---
+name: dr_changeset_reviewer
+description: Review a DR changeset's staged changes for naming consistency, reference validity and layer-appropriate properties, and suggest improvements before it is committed. Use when the user works with changesets or asks for a review of one.
+---
+
 # Changeset Reviewer Skill
 
 When the user works with changesets or asks for review:
@@ -134,6 +139,9 @@ For each addition, check:
 - [ ] Layer-appropriate properties used
 - [ ] References point to existing elements
 - [ ] Status is valid for the element type
+- [ ] Connections the spec models for its type (`dr schema relationship <layer>.<type>`) are present
+      where the change needs them; within reason every modeled connection is expected, though not
+      every one will exist
 
 For each modification, check:
 

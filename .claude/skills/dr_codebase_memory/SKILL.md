@@ -239,7 +239,7 @@ dr analyzer callers "auth.service.validateToken"
 - ✅ Understanding who calls a given function
 - ✅ Reverse dependency analysis
 - ✅ Finding unexpected callers
-- ⚠️ Be aware: Dynamic calls (callbacks, reflection, higher-order functions) may not be detected
+- ⚠️ Be aware: this follows `CALLS` edges only. A callback passed by value (a handler registration, `app.register(pluginFn)`) is a separate `CALL_REFERENCE` edge, which this command does not follow; find those with `dr analyzer query`. Reflection and dynamically rebound calls are not resolved at all
 
 ---
 
@@ -267,7 +267,7 @@ dr analyzer callees "api.handler.createOrder"
 - ✅ Understanding function dependencies
 - ✅ Forward impact analysis ("What does this function depend on?")
 - ✅ Discovering call chains and dependency graphs
-- ⚠️ Be aware: Dynamic calls (callbacks, reflection, higher-order functions) may not be detected
+- ⚠️ Be aware: this follows `CALLS` edges only. A callback passed by value (a handler registration, `app.register(pluginFn)`) is a separate `CALL_REFERENCE` edge, which this command does not follow; find those with `dr analyzer query`. Reflection and dynamically rebound calls are not resolved at all
 
 ---
 
@@ -287,7 +287,7 @@ dr analyzer callees "api.handler.createOrder"
 **Example:**
 
 ```bash
-dr analyzer query "MATCH (fn:Function) WHERE fn.name CONTAINS 'payment' RETURN fn.fqn, fn.description"
+dr analyzer query "MATCH (fn:Function) WHERE fn.name CONTAINS 'payment' RETURN fn.qualified_name, fn.docstring"
 ```
 
 **Trust this for:**
@@ -373,20 +373,57 @@ dr analyzer verify --json
 
 ---
 
+## Federated Extraction (Multi-Repo)
+
+**Purpose:** When this code calls services in other repositories, `codebase_extract` can stage
+cross-model references (`@{model}/{layer}.{type}.{name}` in the calling element's `references`)
+to what those repositories' models have for the routes it calls. Opt-in; a single-repository
+project sees no change.
+
+**Set it up once (MCP):**
+
+1. Declare each other repository's model under `models:` in
+   `documentation-robotics/model/manifest.yaml`, with its git `url`.
+2. Call `codebase_index` with `crossRepo: [{ codebase: "/path/to/other-repo" }]` (add
+   `model: "<declared name>"` when the repository's origin remote doesn't match a declared `url`,
+   and `modelPath` when its DR model lives outside the repository). Then wait for the run as usual.
+   Each index run ends with codebase-memory-mcp's cross-repo-intelligence pass against those
+   repositories, indexing one it has not indexed. `crossRepo: false` turns it off.
+3. Call `codebase_extract`. Its `crossModel` section lists the references it staged, each
+   `verified` (checked against the other model on disk) or not (no model there: the target is the
+   id extraction gives that route in that repository), plus `unresolved` calls with the reason.
+
+**What maps:**
+
+- Only `CROSS_HTTP_CALLS` from the caller's side. CBM's copy in the serving repository is skipped:
+  the reference belongs to the caller's model.
+- The predicate is the first catalog triple from the caller's type: to the other model's
+  `api.operation` (`tests`, `triggers`, `references`), else to the handler's element (`flows-to`,
+  from application code). An application caller has no catalog triple to `api.operation`, so it
+  needs the handler modelled in the other repository.
+- `CROSS_CHANNEL` is counted, not mapped (no element for a channel yet); `CROSS_ASYNC_CALLS`,
+  `CROSS_GRPC_CALLS`, `CROSS_GRAPHQL_CALLS` and `CROSS_TRPC_CALLS` were not observed on CBM 0.12.1.
+- A caller that is only a card gets its reference on the run after you stage it.
+
+**Check it:** `dr validate` checks that the referenced model is declared; `dr validate --scope composed
+--model-path <model>=/path/to/other-repo` checks that the target element exists.
+
+---
+
 ## Confidence Interpretation Table
 
-| Command      | Confidence | Use As                                  | Caveats                                            |
-| ------------ | ---------- | --------------------------------------- | -------------------------------------------------- |
-| `discover`   | Medium     | Bootstrap analyzer selection            | Only used once per session                         |
-| `status`     | Medium     | Decision gate (is analyzer available?)  | Only probes; doesn't query codebase                |
-| `index`      | Medium     | Refresh command (accept if user asks)   | Takes time; only offer if freshness concerns       |
-| `endpoints`  | **HIGH**   | Authoritative ground truth              | Complete and accurate (code is source truth)       |
-| `services`   | Medium-Low | Checklist, starting point for discovery | Inferred; may not match intended architecture      |
-| `datastores` | **LOW**    | Consider as a lead, verify manually     | Inferred schemas may be incomplete/stale           |
-| `callers`    | Medium     | Reverse dependency analysis             | Misses dynamic calls (callbacks, reflection)       |
-| `callees`    | Medium     | Forward dependency analysis             | Misses dynamic calls (callbacks, reflection)       |
-| `query`      | **HIGH**   | Custom graph traversal                  | Requires Cypher knowledge and graph schema         |
-| `verify`     | **HIGH**   | Gap/drift detection, freshness check    | High confidence on diffs; quotes changeset context |
+| Command      | Confidence | Use As                                  | Caveats                                                   |
+| ------------ | ---------- | --------------------------------------- | --------------------------------------------------------- |
+| `discover`   | Medium     | Bootstrap analyzer selection            | Only used once per session                                |
+| `status`     | Medium     | Decision gate (is analyzer available?)  | Only probes; doesn't query codebase                       |
+| `index`      | Medium     | Refresh command (accept if user asks)   | Takes time; only offer if freshness concerns              |
+| `endpoints`  | **HIGH**   | Authoritative ground truth              | Complete and accurate (code is source truth)              |
+| `services`   | Medium-Low | Checklist, starting point for discovery | Inferred; may not match intended architecture             |
+| `datastores` | **LOW**    | Consider as a lead, verify manually     | Inferred schemas may be incomplete/stale                  |
+| `callers`    | Medium     | Reverse dependency analysis             | `CALLS` only: no `CALL_REFERENCE` callbacks or reflection |
+| `callees`    | Medium     | Forward dependency analysis             | `CALLS` only: no `CALL_REFERENCE` callbacks or reflection |
+| `query`      | **HIGH**   | Custom graph traversal                  | Requires Cypher knowledge and graph schema                |
+| `verify`     | **HIGH**   | Gap/drift detection, freshness check    | High confidence on diffs; quotes changeset context        |
 
 ---
 
@@ -470,14 +507,13 @@ For use cases not covered by `dr analyzer` subcommands, the codebase-memory MCP 
 
 - `mcp__codebase-memory-mcp__get_graph_schema` — Retrieve graph schema (structure, node types, edge types)
 - `mcp__codebase-memory-mcp__query_graph` — Execute custom Cypher query against the codebase graph
-- `mcp__codebase-memory-mcp__query_graph_with_llm` — Execute Cypher with LLM assistance
 
 ### Protocol
 
 **Always run `get_graph_schema` first** before any custom Cypher query. This tells you:
 
-- Available node types (Endpoint, Service, Function, Database, etc.)
-- Available edge types (calls, references, depends_on, etc.)
+- Available node labels (`Route`, `Function`, `Method`, `Class`, `Interface`, `Module`, `File`, `Table`, `Resource`, etc.)
+- Available edge types, in uppercase (`CALLS`, `CALL_REFERENCE`, `USAGE`, `IMPORTS`, `HANDLES`, `HTTP_CALLS`, `DEPENDS_ON`, etc.)
 - Node and edge properties
 
 **Example:**
@@ -489,7 +525,7 @@ mcp__codebase-memory-mcp__get_graph_schema
 # 2. Write custom Cypher query
 mcp__codebase-memory-mcp__query_graph
 MATCH (fn:Function) WHERE fn.name CONTAINS "payment"
-RETURN fn.fqn, fn.description
+RETURN fn.qualified_name, fn.docstring
 ```
 
 **When to use MCP over `dr analyzer`:**
