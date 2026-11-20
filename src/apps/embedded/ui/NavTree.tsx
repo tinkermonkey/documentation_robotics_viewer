@@ -27,6 +27,7 @@ import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
 import { purposeLabel } from '../data/changesetPurpose';
 import { groupByType, typeGroupKey } from '../data/navTreeGroups';
+import { specTypeLabel, withCount } from '../data/typeLabel';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets'>;
 
@@ -168,17 +169,18 @@ function LayerRow({
         />
         <Chevron open={open} />
       </div>
-      {/* Schema leaves: node-type titles. The leaf id is the spec_node_id
+      {/* Schema leaves: node-type names (`typeLabel`'s full singular: the
+          Schema view names a type in full). The leaf id is the spec_node_id
           (`<slug>.<shortname>`) so selecting it matches the graph node id the
           canvas / inspector operate on. */}
       {open &&
         sectionId === 'spec' &&
-        (specInfo?.typeIds ?? []).map((t, i) => {
+        (specInfo?.typeIds ?? []).map((t) => {
           const id = `${slug}.${t}`;
           return (
             <LeafRow
               key={id}
-              label={specInfo?.typeTitles[i] ?? t}
+              label={specTypeLabel(specInfo, slug, t).singular}
               active={isActive(id)}
               className="drv-nav-l2"
               onSelect={() => navigateToSpecNode(id, slug)}
@@ -193,8 +195,7 @@ function LayerRow({
           <div key={group.key}>
             <div style={{ position: 'relative' }}>
               <NavItem
-                label={group.label}
-                count={n}
+                label={withCount(group.label, n)}
                 depth={1}
                 className="drv-nav-l2 drv-nav-group"
                 aria-expanded={groupOpen}

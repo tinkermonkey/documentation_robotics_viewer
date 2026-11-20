@@ -13,9 +13,9 @@ import {
   bandSpan,
   capBands,
   orderTypes,
-  typeBandLabel,
   typeBands,
 } from '@/apps/embedded/data/typeBands';
+import { typeLabel } from '@/apps/embedded/data/typeLabel';
 import { buildModelIndex, edgesForLayer, nodesForLayer } from '@/apps/embedded/data/modelGraph';
 import type { ModelDerived, ModelPayload } from '@/apps/embedded/data/useModel';
 import modelFixture from '../fixtures/model.json';
@@ -96,17 +96,17 @@ describe('type bands order linked types next to each other', () => {
 
 describe('type bands name types without the layer prefix', () => {
   it('drops the layer word and makes the type plural', () => {
-    expect(typeBandLabel('ApplicationService', 'application')).toBe('Services');
-    expect(typeBandLabel('ApplicationComponent', 'application')).toBe('Components');
-    expect(typeBandLabel('BusinessProcess', 'business')).toBe('Processes');
-    expect(typeBandLabel('Requirement', 'motivation')).toBe('Requirements');
-    expect(typeBandLabel('Policy', 'security')).toBe('Policies');
+    expect(typeLabel('ApplicationService', 'application').short).toBe('Services');
+    expect(typeLabel('ApplicationComponent', 'application').short).toBe('Components');
+    expect(typeLabel('BusinessProcess', 'business').short).toBe('Processes');
+    expect(typeLabel('Requirement', 'motivation').short).toBe('Requirements');
+    expect(typeLabel('Policy', 'security').short).toBe('Policies');
   });
 
   it('keeps a title that is only the layer word, and splits the rest into words', () => {
-    expect(typeBandLabel('TestCaseSketch', 'testing')).toBe('Test Case Sketches');
-    expect(typeBandLabel('ObjectSchema', 'data-model')).toBe('Object Schemas');
-    expect(typeBandLabel('DataModel', 'data-model')).toBe('Data Models');
+    expect(typeLabel('TestCaseSketch', 'testing').short).toBe('Test Case Sketches');
+    expect(typeLabel('ObjectSchema', 'data-model').short).toBe('Object Schemas');
+    expect(typeLabel('DataModel', 'data-model').short).toBe('Data Models');
   });
 
   it('names bands from the spec title, else the raw type, and keeps the raw type as the id', () => {

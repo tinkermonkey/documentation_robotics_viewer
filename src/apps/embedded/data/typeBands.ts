@@ -12,13 +12,13 @@
  */
 
 import type { BuildLayeredIndexOptions, GraphEdgeData, GraphNodeData } from '@tinkermonkey/heimdall-ui';
-import { layerLabel } from '../ui/domain';
+import { specTypeLabel, withCount } from './typeLabel';
 import type { SpecLayerInfo } from './useSpec';
 
 export interface TypeBand {
   /** The element's short type, as `GraphNodeData.kind` carries it (e.g. `applicationservice`). */
   id: string;
-  /** Plural display name without the layer's own word (e.g. `Services`). */
+  /** `typeLabel`'s short plural, without the layer's own word (e.g. `Services`). */
   label: string;
   /** Elements of this type in the layer. */
   count: number;
@@ -32,44 +32,6 @@ export const BAND_CAP = 48;
 
 /** Id prefix of a band's "+N more" node; the rest of the id is the band's type. */
 export const MORE_PREFIX = 'more:';
-
-function splitWords(title: string): string[] {
-  return title
-    .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
-    .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
-    .split(/[\s_-]+/)
-    .filter(Boolean);
-}
-
-function pluralize(word: string): string {
-  if (/[^aeiou]y$/i.test(word)) return `${word.slice(0, -1)}ies`;
-  if (/(s|x|z|ch|sh)$/i.test(word)) return `${word}es`;
-  return `${word}s`;
-}
-
-/**
- * A band's display name: the spec's title for the type, split into words, the
- * layer's own leading word dropped when something is left ("ApplicationService"
- * in Application → "Services"), and the last word made plural.
- */
-export function typeBandLabel(title: string, layerId: string): string {
-  let words = splitWords(title);
-  if (words.length === 0) return title;
-  const layerWords = splitWords(layerLabel(layerId)).map((w) => w.toLowerCase());
-  const lead = words.slice(0, layerWords.length).map((w) => w.toLowerCase());
-  if (words.length > layerWords.length && lead.join(' ') === layerWords.join(' ')) {
-    words = words.slice(layerWords.length);
-  }
-  words = words.map((w, i) => (i === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w));
-  words[words.length - 1] = pluralize(words[words.length - 1]);
-  return words.join(' ');
-}
-
-/** The spec's title for a short type id, else the id itself. */
-function specTitle(type: string, spec: SpecLayerInfo | undefined): string {
-  const i = spec?.typeIds.indexOf(type) ?? -1;
-  return i >= 0 ? spec!.typeTitles[i] ?? type : type;
-}
 
 /** Links between two different types, counted per unordered type pair. */
 function typePairCounts(nodes: readonly GraphNodeData[], edges: readonly GraphEdgeData[]): Map<string, number> {
@@ -165,7 +127,7 @@ export function typeBands(
     counts.set(t, (counts.get(t) ?? 0) + 1);
   }
   const order = orderTypes(counts, typePairCounts(nodes, edges));
-  const bands = order.map((id) => ({ id, label: typeBandLabel(specTitle(id, spec), layerId), count: counts.get(id)! }));
+  const bands = order.map((id) => ({ id, label: specTypeLabel(spec, layerId, id).short, count: counts.get(id)! }));
   return {
     bands,
     layering: {
@@ -174,7 +136,7 @@ export function typeBands(
       // apart. The title carries the type's full count: Heimdall's own count
       // is of the nodes drawn, which a capped lane ("+N more") undercounts, so
       // TypeLanesView hides it.
-      layers: bands.map((b) => ({ id: b.id, label: `${b.label} · ${b.count}` })),
+      layers: bands.map((b) => ({ id: b.id, label: withCount(b.label, b.count) })),
     },
   };
 }

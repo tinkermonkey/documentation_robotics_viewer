@@ -81,13 +81,13 @@ describe('search index', () => {
       ],
       SPEC,
     );
-    // Node types and elements both come in, the element showing the spec's title for its type.
+    // Node types and elements both come in, the element naming its type in full (typeLabel).
     const service = index.find((e) => e.id === 'b')!;
-    expect(service).toMatchObject({ kind: 'element', layer: 'business', typeLabel: 'BusinessService' });
-    expect(index.find((e) => e.id === 'business.businessrole')).toMatchObject({ kind: 'type', name: 'BusinessRole' });
+    expect(service).toMatchObject({ kind: 'element', layer: 'business', typeLabel: 'Business Service' });
+    expect(index.find((e) => e.id === 'business.businessrole')).toMatchObject({ kind: 'type', name: 'Business Role' });
 
     // Every group's best match is a prefix ("Order …", "Operation") except
-    // business:type, whose BusinessRole only contains an "o": equally good
+    // business:type, whose Business Role only contains an "o": equally good
     // groups go in spec order (elements before node types), the weaker one after.
     const result = searchIndex(index, 'o');
     expect(result.groups.map((g) => g.key)).toEqual([

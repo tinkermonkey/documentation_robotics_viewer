@@ -15,6 +15,7 @@
 import { LAYER_ORDER } from '../ui/domain';
 import type { ModelNode } from './useModel';
 import type { SpecLayerInfo } from './useSpec';
+import { typeLabel } from './typeLabel';
 
 export type SearchKind = 'element' | 'type';
 
@@ -86,7 +87,8 @@ export function buildSearchIndex(
 
   for (const [layer, info] of Object.entries(specByLayer)) {
     info.typeIds.forEach((typeId, i) => {
-      const title = info.typeTitles[i] || typeId;
+      // The type's display name (typeLabel's full singular, #605): results mix layers.
+      const title = typeLabel(info.typeTitles[i] || typeId, layer).singular;
       typeTitles.set(`${layer}.${typeId}`, title);
       entries.push({
         kind: 'type',

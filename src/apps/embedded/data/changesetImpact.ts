@@ -29,6 +29,7 @@ import { buildModelIndex, resolveEndpoint } from './modelGraph';
 import { normalizeOp, type ChangeRecord } from './changesets';
 import { isStructuralPredicate } from './predicates';
 import { DOMAIN_COLORS, LAYER_ORDER, layerLabel } from '../ui/domain';
+import { typeLabel, withCount } from './typeLabel';
 import type { FollowDepth } from './followDepth';
 import type { ChangesetDetail } from './useChangesets';
 
@@ -421,21 +422,33 @@ export interface GroupedImpact {
   laneCounts: Map<string, { shown: number; total: number }>;
 }
 
-/** "workflow step" → "workflow steps" (the group's label). */
-function pluralType(n: number, type: string): string {
-  return `${n} ${type}${type.endsWith('s') ? 'es' : 's'}`;
-}
+/** A type's full plural display name in a layer ("Application Components"). */
+export type TypeNameOf = (layerId: string, type: string) => string;
+
+/** Without the spec to hand: the type id made readable (`typeLabel`'s fallback). */
+const typeIdPlural: TypeNameOf = (layerId, type) => typeLabel(type, layerId).plural;
 
 /**
  * Large lanes grouped by type: in a layer with more than `threshold`
  * elements, every type with two or more elements (other than those in
  * `keep`, and types in `expanded` as `layer|type`) becomes one group node,
- * its links merged. A group whose members share an op carries it.
+ * its links merged, labelled "Application Components · 12". A group whose
+ * members share an op carries it.
  */
 export function groupLargeLanes(
   impact: ChangesetImpact,
-  options: { threshold: number; keep?: ReadonlySet<string>; expanded?: ReadonlySet<string> },
+  options: {
+    threshold: number;
+    keep?: ReadonlySet<string>;
+    expanded?: ReadonlySet<string>;
+    /**
+     * A type's full plural name (`typeLabel` over the spec's title): lanes here
+     * mix layers, so never the short form. Defaults to the type id made readable.
+     */
+    typeName?: TypeNameOf;
+  },
 ): GroupedImpact {
+  const typeName = options.typeName ?? typeIdPlural;
   const keep = options.keep ?? new Set<string>();
   const expanded = options.expanded ?? new Set<string>();
   const byLayer = new Map<string, GraphNodeData[]>();
@@ -461,7 +474,7 @@ export function groupLargeLanes(
         const id = `${GROUP_PREFIX}${layer}|${type}`;
         groups.set(id, members.map((m) => m.id));
         for (const m of members) groupOf.set(m.id, id);
-        groupNodes.push({ id, label: pluralType(members.length, type), kind: type, domainColor: layer });
+        groupNodes.push({ id, label: withCount(typeName(layer, type), members.length), kind: type, domainColor: layer });
         shown -= members.length - 1;
       }
     }

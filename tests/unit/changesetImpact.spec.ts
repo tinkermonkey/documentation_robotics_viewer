@@ -18,6 +18,7 @@ import {
   NO_IMPACT_FILTER,
   searchImpact,
 } from '@/apps/embedded/data/changesetImpact';
+import { typeLabel } from '@/apps/embedded/data/typeLabel';
 import { buildModelIndex } from '@/apps/embedded/data/modelGraph';
 import { LAYER_ORDER } from '@/apps/embedded/ui/domain';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
@@ -259,7 +260,10 @@ describe('impact filters, search and grouped lanes', () => {
       expect(gid.startsWith(GROUP_PREFIX)).toBe(true);
       expect(members.length).toBeGreaterThanOrEqual(2);
       expect(members).not.toContain(keep);
-      expect(g.impact.nodes.find((n) => n.id === gid)!.label).toMatch(new RegExp(`^${members.length} `));
+      // Full plural (lanes mix layers) and the count after it: "Application Services · 8".
+      const label = g.impact.nodes.find((n) => n.id === gid)!.label;
+      const [layer, type] = gid.slice(GROUP_PREFIX.length).split('|');
+      expect(label).toBe(`${typeLabel(type, layer).plural} · ${members.length}`);
     }
     const ids = new Set(g.impact.nodes.map((n) => n.id));
     for (const e of g.impact.edges) {

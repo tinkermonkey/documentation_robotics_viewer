@@ -189,13 +189,21 @@ For local dev use `dr visualize --no-auth`.
   hide; Relations still filters the links). `data/typeBands.ts` builds the `useLayeredGraph` layering with
   `layerBy: 'kind'`: **Heimdall's "layer" is a DR node type there**, so the code says type band and `layerId`
   only ever means a DR layer. Bands are ordered with the least lane-skipping between linked types (exhaustive up
-  to 7 types, greedy above), named from the spec's type title with the layer word dropped and pluralized
-  ("ApplicationService" → "Services"), and titled with the full count (`.drv-type-lanes` hides Heimdall's own
+  to 7 types, greedy above), named with `data/typeLabel.ts`'s short plural (layer word dropped:
+  "ApplicationService" → "Services"), and titled with the full count (`.drv-type-lanes` hides Heimdall's own
   count, which is of the nodes drawn). `ui/TypeLanesView.tsx`: `GraphCanvas layout="layer-lanes"`, a lane over
   `BAND_CAP` (48) folds its least-linked elements into a `more:<type>` node that expands on click; selection goes
   through `selectFromCanvas`; its `graphCanvasKey` gets a `:type-lanes` suffix so `?vp=` never crosses views.
   `ui/TypeHiveView.tsx`: `HivePlot`, offered for 3+ types (`HIVE_MIN_TYPES`; with fewer, Hive is disabled and
   lanes show). Heimdall still says "layer" in its own accessible names ("X, Goals layer"): an upstream gap.
+- **Node type labels** (#605) — `data/typeLabel.ts` is the one display name for a node type, from the spec
+  title (else the type id) and its layer: `singular` ("Application Component"), `plural` ("Application
+  Components") and `short` (the plural without the layer's own leading word: "Components"). `short` only where
+  the view is scoped to one layer (Model nav tree type groups, by-type lanes and hive); where layers mix (topbar
+  search, the Impact tab's group nodes, Schema view, page headers and tables, `titleForSpecNode`) the full form.
+  A count reads `withCount` → "Components · 37". Type ids stay ids (dotted ids, `NodeTypeBadge`, crumbs, the
+  spec page's `title` fact, node-type tooltips). A bare lower-case id still splits at its layer's word
+  ("applicationservice" → "Application Service"); compounds like OAuth / OpenAPI stay whole.
 - **Schema view** — per-layer node-type graph + inspector from `/api/spec` (attributes, predicate edges with
   cardinality).
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
@@ -382,7 +390,8 @@ For local dev use `dr visualize --no-auth`.
   change inspector's Open in Impact, which also sets `uiStore.changesetTab`), **Show** Changes only /
   Changes + reach plus facet filters with counts (`impactFacets` / `filterImpact`: op, layer, type, link
   category — sets of what's HIDDEN, empty = everything), and **Large lanes** (`groupLargeLanes`: a lane over
-  `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node; clicking one expands it).
+  `GROUP_THRESHOLD` folds each type with 2+ elements into a `group:` node named "Application Components · 12"
+  (full plural, from the spec via `typeName`); clicking one expands it).
   `changesOf` maps an element to the changes touching it (Open its change).
 - **DrBot panel** (#597, `ChatDrawer.tsx`) — a floating, non-modal panel (`role="dialog"`, `aria-modal="false"`,
   "DrBot") under the topbar launcher (`data-testid="topbar-drbot-toggle"`), at the top-right of the view's area
@@ -441,9 +450,10 @@ For local dev use `dr visualize --no-auth`.
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
   The API spec requires `cliVersion` since 2026-11-19; an older dr CLI sends none, so the status bar reads `cli —` there.
-- **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: spec
-  title + count, A–Z, a single-element type still grouped), each holding its elements (A–Z); Schema is
-  unchanged. Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
+- **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: the
+  type label's short plural + count as "Components · 37", A–Z, a single-element type still grouped; the
+  accessible name says "Components, 37 elements"), each holding its elements (A–Z); Schema leaves are the full
+  singular ("Application Component"). Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
   opening one pushes no history. The selected element's group opens on every selection change (nav, graph,
   deep link, cross-layer), and the reveal effect re-runs when it does. E2E `openLayer` opens the first group.
 - **Topbar search** (`ui/TopbarSearch.tsx`, `data/search.ts`) — type-ahead over `/api/model` elements and

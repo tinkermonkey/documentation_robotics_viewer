@@ -1,6 +1,7 @@
 import type { ModelDerived, ModelNode } from './useModel';
 import type { ModelIndex } from './modelGraph';
 import { resolveEndpoint } from './modelGraph';
+import { typeLabel } from './typeLabel';
 import type { SpecPayload } from './specGraph';
 import {
   schemaForLayer,
@@ -195,7 +196,7 @@ export function specNodeNeighborhoodGraph(
   const nodes: NeighborhoodNode[] = [
     {
       id: specNodeId,
-      name: nodeSchema.title ?? short,
+      name: typeLabel(nodeSchema.title ?? short, layerId).singular,
       kind: 'spec node',
       layer: layerId,
       isCenter: true,
