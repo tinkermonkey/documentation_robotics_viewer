@@ -55,6 +55,7 @@ import { ChangesetInbox } from './ChangesetInbox';
 import { ErrorBoundary } from './ErrorBoundary';
 import { DriftBadge } from './DriftNotice';
 import { useChatAnchor } from './chatAnchor';
+import { FoldableMarkdownText } from './MarkdownText';
 
 /** Status → swatch color (committed/discarded = emerald, staged = amber). */
 function statusColor(status: string): string {
@@ -308,17 +309,15 @@ export function ChangesetCanvas() {
               onOpen={selectChangeset}
             />
             {detail.description && (
-              <p
-                style={{
-                  fontSize: 13,
-                  color: 'rgb(var(--canvas-fg-2))',
-                  margin: '0 0 14px 0',
-                  maxWidth: 900,
-                  lineHeight: 1.5,
-                }}
-              >
-                {detail.description}
-              </p>
+              <div style={{ margin: '0 0 14px 0', maxWidth: 900 }}>
+                {/* Markdown (#588), folded when long so the change list stays near the top. */}
+                <FoldableMarkdownText
+                  key={detail.id}
+                  text={detail.description}
+                  className="drv-markdown--compact"
+                  data-testid="changeset-description"
+                />
+              </div>
             )}
             {/* Remount per changeset so filters start from that changeset's state (and a failed render gets a fresh try). */}
             <ErrorBoundary key={detail.id} what="this changeset's review">

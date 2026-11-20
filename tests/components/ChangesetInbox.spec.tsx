@@ -76,6 +76,36 @@ describe('ChangesetInbox', () => {
     expect(useUiStore.getState().changesetId).toBe('cs-a');
   });
 
+  it('shows a one-paragraph inline excerpt of a markdown description on the card', async () => {
+    serveList({
+      'cs-a': {
+        name: 'changeset-description-markdown', status: 'staged', created: '2026-11-20T10:00:00Z', changes_count: 10,
+        purpose: 'plan', actions: ['commit', 'discard'],
+        description: [
+          "#588: render a changeset's description as **markdown** in `ChangesetCanvas`, see [#588](https://example.com/588).",
+          '',
+          '**In scope**',
+          '- `application.applicationcomponent.markdown-text`',
+          '',
+          '## Done when',
+          '- the inbox shows an excerpt',
+        ].join('\n'),
+      },
+    });
+    renderInbox();
+
+    const excerpt = await screen.findByTestId('inbox-card-description');
+    expect(excerpt).toHaveTextContent(
+      "#588: render a changeset's description as markdown in ChangesetCanvas, see #588.",
+    );
+    expect(within(excerpt).getByText('markdown').tagName).toBe('STRONG');
+    expect(within(excerpt).getByText('ChangesetCanvas').tagName).toBe('CODE');
+    // Only the first paragraph: no list, heading or later text, and no nested link in the card.
+    expect(excerpt).not.toHaveTextContent('In scope');
+    expect(excerpt).not.toHaveTextContent('Done when');
+    expect(excerpt.querySelector('a, ul, li, h1, h2, h3')).toBeNull();
+  });
+
   it('keeps a verification record out of Waiting on you and pairs it with its plan', async () => {
     serveList({
       'cs-plan': {

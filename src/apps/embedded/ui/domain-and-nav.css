@@ -938,6 +938,65 @@ body.dark-canvas {
   color: rgb(var(--canvas-fg-1));
 }
 
+/* A changeset's description under the canvas header: the 13px / 1.5 of the
+   plain paragraph it replaced, wider than page prose. */
+.drv-markdown.drv-markdown--compact {
+  max-width: 900px;
+}
+.drv-markdown--compact .chat-markdown,
+.drv-markdown--compact :is(.chat-markdown__p, .chat-markdown__li, .chat-markdown__td) {
+  font-size: 13px;
+  line-height: 1.5;
+}
+.drv-markdown--compact .chat-markdown__p {
+  margin-bottom: 8px;
+}
+
+/* FoldableMarkdownText: a long description folded to its first lines, fading
+   out above the Show more button (#588). The fade is a mask, so it needs no
+   colour and works on either canvas. */
+.drv-markdown-fold__body--folded {
+  max-height: 9.6em;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
+  mask-image: linear-gradient(to bottom, black 60%, transparent);
+}
+.drv-linkbtn.drv-markdown-fold__toggle {
+  font-size: 13px;
+  margin-top: 2px;
+}
+.drv-linkbtn.drv-markdown-fold__toggle:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+/* MarkdownExcerpt: a card's one-paragraph inline excerpt, two lines at most. */
+.drv-markdown-excerpt {
+  margin: 0;
+  max-width: 980px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgb(var(--canvas-fg-2));
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.drv-markdown-excerpt strong {
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+.drv-markdown-excerpt__code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 0 4px;
+  border-radius: var(--radius-sm);
+  background: rgb(var(--canvas-bg-2));
+  color: rgb(var(--canvas-fg-1));
+}
+
 /* Model view › Lanes by type (#594): the lane title already says the type's
    full count ("Requirements · 8"); Heimdall's own count is of the nodes drawn,
    which a capped lane ("+N more") undercounts. */
