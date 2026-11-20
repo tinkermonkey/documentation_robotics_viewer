@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 133   |
-| Inbound Relationships     | 126   |
+| Inter-Layer Relationships | 134   |
+| Inbound Relationships     | 127   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -125,6 +125,7 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.search-index`                                                                                                            | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.spec-graph-transform`                                                                                                    | `business.businessservice.schema-exploration`                | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.use-annotations`                                                                                                         | `business.businessservice.model-annotation`                  | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.use-c4model`                                                                                                             | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                     | `application.applicationservice.use-changeset-review`                                                                                                    | `business.businessobject.changeset`                          | `business`   | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.use-changeset-review`                                                                                                    | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.use-changesets`                                                                                                          | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
@@ -432,6 +433,7 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 | inter-layer | `application.applicationservice.layer-domain-palette`        | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.model-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.search-index`                | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.use-c4model`                 | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.use-model`                   | `realizes` | inbound   |
 | intra-layer | `business.businessfunction.cross-layer-reference-resolution` | `realizes` | inbound   |
 | intra-layer | `business.businessprocess.real-time-model-synchronization`   | `realizes` | inbound   |
@@ -560,4 +562,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0
+Generated: 2026-11-20T18:10:43.859Z | Model Version: 0.1.0

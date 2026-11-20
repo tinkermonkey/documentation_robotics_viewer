@@ -18,8 +18,8 @@ Application routing, navigation flows, and page structures.
 | ------------------------- | ----- |
 | Elements                  | 10    |
 | Intra-Layer Relationships | 9     |
-| Inter-Layer Relationships | 28    |
-| Inbound Relationships     | 20    |
+| Inter-Layer Relationships | 29    |
+| Inbound Relationships     | 21    |
 | Outbound Relationships    | 8     |
 
 **Cross-Layer References**:
@@ -91,7 +91,8 @@ flowchart TB
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.changesets-view`                                    | `ux`          | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.model-view`                                         | `ux`          | `maps-to`    | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                                  | `navigation.route.app-shell-sectionview-route`                                                                                        | `ux.view.schema-view`                                        | `ux`          | `maps-to`    | many-to-many | medium   |
-| `testing.testcasesketch.tests.navigation.route`                     | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url`                                                      | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                     | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                     | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                     | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`    | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition`      | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
@@ -319,19 +320,20 @@ Parameterized route at /#/:section/:view (section = model \| spec \| changesets 
 
 #### Relationships
 
-| Type        | Related Element                                                                  | Predicate      | Direction |
-| ----------- | -------------------------------------------------------------------------------- | -------------- | --------- |
-| inter-layer | `application.applicationcomponent.app-shell`                                     | `depends-on`   | outbound  |
-| inter-layer | `ux.view.architecture-view`                                                      | `maps-to`      | outbound  |
-| inter-layer | `ux.view.changesets-view`                                                        | `maps-to`      | outbound  |
-| inter-layer | `ux.view.model-view`                                                             | `maps-to`      | outbound  |
-| inter-layer | `ux.view.schema-view`                                                            | `maps-to`      | outbound  |
-| inter-layer | `testing.testcasesketch.architecture-view-restores-level-and-scope-from-the-url` | `tests`        | inbound   |
-| intra-layer | `navigation.flowstep.post-auth-model-entry-step`                                 | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`                       | `composes`     | inbound   |
-| intra-layer | `navigation.navigationtransition.layer-deep-link-transition`                     | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationtransition.tab-navigation-transition`                      | `navigates-to` | inbound   |
-| intra-layer | `navigation.route.index-route`                                                   | `navigates-to` | inbound   |
+| Type        | Related Element                                                                                                                    | Predicate      | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `application.applicationcomponent.app-shell`                                                                                       | `depends-on`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                                                                                                        | `maps-to`      | outbound  |
+| inter-layer | `ux.view.changesets-view`                                                                                                          | `maps-to`      | outbound  |
+| inter-layer | `ux.view.model-view`                                                                                                               | `maps-to`      | outbound  |
+| inter-layer | `ux.view.schema-view`                                                                                                              | `maps-to`      | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                  | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976` | `tests`        | inbound   |
+| intra-layer | `navigation.flowstep.post-auth-model-entry-step`                                                                                   | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`                                                                         | `composes`     | inbound   |
+| intra-layer | `navigation.navigationtransition.layer-deep-link-transition`                                                                       | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationtransition.tab-navigation-transition`                                                                        | `navigates-to` | inbound   |
+| intra-layer | `navigation.route.index-route`                                                                                                     | `navigates-to` | inbound   |
 
 ### Index Route {#index-route}
 
@@ -356,4 +358,4 @@ Landing route at path /#/; accepts optional ?token= search parameter; renders Au
 
 ---
 
-Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0
+Generated: 2026-11-20T18:10:43.859Z | Model Version: 0.1.0

@@ -169,8 +169,8 @@ flowchart TB
 | `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.model-visualization`                                                                              | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
 | `product.softwarecapability.supports.motivation.goal`                                 | `product.softwarecapability.schema-exploration`                                                                               | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
 | `technology.systemsoftware.satisfies.motivation.constraint`                           | `technology.systemsoftware.elk`                                                                                               | `motivation.constraint.browser-only-deployment`                     | `motivation` | `satisfies`  | many-to-many | medium   |
-| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                          | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
-| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship`                                      | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                        | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | high     |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                  | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer`                                                   | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.drbot-panel-takes-the-drawers-place-when-both-dont-fit`                                               | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                            | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
@@ -489,13 +489,13 @@ A person can read the modelled system as the established C4 diagrams (Context, C
 
 #### Relationships
 
-| Type        | Related Element                                                                          | Predicate   | Direction |
-| ----------- | ---------------------------------------------------------------------------------------- | ----------- | --------- |
-| inter-layer | `application.applicationservice.c4-model-transform`                                      | `satisfies` | inbound   |
-| inter-layer | `product.feature.c4-architecture-diagrams`                                               | `satisfies` | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-keeps-the-source-ids-of-every-element-and-relationship` | `satisfies` | inbound   |
-| inter-layer | `ux.view.architecture-view`                                                              | `satisfies` | inbound   |
-| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                              | `realizes`  | outbound  |
+| Type        | Related Element                                                                                        | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `application.applicationservice.c4-model-transform`                                                    | `satisfies` | inbound   |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                             | `satisfies` | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship` | `satisfies` | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                                            | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                            | `realizes`  | outbound  |
 
 ### DrBot opens without reflowing the canvas {#drbot-opens-without-reflowing-the-canvas}
 
@@ -713,7 +713,7 @@ All interactive components must pass axe-core automated accessibility testing an
 | inter-layer | `product.feature.dr-bot-chat-drawer`                                                                                     | `satisfies`       | inbound   |
 | inter-layer | `product.feature.model-view-by-type`                                                                                     | `satisfies`       | inbound   |
 | inter-layer | `product.feature.topbar-search`                                                                                          | `satisfies`       | inbound   |
-| inter-layer | `testing.testcasesketch.c4-diagram-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                     | `satisfies`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`             | `satisfies`       | inbound   |
 | inter-layer | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                       | `satisfies`       | inbound   |
 | inter-layer | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes` | `satisfies`       | inbound   |
 | inter-layer | `ux.view.architecture-view`                                                                                              | `satisfies`       | inbound   |
@@ -793,4 +793,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-20T15:49:07.737Z | Model Version: 0.1.0
+Generated: 2026-11-20T18:10:43.859Z | Model Version: 0.1.0

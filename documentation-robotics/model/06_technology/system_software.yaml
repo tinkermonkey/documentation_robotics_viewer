@@ -298,6 +298,11 @@ technology.systemsoftware.elk:
     Heimdall has a native nested layout.
   attributes:
     softwareType: middleware
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: package.json
+        symbol: elkjs
   metadata:
     created_at: 2026-11-20T15:40:02.900Z
     updated_at: 2026-11-20T15:40:02.900Z

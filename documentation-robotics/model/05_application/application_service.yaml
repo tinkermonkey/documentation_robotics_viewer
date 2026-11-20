@@ -852,6 +852,11 @@ application.applicationservice.c4-model-transform:
     spec doesn't define are reported, not applied."
   attributes:
     serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4Model.ts
+        symbol: buildC4Model
   metadata:
     created_at: 2026-11-20T15:40:02.898Z
     updated_at: 2026-11-20T15:40:02.898Z
@@ -873,6 +878,11 @@ application.applicationservice.c4-view-scoping:
     the breadcrumb, and which elements can be drilled into."
   attributes:
     serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4Views.ts
+        symbol: buildC4View
   metadata:
     created_at: 2026-11-20T15:40:02.899Z
     updated_at: 2026-11-20T15:40:02.899Z
@@ -893,17 +903,51 @@ application.applicationservice.c4-diagram-layout:
     module knows ELK's types."
   attributes:
     serviceType: asynchronous
-  accepted_gaps:
-    - direction: incoming
-      predicate: depends-on
-      other_spec_node_id: application.applicationservice
-      reason: Only the C4 Diagram component calls the layout; no other data service
-        builds on it, and it is meant to be replaced by a native Heimdall
-        layout.
-      decided_by: agent
-      decided_at: 2026-11-20T15:41:11.847Z
-      changeset: changeset-1795189106448-lycsp34uv
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4Layout.ts
+        symbol: layoutC4View
   metadata:
     created_at: 2026-11-20T15:40:02.899Z
     updated_at: 2026-11-20T15:40:02.899Z
+    version: 1
+application.applicationservice.use-c4model:
+  id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+  path: application.applicationservice.use-c4model
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: useC4Model
+  description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
+    per /api/model payload and spec catalog and shared by the Architecture
+    canvas, the nav tree and DrBot's context; and useC4Layout, one view laid out
+    through a React Query keyed on the view's content."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/useC4Model.ts
+        symbol: useC4Model
+  accepted_gaps:
+    - direction: incoming
+      predicate: covers
+      other_spec_node_id: testing.testcoveragetarget
+      reason: It has no unit test of its own; the Architecture canvas component tests
+        exercise it.
+      decided_by: agent
+      decided_at: 2026-11-20T17:19:07.849Z
+      changeset: changeset-1795193070668-0q1lrgyd5
+    - direction: incoming
+      predicate: depends-on
+      other_spec_node_id: application.applicationservice
+      reason: Only components call the hook (the Architecture canvas, the nav tree and
+        the chat panel); no data service builds on it.
+      decided_by: agent
+      decided_at: 2026-11-20T17:19:11.007Z
+      changeset: changeset-1795193070668-0q1lrgyd5
+  metadata:
+    created_at: 2026-11-20T16:45:15.400Z
+    updated_at: 2026-11-20T16:45:15.400Z
     version: 1

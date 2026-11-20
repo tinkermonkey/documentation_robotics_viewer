@@ -539,6 +539,11 @@ data-model.objectschema.c4-model:
     source link ids), plus the model elements no rule placed."
   attributes:
     type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4Model.ts
+        symbol: C4Model
   metadata:
     created_at: 2026-11-20T15:40:02.902Z
     updated_at: 2026-11-20T15:40:02.902Z
@@ -555,6 +560,11 @@ data-model.objectschema.c4-view:
     scope's ancestor chain."
   attributes:
     type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4Views.ts
+        symbol: C4View
   metadata:
     created_at: 2026-11-20T15:40:02.904Z
     updated_at: 2026-11-20T15:40:02.904Z

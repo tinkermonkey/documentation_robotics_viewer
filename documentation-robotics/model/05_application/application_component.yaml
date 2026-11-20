@@ -875,6 +875,11 @@ application.applicationcomponent.architecture-canvas:
     the rules left out."
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/ArchitectureCanvas.tsx
+        symbol: ArchitectureCanvas
   metadata:
     created_at: 2026-11-20T15:40:02.899Z
     updated_at: 2026-11-20T15:40:02.899Z
@@ -887,16 +892,23 @@ application.applicationcomponent.c4-diagram:
   layer_id: application
   name: C4 Diagram
   description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
-    Heimdall's usePanZoom, with its toolbar; a dashed boundary rectangle titled
-    with the scope; a card per element (name, kind and technology, one line of
-    description; a person and a data store get their own shape); right-angle
-    edges with a label of the predicates and a count. Colours from canvas
-    tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow
-    keys between cards, Enter drills into a card that has parts, Escape clears
-    the selection. Proof of concept for boundary rendering and a C4 card in
-    Heimdall."
+    Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+    Heimdall's graph toolbar (GraphToolbar itself only works inside a
+    GraphCanvas); a dashed boundary rectangle titled with the scope; a card per
+    element (name, kind and technology, one line of description; a person and a
+    data store get their own shape); right-angle edges with a label of the
+    predicates and a count. Colours from canvas tokens, so it flips with the
+    dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter
+    drills into a card that has parts, Escape clears the selection; the arrows
+    are also listed as text. Proof of concept for boundary rendering and a C4
+    card in Heimdall."
   attributes:
     type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/C4Diagram.tsx
+        symbol: C4Diagram
   metadata:
     created_at: 2026-11-20T15:40:02.900Z
     updated_at: 2026-11-20T15:40:02.900Z
