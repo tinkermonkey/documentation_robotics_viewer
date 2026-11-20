@@ -78,6 +78,22 @@ export async function layerCounts(
 }
 
 /**
+ * How many node types the live spec declares for a layer (its `nodeSchemas`).
+ * Read it rather than hard-coding it: a dr CLI release can bump the spec and add
+ * a type (CLI 0.6.0's spec 0.14.0 gave Application a 10th).
+ */
+export async function nodeTypeCount(request: APIRequestContext, layerId: string): Promise<number> {
+  const res = await request.get(`${BASE_URL}/api/spec`);
+  expect(res.ok()).toBeTruthy();
+  const spec = (await res.json()) as {
+    schemas: Record<string, { layer?: { id?: string }; nodeSchemas?: Record<string, unknown> }>;
+  };
+  const entry = Object.values(spec.schemas).find((s) => s?.layer?.id === layerId);
+  expect(entry, `no schema for layer ${layerId}`).toBeTruthy();
+  return Object.keys(entry?.nodeSchemas ?? {}).length;
+}
+
+/**
  * Chat SDK availability gate, read over the WebSocket JSON-RPC `chat.status`
  * method (there is no REST equivalent). Returns `false` if the SDK is
  * unavailable or the probe times out, so the chat spec can skip cleanly.
