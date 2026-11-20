@@ -167,13 +167,10 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
-# Documentation Robotics: code-analyzer runtime state (index jobs, extract
-# caches, per-machine analyzer status). Machine-local and rewritten on every
-# index; the spec pin (.dr/spec, .dr/manifest.json) stays tracked.
-.dr/analyzers/
-
-# DR: which changeset is active is per-checkout state, never shared
-documentation-robotics/changesets/.active
-
-# Documentation Robotics: per-checkout spec reference and analyzer state (recreated by the CLI)
+# Documentation Robotics: .dr/ is per-checkout state the CLI recreates (since dr 0.6.0:
+# the spec reference, analyzer state, and the active-changeset marker). The model's spec
+# version lives in documentation-robotics/model/manifest.yaml.
 /.dr/
+
+# DR before 0.6.0 kept the active-changeset pointer here: per-checkout, never shared
+documentation-robotics/changesets/.active
