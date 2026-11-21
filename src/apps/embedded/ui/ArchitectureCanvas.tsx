@@ -258,8 +258,10 @@ function C4Details({
     })
     .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
   const nameOf = (id: string) => model.byId.get(id)?.name ?? id;
-  // A staged changeset's new box: its model elements aren't in the model yet, so there's nothing to open.
-  const notInModel = overlay?.mode === 'apply' && overlay.diff.elements.get(item.id)?.status === 'added';
+  // Only a source the live model holds can open in the Model view: a staged changeset's new elements
+  // aren't in it yet, and an applied one's deleted elements no longer are.
+  const { derived: live } = useModel();
+  const inModel = useMemo(() => new Set(live.nodes.map((n) => n.id)), [live.nodes]);
 
   return (
     <div className="c4-details" data-testid="c4-details">
@@ -304,7 +306,7 @@ function C4Details({
           <ul className="c4-details__list">
             {element.sources.map((source) => (
               <li key={source.id}>
-                {notInModel ? (
+                {!inModel.has(source.id) ? (
                   <span>{source.name}</span>
                 ) : (
                   <button

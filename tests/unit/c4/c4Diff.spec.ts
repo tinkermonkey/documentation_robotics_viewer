@@ -6,6 +6,7 @@
 import { describe, it, expect } from 'vitest';
 
 import { C4_SYSTEM_ID, buildC4Model, c4Ancestors } from '@/apps/embedded/data/c4/c4Model';
+import { OUTSIDE_CAP } from '@/apps/embedded/data/c4/c4Views';
 import { diffC4, isEmptyC4Diff, unionC4, unionC4View } from '@/apps/embedded/data/c4/c4Diff';
 import { EMPTY_TRACE, overlayModel } from '@/apps/embedded/data/modelOverlay';
 import type { ChangeRecord } from '@/apps/embedded/data/changesets';
@@ -14,6 +15,9 @@ import {
   addRelationship,
   deleteElement,
   deleteRelationship,
+  derive,
+  link,
+  node,
   numbered,
   ref,
   sampleModel,
@@ -233,5 +237,31 @@ describe('unionC4 and unionC4View', () => {
     const view = unionC4View(base, base, diffC4(base, base, EMPTY_TRACE), 'container');
     expect(view.relationshipDiff.size).toBe(0);
     expect(view.scope?.id).toBe(C4_SYSTEM_ID);
+  });
+});
+
+describe('unionC4View: a Component diagram past the outside cap', () => {
+  it('leaves the same outsiders off both sides, so a change in rank marks no unchanged arrow', () => {
+    const scope = node('application.applicationcomponent', 'Scope', { type: 'internal' });
+    const part = node('application.applicationcomponent', 'Part', { type: 'internal' });
+    // One more outsider than the cap, each linked once: the last by name is left off.
+    const others = Array.from({ length: OUTSIDE_CAP + 1 }, (_, i) =>
+      node('application.applicationcomponent', `Other ${String(i).padStart(2, '0')}`, { type: 'internal' }),
+    );
+    const capped = derive([scope, part, ...others], [link(scope, 'composes', part), ...others.map((o) => link(part, 'uses', o))]);
+    const last = others[OUTSIDE_CAP];
+    const bumped = others[OUTSIDE_CAP - 1];
+    // The changeset links the left-off outsider again, which ranks it in and, on its own count, would rank `bumped` out.
+    const { model: afterModel, trace } = overlayModel(capped, numbered([addRelationship(part, 'depends-on', last)]), 'apply');
+    const b = buildC4Model(capped);
+    const a = buildC4Model(afterModel);
+    const view = unionC4View(b, a, diffC4(b, a, trace), 'component', ref(scope));
+
+    const statuses = [...view.relationshipDiff.values()].map((r) => r.status);
+    expect(statuses).not.toContain('removed');
+    expect(view.relationshipDiff.has(`${ref(part)}>${ref(bumped)}`)).toBe(false);
+    expect(view.relationshipDiff.get(`${ref(part)}>${ref(last)}`)?.status).toBe('relabelled');
+    expect(view.elements.filter((e) => !e.inScope)).toHaveLength(OUTSIDE_CAP);
+    expect(view.hiddenOutside).toBe(1);
   });
 });

@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 /**
- * C4Overlay.spec.tsx — a STAGED changeset laid over the Architecture view's
- * diagrams (an applied one, reverted, is the e2e's): op marks and status chips
+ * C4Overlay.spec.tsx — a STAGED changeset (and one APPLIED, reverted) laid over the Architecture view's
+ * diagrams: op marks and status chips
  * on the cards, a ghost for the removed box, the roll-up on the box whose parts
  * changed, the bar's tally and Clear, the drawer's "In this changeset" section
  * and its link into the Changesets view, and the accessible names.
@@ -45,14 +45,14 @@ vi.mock('@/apps/embedded/data/c4/c4Layout', async (original) => {
 
 import { ArchitectureCanvas } from '@/apps/embedded/ui/ArchitectureCanvas';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
-import { buildC4Model } from '@/apps/embedded/data/c4/c4Model';
+import { C4_SYSTEM_ID, buildC4Model } from '@/apps/embedded/data/c4/c4Model';
 import { buildC4View } from '@/apps/embedded/data/c4/c4Views';
 import { diffC4 } from '@/apps/embedded/data/c4/c4Diff';
 import { overlayModel } from '@/apps/embedded/data/modelOverlay';
 import type { ModelPayload } from '@/apps/embedded/data/useModel';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
-import { addElement, deleteElement, derive, updateElement } from '../unit/c4/fixture';
+import { addElement, deleteElement, derive, node, updateElement } from '../unit/c4/fixture';
 import modelFixture from '../fixtures/model.json';
 
 // ─── The changeset, and what it should read as ──────────────────────────────
@@ -216,5 +216,51 @@ describe('C4 changeset overlay (staged changeset)', () => {
     const drawnRemoved = document.querySelectorAll('[data-testid="c4-edge"][data-status="removed"]').length;
     expect(drawnRemoved).toBeGreaterThan(0);
     expect(removedArrows).toHaveLength(drawnRemoved);
+  });
+});
+
+describe('C4 changeset overlay (applied changeset, shown reverted)', () => {
+  // The applied changeset deleted a person: reverted, it is a ghost on the Context diagram whose model
+  // element no longer exists, so its drawer names it without a link into the Model view.
+  // (A business role: the spec fixture predates product.persona.)
+  const gone = node('business.businessrole', 'Departed Reviewer');
+  const APPLIED_ID = 'cs-applied';
+
+  function serveApplied() {
+    const created = '2026-11-20T00:00:00Z';
+    mswServer.use(
+      http.get('*/api/changesets', () =>
+        HttpResponse.json({
+          version: '1',
+          changesets: { [APPLIED_ID]: { name: 'retire-persona', status: 'committed', created, changes_count: 1, purpose: 'plan' } },
+        }),
+      ),
+      http.get(`*/api/changesets/${APPLIED_ID}`, () =>
+        HttpResponse.json({ id: APPLIED_ID, name: 'retire-persona', status: 'committed', created, purpose: 'plan', revision: 1, changes: [deleteElement(gone, 1)] }),
+      ),
+    );
+  }
+
+  it('opens no Model view link from a box whose model element the changeset deleted', async () => {
+    serveApplied();
+    renderWithProviders(<ArchitectureCanvas />);
+    act(() => useUiStore.getState().showC4('context', null, { changesetId: APPLIED_ID }));
+    await screen.findByTestId('c4-bar-tally');
+    const ghostId = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>('[data-testid="c4-card"][data-status="removed"]');
+      expect(el).not.toBeNull();
+      return el!.dataset.c4Id!;
+    });
+
+    act(() => useUiStore.getState().selectC4(ghostId));
+    const details = await screen.findByTestId('c4-details');
+    const sources = within(details).getByRole('region', { name: 'Model elements' });
+    expect(within(sources).getByText(gone.name)).toBeInTheDocument();
+    expect(within(details).queryByTestId('c4-source-link')).not.toBeInTheDocument();
+
+    // A box whose model elements are all in the model still links them.
+    const live = [...document.querySelectorAll<HTMLElement>('[data-testid="c4-card"]')].find((c) => !c.dataset.status && c.dataset.c4Id !== C4_SYSTEM_ID)!;
+    act(() => useUiStore.getState().selectC4(live.dataset.c4Id!));
+    await waitFor(() => expect(within(screen.getByTestId('c4-details')).getAllByTestId('c4-source-link').length).toBeGreaterThan(0));
   });
 });

@@ -486,8 +486,17 @@ export function unionC4View(
   if (base === after) return { ...buildC4View(after, level, scopeId), relationshipDiff: new Map() };
   const afterSide = unionOf(base, after, diff, after.relationships);
   const baseSide = unionOf(base, after, diff, toRelationships(mapRelationships(base.relationships, (id) => diff.unionIdOf.get(id) ?? id)));
-  const viewA = buildC4View(afterSide, level, scopeId);
-  const viewB = buildC4View(baseSide, level, scopeId);
+  let viewA = buildC4View(afterSide, level, scopeId);
+  let viewB = buildC4View(baseSide, level, scopeId);
+  // A Component diagram caps its outsiders by link count, and each side would rank its own: a change
+  // that moves one outsider into the top few and another out would mark their unchanged arrows added
+  // and removed. Rank both sides by their combined links, so both leave the same outsiders off.
+  if (viewA.outsideDegree && viewB.outsideDegree) {
+    const outsideDegree = new Map(viewA.outsideDegree);
+    for (const [id, n] of viewB.outsideDegree) outsideDegree.set(id, (outsideDegree.get(id) ?? 0) + n);
+    viewA = buildC4View(afterSide, level, scopeId, { outsideDegree });
+    viewB = buildC4View(baseSide, level, scopeId, { outsideDegree });
+  }
 
   const shownIds = new Set(viewA.elements.map((e) => e.id));
   const elements = [...viewA.elements, ...viewB.elements.filter((e) => !shownIds.has(e.id))];
@@ -534,7 +543,7 @@ export function unionC4View(
     ...viewA,
     elements,
     relationships,
-    hiddenOutside: Math.max(viewA.hiddenOutside, viewB.hiddenOutside),
+    hiddenOutside: viewA.hiddenOutside,
     relationshipDiff,
   };
 }
