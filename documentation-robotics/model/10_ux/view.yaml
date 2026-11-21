@@ -181,7 +181,9 @@ ux.view.architecture-view:
   description: "The model as C4 diagrams (#/architecture): a level control
     (Context · Containers · Components), a breadcrumb of the scope, and the
     diagram. Clicking a box selects it and opens its details; a box with parts
-    drills into them."
+    drills into them. A changeset can be laid over the diagrams (`?changeset=`,
+    from the C4 Changeset Bar's picker or the Changesets view): what it adds,
+    removes or changes is marked on the boxes and arrows."
   attributes:
     type: page
     title: Architecture

@@ -207,3 +207,20 @@ motivation.requirement.architecture-reads-as-c4-diagrams:
     created_at: 2026-11-20T15:40:02.878Z
     updated_at: 2026-11-20T15:40:02.878Z
     version: 1
+motivation.requirement.changesets-read-as-architecture-change:
+  id: a5a99a4f-04d4-47b1-bcde-2ba017c89831
+  path: motivation.requirement.changesets-read-as-architecture-change
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Changesets read as architecture change
+  description: A reviewer can see what a changeset does to the C4 diagrams (boxes
+    and arrows added, removed or changed) before Apply, each mark traced to the
+    changes behind it.
+  attributes:
+    requirementType: functional
+    priority: high
+  metadata:
+    created_at: 2026-11-21T01:28:54.086Z
+    updated_at: 2026-11-21T01:28:54.086Z
+    version: 1

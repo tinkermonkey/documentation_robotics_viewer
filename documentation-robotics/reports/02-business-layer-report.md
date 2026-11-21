@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 156   |
-| Inbound Relationships     | 149   |
+| Inter-Layer Relationships | 158   |
+| Inbound Relationships     | 151   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -110,11 +110,13 @@ flowchart TB
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`  | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                                                   | `35295e18-08a8-4ca0-ada3-40a017cb4318`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-realizes-e642ad79-62ea-47a4-ae04-d512d0ef7881`  | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`    | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`   | `serves`     | unknown      | unknown  |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-changeset-diff`                                                                                                       | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-model-transform`                                                                                                      | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-view-scoping`                                                                                                         | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-drift`                                                                                                         | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                     | `application.applicationservice.changeset-impact-analysis`                                                                                               | `business.businessobject.changeset`                          | `business`   | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-impact-analysis`                                                                                               | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-model-overlay`                                                                                                 | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-purpose`                                                                                                       | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.changeset-review-model`                                                                                                  | `business.businessservice.changeset-review`                  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                      | `application.applicationservice.changeset-review-model`                                                                                                  | `business.businessprocess.changeset-review-flow`             | `business`   | `serves`     | many-to-many | medium   |
@@ -458,8 +460,10 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 
 | Type        | Related Element                                              | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-changeset-diff`           | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.c4-model-transform`          | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.c4-view-scoping`             | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.changeset-model-overlay`     | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.layer-domain-palette`        | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.model-graph-transform`       | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.search-index`                | `realizes` | inbound   |
@@ -606,4 +610,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0

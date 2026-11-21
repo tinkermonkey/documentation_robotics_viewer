@@ -1,0 +1,713 @@
+- type: add
+  elementId: motivation.requirement.changesets-read-as-architecture-change
+  layerName: motivation
+  after:
+    id: a5a99a4f-04d4-47b1-bcde-2ba017c89831
+    path: motivation.requirement.changesets-read-as-architecture-change
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Changesets read as architecture change
+    description: A reviewer can see what a changeset does to the C4 diagrams (boxes
+      and arrows added, removed or changed) before Apply, each mark traced to
+      the changes behind it.
+    attributes:
+      requirementType: functional
+      priority: high
+    metadata:
+      created_at: 2026-11-21T01:28:54.086Z
+      updated_at: 2026-11-21T01:28:54.086Z
+      version: 1
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 0
+- type: add
+  elementId: product.feature.c4-changeset-overlay
+  layerName: product
+  after:
+    id: 4f01a00f-fd2a-4398-b81a-982cefbc9051
+    path: product.feature.c4-changeset-overlay
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Changeset Overlay
+    description: "A changeset laid over the Architecture view's C4 diagrams: op
+      marks on cards and arrows (never colour alone), roll-up counts on boxes
+      whose parts changed, removed boxes and arrows drawn back as ghosts, and an
+      \"In this changeset\" drawer section. Opened with `?changeset=` from a
+      picker in the Architecture view or from the Changesets view. A staged
+      changeset reads base to after; an applied one is reverted, before to
+      current."
+    attributes:
+      priority: high
+      status: planned
+      size: m
+    metadata:
+      created_at: 2026-11-21T01:28:54.097Z
+      updated_at: 2026-11-21T01:28:54.097Z
+      version: 1
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationservice.changeset-model-overlay
+  layerName: application
+  after:
+    id: 5290c381-1718-46f9-8547-9af8d6e8cbaa
+    path: application.applicationservice.changeset-model-overlay
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Changeset Model Overlay
+    description: "`data/modelOverlay.ts`: the model with a changeset applied
+      (staged) or reversed (applied), netted in change order, as a
+      `ModelDerived`. Extracted from `changesetImpact.ts`, which then uses it
+      too; changes that don't resolve against the model are counted, not
+      dropped."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-21T01:28:54.100Z
+      updated_at: 2026-11-21T01:28:54.100Z
+      version: 1
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationservice.c4-changeset-diff
+  layerName: application
+  after:
+    id: 736617eb-c972-4d45-9d64-8276e10dbe9f
+    path: application.applicationservice.c4-changeset-diff
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 Changeset Diff
+    description: "`data/c4/c4Diff.ts`: `diffC4(base, after, changes)` matches C4
+      elements by their source model elements and gives each a status (added,
+      removed, changed, moved, parts changed) and each arrow one (added,
+      removed, relabelled); `unionC4` draws removed elements and arrows back
+      under their nearest surviving ancestor; roll-up counts changes below the
+      current level onto the visible ancestor."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-21T01:28:54.103Z
+      updated_at: 2026-11-21T01:28:54.103Z
+      version: 1
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 3
+- type: add
+  elementId: ux.subview.c4-changeset-bar
+  layerName: ux
+  after:
+    id: e2568d76-6a12-4221-92f6-a4d07b77b8df
+    path: ux.subview.c4-changeset-bar
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Changeset Bar
+    description: "The Architecture view's changeset overlay bar under the
+      breadcrumb: a changeset picker (staged first, then applied), its name and
+      purpose, a drift badge when commit is blocked, a tally, the legend and
+      Clear."
+    metadata:
+      created_at: 2026-11-21T01:28:54.108Z
+      updated_at: 2026-11-21T01:28:54.108Z
+      version: 1
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: product.feature.c4-changeset-overlay::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.c4-changeset-overlay
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: product.feature.c4-changeset-overlay::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.c4-changeset-overlay
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: product.feature.c4-changeset-overlay::satisfies::motivation.requirement.changesets-read-as-architecture-change
+  layerName: product
+  after:
+    source: product.feature.c4-changeset-overlay
+    target: motivation.requirement.changesets-read-as-architecture-change
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: product.feature.c4-changeset-overlay::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: product
+  after:
+    source: product.feature.c4-changeset-overlay
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: product.feature.c4-changeset-overlay::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.c4-changeset-overlay
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: application.applicationservice.changeset-model-overlay::realizes::product.feature.c4-changeset-overlay
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-model-overlay
+    target: product.feature.c4-changeset-overlay
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationservice.changeset-model-overlay::depends-on::application.applicationservice.model-graph-transform
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-model-overlay
+    target: application.applicationservice.model-graph-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::realizes::product.feature.c4-changeset-overlay
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: product.feature.c4-changeset-overlay
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::satisfies::motivation.requirement.changesets-read-as-architecture-change
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: motivation.requirement.changesets-read-as-architecture-change
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::depends-on::application.applicationservice.c4-model-transform
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: application.applicationservice.c4-model-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::depends-on::application.applicationservice.changeset-model-overlay
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: application.applicationservice.changeset-model-overlay
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: ux.view.architecture-view::composes::ux.subview.c4-changeset-bar
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: ux.subview.c4-changeset-bar
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-21T01:28:54.138Z
+  sequenceNumber: 17
+- type: add
+  elementId: data-model.objectschema.c4-diff
+  layerName: data-model
+  after:
+    id: 8f451e2b-1342-45ab-8798-f8ece10fa1b4
+    path: data-model.objectschema.c4-diff
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Diff
+    description: "The result of `diffC4`: per C4 element a status and the change
+      sequence numbers behind it, per relationship a status, roll-up counts per
+      ancestor, and the changes no diagram shows."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-21T01:28:57.577Z
+      updated_at: 2026-11-21T01:28:57.577Z
+      version: 1
+  timestamp: 2026-11-21T01:28:57.583Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::accesses::data-model.objectschema.c4-diff
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: data-model.objectschema.c4-diff
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-21T01:28:57.583Z
+  sequenceNumber: 19
+- type: update
+  elementId: product.feature.c4-architecture-diagrams
+  layerName: product
+  before:
+    id: 36272138-53f2-429a-be42-3e555869131b
+    path: product.feature.c4-architecture-diagrams
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Architecture Diagrams
+    description: "The model as a C4 diagram set in a top-level Architecture view:
+      System Context, Containers and Components, with drill-down into any
+      container or component that has parts. People, the system, external
+      systems, containers and components are derived from the DR model by rules
+      keyed on spec types; a box opens the model elements behind it. Proof of
+      concept: base diagrams only, no changeset overlay, Deployment or Dynamic
+      diagrams yet."
+    attributes: &a1
+      priority: high
+      status: planned
+      size: l
+    metadata: &a2
+      created_at: 2026-11-20T15:40:02.895Z
+      updated_at: 2026-11-20T15:40:02.895Z
+      version: 1
+  after:
+    id: 36272138-53f2-429a-be42-3e555869131b
+    path: product.feature.c4-architecture-diagrams
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Architecture Diagrams
+    description: "The model as a C4 diagram set in a top-level Architecture view:
+      System Context, Containers and Components, with drill-down into any
+      container or component that has parts. People, the system, external
+      systems, containers and components are derived from the DR model by rules
+      keyed on spec types; a box opens the model elements behind it. Proof of
+      concept: Deployment and Dynamic diagrams not yet; the changeset overlay is
+      the C4 Changeset Overlay feature."
+    attributes: *a1
+    metadata: *a2
+  timestamp: 2026-11-21T01:29:20.335Z
+  sequenceNumber: 20
+- type: update
+  elementId: application.applicationcomponent.architecture-canvas
+  layerName: application
+  before:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Diagram below it, and a details drawer for the
+      selected box listing the model elements behind it, each a link into the
+      Model view. Reads the model through useModel and the spec through useSpec;
+      level, scope and selection live in the UI store and the URL. Shows a plain
+      message when the model yields no C4 elements, and how many model elements
+      the rules left out."
+    attributes: &a3
+      type: internal
+    source_reference: &a4
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ArchitectureCanvas.tsx
+          symbol: ArchitectureCanvas
+    metadata: &a5
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+  after:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
+      (`?changeset=`), the C4 Diagram below it, and a details drawer for the
+      selected box listing the model elements behind it, each a link into the
+      Model view, and with an overlay an \"In this changeset\" section: each
+      change behind the box with its op, before and after, and a link to it in
+      the Changesets view. Reads the model through useModel and the spec through
+      useSpec; level, scope, selection and the overlaid changeset live in the UI
+      store and the URL. Shows a plain message when the model yields no C4
+      elements, and how many model elements (and overlaid changes) the rules
+      left out."
+    attributes: *a3
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-11-21T01:29:20.636Z
+  sequenceNumber: 21
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. Colours from canvas tokens, so it flips with
+      the dark canvas. Keyboard: one Tab stop with arrow keys between cards,
+      Enter drills into a card that has parts, Escape clears the selection; the
+      arrows are also listed as text. Proof of concept for boundary rendering
+      and a C4 card in Heimdall."
+    attributes: &a6
+      type: internal
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a8
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. With a C4 Diff, cards and arrows carry op
+      marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip
+      and the status in their accessible name, never colour alone; removed boxes
+      and arrows are drawn as ghosts; a box whose parts changed shows a count.
+      Colours from canvas tokens, so it flips with the dark canvas. Keyboard:
+      one Tab stop with arrow keys between cards, Enter drills into a card that
+      has parts (focus follows into the new diagram), Escape clears the
+      selection; the arrows, with their status, are also listed as text. Proof
+      of concept for boundary rendering, a C4 card and its status slot in
+      Heimdall."
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-21T01:29:20.862Z
+  sequenceNumber: 22
+- type: update
+  elementId: application.applicationservice.use-c4model
+  layerName: application
+  before:
+    id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+    path: application.applicationservice.use-c4model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useC4Model
+    description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
+      per /api/model payload and spec catalog and shared by the Architecture
+      canvas, the nav tree and DrBot's context; and useC4Layout, one view laid
+      out through a React Query keyed on the view's content."
+    attributes: &a9
+      serviceType: synchronous
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/c4/useC4Model.ts
+          symbol: useC4Model
+    accepted_gaps: &a11
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: It has no unit test of its own; the Architecture canvas component tests
+          exercise it.
+        decided_by: agent
+        decided_at: 2026-11-20T17:19:07.849Z
+        changeset: changeset-1795193070668-0q1lrgyd5
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: Only components call the hook (the Architecture canvas, the nav tree and
+          the chat panel); no data service builds on it.
+        decided_by: agent
+        decided_at: 2026-11-20T17:19:11.007Z
+        changeset: changeset-1795193070668-0q1lrgyd5
+    metadata: &a12
+      created_at: 2026-11-20T16:45:15.400Z
+      updated_at: 2026-11-20T16:45:15.400Z
+      version: 1
+  after:
+    id: f7612fda-eef8-421b-b1e8-8e824ac26b60
+    path: application.applicationservice.use-c4model
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useC4Model
+    description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
+      per /api/model payload and spec catalog and shared by the Architecture
+      canvas, the nav tree and DrBot's context; useC4Overlay, a changeset's C4
+      Diff (the model with the changeset applied or reverted, rebuilt as a C4
+      model and diffed against the base), cached per payload and changeset
+      revision; and useC4Layout, one view laid out through a React Query keyed
+      on the view's content and overlay."
+    attributes: *a9
+    source_reference: *a10
+    accepted_gaps: *a11
+    metadata: *a12
+  timestamp: 2026-11-21T01:29:21.095Z
+  sequenceNumber: 23
+- type: update
+  elementId: ux.view.architecture-view
+  layerName: ux
+  before:
+    id: a69be5e5-d12d-4753-b45a-7560b165c116
+    path: ux.view.architecture-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Architecture View
+    description: "The model as C4 diagrams (#/architecture): a level control
+      (Context · Containers · Components), a breadcrumb of the scope, and the
+      diagram. Clicking a box selects it and opens its details; a box with parts
+      drills into them."
+    attributes: &a13
+      type: page
+      title: Architecture
+      routable: true
+    metadata: &a14
+      created_at: 2026-11-20T15:40:02.904Z
+      updated_at: 2026-11-20T15:40:02.904Z
+      version: 1
+  after:
+    id: a69be5e5-d12d-4753-b45a-7560b165c116
+    path: ux.view.architecture-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Architecture View
+    description: "The model as C4 diagrams (#/architecture): a level control
+      (Context · Containers · Components), a breadcrumb of the scope, and the
+      diagram. Clicking a box selects it and opens its details; a box with parts
+      drills into them. A changeset can be laid over the diagrams
+      (`?changeset=`, from the C4 Changeset Bar's picker or the Changesets
+      view): what it adds, removes or changes is marked on the boxes and
+      arrows."
+    attributes: *a13
+    metadata: *a14
+  timestamp: 2026-11-21T01:29:21.335Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationservice.changeset-impact-analysis::depends-on::application.applicationservice.changeset-model-overlay
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-impact-analysis
+    target: application.applicationservice.changeset-model-overlay
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:29:24.346Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: application.applicationservice.use-c4model::depends-on::application.applicationservice.c4-changeset-diff
+  layerName: application
+  after:
+    source: application.applicationservice.use-c4model
+    target: application.applicationservice.c4-changeset-diff
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:29:24.346Z
+  sequenceNumber: 26
+- type: update
+  elementId: application.applicationcomponent.changeset-canvas
+  layerName: application
+  before:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the changeset's description as markdown (a
+      long one folded behind Show more, so the change list stays near the top),
+      the op-coded change list and a Changes / Impact switch. Its header carries
+      the 'Base changed since this was staged' badge when the base drift blocks
+      a commit. A changeset the server no longer has (a discard deletes it)
+      shows as gone, with a way back to the inbox."
+    attributes: &a15
+      type: internal
+    source_reference: &a16
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: &a17
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the changeset's description as markdown (a
+      long one folded behind Show more, so the change list stays near the top),
+      the op-coded change list and a Changes / Impact switch, beside which
+      \"Open in Architecture\" shows the changeset on the C4 diagrams. Its
+      header carries the 'Base changed since this was staged' badge when the
+      base drift blocks a commit. A changeset the server no longer has (a
+      discard deletes it) shows as gone, with a way back to the inbox."
+    attributes: *a15
+    source_reference: *a16
+    metadata: *a17
+  timestamp: 2026-11-21T01:29:29.294Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: motivation.requirement.changesets-read-as-architecture-change::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.changesets-read-as-architecture-change
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: ux.view.architecture-view::satisfies::motivation.requirement.changesets-read-as-architecture-change
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.requirement.changesets-read-as-architecture-change
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: ux.view.architecture-view::realizes::product.feature.c4-changeset-overlay
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: product.feature.c4-changeset-overlay
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationservice.changeset-model-overlay::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-model-overlay
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: application.applicationservice.changeset-model-overlay::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-model-overlay
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: application.applicationservice.changeset-model-overlay::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.changeset-model-overlay
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-21T01:29:38.169Z
+  sequenceNumber: 34

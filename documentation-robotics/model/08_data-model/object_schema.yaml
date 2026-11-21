@@ -638,3 +638,19 @@ data-model.objectschema.c4-view:
     created_at: 2026-11-20T15:40:02.904Z
     updated_at: 2026-11-20T15:40:02.904Z
     version: 1
+data-model.objectschema.c4-diff:
+  id: 8f451e2b-1342-45ab-8798-f8ece10fa1b4
+  path: data-model.objectschema.c4-diff
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: C4 Diff
+  description: "The result of `diffC4`: per C4 element a status and the change
+    sequence numbers behind it, per relationship a status, roll-up counts per
+    ancestor, and the changes no diagram shows."
+  attributes:
+    type: object
+  metadata:
+    created_at: 2026-11-21T01:28:57.577Z
+    updated_at: 2026-11-21T01:28:57.577Z
+    version: 1

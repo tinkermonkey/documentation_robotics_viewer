@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 94    |
-| Intra-Layer Relationships | 312   |
-| Inter-Layer Relationships | 1136  |
+| Elements                  | 96    |
+| Intra-Layer Relationships | 320   |
+| Inter-Layer Relationships | 1142  |
 | Inbound Relationships     | 1032  |
-| Outbound Relationships    | 104   |
+| Outbound Relationships    | 110   |
 
 **Cross-Layer References**:
 
@@ -36,13 +36,13 @@ Application components, services, and interactions.
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
 | `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 23            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 5             |
-| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 12            |
+| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 14            |
 | `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 4             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 15            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 9             |
 | `application.applicationcomponent.change-neighbourhood`          | `applicationcomponent` | 9             |
 | `application.applicationcomponent.changeset-canvas`              | `applicationcomponent` | 10            |
-| `application.applicationcomponent.changeset-impact-view`         | `applicationcomponent` | 8             |
+| `application.applicationcomponent.changeset-impact-view`         | `applicationcomponent` | 9             |
 | `application.applicationcomponent.changeset-inbox`               | `applicationcomponent` | 11            |
 | `application.applicationcomponent.changeset-inspector`           | `applicationcomponent` | 13            |
 | `application.applicationcomponent.changeset-review-panel`        | `applicationcomponent` | 16            |
@@ -80,12 +80,14 @@ Application components, services, and interactions.
 | `application.applicationinterface.dr-cli-rest-interface`         | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
+| `application.applicationservice.c4-changeset-diff`               | `applicationservice`   | 4             |
 | `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 4             |
-| `application.applicationservice.c4-model-transform`              | `applicationservice`   | 4             |
+| `application.applicationservice.c4-model-transform`              | `applicationservice`   | 5             |
 | `application.applicationservice.c4-view-scoping`                 | `applicationservice`   | 6             |
 | `application.applicationservice.change-origin-helpers`           | `applicationservice`   | 4             |
 | `application.applicationservice.changeset-drift`                 | `applicationservice`   | 5             |
-| `application.applicationservice.changeset-impact-analysis`       | `applicationservice`   | 8             |
+| `application.applicationservice.changeset-impact-analysis`       | `applicationservice`   | 9             |
+| `application.applicationservice.changeset-model-overlay`         | `applicationservice`   | 5             |
 | `application.applicationservice.changeset-op-rows`               | `applicationservice`   | 2             |
 | `application.applicationservice.changeset-purpose`               | `applicationservice`   | 7             |
 | `application.applicationservice.changeset-review-model`          | `applicationservice`   | 8             |
@@ -103,7 +105,7 @@ Application components, services, and interactions.
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 24            |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
 | `application.applicationservice.markdown-excerpt`                | `applicationservice`   | 1             |
-| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 13            |
+| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 14            |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 3             |
 | `application.applicationservice.neighborhood-graph`              | `applicationservice`   | 5             |
 | `application.applicationservice.node-type-label`                 | `applicationservice`   | 18            |
@@ -115,7 +117,7 @@ Application components, services, and interactions.
 | `application.applicationservice.structural-predicate-classifier` | `applicationservice`   | 2             |
 | `application.applicationservice.type-bands`                      | `applicationservice`   | 6             |
 | `application.applicationservice.use-annotations`                 | `applicationservice`   | 2             |
-| `application.applicationservice.use-c4model`                     | `applicationservice`   | 6             |
+| `application.applicationservice.use-c4model`                     | `applicationservice`   | 7             |
 | `application.applicationservice.use-changeset-review`            | `applicationservice`   | 9             |
 | `application.applicationservice.use-changesets`                  | `applicationservice`   | 11            |
 | `application.applicationservice.use-cli-version`                 | `applicationservice`   | 3             |
@@ -213,6 +215,10 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                                                                     | `data-model.objectschema.review-decision`                           | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.local-review-store`                                                                                                     | `data-store.collection.local-review-verdicts`                       | `data-store`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.ui-store`                                                                                                               | `data-store.collection.ui-preferences`                              | `data-store`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                                                                       | `data-model.objectschema.c4-diff`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-changeset-diff`                                                                                                       | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-changeset-diff`                                                                                                       | `product.feature.c4-changeset-overlay`                              | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.c4-changeset-diff`                                                                                                       | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-layout`                                                                                                       | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                                                                      | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -233,6 +239,8 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-impact-analysis`                                                                                               | `business.businessservice.changeset-review`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.changeset-impact-analysis`                                                                                               | `product.feature.changeset-impact-tab`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.changeset-impact-analysis`                                                                                               | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-model-overlay`                                                                                                 | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.changeset-model-overlay`                                                                                                 | `product.feature.c4-changeset-overlay`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.changeset-purpose`                                                                                                       | `business.businessservice.changeset-review`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.changeset-purpose`                                                                                                       | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                                                                  | `data-model.objectschema.commit-body`                               | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -1421,7 +1429,7 @@ Apply confirmation (what lands, what's left out, links deleted with their elemen
 
 **Type**: `applicationcomponent`
 
-ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with the level control (Context · Containers · Components) and a scope breadcrumb, the C4 Diagram below it, and a details drawer for the selected box listing the model elements behind it, each a link into the Model view. Reads the model through useModel and the spec through useSpec; level, scope and selection live in the UI store and the URL. Shows a plain message when the model yields no C4 elements, and how many model elements the rules left out.
+ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with the level control (Context · Containers · Components) and a scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid (`?changeset=`), the C4 Diagram below it, and a details drawer for the selected box listing the model elements behind it, each a link into the Model view, and with an overlay an "In this changeset" section: each change behind the box with its op, before and after, and a link to it in the Changesets view. Reads the model through useModel and the spec through useSpec; level, scope, selection and the overlaid changeset live in the UI store and the URL. Shows a plain message when the model yields no C4 elements, and how many model elements (and overlaid changes) the rules left out.
 
 #### Attributes
 
@@ -1447,8 +1455,10 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 | intra-layer | `application.applicationcomponent.c4-diagram`                                                                   | `composes`    | outbound  |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                | `realizes`    | outbound  |
 | intra-layer | `application.applicationcomponent.c4-diagram`                                                                   | `uses`        | outbound  |
+| intra-layer | `application.applicationservice.c4-changeset-diff`                                                              | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.c4-model-transform`                                                             | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.changeset-model-overlay`                                                        | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                           | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-c4model`                                                                    | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                      | `serves`      | inbound   |
@@ -1460,7 +1470,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 
 **Type**: `applicationcomponent`
 
-ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts, Escape clears the selection; the arrows are also listed as text. Proof of concept for boundary rendering and a C4 card in Heimdall.
+ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. With a C4 Diff, cards and arrows carry op marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip and the status in their accessible name, never colour alone; removed boxes and arrows are drawn as ghosts; a box whose parts changed shows a count. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts (focus follows into the new diagram), Escape clears the selection; the arrows, with their status, are also listed as text. Proof of concept for boundary rendering, a C4 card and its status slot in Heimdall.
 
 #### Attributes
 
@@ -1587,7 +1597,7 @@ Compact layer lanes in the change inspector: the selected element (or both ends 
 
 **Type**: `applicationcomponent`
 
-The Changesets view's main pane: the header names the changeset's purpose and where it came from, a lifecycle line says what this kind of changeset is for and what happens next (a verification record leads with the plan it verifies and what extraction read; a plan names its verification records), then the changeset's description as markdown (a long one folded behind Show more, so the change list stays near the top), the op-coded change list and a Changes / Impact switch. Its header carries the 'Base changed since this was staged' badge when the base drift blocks a commit. A changeset the server no longer has (a discard deletes it) shows as gone, with a way back to the inbox.
+The Changesets view's main pane: the header names the changeset's purpose and where it came from, a lifecycle line says what this kind of changeset is for and what happens next (a verification record leads with the plan it verifies and what extraction read; a plan names its verification records), then the changeset's description as markdown (a long one folded behind Show more, so the change list stays near the top), the op-coded change list and a Changes / Impact switch, beside which "Open in Architecture" shows the changeset on the C4 diagrams. Its header carries the 'Base changed since this was staged' badge when the base drift blocks a commit. A changeset the server no longer has (a discard deletes it) shows as gone, with a way back to the inbox.
 
 #### Attributes
 
@@ -1643,6 +1653,7 @@ The Impact tab: changed elements as reach origins, drawn as heimdall-ui layer la
 | intra-layer | `application.applicationcomponent.changeset-canvas`        | `composes` | inbound   |
 | intra-layer | `application.applicationservice.changeset-impact-analysis` | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.changeset-impact-analysis` | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.changeset-model-overlay`   | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`      | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.node-type-label`           | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                  | `serves`   | inbound   |
@@ -2987,6 +2998,33 @@ TanStack Router route handling token-based authentication via magic link; extrac
 | inter-layer | `navigation.navigationflow.authentication-to-model-flow` | `realizes`   | inbound   |
 | intra-layer | `application.applicationfunction.auth-store`             | `depends-on` | outbound  |
 
+### C4 Changeset Diff {#c4-changeset-diff}
+
+**ID**: `application.applicationservice.c4-changeset-diff`
+
+**Type**: `applicationservice`
+
+`data/c4/c4Diff.ts`: `diffC4(base, after, changes)` matches C4 elements by their source model elements and gives each a status (added, removed, changed, moved, parts changed) and each arrow one (added, removed, relabelled); `unionC4` draws removed elements and arrows back under their nearest surviving ancestor; roll-up counts changes below the current level onto the visible ancestor.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                 | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-diff`                               | `accesses`   | outbound  |
+| inter-layer | `business.businessservice.architecture-model-visualization`     | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-changeset-overlay`                          | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.changesets-read-as-architecture-change` | `satisfies`  | outbound  |
+| intra-layer | `application.applicationservice.c4-model-transform`             | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.changeset-model-overlay`        | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`          | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.use-c4model`                    | `depends-on` | inbound   |
+
 ### C4 Diagram Layout {#c4-diagram-layout}
 
 **ID**: `application.applicationservice.c4-diagram-layout`
@@ -3062,6 +3100,7 @@ data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model (nodes and reso
 | inter-layer | `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`           | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                        | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                    | `covers`     | inbound   |
+| intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                   | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                               | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                                     | `depends-on` | inbound   |
@@ -3249,6 +3288,7 @@ Lays a changeset over the model (staged additions included), nets its ops in ord
 | inter-layer | `testing.testcasesketch.impact-group-nodes-use-the-full-plural-label`                                                                 | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                     | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-impact-view`                                                                              | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.changeset-model-overlay`                                                                              | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.node-type-label`                                                                                      | `depends-on` | outbound  |
@@ -3256,6 +3296,32 @@ Lays a changeset over the model (staged additions included), nets its ops in ord
 | intra-layer | `application.applicationcomponent.change-neighbourhood`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-impact-view`                                                                              | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-inspector`                                                                                | `serves`     | outbound  |
+
+### Changeset Model Overlay {#changeset-model-overlay}
+
+**ID**: `application.applicationservice.changeset-model-overlay`
+
+**Type**: `applicationservice`
+
+`data/modelOverlay.ts`: the model with a changeset applied (staged) or reversed (applied), netted in change order, as a `ModelDerived`. Extracted from `changesetImpact.ts`, which then uses it too; changes that don't resolve against the model are counted, not dropped.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate    | Direction |
+| ----------- | ----------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `business.businessservice.architecture-model-visualization` | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-changeset-overlay`                      | `realizes`   | outbound  |
+| intra-layer | `application.applicationservice.c4-changeset-diff`          | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.changeset-impact-analysis`  | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.model-graph-transform`      | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`      | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-impact-view`    | `serves`     | outbound  |
 
 ### Changeset Op Rows {#changeset-op-rows}
 
@@ -3963,6 +4029,7 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                      | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.c4-model-transform`                                                                                  | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.changeset-impact-analysis`                                                                           | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.changeset-model-overlay`                                                                             | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.layered-reach`                                                                                       | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                                | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.change-link-card`                                                                                  | `serves`     | outbound  |
@@ -4426,7 +4493,7 @@ React Query hooks for annotation CRUD and replies; useLiveAnnotationUpdates inva
 
 **Type**: `applicationservice`
 
-data/c4/useC4Model.ts: the loaded model as a C4 model, built once per /api/model payload and spec catalog and shared by the Architecture canvas, the nav tree and DrBot's context; and useC4Layout, one view laid out through a React Query keyed on the view's content.
+data/c4/useC4Model.ts: the loaded model as a C4 model, built once per /api/model payload and spec catalog and shared by the Architecture canvas, the nav tree and DrBot's context; useC4Overlay, a changeset's C4 Diff (the model with the changeset applied or reverted, rebuilt as a C4 model and diffed against the base), cached per payload and changeset revision; and useC4Layout, one view laid out through a React Query keyed on the view's content and overlay.
 
 #### Attributes
 
@@ -4443,6 +4510,7 @@ data/c4/useC4Model.ts: the loaded model as a C4 model, built once per /api/model
 | inter-layer | `business.businessservice.architecture-model-visualization`                                                                   | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                    | `realizes`   | outbound  |
 | inter-layer | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it` | `tests`      | inbound   |
+| intra-layer | `application.applicationservice.c4-changeset-diff`                                                                            | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.c4-diagram-layout`                                                                            | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.c4-model-transform`                                                                           | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.use-model`                                                                                    | `depends-on` | outbound  |
@@ -4801,4 +4869,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0

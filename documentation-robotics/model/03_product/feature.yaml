@@ -292,8 +292,9 @@ product.feature.c4-architecture-diagrams:
     System Context, Containers and Components, with drill-down into any
     container or component that has parts. People, the system, external systems,
     containers and components are derived from the DR model by rules keyed on
-    spec types; a box opens the model elements behind it. Proof of concept: base
-    diagrams only, no changeset overlay, Deployment or Dynamic diagrams yet."
+    spec types; a box opens the model elements behind it. Proof of concept:
+    Deployment and Dynamic diagrams not yet; the changeset overlay is the C4
+    Changeset Overlay feature."
   attributes:
     priority: high
     status: planned
@@ -301,4 +302,26 @@ product.feature.c4-architecture-diagrams:
   metadata:
     created_at: 2026-11-20T15:40:02.895Z
     updated_at: 2026-11-20T15:40:02.895Z
+    version: 1
+product.feature.c4-changeset-overlay:
+  id: 4f01a00f-fd2a-4398-b81a-982cefbc9051
+  path: product.feature.c4-changeset-overlay
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: C4 Changeset Overlay
+  description: "A changeset laid over the Architecture view's C4 diagrams: op
+    marks on cards and arrows (never colour alone), roll-up counts on boxes
+    whose parts changed, removed boxes and arrows drawn back as ghosts, and an
+    \"In this changeset\" drawer section. Opened with `?changeset=` from a
+    picker in the Architecture view or from the Changesets view. A staged
+    changeset reads base to after; an applied one is reverted, before to
+    current."
+  attributes:
+    priority: high
+    status: planned
+    size: m
+  metadata:
+    created_at: 2026-11-21T01:28:54.097Z
+    updated_at: 2026-11-21T01:28:54.097Z
     version: 1

@@ -16,10 +16,10 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 33    |
+| Elements                  | 34    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 46    |
-| Inbound Relationships     | 33    |
+| Inter-Layer Relationships | 47    |
+| Inbound Relationships     | 34    |
 | Outbound Relationships    | 13    |
 
 **Cross-Layer References**:
@@ -35,6 +35,7 @@ Data entities, relationships, and data structure definitions.
 | ------------------------------------------------- | ------------------ | ------------- |
 | `data-model.objectschema.annotation`              | `objectschema`     | 1             |
 | `data-model.objectschema.annotation-create`       | `objectschema`     | 1             |
+| `data-model.objectschema.c4-diff`                 | `objectschema`     | 0             |
 | `data-model.objectschema.c4-model`                | `objectschema`     | 0             |
 | `data-model.objectschema.c4-view`                 | `objectschema`     | 0             |
 | `data-model.objectschema.change-origin`           | `objectschema`     | 0             |
@@ -119,6 +120,7 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                        | `data-model.objectschema.c4-diff`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                       | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                          | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
@@ -185,6 +187,26 @@ Request payload for creating a new annotation; requires target elementId and con
 | Type        | Related Element                      | Predicate     | Direction |
 | ----------- | ------------------------------------ | ------------- | --------- |
 | intra-layer | `data-model.objectschema.annotation` | `specializes` | outbound  |
+
+### C4 Diff {#c4-diff}
+
+**ID**: `data-model.objectschema.c4-diff`
+
+**Type**: `objectschema`
+
+The result of `diffC4`: per C4 element a status and the change sequence numbers behind it, per relationship a status, roll-up counts per ancestor, and the changes no diagram shows.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate  | Direction |
+| ----------- | -------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationservice.c4-changeset-diff` | `accesses` | inbound   |
 
 ### C4 Model {#c4-model}
 
@@ -848,4 +870,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0

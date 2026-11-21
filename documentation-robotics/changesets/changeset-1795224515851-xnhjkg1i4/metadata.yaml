@@ -1,0 +1,48 @@
+id: changeset-1795224515851-xnhjkg1i4
+name: c4-changeset-overlay
+description: >-
+  Show a changeset on the Architecture view's C4 diagrams as boxes and arrows
+  added, removed or changed, so a reviewer reads a proposed change as
+  architecture before Apply.
+
+
+  The viewer lays the changeset over the model (applied forward for a staged
+  changeset, reverted for an applied one), builds a second C4 model, and diffs
+  it against the base: op marks on cards and arrows (never colour alone),
+  roll-up counts on boxes whose parts changed, removed boxes and arrows drawn
+  back as ghosts, and an "In this changeset" drawer section tracing each mark to
+  its changes.
+
+
+  **In scope**
+
+  - `application.applicationservice.changeset-model-overlay`
+  (`data/modelOverlay.ts`, shared with the Impact tab)
+
+  - `application.applicationservice.c4-changeset-diff` (`data/c4/c4Diff.ts`:
+  `diffC4`, `unionC4`, roll-up)
+
+  - `ux.subview.c4-changeset-bar`: picker, tally, legend, drift badge, Clear;
+  `?changeset=` in the Architecture URL
+
+  - An "Open in Architecture" link from the Changesets view
+
+  - Op styles shared with the Impact tab (`ui/opStyles.ts`)
+
+
+  **Done when** a staged or applied changeset opens on the Context, Container
+  and Component diagrams with every change shown or counted, keyboard and
+  screen-reader accessible, with unit, component and e2e tests (the e2e reverts
+  slice 1's committed plan). Plan-vs-as-built comparison is a later slice.
+created: 2026-11-21T01:28:35.864Z
+modified: 2026-11-21T12:54:29.638Z
+status: committed
+baseSnapshot: sha256:99e078001a7123595e291ede211d5922b54a66bb4b6b3be52489a7576c5c116f
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 29
+  modifications: 6
+  deletions: 0
+lastSequence: 34
