@@ -18710,3 +18710,1210 @@ testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-
     created_at: 2026-11-20T16:44:30.646Z
     updated_at: 2026-11-20T16:44:30.646Z
     version: 1
+testing.testcasesketch.architecture-canvas-changeset-picker-lists-staged-changesets-before-applied-ones-with-none-first-83d2275f:
+  id: 86f7e1c9-257b-418c-89a1-701fcafa370e
+  path: testing.testcasesketch.architecture-canvas-changeset-picker-lists-staged-changesets-before-applied-ones-with-none-first-83d2275f
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > Changeset picker > lists staged changesets before
+    applied ones, with None first, and leaves out discarded and empty ones
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > Changeset picker > lists staged changesets before
+          applied ones, with None first, and leaves out discarded and empty ones
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-canvas-changeset-picker-selecting-a-changeset-overlays-it-a-navigation-and-keeps-the-cbf3ccc1:
+  id: 6902e9b7-1e9b-4447-a12f-2323b85926f3
+  path: testing.testcasesketch.architecture-canvas-changeset-picker-selecting-a-changeset-overlays-it-a-navigation-and-keeps-the-cbf3ccc1
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > Changeset picker > selecting a changeset overlays it
+    (a navigation) and keeps the diagram; None clears it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > Changeset picker > selecting a changeset overlays
+          it (a navigation) and keeps the diagram; None clears it
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-canvas-changeset-picker-still-shows-a-changeset-the-list-does-not-hold-by-its-id:
+  id: a9773d07-bb04-4efe-8053-0d8b8794314e
+  path: testing.testcasesketch.architecture-canvas-changeset-picker-still-shows-a-changeset-the-list-does-not-hold-by-its-id
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ArchitectureCanvas > Changeset picker > still shows a ?changeset= the list
+    does not hold, by its id
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ArchitectureCanvas.spec.tsx
+        symbol: ArchitectureCanvas > Changeset picker > still shows a ?changeset= the
+          list does not hold, by its id
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-draws-the-removed-box-as-a-ghost-that-can-be-selected-but-not-2c0926c4:
+  id: 6d1e7c59-b2a6-46be-bd07-2c1790e9d550
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-draws-the-removed-box-as-a-ghost-that-can-be-selected-but-not-2c0926c4
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > draws the removed box as a ghost
+    that can be selected but not opened
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > draws the removed box as a
+          ghost that can be selected but not opened
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-lets-go-of-a-selected-box-once-the-overlay-that-drew-it-is-ecf03bfc:
+  id: a397f948-2f5f-42e7-a8ce-9ff296664694
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-lets-go-of-a-selected-box-once-the-overlay-that-drew-it-is-ecf03bfc
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > lets go of a selected box once
+    the overlay that drew it is cleared
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > lets go of a selected box once
+          the overlay that drew it is cleared
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-lists-the-arrows-with-their-status-for-assistive-technology:
+  id: 85c6d54c-47da-400a-9b87-d70bd24da395
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-lists-the-arrows-with-their-status-for-assistive-technology
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > lists the arrows with their
+    status for assistive technology
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > lists the arrows with their
+          status for assistive technology
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands:
+  id: e49ff7cc-75ab-4205-a436-a738974fdec7
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > marks the added box, where it lands
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > marks the added box, where it
+          lands
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150:
+  id: adf16d71-3a9e-4063-bdee-68109ff86c5e
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > marks the changed box with an
+    outline and a chip, and rolls up the changes inside a box
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > marks the changed box with an
+          outline and a chip, and rolls up the changes inside a box
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079:
+  id: 823977e9-00eb-4b7b-bdf1-cfda4c16e5a4
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > the bar names the changeset and
+    says what differs, with a legend; Clear takes the overlay off
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > the bar names the changeset
+          and says what differs, with a legend; Clear takes the overlay off
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-fixture-changeset-does-what-the-tests-expect:
+  id: 48b77604-b5ed-4fe5-835e-411cc7acfe51
+  path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-fixture-changeset-does-what-the-tests-expect
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 changeset overlay (staged changeset) > the fixture changeset does what
+    the tests expect
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/C4Overlay.spec.tsx
+        symbol: C4 changeset overlay (staged changeset) > the fixture changeset does
+          what the tests expect
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.changeset-canvas-open-in-architecture-is-not-offered-for-a-discarded-changeset:
+  id: 96aeba75-9237-40a4-a8b2-a1a39b2a95c5
+  path: testing.testcasesketch.changeset-canvas-open-in-architecture-is-not-offered-for-a-discarded-changeset
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — Open in Architecture > is not offered for a discarded
+    changeset
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — Open in Architecture > is not offered for a discarded
+          changeset
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.changeset-canvas-open-in-architecture-is-not-offered-for-a-staged-changeset-with-no-changes:
+  id: fb546751-e631-442c-909f-93a9ecf12727
+  path: testing.testcasesketch.changeset-canvas-open-in-architecture-is-not-offered-for-a-staged-changeset-with-no-changes
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — Open in Architecture > is not offered for a staged
+    changeset with no changes
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — Open in Architecture > is not offered for a staged
+          changeset with no changes
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.changeset-canvas-open-in-architecture-is-offered-for-a-staged-changeset:
+  id: fe21a78d-89b3-4931-a8d8-2ed3435dada9
+  path: testing.testcasesketch.changeset-canvas-open-in-architecture-is-offered-for-a-staged-changeset
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — Open in Architecture > is offered for a staged changeset
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — Open in Architecture > is offered for a staged
+          changeset
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.changeset-canvas-open-in-architecture-opens-an-applied-changeset-on-the-context-diagram-as-the-b15183bf:
+  id: a37d67fc-4f18-45b0-9c54-1330f96961be
+  path: testing.testcasesketch.changeset-canvas-open-in-architecture-opens-an-applied-changeset-on-the-context-diagram-as-the-b15183bf
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: ChangesetCanvas — Open in Architecture > opens an applied changeset on the
+    Context diagram, as the overlay (not the open changeset)
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/ChangesetCanvas.spec.tsx
+        symbol: ChangesetCanvas — Open in Architecture > opens an applied changeset on
+          the Context diagram, as the overlay (not the open changeset)
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-a-link-without-level-opens-the-context-diagram-in-the-same-history-8b546c19:
+  id: 1e164e5a-4f10-4bcc-978c-7610bd35aa2c
+  path: testing.testcasesketch.architecture-view-c4-diagrams-a-link-without-level-opens-the-context-diagram-in-the-same-history-8b546c19
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view — C4 diagrams > a link without ?level= opens the Context
+    diagram in the same history entry, so one Back leaves it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: Architecture view — C4 diagrams > a link without ?level= opens the
+          Context diagram in the same history entry, so one Back leaves it
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-an-applied-changeset-reads-reverted-what-b1a57f63:
+  id: fa28783e-8f7a-48c7-bf0a-c157a3fba993
+  path: testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-an-applied-changeset-reads-reverted-what-b1a57f63
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > an
+    applied changeset reads reverted: what it added is marked, its parts roll
+    up, and a change opens in the Changesets view"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > an
+          applied changeset reads reverted: what it added is marked, its parts
+          roll up, and a change opens in the Changesets view"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-clear-in-the-bar-takes-the-overlay-off:
+  id: a626b9d0-6ddd-4f5a-bfcc-224e16b0a430
+  path: testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-clear-in-the-bar-takes-the-overlay-off
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > Clear
+    in the bar takes the overlay off"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: "Architecture view — C4 diagrams > changeset overlay: ?changeset= >
+          Clear in the bar takes the overlay off"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-changesets-views-open-in-architecture-729ce8a0:
+  id: a95120a7-5e31-4a8f-9364-239fd02d46bf
+  path: testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-changesets-views-open-in-architecture-729ce8a0
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+    Changesets view's Open in Architecture opens the Context diagram with it
+    overlaid, and Back returns"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+          Changesets view's Open in Architecture opens the Context diagram with
+          it overlaid, and Back returns"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-overlaid-container-diagram-passes-axe-4a208b4c:
+  id: 1c224f13-1d7d-4f96-aa32-df29615270c5
+  path: testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-overlaid-container-diagram-passes-axe-4a208b4c
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+    overlaid Container diagram passes axe (WCAG 2.1 AA) on the ${tone} canvas"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+          overlaid Container diagram passes axe (WCAG 2.1 AA) on the ${tone}
+          canvas"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-picker-sets-and-clears-changeset-as-e38c47e8:
+  id: 093ec3ac-6e6d-4c01-9038-62568ea05963
+  path: testing.testcasesketch.architecture-view-c4-diagrams-changeset-overlay-changeset-the-picker-sets-and-clears-changeset-as-e38c47e8
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+    picker sets and clears ?changeset= as history entries, keeping the diagram"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+        symbol: "Architecture view — C4 diagrams > changeset overlay: ?changeset= > the
+          picker sets and clears ?changeset= as history entries, keeping the
+          diagram"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places:
+  id: 7c569f5b-b366-47e6-ad9a-1d0d39ef22ae
+  path: testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: changes no diagram shows > counts a change to an element no rule
+    places"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: changes no diagram shows > counts a change to an element no
+          rule places"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out:
+  id: 5c3a6ebf-dc2a-4ad1-b8be-8e820c56a011
+  path: testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: changes no diagram shows > passes on what the overlay could not
+    place or netted out"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: changes no diagram shows > passes on what the overlay could not
+          place or netted out"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed:
+  id: 68c2c475-0d60-427e-91ed-9c9e085e599e
+  path: testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: element statuses > added, with the parent whose parts changed"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: element statuses > added, with the parent whose parts changed"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it:
+  id: b676b812-b344-4283-a8ef-e9af72514f31
+  path: testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: element statuses > changed: its own element, or one folded onto it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: element statuses > changed: its own element, or one folded onto
+          it"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added:
+  id: 935208b0-6797-42ad-86d1-d99ea2b1185e
+  path: testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: element statuses > matches a renamed element by its UUID:
+    changed, not removed and added"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: element statuses > matches a renamed element by its UUID:
+          changed, not removed and added"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed:
+  id: 538d0ada-bc63-4b28-8cca-d2842e6f26dc
+  path: testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: element statuses > moved: its parent changed, and both parents’
+    parts changed"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: element statuses > moved: its parent changed, and both parents’
+          parts changed"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it:
+  id: b14b163e-3bcc-474a-934b-63e48ef87316
+  path: testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: element statuses > removed, and the arrows at it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: element statuses > removed, and the arrows at it"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity:
+  id: db030d35-0f1c-4043-9c77-552220fd6792
+  path: testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: nothing changed > is empty between two builds of one model,
+    matched by sources not identity"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: nothing changed > is empty between two builds of one model,
+          matched by sources not identity"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset:
+  id: 85cef72b-f66f-4771-bda7-96bac2b73fa9
+  path: testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: nothing changed > is empty for an empty changeset"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: nothing changed > is empty for an empty changeset"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it:
+  id: 41d77051-c7b8-400c-b258-d86e4f3cae89
+  path: testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: relationship statuses > added, with the change behind it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: relationship statuses > added, with the change behind it"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow:
+  id: 91d26a83-ec88-4078-a619-666f2f082abf
+  path: testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: relationship statuses > relabelled: a new label on an existing
+    arrow"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: relationship statuses > relabelled: a new label on an existing
+          arrow"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it:
+  id: 5fe8b715-5a91-4a8d-b805-e7260cdf0531
+  path: testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: relationship statuses > relinked: same label, another model link
+    behind it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: relationship statuses > relinked: same label, another model
+          link behind it"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-a-change-on-every-ancestor-so-each-level-shows-it:
+  id: 8f2ca404-c0d0-438a-ab77-c46a4f4a375d
+  path: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-a-change-on-every-ancestor-so-each-level-shows-it
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: roll-up to the box a diagram shows > counts a change on every
+    ancestor, so each level shows it"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: roll-up to the box a diagram shows > counts a change on every
+          ancestor, so each level shows it"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends:
+  id: d6f04bd5-f212-4373-a8b5-0b0998b45775
+  path: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: roll-up to the box a diagram shows > counts an arrow on the
+    elements that hold both its ends"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: roll-up to the box a diagram shows > counts an arrow on the
+          elements that hold both its ends"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56:
+  id: e6c6cddd-e126-464e-9221-4e4ca5a07a0e
+  path: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: staged and applied read the same > cannot bring back links an
+    applied delete took without a change of their own"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: staged and applied read the same > cannot bring back links an
+          applied delete took without a change of their own"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04:
+  id: dd9a060d-b10f-4185-bd9b-1f33a54ba9b3
+  path: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "diffC4: staged and applied read the same > gives one diff for a changeset
+    applied forward or reverted from the applied model"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: "diffC4: staged and applied read the same > gives one diff for a
+          changeset applied forward or reverted from the applied model"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows:
+  id: 86990dad-2787-494a-ae56-48254d867ec5
+  path: testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: unionC4 and unionC4View > draws a removed element back in under its base
+    parent, with its arrows
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: unionC4 and unionC4View > draws a removed element back in under its base
+          parent, with its arrows
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed:
+  id: c8f2247a-e20f-4ef0-a4c0-1f2b6cd88298
+  path: testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: unionC4 and unionC4View > is the after model itself when nothing was removed
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: unionC4 and unionC4View > is the after model itself when nothing was
+          removed
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.union-c4-and-union-c4-view-is-the-plain-view-for-an-unchanged-model:
+  id: 1e4085d8-a1ac-4770-8536-eab69e5209dd
+  path: testing.testcasesketch.union-c4-and-union-c4-view-is-the-plain-view-for-an-unchanged-model
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: unionC4 and unionC4View > is the plain view for an unchanged model
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: unionC4 and unionC4View > is the plain view for an unchanged model
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change:
+  id: bf4a07c0-0ca1-4ee5-b5a5-98127ac681da
+  path: testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: unionC4 and unionC4View > marks a lifted arrow relinked when only the
+    links behind it change
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: unionC4 and unionC4View > marks a lifted arrow relinked when only the
+          links behind it change
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope:
+  id: 2270f0f7-6378-46d1-b352-0a9d1a5296a3
+  path: testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: unionC4 and unionC4View > opens a removed container as a ghost scope
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/c4/c4Diff.spec.ts
+        symbol: unionC4 and unionC4View > opens a removed container as a ghost scope
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332:
+  id: e4426f06-f7af-456c-8458-e470f38012b4
+  path: testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: buildChatContext in the Architecture view > names the changeset laid over
+    the diagram, how it is drawn, and the selected box under it
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/chatContext.spec.ts
+        symbol: buildChatContext in the Architecture view > names the changeset laid
+          over the diagram, how it is drawn, and the selected box under it
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-adds-and-deletes-relationships-resolving-ends-by-dotted-id-and-by-the-ids-the-4435102b:
+  id: a710e750-c0a2-41de-9315-c42e65a14e4a
+  path: testing.testcasesketch.model-overlay-apply-adds-and-deletes-relationships-resolving-ends-by-dotted-id-and-by-the-ids-the-4435102b
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > adds and deletes relationships, resolving ends by
+    dotted id and by the ids the changeset adds"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > adds and deletes relationships, resolving ends by
+          dotted id and by the ids the changeset adds"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-adds-updates-and-deletes-elements-with-fresh-arrays-and-derived-counts:
+  id: a84b5d00-e448-490f-931e-1004ed57057e
+  path: testing.testcasesketch.model-overlay-apply-adds-updates-and-deletes-elements-with-fresh-arrays-and-derived-counts
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > adds, updates and deletes elements, with fresh
+    arrays and derived counts"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > adds, updates and deletes elements, with fresh
+          arrays and derived counts"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-counts-changes-it-cannot-place:
+  id: a3c510c5-8012-4134-9376-3c30dfef48c6
+  path: testing.testcasesketch.model-overlay-apply-counts-changes-it-cannot-place
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > counts changes it cannot place"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > counts changes it cannot place"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-drops-the-links-of-a-deleted-element:
+  id: 4cb0704b-bd7e-42d2-bfc7-9544e3f19141
+  path: testing.testcasesketch.model-overlay-apply-drops-the-links-of-a-deleted-element
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > drops the links of a deleted element"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > drops the links of a deleted element"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-keeps-a-link-that-names-a-renamed-element-by-its-dotted-id:
+  id: 2817d79c-a889-4466-9606-3d698cca77e0
+  path: testing.testcasesketch.model-overlay-apply-keeps-a-link-that-names-a-renamed-element-by-its-dotted-id
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > keeps a link that names a renamed element by its
+    dotted id"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > keeps a link that names a renamed element by its
+          dotted id"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-nets-in-sequence-order-not-the-order-given:
+  id: 4fe4342d-edf4-47c4-8b6d-f503e52c9fd5
+  path: testing.testcasesketch.model-overlay-apply-nets-in-sequence-order-not-the-order-given
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > nets in sequence order, not the order given"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > nets in sequence order, not the order given"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-apply-traces-each-change-to-the-elements-and-links-it-touches:
+  id: b2daf9ff-c682-4db2-bb35-227decd13617
+  path: testing.testcasesketch.model-overlay-apply-traces-each-change-to-the-elements-and-links-it-touches
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: apply > traces each change to the elements and links it
+    touches"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: apply > traces each change to the elements and links it
+          touches"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-nothing-to-do-returns-the-model-itself-for-no-changes-so-caches-keyed-on-model-nodes-b8257f18:
+  id: 172ce523-ba01-48d6-9f6a-a77298f701a6
+  path: testing.testcasesketch.model-overlay-nothing-to-do-returns-the-model-itself-for-no-changes-so-caches-keyed-on-model-nodes-b8257f18
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: nothing to do > returns the model itself for no changes, so
+    caches keyed on model.nodes still hit"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: nothing to do > returns the model itself for no changes,
+          so caches keyed on model.nodes still hit"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-nothing-to-do-returns-the-model-itself-when-every-change-nets-out-and-says-which-did:
+  id: c646282b-82ca-43aa-8588-23c7fb7e876a
+  path: testing.testcasesketch.model-overlay-nothing-to-do-returns-the-model-itself-when-every-change-nets-out-and-says-which-did
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: nothing to do > returns the model itself when every change
+    nets out, and says which did"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: nothing to do > returns the model itself when every
+          change nets out, and says which did"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-revert-brings-a-deleted-element-back-from-its-before-with-its-uuid:
+  id: 9a1c09fd-ed73-4ba0-a4c8-edc41dfa55dc
+  path: testing.testcasesketch.model-overlay-revert-brings-a-deleted-element-back-from-its-before-with-its-uuid
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: revert > brings a deleted element back from its before,
+    with its UUID"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: revert > brings a deleted element back from its before,
+          with its UUID"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-revert-inverts-in-reverse-order-keeping-each-sequence:
+  id: d7ba5db5-973d-4d8b-a8d4-90f20c170528
+  path: testing.testcasesketch.model-overlay-revert-inverts-in-reverse-order-keeping-each-sequence
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: revert > inverts in reverse order, keeping each sequence"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: revert > inverts in reverse order, keeping each sequence"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.model-overlay-revert-is-the-inverse-of-apply-applying-then-reverting-gives-the-model-back:
+  id: 93c0a197-c24c-4a09-9feb-a8159ab87aa6
+  path: testing.testcasesketch.model-overlay-revert-is-the-inverse-of-apply-applying-then-reverting-gives-the-model-back
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "modelOverlay: revert > is the inverse of apply: applying then reverting
+    gives the model back"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/modelOverlay.spec.ts
+        symbol: "modelOverlay: revert > is the inverse of apply: applying then reverting
+          gives the model back"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-does-not-persist-the-overlaid-changeset-48c2b3f6:
+  id: 818b40ef-c692-4ffa-91a4-66bf0198a35b
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-does-not-persist-the-overlaid-changeset-48c2b3f6
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > does not
+    persist the overlaid changeset (the URL owns it)"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) > does not
+          persist the overlaid changeset (the URL owns it)"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-never-touches-the-changesets-views-own-c01a8495:
+  id: 6f54dbe9-88cf-428b-96ff-f5c4fee7c3e3
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-never-touches-the-changesets-views-own-c01a8495
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > never touches
+    the Changesets view's own changesetId"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) > never
+          touches the Changesets view's own changesetId"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-restore-c4-sets-the-overlay-from-the-url-a1e3f568:
+  id: 9a3709d5-4d86-4097-8952-198f8463a8e7
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-restore-c4-sets-the-overlay-from-the-url-a1e3f568
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > restoreC4
+    sets the overlay from the URL without a navigation, and leaves it when not
+    given"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) > restoreC4
+          sets the overlay from the URL without a navigation, and leaves it when
+          not given"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-keeps-the-overlay-across-levels-871930ff:
+  id: 106d95dc-3f06-4268-b166-7c9ef19fec64
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-keeps-the-overlay-across-levels-871930ff
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > showC4 keeps
+    the overlay across levels, and sets view + overlay in one step when asked"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) > showC4
+          keeps the overlay across levels, and sets view + overlay in one step
+          when asked"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8:
+  id: cc27f4ec-a039-4c76-a2f4-17b3e3c1e8a3
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > showC4Overlay
+    is a navigation that keeps the level, scope and selected box"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) >
+          showC4Overlay is a navigation that keeps the level, scope and selected
+          box"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a:
+  id: 3e437d37-94d1-4984-a54d-f6c65a26b971
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > showC4Overlay
+    with the changeset already shown is a no-op (no history entry)"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) >
+          showC4Overlay with the changeset already shown is a no-op (no history
+          entry)"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1
+testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid:
+  id: 1c5523e1-6a4f-4bc5-b230-57b8f63824df
+  path: testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: "Architecture view: the overlaid changeset (c4ChangesetId) > starts with
+    no changeset overlaid"
+  attributes:
+    status: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/uiStore.spec.ts
+        symbol: "Architecture view: the overlaid changeset (c4ChangesetId) > starts with
+          no changeset overlaid"
+  metadata:
+    created_at: 2026-11-21T16:39:21.370Z
+    updated_at: 2026-11-21T16:39:21.370Z
+    version: 1

@@ -18,8 +18,8 @@ Data entities, relationships, and data structure definitions.
 | ------------------------- | ----- |
 | Elements                  | 34    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 47    |
-| Inbound Relationships     | 34    |
+| Inter-Layer Relationships | 49    |
+| Inbound Relationships     | 36    |
 | Outbound Relationships    | 13    |
 
 **Cross-Layer References**:
@@ -104,6 +104,7 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                             | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                       | `data-model.objectschema.delete-blocker`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                       | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
@@ -131,6 +132,7 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-action-result` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
@@ -316,11 +318,13 @@ GET /api/changesets/:id's body: the changeset with its changes, revision, unstag
 
 | Type        | Related Element                                            | Predicate  | Direction |
 | ----------- | ---------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas`     | `accesses` | inbound   |
 | inter-layer | `application.applicationcomponent.changeset-canvas`        | `accesses` | inbound   |
 | inter-layer | `application.applicationcomponent.changeset-inspector`     | `accesses` | inbound   |
 | inter-layer | `application.applicationcomponent.changeset-review-panel`  | `accesses` | inbound   |
 | inter-layer | `application.applicationcomponent.drift-notice`            | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.changeset-impact-analysis` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.use-c4model`               | `accesses` | inbound   |
 | inter-layer | `business.businessobject.changeset`                        | `realizes` | outbound  |
 
 ### ChangesetSummary {#changesetsummary}
@@ -870,4 +874,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0
+Generated: 2026-11-21T16:42:09.853Z | Model Version: 0.1.0

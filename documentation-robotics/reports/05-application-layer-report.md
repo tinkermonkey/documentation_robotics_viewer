@@ -17,10 +17,10 @@ Application components, services, and interactions.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 96    |
-| Intra-Layer Relationships | 320   |
-| Inter-Layer Relationships | 1142  |
-| Inbound Relationships     | 1032  |
-| Outbound Relationships    | 110   |
+| Intra-Layer Relationships | 330   |
+| Inter-Layer Relationships | 1187  |
+| Inbound Relationships     | 1074  |
+| Outbound Relationships    | 113   |
 
 **Cross-Layer References**:
 
@@ -36,7 +36,7 @@ Application components, services, and interactions.
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
 | `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 23            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 5             |
-| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 14            |
+| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 20            |
 | `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 4             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 15            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 9             |
@@ -54,7 +54,7 @@ Application components, services, and interactions.
 | `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 18            |
 | `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 17            |
 | `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 7             |
-| `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 6             |
+| `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 8             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 3             |
 | `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 13            |
 | `application.applicationcomponent.neighborhood-graph-view`       | `applicationcomponent` | 5             |
@@ -76,25 +76,25 @@ Application components, services, and interactions.
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
 | `application.applicationfunction.local-review-store`             | `applicationfunction`  | 1             |
-| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 4             |
+| `application.applicationfunction.ui-store`                       | `applicationfunction`  | 6             |
 | `application.applicationinterface.dr-cli-rest-interface`         | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
 | `application.applicationservice.c4-changeset-diff`               | `applicationservice`   | 4             |
 | `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 4             |
 | `application.applicationservice.c4-model-transform`              | `applicationservice`   | 5             |
-| `application.applicationservice.c4-view-scoping`                 | `applicationservice`   | 6             |
+| `application.applicationservice.c4-view-scoping`                 | `applicationservice`   | 7             |
 | `application.applicationservice.change-origin-helpers`           | `applicationservice`   | 4             |
 | `application.applicationservice.changeset-drift`                 | `applicationservice`   | 5             |
 | `application.applicationservice.changeset-impact-analysis`       | `applicationservice`   | 9             |
 | `application.applicationservice.changeset-model-overlay`         | `applicationservice`   | 5             |
-| `application.applicationservice.changeset-op-rows`               | `applicationservice`   | 2             |
+| `application.applicationservice.changeset-op-rows`               | `applicationservice`   | 3             |
 | `application.applicationservice.changeset-purpose`               | `applicationservice`   | 7             |
 | `application.applicationservice.changeset-review-model`          | `applicationservice`   | 8             |
 | `application.applicationservice.chat-adapter`                    | `applicationservice`   | 2             |
-| `application.applicationservice.chat-anchor`                     | `applicationservice`   | 4             |
-| `application.applicationservice.chat-context-builder`            | `applicationservice`   | 4             |
-| `application.applicationservice.chat-panel-layout`               | `applicationservice`   | 1             |
+| `application.applicationservice.chat-anchor`                     | `applicationservice`   | 5             |
+| `application.applicationservice.chat-context-builder`            | `applicationservice`   | 5             |
+| `application.applicationservice.chat-panel-layout`               | `applicationservice`   | 2             |
 | `application.applicationservice.chat-service`                    | `applicationservice`   | 4             |
 | `application.applicationservice.chat-validation`                 | `applicationservice`   | 1             |
 | `application.applicationservice.error-tracker`                   | `applicationservice`   | 4             |
@@ -105,10 +105,10 @@ Application components, services, and interactions.
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 24            |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
 | `application.applicationservice.markdown-excerpt`                | `applicationservice`   | 1             |
-| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 14            |
+| `application.applicationservice.model-graph-transform`           | `applicationservice`   | 16            |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 3             |
 | `application.applicationservice.neighborhood-graph`              | `applicationservice`   | 5             |
-| `application.applicationservice.node-type-label`                 | `applicationservice`   | 18            |
+| `application.applicationservice.node-type-label`                 | `applicationservice`   | 19            |
 | `application.applicationservice.page-data-builder`               | `applicationservice`   | 8             |
 | `application.applicationservice.predicate-definitions`           | `applicationservice`   | 2             |
 | `application.applicationservice.relationship-derivation`         | `applicationservice`   | 4             |
@@ -117,7 +117,7 @@ Application components, services, and interactions.
 | `application.applicationservice.structural-predicate-classifier` | `applicationservice`   | 2             |
 | `application.applicationservice.type-bands`                      | `applicationservice`   | 6             |
 | `application.applicationservice.use-annotations`                 | `applicationservice`   | 2             |
-| `application.applicationservice.use-c4model`                     | `applicationservice`   | 7             |
+| `application.applicationservice.use-c4model`                     | `applicationservice`   | 8             |
 | `application.applicationservice.use-changeset-review`            | `applicationservice`   | 9             |
 | `application.applicationservice.use-changesets`                  | `applicationservice`   | 11            |
 | `application.applicationservice.use-cli-version`                 | `applicationservice`   | 3             |
@@ -127,7 +127,7 @@ Application components, services, and interactions.
 | `application.applicationservice.use-spec`                        | `applicationservice`   | 22            |
 | `application.applicationservice.use-tier1`                       | `applicationservice`   | 4             |
 | `application.applicationservice.use-type-name`                   | `applicationservice`   | 6             |
-| `application.applicationservice.use-viewport-history`            | `applicationservice`   | 2             |
+| `application.applicationservice.use-viewport-history`            | `applicationservice`   | 3             |
 | `application.applicationservice.web-socket-client`               | `applicationservice`   | 5             |
 
 ## Inter-Layer Dependencies
@@ -197,6 +197,7 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                                                                             | `data-model.objectschema.chat-message`                              | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                                                                            | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                                                                      | `data-model.objectschema.delete-blocker`                            | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                                                                      | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -275,8 +276,10 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.type-bands`                                                                                                              | `product.feature.model-view-by-type`                                | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-annotations`                                                                                                         | `business.businessservice.model-annotation`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.use-annotations`                                                                                                         | `product.softwarecapability.model-annotation`                       | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.accesses.business.businessobject`                      | `application.applicationservice.use-c4model`                                                                                                             | `business.businessobject.changeset`                                 | `business`    | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                                                                             | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                                                                             | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                                                                             | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-c4model`                                                                                                             | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-c4model`                                                                                                             | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.business.businessobject`                      | `application.applicationservice.use-changeset-review`                                                                                                    | `business.businessobject.changeset`                                 | `business`    | `accesses`   | many-to-many | medium   |
@@ -334,6 +337,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-list-empty-state-shows-the-empty-state-for-an-element-with-no-annotations`                                   | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-replies-lazily-loads-posts-a-reply-via-the-disclosure`                                                       | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.annotations-section-resolve-resolves-an-open-annotation-via-patch-and-shows-the-resolved-chip`                                   | `application.applicationcomponent.annotations-section`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-changeset-picker-lists-staged-changesets-before-applied-ones-with-none-first-83d2275f`                       | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-changeset-picker-selecting-a-changeset-overlays-it-a-navigation-and-keeps-the-cbf3ccc1`                      | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-changeset-picker-still-shows-a-changeset-the-list-does-not-hold-by-its-id`                                   | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`                                                                  | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                                        | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
@@ -341,14 +347,23 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`                            | `application.applicationservice.use-c4model`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`                                           | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                                          | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                                          | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                                      | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                                | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee`                        | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-does-not-persist-the-overlaid-changeset-48c2b3f6`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-never-touches-the-changesets-views-own-c01a8495`                        | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-restore-c4-sets-the-overlay-from-the-url-a1e3f568`                      | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-keeps-the-overlay-across-levels-871930ff`                       | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8`                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a`                    | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid`                                      | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332`                        | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b`                      | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known`                                           | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39`                      | `application.applicationservice.chat-context-builder`               | `application` | `tests`      | many-to-many | medium   |
@@ -380,6 +395,12 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-re-opens-a-kept-delete-that-gained-a-blocker-since-it-was-kept-here`                                          | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-sends-kept-blocked-deletes-as-delete-blocked-links-and-counts-their-links`                                    | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.build-review-model-tallies-decisions-and-is-not-ready-while-changes-are-undecided`                                               | `application.applicationservice.changeset-review-model`             | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-draws-the-removed-box-as-a-ghost-that-can-be-selected-but-not-2c0926c4`                    | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-lets-go-of-a-selected-box-once-the-overlay-that-drew-it-is-ecf03bfc`                       | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-lists-the-arrows-with-their-status-for-assistive-technology`                               | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands`                                                        | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150`                    | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`                         | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-diagram-layout`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `application.applicationservice.c4-diagram-layout`                  | `application` | `tests`      | many-to-many | medium   |
@@ -593,6 +614,22 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.description-excerpt-reads-plain-text-unchanged-single-newlines-folded`                                                           | `application.applicationservice.markdown-excerpt`                   | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`                                            | `application.applicationcomponent.markdown-text`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.description-excerpt-takes-only-the-first-paragraph-and-drops-list-and-heading-markup`                                            | `application.applicationservice.markdown-excerpt`                   | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places`                                                   | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out`                                       | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed`                                                              | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it`                                                          | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added`                                    | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed`                                                | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it`                                                                           | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity`                                | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset`                                                                         | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it`                                                                   | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow`                                                       | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it`                                                  | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-a-change-on-every-ancestor-so-each-level-shows-it`                             | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends`                              | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56`                      | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04`                    | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-composes-layer-id-type-slugname`                                                                                       | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-drops-dots-in-the-name-segment-2-1-21`                                                                                 | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.dotted-id-matches-slugify-name-for-the-name-segment-on-every-fixture-node`                                                       | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
@@ -816,6 +853,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-node-page-data-outgoing-relationships-table-lists-all-3-real-links-intra-cross-layer-by-name`                              | `application.applicationservice.page-data-builder`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-node-page-data-returns-null-when-the-element-does-not-exist-or-lives-in-another-layer`                                     | `application.applicationservice.page-data-builder`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-node-page-data-the-intra-layer-incoming-predicate-cell-carries-edge-info-pointing-at-the-real-b753a6c1`                    | `application.applicationservice.page-data-builder`                  | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-overlay-apply-adds-and-deletes-relationships-resolving-ends-by-dotted-id-and-by-the-ids-the-4435102b`                      | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-overlay-apply-keeps-a-link-that-names-a-renamed-element-by-its-dotted-id`                                                  | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-overlay-revert-brings-a-deleted-element-back-from-its-before-with-its-uuid`                                                | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.model-overlay-revert-is-the-inverse-of-apply-applying-then-reverting-gives-the-model-back`                                       | `application.applicationservice.model-graph-transform`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-clicking-a-cross-layer-relationship-target-switches-layer-and-selects-the-target`                                     | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-clicking-a-node-populates-the-inspector-and-highlights-it`                                                            | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                                           | `application.applicationcomponent.type-hive-view`                   | `application` | `tests`      | many-to-many | medium   |
@@ -1241,6 +1282,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-default-state-exposes-the-expected-action-surface-and-seeds-the-model-section`                                          | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-does-not-persist-navigation-state-view-layer-id-selected-id-8f2fc725`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.ui-store-local-storage-persistence-persists-canvas-dark-chat-open-and-the-graph-settings-under-6586daaf`                         | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows`                                | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed`                                                   | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change`                                   | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope`                                                           | `application.applicationservice.c4-model-transform`                 | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-is-disabled-no-request-when-element-id-is-null`                                       | `application.applicationservice.use-annotations`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.use-annotations-get-filtered-by-element-id-returns-only-annotations-for-the-requested-element`                                   | `application.applicationservice.use-annotations`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.use-changeset-detail-hook-is-disabled-no-fetch-until-an-id-is-provided`                                                          | `application.applicationservice.use-model`                          | `application` | `tests`      | many-to-many | medium   |
@@ -1439,30 +1484,46 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 
 #### Relationships
 
-| Type        | Related Element                                                                                                 | Predicate     | Direction |
-| ----------- | --------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
-| inter-layer | `data-model.objectschema.c4-model`                                                                              | `accesses`    | outbound  |
-| inter-layer | `data-model.objectschema.c4-view`                                                                               | `accesses`    | outbound  |
-| inter-layer | `technology.systemsoftware.heimdall-ui`                                                                         | `serves`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`                         | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`               | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`  | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope` | `tests`       | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                             | `tests`       | inbound   |
-| intra-layer | `application.applicationcomponent.app-shell`                                                                    | `composes`    | inbound   |
-| intra-layer | `application.applicationcomponent.app-shell`                                                                    | `uses`        | inbound   |
-| intra-layer | `application.applicationfunction.ui-store`                                                                      | `assigned-to` | outbound  |
-| intra-layer | `application.applicationcomponent.c4-diagram`                                                                   | `composes`    | outbound  |
-| intra-layer | `application.applicationservice.c4-view-scoping`                                                                | `realizes`    | outbound  |
-| intra-layer | `application.applicationcomponent.c4-diagram`                                                                   | `uses`        | outbound  |
-| intra-layer | `application.applicationservice.c4-changeset-diff`                                                              | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.c4-model-transform`                                                             | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.c4-view-scoping`                                                                | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.changeset-model-overlay`                                                        | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.layer-domain-palette`                                                           | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.use-c4model`                                                                    | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.use-model`                                                                      | `serves`      | inbound   |
-| intra-layer | `application.applicationservice.use-spec`                                                                       | `serves`      | inbound   |
+| Type        | Related Element                                                                                                                       | Predicate     | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
+| inter-layer | `data-model.objectschema.c4-model`                                                                                                    | `accesses`    | outbound  |
+| inter-layer | `data-model.objectschema.c4-view`                                                                                                     | `accesses`    | outbound  |
+| inter-layer | `data-model.objectschema.changeset-detail`                                                                                            | `accesses`    | outbound  |
+| inter-layer | `technology.systemsoftware.heimdall-ui`                                                                                               | `serves`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-changeset-picker-lists-staged-changesets-before-applied-ones-with-none-first-83d2275f`    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-changeset-picker-selecting-a-changeset-overlays-it-a-navigation-and-keeps-the-cbf3ccc1`   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-changeset-picker-still-shows-a-changeset-the-list-does-not-hold-by-its-id`                | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-closes-the-details-from-their-close-button`                                               | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`                        | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                       | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-draws-the-removed-box-as-a-ghost-that-can-be-selected-but-not-2c0926c4` | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-lets-go-of-a-selected-box-once-the-overlay-that-drew-it-is-ecf03bfc`    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-lists-the-arrows-with-their-status-for-assistive-technology`            | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands`                                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150` | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`      | `tests`       | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `composes`    | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `uses`        | inbound   |
+| intra-layer | `application.applicationfunction.ui-store`                                                                                            | `assigned-to` | outbound  |
+| intra-layer | `application.applicationcomponent.c4-diagram`                                                                                         | `composes`    | outbound  |
+| intra-layer | `application.applicationcomponent.markdown-text`                                                                                      | `composes`    | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `realizes`    | outbound  |
+| intra-layer | `application.applicationcomponent.c4-diagram`                                                                                         | `uses`        | outbound  |
+| intra-layer | `application.applicationcomponent.markdown-text`                                                                                      | `uses`        | outbound  |
+| intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                    | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.c4-model-transform`                                                                                   | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.changeset-model-overlay`                                                                              | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.changeset-op-rows`                                                                                    | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.chat-anchor`                                                                                          | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.node-type-label`                                                                                      | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-c4model`                                                                                          | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-model`                                                                                            | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.use-spec`                                                                                             | `serves`      | inbound   |
 
 ### C4 Diagram {#c4-diagram}
 
@@ -2211,6 +2272,8 @@ Shared renderer for untrusted model prose: node page descriptions and changeset 
 | inter-layer | `testing.testcasesketch.markdown-text-renders-headings-lists-code-and-links-shows-raw-html-as-text-and-plain-text-as-one-paragraph` | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.markdown-text-renders-nothing-for-empty-or-whitespace-only-text`                                            | `tests`    | inbound   |
 | inter-layer | `testing.testcasesketch.markdown-text-strips-a-javascript-link-target`                                                              | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                              | `composes` | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                              | `uses`     | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-canvas`                                                                                 | `composes` | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-inbox`                                                                                  | `composes` | inbound   |
 | intra-layer | `application.applicationcomponent.changeset-inbox`                                                                                  | `uses`     | inbound   |
@@ -2873,6 +2936,13 @@ Zustand store for UI state: view (Model, Schema, Changesets or Architecture), la
 | inter-layer | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                 | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                              | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-show-c4-opens-a-diagram-as-a-navigation-and-e568ecee`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-does-not-persist-the-overlaid-changeset-48c2b3f6`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-never-touches-the-changesets-views-own-c01a8495`                      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-restore-c4-sets-the-overlay-from-the-url-a1e3f568`                    | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-keeps-the-overlay-across-levels-871930ff`                     | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8`                  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a`                  | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid`                                    | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-first-visit-on-a-wide-window-still-gets-a-light-canvas-and-dr-bot-closed` | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dark-canvas-and-open-dr-bot-still-win-over-the-defaults`        | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.first-visit-defaults-vs-a-persisted-choice-596-597-a-persisted-dr-bot-size-out-of-range-or-f6a43fee`                           | `tests`       | inbound   |
@@ -2941,6 +3011,8 @@ Zustand store for UI state: view (Model, Schema, Changesets or Architecture), la
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                                 | `assigned-to` | inbound   |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                                                                            | `assigned-to` | inbound   |
 | intra-layer | `application.applicationcomponent.topbar-search`                                                                                                       | `assigned-to` | inbound   |
+| intra-layer | `application.applicationservice.use-viewport-history`                                                                                                  | `realizes`    | outbound  |
+| intra-layer | `application.applicationservice.chat-panel-layout`                                                                                                     | `serves`      | inbound   |
 
 ### DR CLI REST Interface {#dr-cli-rest-interface}
 
@@ -3004,7 +3076,7 @@ TanStack Router route handling token-based authentication via magic link; extrac
 
 **Type**: `applicationservice`
 
-`data/c4/c4Diff.ts`: `diffC4(base, after, changes)` matches C4 elements by their source model elements and gives each a status (added, removed, changed, moved, parts changed) and each arrow one (added, removed, relabelled); `unionC4` draws removed elements and arrows back under their nearest surviving ancestor; roll-up counts changes below the current level onto the visible ancestor.
+`data/c4/c4Diff.ts`: `diffC4(base, after, trace)` matches C4 elements across the two models by the model elements behind them (UUID, then dotted id), so a rename reads as changed; it gives each box a status (added, removed, moved, changed, parts changed) and each arrow one (added, removed, relabelled, or relinked: same label, different model links), with the change sequences behind each, roll-ups of changes below a box, and the changes no diagram shows (counted, never dropped). Ids are union ids (the after id, else a removed element's base id). `unionC4View` is the diagram drawn: the after view plus removed boxes and arrows as ghosts.
 
 #### Attributes
 
@@ -3072,39 +3144,59 @@ data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model (nodes and reso
 
 #### Relationships
 
-| Type        | Related Element                                                                                                                      | Predicate    | Direction |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------ | --------- |
-| inter-layer | `data-model.objectschema.c4-model`                                                                                                   | `accesses`   | outbound  |
-| inter-layer | `business.businessservice.architecture-model-visualization`                                                                          | `realizes`   | outbound  |
-| inter-layer | `product.feature.c4-architecture-diagrams`                                                                                           | `realizes`   | outbound  |
-| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                           | `satisfies`  | outbound  |
-| inter-layer | `testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c`   | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle`                                                       | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor`              | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so`                              | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318` | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person`                       | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737` | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577`       | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b`     | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path`                                | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`      | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                               | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                     | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                         | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`  | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`        | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines`                         | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`   | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`           | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                        | `tests`      | inbound   |
-| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                    | `covers`     | inbound   |
-| intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                   | `depends-on` | inbound   |
-| intra-layer | `application.applicationservice.model-graph-transform`                                                                               | `depends-on` | outbound  |
-| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `serves`     | outbound  |
-| intra-layer | `application.applicationservice.c4-view-scoping`                                                                                     | `depends-on` | inbound   |
-| intra-layer | `application.applicationservice.use-c4model`                                                                                         | `depends-on` | inbound   |
+| Type        | Related Element                                                                                                                       | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-model`                                                                                                    | `accesses`   | outbound  |
+| inter-layer | `business.businessservice.architecture-model-visualization`                                                                           | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                                                            | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                            | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.c4-model-containment-leaves-unowned-components-unassigned-when-the-model-has-several-application-d0eced5c`    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-containment-nests-components-by-composes-and-puts-unowned-ones-in-the-app-container`                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-containment-never-closes-a-containment-cycle`                                                        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-containment-puts-an-element-several-parents-claim-under-their-nearest-common-ancestor`               | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-containment-stands-in-a-container-when-the-model-has-none-and-says-so`                               | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-gives-a-container-its-technology-from-the-model-and-a-component-the-ef081318`  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-merges-a-persona-and-its-business-role-into-one-person`                        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-elements-and-identity-reads-an-actor-by-its-type-and-one-external-system-for-a-same-named-820f1737`  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-of-the-real-fixture-accounts-for-every-model-element-a-c4-element-folded-onto-one-a-7bd2b577`        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-of-the-real-fixture-places-every-element-in-exactly-one-parent-chain-that-ends-at-the-1523f51b`      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-relationships-derives-the-arrows-the-model-holds-as-a-two-link-path`                                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`       | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                          | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`   | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`         | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-rules-against-the-spec-the-shipped-rules-name-only-what-the-current-spec-defines`                          | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-views-lifting-caps-the-outside-of-a-component-diagram-at-the-most-linked-and-says-how-many-it-f2c645dc`    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-views-lifting-merges-several-links-between-one-pair-into-one-arrow-with-a-count-and-its-labels`            | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-views-scope-falls-back-to-the-default-container-for-an-unknown-or-part-less-scope`                         | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places`                                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out`                    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed`                                           | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it`                                       | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added`                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed`                             | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it`                                                        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity`             | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset`                                                      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it`                                                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow`                                    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it`                               | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-a-change-on-every-ancestor-so-each-level-shows-it`          | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends`           | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56`   | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows`             | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed`                                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change`                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope`                                        | `tests`      | inbound   |
+| inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                     | `covers`     | inbound   |
+| intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                    | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.use-c4model`                                                                                          | `depends-on` | inbound   |
 
 ### C4 View Scoping {#c4-view-scoping}
 
@@ -3131,6 +3223,7 @@ data/c4/c4Views.ts: a pure function from the C4 model, a level (context, contain
 | inter-layer | `ux.view.architecture-view`                                                                                                          | `serves`     | outbound  |
 | inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                    | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it`        | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                      | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                        | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`                                                                | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4-layout-places-every-element-inside-its-boundary-and-everything-else-outside-it`                           | `tests`      | inbound   |
@@ -3159,6 +3252,7 @@ data/c4/c4Views.ts: a pure function from the C4 model, a level (context, contain
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                                                          | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.chat-context-builder`                                                                                | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.use-c4model`                                                                                         | `depends-on` | inbound   |
 
 ### Change Origin Helpers {#change-origin-helpers}
 
@@ -3368,6 +3462,7 @@ Folds a changeset's change records into op rows (add, update, delete) with their
 | inter-layer | `testing.testcasesketch.to-change-row-falls-back-to-index-for-the-key-when-sequence-number-is-absent`                                | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.to-change-row-uses-unknown-when-element-id-is-missing`                                                       | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                    | `covers`     | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-review-panel`                                                                            | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.changeset-review-model`                                                                              | `depends-on` | inbound   |
 
@@ -3541,6 +3636,7 @@ ui/chatAnchor.ts: useChatAnchor(ref) lets a view register the area the DrBot pan
 | ----------- | ----------------------------------------------------------------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `business.businessservice.ai-assisted-architecture-chat`                                                          | `realizes` | outbound  |
 | inter-layer | `testing.testcasesketch.drbot-panel-steps-left-of-an-open-inspector-drawer-follows-the-drawer-when-it-is-resized` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                            | `serves`   | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-canvas`                                                               | `serves`   | outbound  |
 | intra-layer | `application.applicationcomponent.chat-drawer`                                                                    | `serves`   | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                   | `serves`   | outbound  |
@@ -3566,6 +3662,7 @@ Builds the &lt;viewer-context&gt; block (view, layer, selected element or change
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                         | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332`   | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-diagram-and-the-selected-box-with-the-model-bb8d387b` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.build-chat-context-in-the-architecture-view-returns-null-before-the-c4-model-is-known`                      | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.build-chat-context-in-the-architecture-view-says-when-nothing-is-selected-and-that-a-stand-in-box-c4e9cc39` | `tests`      | inbound   |
@@ -3575,6 +3672,7 @@ Builds the &lt;viewer-context&gt; block (view, layer, selected element or change
 | inter-layer | `testing.testcasesketch.with-chat-context-puts-the-context-block-before-the-question-or-leaves-the-question-alone`                  | `tests`      | inbound   |
 | intra-layer | `application.applicationcomponent.chat-panel`                                                                                       | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                                    | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.model-graph-transform`                                                                              | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.chat-panel`                                                                                       | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.chat-service`                                                                                       | `depends-on` | inbound   |
 
@@ -3606,6 +3704,7 @@ ui/chatPanelLayout.ts: the pure placement rule for the floating DrBot panel. Giv
 | inter-layer | `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243` | `tests`    | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                     | `covers`   | inbound   |
 | intra-layer | `application.applicationcomponent.chat-drawer`                                                                                        | `serves`   | outbound  |
+| intra-layer | `application.applicationfunction.ui-store`                                                                                            | `serves`   | outbound  |
 
 ### Chat Service {#chat-service}
 
@@ -4011,6 +4110,10 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | inter-layer | `testing.testcasesketch.model-element-neighborhood-graph-center-element-appears-exactly-once-even-with-self-referential-8e12388b`    | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.model-element-neighborhood-graph-excludes-self-referential-relationships-from-neighbors`                     | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.model-element-neighborhood-graph-marks-element-with-no-connections-as-empty`                                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.model-overlay-apply-adds-and-deletes-relationships-resolving-ends-by-dotted-id-and-by-the-ids-the-4435102b`  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.model-overlay-apply-keeps-a-link-that-names-a-renamed-element-by-its-dotted-id`                              | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.model-overlay-revert-brings-a-deleted-element-back-from-its-before-with-its-uuid`                            | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.model-overlay-revert-is-the-inverse-of-apply-applying-then-reverting-gives-the-model-back`                   | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.nodes-for-layer-ids-are-the-node-uuids-selectable-by-graph-canvas`                                           | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.nodes-for-layer-returns-an-empty-array-for-a-layer-with-no-elements`                                         | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.nodes-for-layer-returns-exactly-the-layer-resident-nodes-mapped-to-graph-node-data`                          | `tests`      | inbound   |
@@ -4030,8 +4133,10 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | intra-layer | `application.applicationservice.c4-model-transform`                                                                                  | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.changeset-impact-analysis`                                                                           | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.changeset-model-overlay`                                                                             | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.chat-context-builder`                                                                                | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.layered-reach`                                                                                       | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                                | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-link-card`                                                                                  | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                      | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                                  | `serves`     | outbound  |
@@ -4160,6 +4265,7 @@ data/typeLabel.ts: one display name for a node type, from the spec's title (else
 | intra-layer | `application.applicationservice.neighborhood-graph`                                                                                   | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.use-spec`                                                                                             | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-inspector`                                                                                   | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-link-card`                                                                                   | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.change-neighbourhood`                                                                               | `serves`     | outbound  |
@@ -4505,14 +4611,17 @@ data/c4/useC4Model.ts: the loaded model as a C4 model, built once per /api/model
 
 | Type        | Related Element                                                                                                               | Predicate    | Direction |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `business.businessobject.changeset`                                                                                           | `accesses`   | outbound  |
 | inter-layer | `data-model.objectschema.c4-model`                                                                                            | `accesses`   | outbound  |
 | inter-layer | `data-model.objectschema.c4-view`                                                                                             | `accesses`   | outbound  |
+| inter-layer | `data-model.objectschema.changeset-detail`                                                                                    | `accesses`   | outbound  |
 | inter-layer | `business.businessservice.architecture-model-visualization`                                                                   | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                    | `realizes`   | outbound  |
 | inter-layer | `testing.testcasesketch.architecture-canvas-opens-on-the-system-context-the-system-as-one-box-with-who-and-what-is-around-it` | `tests`      | inbound   |
 | intra-layer | `application.applicationservice.c4-changeset-diff`                                                                            | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.c4-diagram-layout`                                                                            | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.c4-model-transform`                                                                           | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.c4-view-scoping`                                                                              | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.use-model`                                                                                    | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.use-spec`                                                                                     | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                        | `serves`     | outbound  |
@@ -4827,6 +4936,7 @@ Records the graph viewport on dwell and navigate, and restores it from ?vp= (rel
 | inter-layer | `testing.testcasesketch.use-viewport-history-ignores-a-viewport-scoped-to-another-canvas-and-offers-a-matching-one-as-e3fb6443` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.use-viewport-history-records-a-dwell-rounded-and-scoped-to-the-canvas-without-applying-it-back`         | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.use-viewport-history-records-canvas-moves-except-the-mount-fit`                                         | `tests`      | inbound   |
+| intra-layer | `application.applicationfunction.ui-store`                                                                                      | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.graph-viewport-key`                                                                             | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                 | `serves`     | outbound  |
 
@@ -4869,4 +4979,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0
+Generated: 2026-11-21T16:42:09.853Z | Model Version: 0.1.0
