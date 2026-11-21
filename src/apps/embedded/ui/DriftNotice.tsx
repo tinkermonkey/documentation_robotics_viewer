@@ -2,18 +2,25 @@
  * DriftNotice — how a changeset's base drift reads in the Changesets view
  * (`data/changesetDrift.ts`), from the server's own report:
  *
- * - `DriftBadge`: "Base changed since this was staged", only when the drift
- *   blocks a commit (a plan the server would refuse to apply). Inbox card,
- *   canvas header, inspector.
+ * - `DriftBadge`: "Base changed since this was staged", only for a drifted
+ *   plan: rose when the server would refuse to apply it (an older dr CLI,
+ *   `blocks`), amber when it lands over its overlaps (a newer one,
+ *   `overlaps`). Inbox card, canvas header, inspector.
  * - `DriftApplyNote`: on the review's summary card, before Apply's confirm
- *   dialog: the server will likely refuse the commit, and the way forward is
- *   to ask DrBot to restage (the apply route takes no force, so the viewer
- *   offers no "land anyway"). Apply stays open; its confirm dialog warns too,
- *   and the 409 is the result. Says plainly when drift couldn't be checked.
+ *   dialog. `blocks`: the server will likely refuse the commit, and the way
+ *   forward is to ask DrBot to restage (the apply route takes no force, so the
+ *   viewer offers no "land anyway"); the 409 is the result. `overlaps`: Apply
+ *   lands it over what the base changed; each overlap's consequence is listed
+ *   in the inspector and in the confirm dialog (`DriftOverlapList`). Says
+ *   plainly when drift couldn't be checked.
  * - `DriftSection`: the inspector overview's drift detail: the message, the
- *   staged changes the base now overlaps, and the base's changes per layer
- *   (a cut list is said as cut). Content-free drift is a quiet note; a
+ *   staged changes the base now overlaps (each with its consequence, when the
+ *   server sends one), what couldn't be checked, and the base's changes per
+ *   layer (a cut list is said as cut). Content-free drift is a quiet note; a
  *   verification record shows the server's message as information.
+ *
+ * An overlap's `resolve` is how the agent revises the plan, so it isn't shown
+ * here: DrBot reads it from the server itself when asked to restage.
  *
  * Nothing renders for no drift, or for an older dr CLI that reports none.
  */
@@ -24,6 +31,9 @@ import { plural } from './reviewParts';
 import {
   DRIFT_BADGE_LABEL,
   DRIFT_WAY_FORWARD,
+  DRIFT_OVERLAPS_APPLY,
+  DRIFT_UNLISTED_APPLY,
+  hasOverlaps,
   overlapReasonLabel,
   baseChangeCountsLabel,
   baseChangesByLayer,
@@ -32,11 +42,12 @@ import {
   type ChangesetDriftSummary,
 } from '../data/changesetDrift';
 
-/** The badge for a drift that blocks a commit; nothing otherwise. The message is its tooltip. */
+/** The badge for a drifted plan; nothing otherwise. The message is its tooltip. */
 export function DriftBadge({ drift }: { drift: ChangesetDriftSummary | undefined }) {
-  if (driftTone(drift) !== 'blocks') return null;
+  const tone = driftTone(drift);
+  if (tone !== 'blocks' && tone !== 'overlaps') return null;
   return (
-    <Chip variant="rose" title={drift!.message} data-testid="drift-badge">
+    <Chip variant={tone === 'blocks' ? 'rose' : 'amber'} title={drift!.message} data-testid="drift-badge">
       {DRIFT_BADGE_LABEL}
     </Chip>
   );
@@ -50,6 +61,14 @@ export function DriftApplyNote({ drift }: { drift: ChangesetDriftSummary | undef
       <div role="status" className="drv-alert" data-testid="drift-apply-note">
         <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message} The server will likely refuse the commit.{' '}
         {DRIFT_WAY_FORWARD}
+      </div>
+    );
+  }
+  if (tone === 'overlaps') {
+    return (
+      <div role="status" className="drv-note" data-testid="drift-apply-note">
+        <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message}{' '}
+        {hasOverlaps(drift as ChangesetDrift) ? DRIFT_OVERLAPS_APPLY : DRIFT_UNLISTED_APPLY}
       </div>
     );
   }
@@ -80,22 +99,42 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
-function hasOverlaps(drift: ChangesetDrift): boolean {
-  const o = drift.overlapping;
-  return !!o && o.elements.length + o.relationships.length > 0;
+/** What landing does about an overlap, under its reason (a newer dr CLI sends it). */
+function Consequence({ text }: { text: string | undefined }) {
+  if (!text) return null;
+  return (
+    <span style={{ display: 'block', color: 'rgb(var(--canvas-fg-1))' }} data-testid="drift-overlap-consequence">
+      {text}
+    </span>
+  );
 }
 
-/** The changeset's elements and links the base now overlaps. */
-function Overlaps({ drift }: { drift: ChangesetDrift }) {
-  const o = drift.overlapping;
-  if (!o || !hasOverlaps(drift)) return null;
+/**
+ * The changeset's elements and links the base now overlaps, each with what
+ * landing does about it. In the inspector and in Apply's confirm dialog.
+ */
+export function DriftOverlapList({ drift }: { drift: ChangesetDrift | undefined }) {
+  const o = drift?.overlapping;
+  if (!drift || !o || !hasOverlaps(drift)) return null;
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 4, overflowWrap: 'anywhere' }} data-testid="drift-overlaps">
       <SectionLabel>{`Its changes the base also touched (${o.elements.length + o.relationships.length})`}</SectionLabel>
-      <ul style={{ margin: 0, paddingLeft: 16, fontSize: 12, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
+      <ul
+        style={{
+          margin: 0,
+          paddingLeft: 16,
+          fontSize: 12,
+          lineHeight: 1.5,
+          color: 'rgb(var(--canvas-fg-2))',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 3,
+        }}
+      >
         {o.elements.map((e) => (
           <li key={`e:${e.id}`}>
             <span className="drv-mono">{e.id}</span>: {overlapReasonLabel(e.reason)}
+            <Consequence text={e.consequence} />
           </li>
         ))}
         {o.relationships.map((r) => (
@@ -105,11 +144,36 @@ function Overlaps({ drift }: { drift: ChangesetDrift }) {
             </span>
             : {overlapReasonLabel(r.reason)}
             {r.endpoints?.length ? ` (${r.endpoints.join(', ')})` : ''}
+            <Consequence text={r.consequence} />
           </li>
         ))}
       </ul>
+      {drift.notChecked && (
+        <span className="drv-muted" style={{ fontSize: 11.5, lineHeight: 1.45 }} data-testid="drift-not-checked">
+          {drift.notChecked.sentence}
+        </span>
+      )}
     </div>
   );
+}
+
+/** What couldn't be checked for overlaps, when there are no overlaps to list it under. */
+export function DriftNotChecked({ drift }: { drift: ChangesetDrift }) {
+  if (!drift.notChecked || hasOverlaps(drift)) return null;
+  return (
+    <p className="drv-muted" style={{ margin: 0, fontSize: 11.5, lineHeight: 1.45 }} data-testid="drift-not-checked">
+      {drift.notChecked.sentence}
+    </p>
+  );
+}
+
+/** The truncation note: from the page's totals when a newer dr CLI sends them. */
+function truncatedNote(changes: NonNullable<ChangesetDrift['baseChanges']>): string {
+  const page = changes.page;
+  if (!page) return 'The lists were cut at 50, so the per-layer counts are a floor; the totals above are exact.';
+  const sum = (c: typeof page.totals) =>
+    c.elementsAdded + c.elementsRemoved + c.elementsChanged + c.relationshipsAdded + c.relationshipsRemoved;
+  return `The lists hold ${sum(page.returned)} of ${sum(page.totals)} entries (up to ${page.limit} each), so the per-layer counts are a floor; the totals above are exact.`;
 }
 
 /** What changed in the base, per layer (elements counted from the lists, cut at 50). */
@@ -139,7 +203,7 @@ function BaseChanges({ drift }: { drift: ChangesetDrift }) {
       )}
       {changes.truncated && (
         <span className="drv-muted" style={{ fontSize: 11.5 }} data-testid="drift-truncated">
-          The lists were cut at 50, so the per-layer counts are a floor; the totals above are exact.
+          {truncatedNote(changes)}
         </span>
       )}
     </div>
@@ -186,7 +250,8 @@ export function DriftSection({ drift, isRecord }: { drift: ChangesetDrift | unde
       <p style={{ margin: 0, fontSize: 12.5, lineHeight: 1.5, color: 'rgb(var(--canvas-fg-2))' }}>
         {drift.message}
       </p>
-      <Overlaps drift={drift} />
+      <DriftOverlapList drift={drift} />
+      <DriftNotChecked drift={drift} />
       <BaseChanges drift={drift} />
       {/* The server also puts the overlaps in a warning line; they're listed above already. */}
       {drift.warnings?.filter((w) => !(hasOverlaps(drift) && /overlaps/i.test(w))).map((w) => (

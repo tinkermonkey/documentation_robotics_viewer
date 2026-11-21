@@ -233,5 +233,23 @@ describe('ChangesetInbox', () => {
     const record = screen.getByText('add-export-as-built').closest('article')!;
     expect(within(record).queryByTestId('drift-badge')).not.toBeInTheDocument();
     expect(screen.getAllByTestId('drift-badge')).toHaveLength(1);
+    expect(within(card).getByTestId('drift-badge')).toHaveClass('chip--rose');
+  });
+
+  it("shows a newer dr CLI's drifted plan, which lands over its overlaps, with an amber badge and its message", async () => {
+    const message = 'The base changed under 2 staged changes; a commit lands them all the same.';
+    serveList({
+      'cs-newer': {
+        name: 'add-import', status: 'staged', created: '2026-11-18T10:00:00Z', changes_count: 4, purpose: 'plan',
+        actions: ['commit', 'discard'], drift: { state: 'drifted', blocksCommit: false, message },
+      },
+    });
+    renderInbox();
+    const onYou = await screen.findByTestId('inbox-on-you');
+    const card = (await within(onYou).findByText('add-import')).closest('article')!;
+    expect(within(card).getByTestId('drift-badge')).toHaveClass('chip--amber');
+    const line = within(card).getByTestId('inbox-drift-message');
+    expect(line).toHaveTextContent(message);
+    expect(line).not.toHaveTextContent('restage it before you review');
   });
 });

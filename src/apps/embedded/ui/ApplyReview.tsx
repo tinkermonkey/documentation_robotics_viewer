@@ -9,6 +9,8 @@ import { Button, Modal, StatTile } from '@tinkermonkey/heimdall-ui';
 import { layerLabel } from './domain';
 import { useUiStore } from './uiStore';
 import { LayerSwatch, plural } from './reviewParts';
+import { DriftNotChecked, DriftOverlapList } from './DriftNotice';
+import { driftTone, hasOverlaps, type ChangesetDrift } from '../data/changesetDrift';
 import {
   countKinds,
   kindCountsLabel,
@@ -27,15 +29,20 @@ export interface ApplyConfirmProps {
   pairs: CancelPair[];
   /** An older dr CLI: every change lands, there is nothing to leave out. */
   local: boolean;
-  /** The server reports drift that blocks a commit: say the refusal is the expected outcome. */
-  driftWarning?: boolean;
+  /**
+   * The changeset's drift. An older dr CLI that refuses a drifted commit
+   * (`blocks`): say the refusal is the expected outcome. A newer one that lands
+   * it over its overlaps (`overlaps`): list each overlap's consequence first.
+   */
+  drift?: ChangesetDrift;
 }
 
 function itemText(item: ReviewItem): string {
   return item.kind === 'link-add' || item.kind === 'link-delete' ? item.summary : item.name;
 }
 
-export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, local, driftWarning = false }: ApplyConfirmProps) {
+export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, local, drift }: ApplyConfirmProps) {
+  const tone = driftTone(drift);
   const lands = plan.landing.length;
   const dropped = plan.dropped.length;
   const k = plan.landingByKind;
@@ -61,7 +68,29 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
       }
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {driftWarning && (
+        {tone === 'overlaps' && (
+          <div className="drv-note" data-testid="apply-confirm-drift">
+            {/* Only the lead is announced: the overlap list is uncapped, so it sits in a plain note. */}
+            <p role="alert" style={{ margin: 0 }}>
+              <strong>The base changed since this was staged.</strong>{' '}
+              {hasOverlaps(drift)
+                ? 'Applying lands it all the same, over what the base changed.'
+                : 'Applying lands it all the same, but what the base changed under it couldn’t be listed.'}{' '}
+              {drift!.message}
+            </p>
+            <div role="note" aria-label="What landing does" style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
+              <DriftOverlapList drift={drift} />
+              <DriftNotChecked drift={drift!} />
+              {!hasOverlaps(drift) &&
+                drift!.warnings?.map((w) => (
+                  <p key={w} className="drv-muted" style={{ margin: 0, fontSize: 11.5, lineHeight: 1.45 }}>
+                    {w}
+                  </p>
+                ))}
+            </div>
+          </div>
+        )}
+        {tone === 'blocks' && (
           <div role="alert" className="drv-alert" data-testid="apply-confirm-drift">
             <strong>The base changed since this was staged.</strong> The server will most likely refuse this apply
             for drift, and then nothing is written and your decisions are kept. Asking DrBot to restage it is the way

@@ -37,6 +37,14 @@ export interface paths {
                             version: string;
                             /** @description Version of the dr CLI that is serving this API, e.g. "0.5.0" */
                             cliVersion: string;
+                            /** @description Process id of the server. Only with the auth token */
+                            pid?: number;
+                            /** @description Process id of the `dr visualize` process that runs the server. Only with the auth token */
+                            launcherPid?: number;
+                            /** @description Id of this viewer, as its record in the user's viewer registry has it. Only with the auth token */
+                            viewerId?: string;
+                            /** @description Browser tabs connected now (WebSocket clients). Only with the auth token */
+                            clients?: number;
                         };
                     };
                 };
@@ -904,7 +912,7 @@ export interface paths {
         };
         /**
          * Get changesets
-         * @description Retrieve a list of all changesets. Each carries its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and whether that blocks a commit. GET /api/changesets/:id adds what changed.
+         * @description Retrieve a list of all changesets. Each carries its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and overlaps what it stages. GET /api/changesets/:id adds what changed.
          */
         get: {
             parameters: {
@@ -984,11 +992,16 @@ export interface paths {
         };
         /**
          * Get changeset
-         * @description Retrieve a specific changeset with all its changes, and its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it, whether that blocks a commit and, when the base's hash changed, the staged changes the base now overlaps and what was added, removed or changed in the base.
+         * @description Retrieve a specific changeset with all its changes, and its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and, when it did, the staged changes the base now overlaps (always all of them, each with what landing does about it) and what was added, removed or changed in the base. Those five lists are a page: driftLimit entries of each from driftOffset, with drift.baseChanges.page giving each list's true total and the nextOffset that continues them.
          */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description How many entries of each drift.baseChanges list to return (default 50; no upper bound) */
+                    driftLimit?: number;
+                    /** @description Where in each drift.baseChanges list to start (default 0); pass drift.baseChanges.page.nextOffset to go on */
+                    driftOffset?: number | null;
+                };
                 header?: never;
                 path: {
                     changesetId: string;
@@ -1253,7 +1266,7 @@ export interface paths {
         put?: never;
         /**
          * Commit changeset
-         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Refused (409) when what the changeset was staged against changed in the base since it was created; this route has no force, so such a changeset lands only through changeset_commit with force. A base that only gained other elements (another changeset landing) is not drift. Refused (409) too for a verification record (purpose verification, whose actions do not include commit): it is never landed.
+         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Drift does not refuse it: when the base overlaps what the changeset stages (its drift.state is drifted), it lands all the same, and the result's drift lists each overlap with what landing did about it. Show GET /api/changesets/:id's drift.overlapping, with each consequence, before calling this. Refused (409) for a verification record or an upgrade record (whose actions do not include commit): it is never landed.
          */
         post: {
             parameters: {
@@ -1297,6 +1310,45 @@ export interface paths {
                             /** @description The changeset was active and was deactivated (commit only) */
                             deactivated?: boolean;
                             deactivationError?: string;
+                            /** @description Commit only, when the base had drifted under the changeset: it landed all the same, and this says what the base overlapped */
+                            drift?: {
+                                /** @description What happened, in a sentence */
+                                message: string;
+                                /** @description Absent when the changeset has no base index, so the overlaps could not be listed */
+                                overlapping?: {
+                                    elements: {
+                                        /** @description The element (dotted id) */
+                                        id: string;
+                                        /**
+                                         * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content is not what that change was staged on (an update restaged on the current base is not one); removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
+                                         * @enum {string}
+                                         */
+                                        reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
+                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                                        consequence: string;
+                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                                        resolve: string;
+                                    }[];
+                                    relationships: {
+                                        /** @description Source element (dotted id) */
+                                        source: string;
+                                        predicate: string;
+                                        /** @description Target element (dotted id) */
+                                        target: string;
+                                        /**
+                                         * @description already-in-base and already-removed as for elements; endpoint-removed-in-base: a staged relationship change with an end on a base element that was removed. An edit to an element at an end is not an overlap (endpoint-changed-in-base is no longer reported)
+                                         * @enum {string}
+                                         */
+                                        reason: "already-in-base" | "already-removed" | "endpoint-removed-in-base";
+                                        /** @description For endpoint-removed-in-base: the ends the base removed */
+                                        endpoints?: string[];
+                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                                        consequence: string;
+                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                                        resolve: string;
+                                    }[];
+                                };
+                            };
                             /** @description Commit with a body only: every sequence number left out, cascaded ones included */
                             dropped?: number[];
                             /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
@@ -1328,7 +1380,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record or an upgrade record, which is never landed */
+                /** @description Changeset is not staged, or (commit) it is a verification record or an upgrade record, which is never landed. Never for drift: a drifted changeset lands */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1420,6 +1472,45 @@ export interface paths {
                             /** @description The changeset was active and was deactivated (commit only) */
                             deactivated?: boolean;
                             deactivationError?: string;
+                            /** @description Commit only, when the base had drifted under the changeset: it landed all the same, and this says what the base overlapped */
+                            drift?: {
+                                /** @description What happened, in a sentence */
+                                message: string;
+                                /** @description Absent when the changeset has no base index, so the overlaps could not be listed */
+                                overlapping?: {
+                                    elements: {
+                                        /** @description The element (dotted id) */
+                                        id: string;
+                                        /**
+                                         * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content is not what that change was staged on (an update restaged on the current base is not one); removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
+                                         * @enum {string}
+                                         */
+                                        reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
+                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                                        consequence: string;
+                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                                        resolve: string;
+                                    }[];
+                                    relationships: {
+                                        /** @description Source element (dotted id) */
+                                        source: string;
+                                        predicate: string;
+                                        /** @description Target element (dotted id) */
+                                        target: string;
+                                        /**
+                                         * @description already-in-base and already-removed as for elements; endpoint-removed-in-base: a staged relationship change with an end on a base element that was removed. An edit to an element at an end is not an overlap (endpoint-changed-in-base is no longer reported)
+                                         * @enum {string}
+                                         */
+                                        reason: "already-in-base" | "already-removed" | "endpoint-removed-in-base";
+                                        /** @description For endpoint-removed-in-base: the ends the base removed */
+                                        endpoints?: string[];
+                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                                        consequence: string;
+                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                                        resolve: string;
+                                    }[];
+                                };
+                            };
                             /** @description Commit with a body only: every sequence number left out, cascaded ones included */
                             dropped?: number[];
                             /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
@@ -1439,7 +1530,7 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Changeset is not staged, the model drifted since it was created, or (commit) it is a verification record or an upgrade record, which is never landed */
+                /** @description Changeset is not staged, or (commit) it is a verification record or an upgrade record, which is never landed. Never for drift: a drifted changeset lands */
                 409: {
                     headers: {
                         [name: string]: unknown;
@@ -1544,23 +1635,23 @@ export interface components {
         /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). The changeset's own endpoint adds what changed */
         ChangesetDriftSummary: {
             /**
-             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @description Whether the base model changed under the changeset since it was created or re-baselined: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes), drifted (the base overlaps a staged change, listed in overlapping with what landing does about it, or the changeset has no base index to tell; a commit still lands it and reports the overlaps), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed). No state refuses a commit
              * @enum {string}
              */
             state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
-            /** @description True when POST /api/changesets/:id/commit would be refused for drift (409). Only ever true in state drifted */
+            /** @description Deprecated: always false. Drift warns at a commit and never refuses it, so do not hold Apply on this; read state */
             blocksCommit: boolean;
             /** @description What the state means for this changeset, in a sentence or two. Names no CLI command */
             message: string;
         };
-        /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). warnings, baseIndex, overlapping and baseChanges are present only when the base's hash changed (states content-free and drifted) */
+        /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). warnings, baseIndex, rebaselined, overlapping and baseChanges are present only in states content-free and drifted */
         ChangesetDrift: {
             /**
-             * @description Whether the base model changed under the changeset since it was created: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes; not blocking), drifted (the base overlaps a staged change, listed in overlapping, or the changeset has no base index to tell; a commit is refused), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed; a commit is not blocked by drift)
+             * @description Whether the base model changed under the changeset since it was created or re-baselined: none (the base is as it was), content-free (the base changed, as when another changeset lands, but it overlaps none of this one's staged changes), drifted (the base overlaps a staged change, listed in overlapping with what landing does about it, or the changeset has no base index to tell; a commit still lands it and reports the overlaps), not-applicable (a verification record or an upgrade record, which never lands, or a changeset that is no longer staged), unknown (no base snapshot was recorded, or the check failed). No state refuses a commit
              * @enum {string}
              */
             state: "none" | "content-free" | "drifted" | "not-applicable" | "unknown";
-            /** @description True when POST /api/changesets/:id/commit would be refused for drift (409). Only ever true in state drifted */
+            /** @description Deprecated: always false. Drift warns at a commit and never refuses it, so do not hold Apply on this; read state */
             blocksCommit: boolean;
             /** @description What the state means for this changeset, in a sentence or two. Names no CLI command */
             message: string;
@@ -1571,16 +1662,40 @@ export interface components {
              * @enum {string}
              */
             baseIndex?: "recorded" | "not-recorded" | "unreadable";
-            /** @description The staged changes the base now overlaps. With a base index these are what blocks a commit: a base change not listed here does not */
+            /** @description Set when the changeset was re-baselined (changeset_update with rebaseline): baseChanges then counts from that base, not from its creation. A re-baseline clears no overlap: overlapping is read from the base as it is now */
+            rebaselined?: {
+                /** @description ISO timestamp of the last re-baseline */
+                at: string;
+                /** @description The base hash the changeset had before it */
+                from: string;
+                /** @description The base hash it was re-baselined to */
+                to?: string;
+                /** @description How many times it was re-baselined */
+                times: number;
+            };
+            /** @description What could not be checked for overlaps; absent when everything was */
+            notChecked?: {
+                /** @description Elements staged changes record no element for, whose base edits could not be seen */
+                elements: string[];
+                /** @description Staged relationship changes not checked against what the base removed, for want of a base index */
+                relationships: number;
+                /** @description The same, for a person: show it beside overlapping, which is not the whole answer when this is present */
+                sentence: string;
+            };
+            /** @description The staged changes the base now overlaps, each with what landing does about it. Show them before Apply: a commit lands over them. A base change not listed here overlaps nothing the changeset stages */
             overlapping?: {
                 elements: {
                     /** @description The element (dotted id) */
                     id: string;
                     /**
-                     * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content changed; removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
+                     * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content is not what that change was staged on (an update restaged on the current base is not one); removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
                      * @enum {string}
                      */
                     reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
+                    /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                    consequence: string;
+                    /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                    resolve: string;
                 }[];
                 relationships: {
                     /** @description Source element (dotted id) */
@@ -1589,17 +1704,21 @@ export interface components {
                     /** @description Target element (dotted id) */
                     target: string;
                     /**
-                     * @description already-in-base and already-removed as for elements; endpoint-changed-in-base and endpoint-removed-in-base: a staged relationship change with an end on a base element that changed or was removed
+                     * @description already-in-base and already-removed as for elements; endpoint-removed-in-base: a staged relationship change with an end on a base element that was removed. An edit to an element at an end is not an overlap (endpoint-changed-in-base is no longer reported)
                      * @enum {string}
                      */
-                    reason: "already-in-base" | "already-removed" | "endpoint-changed-in-base" | "endpoint-removed-in-base";
-                    /** @description For the endpoint reasons: the ends the base changed or removed */
+                    reason: "already-in-base" | "already-removed" | "endpoint-removed-in-base";
+                    /** @description For endpoint-removed-in-base: the ends the base removed */
                     endpoints?: string[];
+                    /** @description What landing does about this overlap, as a sentence to show the person before they commit */
+                    consequence: string;
+                    /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
+                    resolve: string;
                 }[];
             };
-            /** @description What changed in the base since the changeset was created (dotted ids); needs a base index */
+            /** @description What changed in the base since the changeset was created or last re-baselined (dotted ids); needs a base index */
             baseChanges?: {
-                /** @description Exact, also when the lists are cut */
+                /** @description Exact, whatever the page of the lists */
                 counts: {
                     elementsAdded: number;
                     elementsRemoved: number;
@@ -1626,8 +1745,35 @@ export interface components {
                 }[];
                 /** @description The layers the base changed in: those of every element added, removed or changed and of both ends of every relationship added or removed. Never cut */
                 layers: string[];
-                /** @description True when a list was cut at 50 entries */
+                /** @description True when a list here is not the whole of it; page says what there is and where to go on */
                 truncated: boolean;
+                /** @description What this page of the five lists holds. Read on with driftLimit and driftOffset on GET /api/changesets/:id */
+                page: {
+                    /** @description Where in each list this page starts */
+                    offset: number;
+                    /** @description How many entries of each list this page holds at most (driftLimit; default 50) */
+                    limit: number;
+                    /** @description Each list's true length */
+                    totals: {
+                        elementsAdded: number;
+                        elementsRemoved: number;
+                        elementsChanged: number;
+                        relationshipsAdded: number;
+                        relationshipsRemoved: number;
+                    };
+                    /** @description How many entries of each list this page carries */
+                    returned: {
+                        elementsAdded: number;
+                        elementsRemoved: number;
+                        elementsChanged: number;
+                        relationshipsAdded: number;
+                        relationshipsRemoved: number;
+                    };
+                    /** @description The driftOffset that continues the lists; absent when every list has been read to its end */
+                    nextOffset?: number;
+                    /** @description With nextOffset: the call that reads the next entries, in words */
+                    more?: string;
+                };
             };
         };
         /** @description Who decided this change (codebase_extract, and the relationship deletes of an upgrade record); absent on changes staged otherwise and in older changesets */
