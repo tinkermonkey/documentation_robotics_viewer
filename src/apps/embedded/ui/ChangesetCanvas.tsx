@@ -11,6 +11,8 @@
  * `ChangesetImpactView` — the elements the changeset reaches outside itself,
  * as heimdall-ui lanes. Its follow depth is the Model inspector's
  * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
+ * Beside it, "Open in Architecture" shows a staged or applied changeset on the
+ * C4 diagrams (`#/architecture/diagram?level=context&changeset=<id>`).
  *
  * The eyebrow names the changeset's purpose (a dr CLI with purposes), and a
  * note over the list says what this kind of changeset is for and what happens
@@ -167,6 +169,7 @@ export function ChangesetCanvas() {
   const tab = useUiStore((s) => s.changesetTab);
   const setTab = useUiStore((s) => s.setChangesetTab);
   const impactFocus = useUiStore((s) => s.impactFocus);
+  const showC4 = useUiStore((s) => s.showC4);
   // The floating DrBot panel sits at the body's top-right, below the header.
   const bodyRef = useRef<HTMLDivElement>(null);
   useChatAnchor(bodyRef);
@@ -194,6 +197,8 @@ export function ChangesetCanvas() {
   const records = changesetId ? recordsOf(changesetId, registry.list) : [];
   // A current dr CLI deletes a discarded changeset: the detail answers 404 from then on.
   const gone = isChangesetGone(error);
+  // Staged (shown applied) or applied (shown reverted); nothing to show for a discarded or empty one.
+  const canOpenInArchitecture = (status === 'staged' || status === 'committed') && changesCount > 0;
   const eyebrow = ['CHANGESET', purposeLabel(purpose), origin].filter(Boolean).join(' · ').toUpperCase();
   // Set when this page discarded the changeset and went back to the inbox.
   const [notice, setNotice] = useState<string | null>(null);
@@ -262,6 +267,21 @@ export function ChangesetCanvas() {
                 aria-label="Changeset view"
                 data-testid="changeset-tab-control"
               />
+              {canOpenInArchitecture && changesetId && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => showC4('context', null, { changesetId })}
+                  title={
+                    status === 'committed'
+                      ? 'Show this changeset on the C4 diagrams, reverted'
+                      : 'Show this changeset on the C4 diagrams'
+                  }
+                  data-testid="changeset-open-architecture"
+                >
+                  Open in Architecture
+                </Button>
+              )}
             </div>
           }
         />

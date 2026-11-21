@@ -92,6 +92,24 @@ describe('buildChatContext in the Architecture view', () => {
     ).toContain('Selected box: "S" (C4 system; model elements: no model element of its own)');
   });
 
+  it('names the changeset laid over the diagram, how it is drawn, and the selected box under it', () => {
+    const context = buildChatContext({
+      ...base,
+      c4: {
+        level: 'container',
+        selected: { name: 'Web App', kind: 'container', refs: ['ux.uxapplication.web-app'] },
+        changeset: { id: 'cs-1', name: 'c4-overlay', shown: 'applied', selectedStatus: '2 changes inside' },
+      },
+    })!;
+    expect(context).toContain(
+      'Changeset laid over the diagram: "c4-overlay" (id cs-1; staged, drawn as the model would be with it applied)',
+    );
+    expect(context).toContain('model elements: ux.uxapplication.web-app; in the changeset: 2 changes inside)');
+    expect(
+      buildChatContext({ ...base, c4: { level: 'context', changeset: { id: 'cs-2', name: 'done', shown: 'reverted' } } }),
+    ).toContain('(id cs-2; already applied, drawn against the model as it was before it)');
+  });
+
   it('returns null before the C4 model is known', () => {
     expect(buildChatContext(base)).toBeNull();
   });

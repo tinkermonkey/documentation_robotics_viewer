@@ -12,7 +12,7 @@
  * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes/modelView), and the
  * Model inspector's follow depth (inspectorFollow). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*, and the Architecture view's c4Level/
- * c4Scope/c4SelectedId) is deliberately NOT persisted
+ * c4Scope/c4SelectedId/c4ChangesetId) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."
  */
@@ -86,6 +86,11 @@ interface UiState {
   c4Scope: string | null;
   /** Architecture view: the selected box (a C4 element id). Not persisted. */
   c4SelectedId: string | null;
+  /** Architecture view: the changeset laid over the C4 diagrams (null: none).
+   *  A staged one reads forward, an applied one reverted. Its own field, never
+   *  the Changesets view's `changesetId`. Not persisted (the URL's `?changeset=`
+   *  on an Architecture URL). */
+  c4ChangesetId: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
   /** The floating DrBot panel's size (#597), persisted; see chatPanelLayout. */
@@ -218,12 +223,21 @@ interface UiState {
   /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. */
   focusImpact: (elementId: string | null) => void;
   /** Open a C4 diagram: a deliberate navigation (pushes history), clears the
-   *  selected box. `scope` only matters at the Component level. */
-  showC4: (level: C4Level, scope?: string | null) => void;
+   *  selected box. `scope` only matters at the Component level. The overlaid
+   *  changeset stays unless `options.changesetId` is given (null clears it):
+   *  the Changesets view's "Open in Architecture" opens view, diagram and
+   *  overlay in one step. */
+  showC4: (level: C4Level, scope?: string | null, options?: { changesetId?: string | null }) => void;
+  /** Lay a changeset over the current C4 diagram (null: none). A deliberate
+   *  navigation (pushes history); keeps the level, scope and selected box (a
+   *  box that only the old overlay drew is for the canvas to let go of). The
+   *  same id again is a no-op. */
+  showC4Overlay: (changesetId: string | null) => void;
   /** Select a box on the current C4 diagram (null clears). */
   selectC4: (id: string | null) => void;
-  /** Restore a C4 diagram from the URL: no history push. */
-  restoreC4: (level: C4Level, scope: string | null, selectedId: string | null) => void;
+  /** Restore a C4 diagram from the URL: no history push. `changesetId`
+   *  undefined leaves the overlay as it is. */
+  restoreC4: (level: C4Level, scope: string | null, selectedId: string | null, changesetId?: string | null) => void;
   /** Switch the main panel between the live graph and the page-view scaffold.
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
@@ -305,6 +319,7 @@ export const useUiStore = create<UiState>()(
       c4Level: 'context',
       c4Scope: null,
       c4SelectedId: null,
+      c4ChangesetId: null,
       // A first visit (nothing persisted yet) gets a light canvas and DrBot
       // closed, at any width (#596, #597). A later explicit choice via
       // toggleCanvasDark / toggleChat persists and overrides these.
@@ -446,18 +461,35 @@ export const useUiStore = create<UiState>()(
       setChangesetTab: (changesetTab) => set({ changesetTab }),
       focusImpact: (impactFocus) => set(impactFocus ? { impactFocus, changesetTab: 'impact' } : { impactFocus }),
 
-      showC4: (c4Level, scope = null) =>
+      showC4: (c4Level, scope = null, options) =>
         set((s) => ({
           navSeq: s.navSeq + 1,
           view: 'architecture',
           c4Level,
           c4Scope: c4Level === 'component' ? scope : null,
           c4SelectedId: null,
+          ...(options && options.changesetId !== undefined ? { c4ChangesetId: options.changesetId } : {}),
           expandedSections: onlySection('architecture'),
         })),
+      showC4Overlay: (c4ChangesetId) =>
+        set((s) =>
+          s.c4ChangesetId === c4ChangesetId && s.view === 'architecture'
+            ? {}
+            : {
+                navSeq: s.navSeq + 1,
+                view: 'architecture',
+                c4ChangesetId,
+                expandedSections: onlySection('architecture'),
+              },
+        ),
       selectC4: (c4SelectedId) => set({ c4SelectedId }),
-      restoreC4: (c4Level, c4Scope, c4SelectedId) =>
-        set({ c4Level, c4Scope: c4Level === 'component' ? c4Scope : null, c4SelectedId }),
+      restoreC4: (c4Level, c4Scope, c4SelectedId, c4ChangesetId) =>
+        set({
+          c4Level,
+          c4Scope: c4Level === 'component' ? c4Scope : null,
+          c4SelectedId,
+          ...(c4ChangesetId !== undefined ? { c4ChangesetId } : {}),
+        }),
 
       setMode: (mode) => set({ mode }),
 

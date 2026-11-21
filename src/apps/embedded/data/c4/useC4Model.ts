@@ -7,13 +7,21 @@
  * the caches are keyed on what they all share: the payload's `nodes` array and
  * the raw spec React Query hands out. A refetch that changes the model
  * rebuilds it and nothing else does.
+ *
+ * `useC4Overlay` lays a changeset (the view's `?changeset=`) over it: the
+ * model with the changeset applied (staged) or reverted (applied), rebuilt as a
+ * C4 model and diffed against the other side (`c4Diff.ts`). Cached per model
+ * payload, spec and changeset payload, so every caller shares one diff.
  */
 
 import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useModel, type ModelDerived } from '../useModel';
 import { useSpec } from '../useSpec';
+import { useChangeset, type ChangesetDetail } from '../useChangesets';
+import { overlayModel, type OverlayMode, type OverlayTrace } from '../modelOverlay';
 import { buildC4Model, type C4Model } from './c4Model';
+import { diffC4, unionC4, type C4Diff } from './c4Diff';
 import { specCatalog, type SpecCatalog } from './c4Rules';
 import { c4ViewKey, type C4View } from './c4Views';
 import { layoutC4View, type C4Layout } from './c4Layout';
@@ -46,15 +54,106 @@ export function useC4Model() {
   return { model, isLoading, isError };
 }
 
-/** `view` laid out. Keyed on the view's content, so the same diagram is laid out once. */
-export function useC4Layout(view: C4View): { layout: C4Layout | undefined; isLoading: boolean; error: unknown } {
+/**
+ * `view` laid out. Keyed on the view's content (and `overlayKey`: the overlaid
+ * changeset and its revision), so the same diagram is laid out once.
+ */
+export function useC4Layout(
+  view: C4View,
+  overlayKey = '',
+): { layout: C4Layout | undefined; isLoading: boolean; error: unknown } {
   const key = useMemo(() => c4ViewKey(view), [view]);
   const query = useQuery({
-    queryKey: ['c4-layout', key],
+    queryKey: ['c4-layout', overlayKey, key],
     queryFn: () => layoutC4View(view),
     staleTime: Infinity,
     gcTime: 5 * 60 * 1000,
     retry: 1,
   });
   return { layout: query.data, isLoading: query.isLoading, error: query.error };
+}
+
+// ─── The changeset overlay ──────────────────────────────────────────────────
+
+/** A changeset laid over the C4 model: both sides, what differs, and the model to draw. */
+export interface C4Overlay {
+  /** `apply`: a staged changeset, read base → after. `revert`: an applied one, read before → current. */
+  mode: OverlayMode;
+  /** The model before the changeset (staged: the model; applied: the model with it reverted). */
+  base: C4Model;
+  /** The model after it (staged: with it applied; applied: the model). */
+  after: C4Model;
+  diff: C4Diff;
+  /** The after model plus the removed elements and arrows, in union ids: what is drawn. */
+  union: C4Model;
+  trace: OverlayTrace;
+}
+
+/** How a changeset's status reads as an overlay; null when it can't be shown (discarded, unknown). */
+export function overlayModeOf(status: string | undefined): OverlayMode | null {
+  if (status === 'staged') return 'apply';
+  if (status === 'committed' || status === 'applied') return 'revert';
+  return null;
+}
+
+/** Keyed on the model payload's `nodes`, then the changeset id; a hit needs the same spec and changes payload. */
+const overlays = new WeakMap<object, Map<string, { catalog: SpecCatalog | null; changes: object; overlay: C4Overlay }>>();
+
+/** The C4 overlay of `detail` over `model`, built once per model payload, spec and changeset payload. */
+export function c4OverlayFor(
+  model: ModelDerived,
+  catalog: SpecCatalog | null,
+  detail: Pick<ChangesetDetail, 'id' | 'status' | 'changes'>,
+): C4Overlay | null {
+  const mode = overlayModeOf(detail.status);
+  if (!mode) return null;
+  const byId = overlays.get(model.nodes) ?? overlays.set(model.nodes, new Map()).get(model.nodes)!;
+  const hit = byId.get(detail.id);
+  if (hit && hit.catalog === catalog && hit.changes === detail.changes) return hit.overlay;
+
+  const current = c4ModelFor(model, catalog);
+  const { model: other, trace } = overlayModel(model, detail.changes, mode);
+  const otherC4 = c4ModelFor(other, catalog);
+  const base = mode === 'apply' ? current : otherC4;
+  const after = mode === 'apply' ? otherC4 : current;
+  const diff = diffC4(base, after, trace);
+  const overlay: C4Overlay = { mode, base, after, diff, union: unionC4(base, after, diff), trace };
+  byId.set(detail.id, { catalog, changes: detail.changes, overlay });
+  return overlay;
+}
+
+export interface C4OverlayState {
+  /** The overlaid changeset's id, or null. */
+  changesetId: string | null;
+  /** Its detail, once loaded. */
+  detail: ChangesetDetail | null;
+  /** The overlay; null with no changeset, while loading, on an error, or for a changeset that can't be shown. */
+  overlay: C4Overlay | null;
+  /** Waiting for the changeset (or the model) before the overlay can be drawn. */
+  isLoading: boolean;
+  error: unknown;
+  /** A layout key for the overlay: the changeset and its revision. */
+  key: string;
+}
+
+/** The changeset `changesetId` (the view's `uiStore.c4ChangesetId`) laid over the loaded model's C4 model. */
+export function useC4Overlay(changesetId: string | null): C4OverlayState {
+  const { derived, isLoading: modelLoading } = useModel();
+  const { raw: spec } = useSpec();
+  const catalog = useMemo(() => catalogFor(spec), [spec]);
+  const { detail, isLoading, error } = useChangeset(changesetId);
+  // The query is per id: a new id has no detail until its own payload arrives.
+  const current = changesetId ? detail : null;
+  const overlay = useMemo(
+    () => (current && !modelLoading ? c4OverlayFor(derived, catalog, current) : null),
+    [current, derived, catalog, modelLoading],
+  );
+  return {
+    changesetId,
+    detail: current,
+    overlay,
+    isLoading: !!changesetId && (isLoading || modelLoading),
+    error: changesetId ? error : null,
+    key: changesetId ? `${changesetId}@${current?.revision ?? ''}:${current?.modified ?? ''}` : '',
+  };
 }

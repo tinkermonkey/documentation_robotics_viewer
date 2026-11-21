@@ -32,6 +32,15 @@ export interface ChatContextC4 {
     /** Dotted ids of the model elements behind the box. */
     refs: string[];
   };
+  /** The changeset laid over the diagram (`?changeset=`). */
+  changeset?: {
+    id: string;
+    name: string;
+    /** `applied`: a staged changeset shown applied; `reverted`: an applied one shown reverted. */
+    shown?: 'applied' | 'reverted';
+    /** The selected box's status under it, e.g. "added" or "moved from Web App". */
+    selectedStatus?: string;
+  };
 }
 
 export interface ChatContextInput {
@@ -76,11 +85,21 @@ export function buildChatContext(input: ChatContextInput): string | null {
 
   if (input.view === 'architecture') {
     if (!input.c4) return null;
-    const { level, scopeName, selected } = input.c4;
+    const { level, scopeName, selected, changeset } = input.c4;
     lines.push(`Diagram: ${C4_LEVEL_NAMES[level]}${scopeName && level !== 'context' ? ` of "${scopeName}"` : ''}`);
+    if (changeset) {
+      const shown =
+        changeset.shown === 'applied'
+          ? '; staged, drawn as the model would be with it applied'
+          : changeset.shown === 'reverted'
+            ? '; already applied, drawn against the model as it was before it'
+            : '';
+      lines.push(`Changeset laid over the diagram: "${changeset.name}" (id ${changeset.id}${shown})`);
+    }
     if (selected) {
       const refs = selected.refs.length > 0 ? selected.refs.join(', ') : 'no model element of its own';
-      lines.push(`Selected box: "${selected.name}" (C4 ${selected.kind}; model elements: ${refs})`);
+      const status = changeset?.selectedStatus ? `; in the changeset: ${changeset.selectedStatus}` : '';
+      lines.push(`Selected box: "${selected.name}" (C4 ${selected.kind}; model elements: ${refs}${status})`);
     } else {
       lines.push('Nothing selected on the diagram.');
     }

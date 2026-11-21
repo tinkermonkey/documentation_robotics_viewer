@@ -1,11 +1,12 @@
 /**
  * architecture.spec.ts — the Architecture view (C4 diagrams) against the built
  * bundle and the repo's committed model: the Container diagram's content, the
- * drill-down into components, and `?level=` / `?scope=` / `?node=` in the URL
- * (router.tsx's AppShellRoute).
+ * drill-down into components, and `?level=` / `?scope=` / `?node=` /
+ * `?changeset=` in the URL (router.tsx's AppShellRoute).
  */
 
 import { test, expect, type Page } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
 import { gotoView, ROUTES } from './helpers';
 
 function hashSearchParams(url: string): URLSearchParams {
@@ -127,5 +128,110 @@ test.describe('Architecture view — C4 diagrams', () => {
 
     await page.goBack();
     await expect.poll(() => page.url()).toContain('#/model/');
+  });
+
+  test.describe('changeset overlay: ?changeset=', () => {
+    // Slice 1's plan (c4-architecture-views-poc), applied: offered reverted.
+    const SLICE1_PLAN = 'changeset-1795189106448-lycsp34uv';
+
+    test("the Changesets view's Open in Architecture opens the Context diagram with it overlaid, and Back returns", async ({ page }) => {
+      await gotoView(page, `${ROUTES.changesets}?changeset=${SLICE1_PLAN}`);
+      await page.getByTestId('changeset-open-architecture').click();
+      await diagramAt(page, 'context');
+      await expect(page).toHaveURL(/#\/architecture\/diagram/);
+      const params = hashSearchParams(page.url());
+      expect(params.get('level')).toBe('context');
+      expect(params.get('changeset')).toBe(SLICE1_PLAN);
+      await expect(page.getByTestId('c4-changeset-picker')).toContainText('c4-architecture-views-poc');
+      // The bar says what is laid over the diagram, and how.
+      const bar = page.getByTestId('c4-changeset-bar');
+      await expect(bar.getByTestId('c4-bar-name')).toHaveText('c4-architecture-views-poc');
+      await expect(bar).toContainText('applied, shown reverted');
+
+      await page.goBack();
+      await expect.poll(() => page.url()).toContain('#/changesets/list');
+      expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
+      await expect(page.getByTestId('page-header-title')).toContainText('c4-architecture-views-poc');
+    });
+
+    test('the picker sets and clears ?changeset= as history entries, keeping the diagram', async ({ page }) => {
+      await gotoView(page, `${ROUTES.architecture}?level=container`);
+      await diagramAt(page, 'container');
+      await page.getByTestId('c4-changeset-picker').getByRole('button').click();
+      await page.getByRole('option', { name: /^c4-architecture-views-poc\s*plan · applied/ }).click();
+      await expect.poll(() => hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
+      expect(hashSearchParams(page.url()).get('level')).toBe('container');
+
+      await page.getByTestId('c4-changeset-picker').getByRole('button').click();
+      await page.getByRole('option', { name: /No changeset/ }).click();
+      await expect.poll(() => hashSearchParams(page.url()).get('changeset')).toBeNull();
+
+      await page.goBack();
+      await expect.poll(() => hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
+      await page.goBack();
+      await expect.poll(() => hashSearchParams(page.url()).get('changeset')).toBeNull();
+      await diagramAt(page, 'container');
+    });
+
+    test('an applied changeset reads reverted: what it added is marked, its parts roll up, and a change opens in the Changesets view', async ({
+      page,
+    }) => {
+      await gotoView(page, `${ROUTES.architecture}?level=container&changeset=${SLICE1_PLAN}`);
+      await diagramAt(page, 'container');
+      const bar = page.getByTestId('c4-changeset-bar');
+      await expect(bar.getByTestId('c4-bar-tally')).toContainText('added');
+      await expect(bar.getByTestId('c4-bar-legend')).toBeVisible();
+      // Reverting can't bring back links a delete took at commit: the bar says so.
+      await expect(bar.getByTestId('c4-bar-revert-note')).toBeVisible();
+
+      // Slice 1 built inside the viewer app: its box counts the changes in its parts.
+      const viewer = card(page, 'Embedded Architecture Viewer');
+      await expect(viewer.getByTestId('c4-card-rollup')).toContainText(/\d+ changes? inside/);
+
+      // Inside it, what slice 1 added is marked added, with the status in the accessible name.
+      await viewer.getByTestId('c4-card-drill').click();
+      await diagramAt(page, 'component');
+      expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
+      const added = page.locator('[data-testid="c4-card"][data-status="added"]').first();
+      await expect(added).toBeVisible();
+      await expect(added.getByTestId('c4-card-status')).toContainText('+ added');
+      const main = added.locator('.c4-card__main');
+      await expect(main).toHaveAttribute('aria-label', /, added/);
+
+      // Its drawer lists the changes behind it; one opens in the Changesets view.
+      await main.click();
+      const changes = page.getByTestId('c4-details-changes');
+      await expect(changes.getByTestId('c4-details-change').first()).toBeVisible();
+      await changes.getByTestId('c4-details-change-link').first().click();
+      await expect.poll(() => page.url()).toContain('#/changesets/');
+      expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
+      await expect(page.getByTestId('page-header-title')).toContainText('c4-architecture-views-poc');
+    });
+
+    test('Clear in the bar takes the overlay off', async ({ page }) => {
+      await gotoView(page, `${ROUTES.architecture}?level=container&changeset=${SLICE1_PLAN}`);
+      await diagramAt(page, 'container');
+      await expect(page.getByTestId('c4-card-rollup').first()).toBeVisible();
+      await page.getByTestId('c4-bar-clear').click();
+      await expect.poll(() => hashSearchParams(page.url()).get('changeset')).toBeNull();
+      await expect(page.getByTestId('c4-changeset-bar')).toHaveCount(0);
+      await expect(page.getByTestId('c4-card-rollup')).toHaveCount(0);
+    });
+
+    for (const tone of ['light', 'dark'] as const) {
+      test(`the overlaid Container diagram passes axe (WCAG 2.1 AA) on the ${tone} canvas`, async ({ page }) => {
+        await gotoView(page, `${ROUTES.architecture}?level=container&changeset=${SLICE1_PLAN}`);
+        await diagramAt(page, 'container');
+        await expect(page.getByTestId('c4-card-rollup').first()).toBeVisible();
+        await page.getByRole('radio', { name: tone, exact: true }).click();
+        await expect
+          .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
+          .toBe(tone === 'dark');
+        await page.waitForTimeout(300); // style recalc after the tone flip (see a11y.spec.ts)
+        const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+        const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+        expect(serious.map((v) => `${v.id} × ${v.nodes.length}: ${v.nodes[0]?.target.join(' ')}`)).toEqual([]);
+      });
+    }
   });
 });

@@ -41,6 +41,7 @@ export function resetUiStore(): void {
     c4Level: 'context',
     c4Scope: null,
     c4SelectedId: null,
+    c4ChangesetId: null,
     canvasDark: false,
     chatOpen: false,
     chatPanelSize: { width: 440, height: 640 },

@@ -146,7 +146,9 @@ const SECTION_DEFAULT_VIEW: Record<string, string> = {
  *  `edge` applies to the Model graph only, and is mutually exclusive with
  *  `node` — `uiStore.selectEdge` already clears `selectedId`, so
  *  whenever `edge` is present in the store → URL direction below, `node` is
- *  naturally omitted. */
+ *  naturally omitted. On an Architecture URL `changeset` is the changeset laid
+ *  over the C4 diagrams (`uiStore.c4ChangesetId`), never the Changesets view's
+ *  open changeset (`uiStore.changesetId`). */
 interface AppShellSearch {
   layer?: string;
   node?: string;
@@ -175,9 +177,9 @@ function selectionKey(
   return `${layerId ?? ''}|${selectedId ?? ''}|${selectedEdgeId ?? ''}|${changesetId ?? ''}|${c4}`;
 }
 
-/** The Architecture view's part of the selection key: level, scope, selected box. */
-function c4Key(level: C4Level, scope: string | null, selectedId: string | null): string {
-  return `${level}:${scope ?? ''}:${selectedId ?? ''}`;
+/** The Architecture view's part of the selection key: level, scope, selected box, overlaid changeset. */
+function c4Key(level: C4Level, scope: string | null, selectedId: string | null, changesetId: string | null): string {
+  return `${level}:${scope ?? ''}:${selectedId ?? ''}:${changesetId ?? ''}`;
 }
 
 /**
@@ -236,6 +238,7 @@ function AppShellRoute() {
   const c4Level = useUiStore((s) => s.c4Level);
   const c4Scope = useUiStore((s) => s.c4Scope);
   const c4SelectedId = useUiStore((s) => s.c4SelectedId);
+  const c4ChangesetId = useUiStore((s) => s.c4ChangesetId);
   const restoreC4 = useUiStore((s) => s.restoreC4);
   const graphViewport = useUiStore((s) => s.graphViewport);
   const canvasKey = useUiStore(graphCanvasKey);
@@ -260,7 +263,7 @@ function AppShellRoute() {
   // and navigate "backward" to correct it, oscillating forever.
   const prevViewRef = useRef(view);
   const prevSelectionKeyRef = useRef(
-    selectionKey(layerId, selectedId, selectedEdgeId, changesetId, c4Key(c4Level, c4Scope, c4SelectedId)),
+    selectionKey(layerId, selectedId, selectedEdgeId, changesetId, c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId)),
   );
   const prevModeRef = useRef(mode);
   const prevLayerRef = useRef(layerId);
@@ -284,15 +287,17 @@ function AppShellRoute() {
   // originated in the app itself (see the store → URL effect below).
   useEffect(() => {
     // Architecture: `?level=` / `?scope=` pick the diagram, `?node=` the
-    // selected box. Its `node` is a C4 element id, so it must never reach the
-    // Model selection below.
+    // selected box, `?changeset=` the overlaid changeset. Its `node` is a C4
+    // element id and its `changeset` the overlay's, so neither may reach the
+    // Model selection or the Changesets view's changeset below.
     if (section === 'architecture') {
       const level = parseC4Level(search.level) ?? 'context';
       const scope = level === 'component' ? (search.scope ?? null) : null;
       const selected = search.node ?? null;
+      const overlay = search.changeset ?? null;
       const s = useUiStore.getState();
-      if (s.c4Level !== level || s.c4Scope !== scope || s.c4SelectedId !== selected) {
-        restoreC4(level, scope, selected);
+      if (s.c4Level !== level || s.c4Scope !== scope || s.c4SelectedId !== selected || s.c4ChangesetId !== overlay) {
+        restoreC4(level, scope, selected, overlay);
       }
       return;
     }
@@ -373,7 +378,7 @@ function AppShellRoute() {
       selectedId,
       selectedEdgeId,
       changesetId,
-      c4Key(c4Level, c4Scope, c4SelectedId),
+      c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId),
     );
     if (!mountedRef.current) {
       mountedRef.current = true;
@@ -419,6 +424,7 @@ function AppShellRoute() {
             level: c4Level,
             scope: c4Level === 'component' ? (c4Scope ?? undefined) : undefined,
             node: c4SelectedId ?? undefined,
+            changeset: c4ChangesetId ?? undefined,
           }
         : view === 'changesets'
         ? { changeset: changesetId ?? undefined }
@@ -456,7 +462,8 @@ function AppShellRoute() {
       section === targetSection &&
       (parseC4Level(search.level) ?? 'context') === targetSearch.level &&
       (targetSearch.level !== 'component' || (search.scope ?? undefined) === targetSearch.scope) &&
-      (search.node ?? undefined) === targetSearch.node;
+      (search.node ?? undefined) === targetSearch.node &&
+      (search.changeset ?? undefined) === targetSearch.changeset;
 
     // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
     // after back/forward. Never a new destination, so always replace.
@@ -482,7 +489,7 @@ function AppShellRoute() {
     // guard; re-running on their own changes would re-check a URL the store
     // effects above are about to make it match.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId]);
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId]);
 
   return <AppShell />;
 }

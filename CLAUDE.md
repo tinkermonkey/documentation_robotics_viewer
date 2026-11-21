@@ -50,6 +50,8 @@ src/
 │   │   ├── Tier1Panel.tsx     # Changesets inbox: Tier 1 state + month's spend (GET /api/tier1), read-only
 │   │   ├── ArchitectureCanvas.tsx C4Diagram.tsx c4-diagram.css  # Architecture view: C4 diagrams (level control, breadcrumb,
 │   │   │                                          # details drawer) + the POC renderer (boundary, C4 cards, right-angle arrows)
+│   │   ├── C4ChangesetPicker.tsx C4ChangesetBar.tsx c4Marks.ts opStyles.ts  # changeset overlay: picker, bar, mark words,
+│   │   │                                          # op outlines shared with the Impact tab
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
@@ -65,10 +67,12 @@ src/
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
 │   │   ├── reach.ts followDepth.ts   # whole-model Heimdall layered index + inspector "followed across layers" reach
 │   │   ├── changesetImpact.ts # changeset over the model → multi-origin reach subgraph + per-layer blast radius
+│   │   ├── modelOverlay.ts    # the model with a changeset applied (staged) or reverted (applied); netChanges is shared
 │   │   ├── changesetReview.ts useChangesetReview.ts  # pure review model + verdict hook (server or localStorage)
 │   │   ├── c4/                # the model as a C4 model (pure): c4Rules.ts (rules as data, checked against the spec),
 │   │   │                      # c4Model.ts (elements, containment, folds, relationships), c4Views.ts (one diagram per level + scope),
-│   │   │                      # c4Layout.ts (ELK adapter, lazy), c4Level.ts, useC4Model.ts (shared hook + layout query)
+│   │   │                      # c4Layout.ts (ELK adapter, lazy), c4Level.ts, useC4Model.ts (shared hook, useC4Overlay,
+│   │   │                      # layout query), c4Diff.ts (a changeset's C4 diff + union view)
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
@@ -257,9 +261,32 @@ For local dev use `dr visualize --no-auth`.
   `uiStore.c4Level` / `c4Scope` / `c4SelectedId` (not persisted), `showC4` (a navigation: bumps `navSeq`, so the
   router pushes) and `selectC4` (replaces). URL: `?level=` / `?scope=` / `?node=`; in this section `node` is a C4
   element id, and the router returns early so it never reaches the Model selection. DrBot's context names the
-  diagram and the selected box's model elements. Not built yet: the changeset overlay, Deployment and Dynamic
-  diagrams, export. Known model gaps it exposes: no ownership (which system an element belongs to) and no
-  container membership in the spec.
+  diagram and the selected box's model elements. Known model gaps it exposes: no ownership (which system an
+  element belongs to) and no container membership in the spec. Not built yet: Deployment and Dynamic diagrams,
+  export, plan-vs-as-built comparison.
+  **Changeset overlay** (slice 2): `?changeset=` ⇄ `uiStore.c4ChangesetId` (not persisted; separate from the
+  Changesets view's `changesetId`), set by the header's `C4ChangesetPicker` (staged, then applied; testid
+  `c4-changeset-picker`), `showC4Overlay` (a navigation; keeps level, scope, selection) or the Changesets view's
+  "Open in Architecture" (`showC4(level, scope, { changesetId })`). `data/modelOverlay.ts` (`overlayModel`) nets the
+  changes and applies a STAGED changeset forward or REVERTS an applied one (it can't restore links a delete took
+  at commit: the changeset doesn't record them, and the bar says so); `data/c4/c4Diff.ts` (`diffC4`) diffs the two
+  C4 models, matching elements by their sources, into UNION ids (after id, else the removed element's base id,
+  `ghost:` on a collision) with a status per box (added / removed / moved / changed / parts-changed), per arrow
+  (added / removed / relabelled / relinked), a roll-up per ancestor, and the changes no diagram shows (`unshown`,
+  `unresolved`, `netted`, counted, never dropped); `unionC4View` is the diagram drawn (after + ghosts).
+  `useC4Overlay(changesetId)` (in `useC4Model.ts`, takes the id so `data/` never reads the store) caches it per
+  model payload, spec and changeset payload; the layout query key adds the changeset id + revision. `C4Diagram`'s
+  `overlay` prop: a ring in the op's `ui/opStyles.ts` outline (colour AND line style) clear of the selection
+  outline, a text chip with a glyph (`ui/c4Marks.ts`: + added, − removed, → moved from X, ~ changed), a "N
+  changes inside" chip (`rollUpLabel`: the changeset's changes below the box), ghosts (`c4-card--ghost`: faded,
+  dotted, never drillable), arrows stroked in the op colour with their own dash pattern and a glyph on the label;
+  the status is in every card's accessible name and in the hidden arrow list. `ui/C4ChangesetBar.tsx` under the
+  breadcrumb: name, purpose, "staged, shown applied" / "applied, shown reverted", `DriftBadge`, tally, legend,
+  what the diagrams leave out, Review in Changesets, Clear. The drawer's "In this changeset" lists the changes
+  behind the box (this box / inside it / its arrows), each `#seq` opening it in the Changesets review
+  (`selectChangeset` + `selectChange`); a staged changeset's new box lists its model elements without links. A
+  selection the drawn diagram doesn't hold is dropped once the overlay has loaded. DrBot's context names the
+  overlaid changeset, how it is drawn and the selected box's status.
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
   section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
   react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
@@ -577,7 +604,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~990 tests)
+npm test            # Vitest: unit + integration + component (~1040 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -618,12 +645,12 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~990 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~1040 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **72 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **78 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr visualize` on a dedicated port — shell, model/schema/changesets/architecture views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.

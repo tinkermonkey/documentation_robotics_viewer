@@ -234,3 +234,53 @@ describe('ChangesetCanvas — a changeset that fails to load', () => {
     expect(screen.queryByText('loading changeset…')).not.toBeInTheDocument();
   });
 });
+
+describe('ChangesetCanvas — Open in Architecture', () => {
+  /** Serve the fixture detail with another status / change list. */
+  function serveDetail(overrides: Record<string, unknown>) {
+    mswServer.use(
+      http.get('*/api/changesets/:id', ({ params }) =>
+        HttpResponse.json({ ...changesetDetail, id: params.id, ...overrides }),
+      ),
+    );
+  }
+
+  it('opens an applied changeset on the Context diagram, as the overlay (not the open changeset)', async () => {
+    renderCanvas();
+    const button = await screen.findByTestId('changeset-open-architecture');
+    expect(button).toHaveAttribute('title', expect.stringContaining('reverted'));
+    const before = useUiStore.getState().navSeq;
+    await userEvent.click(button);
+    expect(useUiStore.getState()).toMatchObject({
+      view: 'architecture',
+      c4Level: 'context',
+      c4Scope: null,
+      c4SelectedId: null,
+      c4ChangesetId: CHANGESET_ID,
+      changesetId: CHANGESET_ID,
+    });
+    expect(useUiStore.getState().navSeq).toBe(before + 1);
+  });
+
+  it('is offered for a staged changeset', async () => {
+    serveDetail({ status: 'staged' });
+    renderCanvas();
+    await waitFor(() => expect(screen.getByTestId('page-header-id-chip')).toHaveTextContent('staged'));
+    expect(screen.getByTestId('changeset-open-architecture')).toBeInTheDocument();
+  });
+
+  it('is not offered for a discarded changeset', async () => {
+    serveDetail({ status: 'discarded' });
+    renderCanvas();
+    await waitFor(() => expect(screen.getByTestId('page-header-id-chip')).toHaveTextContent('discarded'));
+    expect(screen.queryByTestId('changeset-open-architecture')).not.toBeInTheDocument();
+  });
+
+  it('is not offered for a staged changeset with no changes', async () => {
+    serveDetail({ status: 'staged', changes: [] });
+    renderCanvas();
+    await waitFor(() => expect(screen.getByTestId('page-header-id-chip')).toHaveTextContent('staged'));
+    await waitFor(() => expect(screen.getByTestId('page-header-actions')).toHaveTextContent('0 changes'));
+    expect(screen.queryByTestId('changeset-open-architecture')).not.toBeInTheDocument();
+  });
+});
