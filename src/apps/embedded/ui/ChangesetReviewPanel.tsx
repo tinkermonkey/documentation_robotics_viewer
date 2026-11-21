@@ -87,7 +87,6 @@ import {
 } from '../data/changesetReview';
 import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
 import { canDo } from '../data/changesetPurpose';
-import { driftBlocksCommit } from '../data/changesetDrift';
 import { DriftApplyNote } from './DriftNotice';
 
 /**
@@ -438,8 +437,6 @@ function SummaryCard({
   // The moves the server allows (a verification record: Discard only).
   const canApply = canDo(detail, 'commit');
   const canDiscard = canDo(detail, 'discard');
-  // The server reports drift that blocks a commit: Apply stays open, but says so before and in its dialog.
-  const driftWarns = canApply && driftBlocksCommit(detail.drift);
 
   // "Keep the other N": undecided changes, except blocked deletes (keeping
   // one deletes its links too, which wants its own look).
@@ -639,7 +636,7 @@ function SummaryCard({
         plan={model.apply}
         pairs={model.pairs}
         local={local}
-        driftWarning={driftWarns}
+        drift={canApply ? detail.drift : undefined}
       />
       <ConfirmDialog
         isOpen={confirming === 'discard'}
