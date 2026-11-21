@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.14.0] - 2026-11-21
+
+A new **Architecture** view draws the model as C4 diagrams (System Context, Containers and Components), and any
+changeset can be laid over them, so a proposed change reads as boxes and arrows added, removed or changed before
+Apply. Drift follows the dr CLI 0.7.0 contract: a drifted plan lands over its overlaps instead of being refused.
+Works with dr CLI 0.6.0 and 0.7.0.
+
+### Added
+- **Architecture view: C4 diagrams** (#612, proof of concept): a fourth top-level view that reads the model as
+  C4 System Context, Container and Component diagrams. Drill from a container into its components and back by the
+  breadcrumb; select a box for its details and the model elements behind it, which open in the Model view. A line
+  under the diagram says how much of the model the rules placed. Laid out with ELK, loaded on first use.
+- **A changeset on the C4 diagrams** (#614): pick a changeset in the Architecture view, or use **Open in
+  Architecture** in the Changesets view. A staged changeset is drawn applied, an applied one reverted. Changed boxes
+  get a ring and a label (`+ added`, `− removed`, `→ moved from X`, `~ changed`), never colour alone; a box whose
+  parts changed says how many changes are inside; removed boxes and arrows are drawn back faded and dotted. A bar
+  names the changeset, tallies what it does, says what the diagrams leave out and clears the overlay; the details
+  drawer lists the changes behind a box, each opening in the Changesets review. The overlay is in the URL
+  (`?changeset=`).
+
+### Changed
+- **Drift that lands over its overlaps** (#613): with dr CLI 0.7.0 a drifted plan is no longer refused at commit.
+  The viewer flags it with an amber badge, lists what landing does to each overlap in the inspector and the Apply
+  confirmation, and says when what the base changed couldn't be checked. An older CLI that refuses a drifted
+  commit is still warned about as before.
+- The Changesets Impact tab shares its change outlines and its changeset netting with the C4 overlay; it looks
+  and behaves as before.
+
+### Chores
+- The API spec is synced with the dr CLI's and the client regenerated (#613).
+- The viewer's own model holds both C4 plans and their as-built records.
+
 ## [0.13.0] - 2026-11-20
 
 Finding your way around a model gets easier: search anything by name, browse a layer by node type in the nav
