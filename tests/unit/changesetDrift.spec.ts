@@ -27,6 +27,16 @@ describe('changesetDrift', () => {
     expect(toDrift({ blocksCommit: true })).toBeUndefined();
   });
 
+  it('reads a missing blocksCommit (deprecated) as false, but drops a non-boolean one', () => {
+    expect(toDriftSummary({ state: 'drifted', message: 'm' })).toEqual({ state: 'drifted', blocksCommit: false, message: 'm' });
+    expect(driftTone(toDriftSummary({ state: 'drifted', message: 'm' }))).toBe('overlaps');
+    expect(toDrift({ state: 'content-free', message: 'm' })?.blocksCommit).toBe(false);
+    expect(toDriftSummary({ state: 'drifted', blocksCommit: null, message: 'm' })).toBeUndefined();
+    expect(toDriftSummary({ state: 'drifted', blocksCommit: 'false', message: 'm' })).toBeUndefined();
+    // The fallback message takes no side on whether a commit is refused (it depends on the CLI).
+    expect(toDriftSummary({ state: 'drifted' })?.message).not.toMatch(/refuse/);
+  });
+
   it('reads no drift from an older dr CLI', () => {
     expect(toDriftSummary(undefined)).toBeUndefined();
     expect(toDrift(undefined)).toBeUndefined();

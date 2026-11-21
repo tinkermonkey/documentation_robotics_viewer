@@ -962,6 +962,7 @@ describe('review — drift before Apply', () => {
     await waitFor(() => expect(screen.getAllByTestId('drift-badge')).toHaveLength(2));
     for (const badge of screen.getAllByTestId('drift-badge')) {
       expect(badge).toHaveTextContent('Base changed since this was staged');
+      expect(badge).toHaveClass('chip--rose');
       expect(badge).toHaveAttribute('title', DRIFTED_MESSAGE);
     }
     expect(screen.getByTestId('drift-section')).toHaveTextContent(DRIFTED_MESSAGE);
@@ -1107,7 +1108,10 @@ describe('review — drift before Apply', () => {
     expect(note).toHaveTextContent('Apply lands it over what the base changed');
     expect(note).not.toHaveTextContent('refuse');
     expect(note).not.toHaveClass('drv-alert');
-    for (const badge of screen.getAllByTestId('drift-badge')) expect(badge).toHaveTextContent('Base changed since this was staged');
+    for (const badge of screen.getAllByTestId('drift-badge')) {
+      expect(badge).toHaveTextContent('Base changed since this was staged');
+      expect(badge).toHaveClass('chip--amber');
+    }
     // The inspector: each overlap with what landing does about it; resolve is the agent's, not shown.
     const overlaps = screen.getByTestId('drift-overlaps');
     expect(overlaps).toHaveTextContent('Landing overwrites the edit the base made to it.');
@@ -1124,9 +1128,47 @@ describe('review — drift before Apply', () => {
     expect(warn).toHaveTextContent('Applying lands it all the same');
     expect(warn).toHaveTextContent('Landing overwrites the edit the base made to it.');
     expect(warn).not.toHaveTextContent('refuse');
+    // Only the lead is announced; the uncapped list is a plain note.
+    const lead = within(warn).getByRole('alert');
+    expect(lead).toHaveTextContent('Applying lands it all the same');
+    expect(lead).not.toHaveTextContent('Landing overwrites');
+    expect(within(warn).getByRole('note', { name: 'What landing does' })).toHaveTextContent('Landing overwrites');
     await user.click(within(confirm).getByTestId('apply-confirm-button'));
     await waitFor(() => expect(server.commits).toHaveLength(1));
     expect(screen.queryByTestId('changeset-action-error')).not.toBeInTheDocument();
+  });
+
+  it('on a newer dr CLI, words a drifted plan with no listed overlaps differently and shows what was not checked', async () => {
+    const message = 'This changeset has no base index, so what the base changed under it cannot be listed.';
+    serve({
+      ...PLAN,
+      review: keepAll(),
+      drift: {
+        state: 'drifted',
+        message,
+        baseIndex: 'not-recorded',
+        warnings: ['No base index was recorded when this was staged.'],
+        notChecked: { elements: [], relationships: 3, sentence: '3 staged link changes were not checked against the base.' },
+      },
+    });
+    const user = userEvent.setup();
+    renderReview();
+    const note = await screen.findByTestId('drift-apply-note');
+    expect(note).toHaveTextContent("couldn’t be listed");
+    expect(note).not.toHaveTextContent('each overlap');
+    const section = screen.getByTestId('drift-section');
+    expect(section).toHaveTextContent('3 staged link changes were not checked against the base.');
+    expect(section).toHaveTextContent('No base index was recorded when this was staged.');
+    expect(screen.queryByTestId('drift-overlaps')).not.toBeInTheDocument();
+    const apply = screen.getByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    await user.click(apply);
+    const warn = within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-drift');
+    expect(within(warn).getByRole('alert')).toHaveTextContent("what the base changed under it couldn’t be listed");
+    expect(within(warn).getByRole('alert')).not.toHaveTextContent('over what the base changed.');
+    const details = within(warn).getByRole('note', { name: 'What landing does' });
+    expect(details).toHaveTextContent('3 staged link changes were not checked');
+    expect(details).toHaveTextContent('No base index was recorded when this was staged.');
   });
 
   it('keeps Apply and the 409 backstop on an older dr CLI without drift', async () => {

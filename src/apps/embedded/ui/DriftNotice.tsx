@@ -32,6 +32,8 @@ import {
   DRIFT_BADGE_LABEL,
   DRIFT_WAY_FORWARD,
   DRIFT_OVERLAPS_APPLY,
+  DRIFT_UNLISTED_APPLY,
+  hasOverlaps,
   overlapReasonLabel,
   baseChangeCountsLabel,
   baseChangesByLayer,
@@ -65,7 +67,8 @@ export function DriftApplyNote({ drift }: { drift: ChangesetDriftSummary | undef
   if (tone === 'overlaps') {
     return (
       <div role="status" className="drv-note" data-testid="drift-apply-note">
-        <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message} {DRIFT_OVERLAPS_APPLY}
+        <strong>{DRIFT_BADGE_LABEL}.</strong> {drift!.message}{' '}
+        {hasOverlaps(drift as ChangesetDrift) ? DRIFT_OVERLAPS_APPLY : DRIFT_UNLISTED_APPLY}
       </div>
     );
   }
@@ -94,11 +97,6 @@ function SectionLabel({ children }: { children: string }) {
       {children}
     </span>
   );
-}
-
-function hasOverlaps(drift: ChangesetDrift): boolean {
-  const o = drift.overlapping;
-  return !!o && o.elements.length + o.relationships.length > 0;
 }
 
 /** What landing does about an overlap, under its reason (a newer dr CLI sends it). */
@@ -160,7 +158,7 @@ export function DriftOverlapList({ drift }: { drift: ChangesetDrift | undefined 
 }
 
 /** What couldn't be checked for overlaps, when there are no overlaps to list it under. */
-function NotChecked({ drift }: { drift: ChangesetDrift }) {
+export function DriftNotChecked({ drift }: { drift: ChangesetDrift }) {
   if (!drift.notChecked || hasOverlaps(drift)) return null;
   return (
     <p className="drv-muted" style={{ margin: 0, fontSize: 11.5, lineHeight: 1.45 }} data-testid="drift-not-checked">
@@ -253,7 +251,7 @@ export function DriftSection({ drift, isRecord }: { drift: ChangesetDrift | unde
         {drift.message}
       </p>
       <DriftOverlapList drift={drift} />
-      <NotChecked drift={drift} />
+      <DriftNotChecked drift={drift} />
       <BaseChanges drift={drift} />
       {/* The server also puts the overlaps in a warning line; they're listed above already. */}
       {drift.warnings?.filter((w) => !(hasOverlaps(drift) && /overlaps/i.test(w))).map((w) => (

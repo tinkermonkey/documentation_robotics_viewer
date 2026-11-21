@@ -9,8 +9,8 @@ import { Button, Modal, StatTile } from '@tinkermonkey/heimdall-ui';
 import { layerLabel } from './domain';
 import { useUiStore } from './uiStore';
 import { LayerSwatch, plural } from './reviewParts';
-import { DriftOverlapList } from './DriftNotice';
-import { driftTone, type ChangesetDrift } from '../data/changesetDrift';
+import { DriftNotChecked, DriftOverlapList } from './DriftNotice';
+import { driftTone, hasOverlaps, type ChangesetDrift } from '../data/changesetDrift';
 import {
   countKinds,
   kindCountsLabel,
@@ -69,11 +69,24 @@ export function ApplyConfirm({ isOpen, onClose, onConfirm, name, plan, pairs, lo
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         {tone === 'overlaps' && (
-          <div role="alert" className="drv-note" data-testid="apply-confirm-drift">
-            <strong>The base changed since this was staged.</strong> Applying lands it all the same, over what the
-            base changed. {drift!.message}
-            <div style={{ marginTop: 8 }}>
+          <div className="drv-note" data-testid="apply-confirm-drift">
+            {/* Only the lead is announced: the overlap list is uncapped, so it sits in a plain note. */}
+            <p role="alert" style={{ margin: 0 }}>
+              <strong>The base changed since this was staged.</strong>{' '}
+              {hasOverlaps(drift)
+                ? 'Applying lands it all the same, over what the base changed.'
+                : 'Applying lands it all the same, but what the base changed under it couldn’t be listed.'}{' '}
+              {drift!.message}
+            </p>
+            <div role="note" aria-label="What landing does" style={{ marginTop: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
               <DriftOverlapList drift={drift} />
+              <DriftNotChecked drift={drift!} />
+              {!hasOverlaps(drift) &&
+                drift!.warnings?.map((w) => (
+                  <p key={w} className="drv-muted" style={{ margin: 0, fontSize: 11.5, lineHeight: 1.45 }}>
+                    {w}
+                  </p>
+                ))}
             </div>
           </div>
         )}

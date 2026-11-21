@@ -112,20 +112,21 @@ function relationships(v: unknown): BaseRelationship[] {
 
 /**
  * The drift summary a list entry carries, when it is well formed: a known
- * state, a boolean `blocksCommit`. A missing message gets a plain one, never a
+ * state, a boolean `blocksCommit` (deprecated: a missing one reads as false). A missing message gets a plain one, never a
  * crash. Undefined for an older dr CLI (no `drift`) or a malformed one.
  */
 export function toDriftSummary(v: unknown): ChangesetDriftSummary | undefined {
   if (!isObject(v)) return undefined;
   const state = oneOf(v.state, DRIFT_STATES);
-  if (!state || typeof v.blocksCommit !== 'boolean') return undefined;
-  return { state, blocksCommit: v.blocksCommit, message: str(v.message) ?? FALLBACK_MESSAGE[state] };
+  // `blocksCommit` is deprecated (a newer CLI may stop sending it): missing reads as false, a non-boolean is malformed.
+  if (!state || (v.blocksCommit !== undefined && typeof v.blocksCommit !== 'boolean')) return undefined;
+  return { state, blocksCommit: v.blocksCommit === true, message: str(v.message) ?? FALLBACK_MESSAGE[state] };
 }
 
 const FALLBACK_MESSAGE: Record<DriftState, string> = {
   none: 'The base model has not changed since this changeset was created.',
   'content-free': 'The base model changed, but nothing this changeset was staged against did.',
-  drifted: 'The base model changed since this changeset was created, so a commit is refused for drift.',
+  drifted: 'The base model changed since this changeset was created, under what it stages.',
   'not-applicable': 'Base drift does not apply to this changeset.',
   unknown: 'Drift could not be checked.',
 };
@@ -282,6 +283,20 @@ export const DRIFT_WAY_FORWARD =
 export const DRIFT_OVERLAPS_APPLY =
   'Apply lands it over what the base changed: see what that does to each overlap under Base drift in the ' +
   'inspector. To revise it first instead, ask DrBot to restage it against the current model.';
+
+/**
+ * Before Apply, for a drifted plan the server lists no overlaps for (it has no
+ * base index to tell, so what the base changed under it can't be listed).
+ */
+export const DRIFT_UNLISTED_APPLY =
+  'Apply lands it all the same, but what the base changed under it couldn’t be listed. To be sure first, ask ' +
+  'DrBot to restage it against the current model.';
+
+/** Whether the drift lists any overlap (a drifted plan with no base index lists none). */
+export function hasOverlaps(drift: ChangesetDrift | undefined): boolean {
+  const o = drift?.overlapping;
+  return !!o && o.elements.length + o.relationships.length > 0;
+}
 
 /** Element changes the base made, as one line ("2 added · 1 removed · 3 changed"). */
 export function baseChangeCountsLabel(changes: DriftBaseChanges): string {
