@@ -59,6 +59,16 @@ export interface C4View {
   trail: C4Element[];
   /** Outside elements left off a Component diagram by `OUTSIDE_CAP`. */
   hiddenOutside: number;
+  /** On a Component diagram: each linked outside element and the links it has into the scope (its rank). */
+  outsideDegree?: ReadonlyMap<string, number>;
+}
+
+export interface C4ViewOptions {
+  /**
+   * Rank a Component diagram's outside elements by these link counts instead of the view's own, so two
+   * views of the same scope (a changeset's before and after) leave the same outsiders off.
+   */
+  outsideDegree?: ReadonlyMap<string, number>;
 }
 
 /** The level a scope id stands for (null: Context; the system: Container). */
@@ -106,7 +116,12 @@ const toViewElement = (model: C4Model, element: C4Element, inScope: boolean): C4
   return { id: element.id, element, inScope, drillable: childCount > 0, childCount };
 };
 
-export function buildC4View(model: C4Model, level: C4Level, scopeId: string | null = null): C4View {
+export function buildC4View(
+  model: C4Model,
+  level: C4Level,
+  scopeId: string | null = null,
+  options: C4ViewOptions = {},
+): C4View {
   const resolved = resolveScope(model, level, scopeId);
   const actualLevel = levelOfScope(resolved);
   const scope = resolved ? (model.byId.get(resolved) ?? null) : null;
@@ -147,8 +162,9 @@ export function buildC4View(model: C4Model, level: C4Level, scopeId: string | nu
   let outsideIds: string[];
   let hiddenOutside = 0;
   if (actualLevel === 'component') {
-    const ranked = [...degree.keys()].sort(
-      (a, b) => (degree.get(b) ?? 0) - (degree.get(a) ?? 0) || a.localeCompare(b),
+    const rank = options.outsideDegree ?? degree;
+    const ranked = [...rank.keys()].sort(
+      (a, b) => (rank.get(b) ?? 0) - (rank.get(a) ?? 0) || a.localeCompare(b),
     );
     outsideIds = ranked.slice(0, OUTSIDE_CAP);
     hiddenOutside = ranked.length - outsideIds.length;
@@ -191,7 +207,15 @@ export function buildC4View(model: C4Model, level: C4Level, scopeId: string | nu
         .filter((e): e is C4Element => !!e)
     : [];
 
-  return { level: actualLevel, scope, elements, relationships, trail, hiddenOutside };
+  return {
+    level: actualLevel,
+    scope,
+    elements,
+    relationships,
+    trail,
+    hiddenOutside,
+    ...(actualLevel === 'component' ? { outsideDegree: degree } : {}),
+  };
 }
 
 /** A stable key for a view's content: same key, same drawing. */

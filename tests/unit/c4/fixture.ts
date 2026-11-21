@@ -6,6 +6,7 @@
  */
 import type { ModelDerived, ModelLink, ModelNode } from '@/apps/embedded/data/useModel';
 import { dottedId } from '@/apps/embedded/data/modelGraph';
+import type { ChangeRecord } from '@/apps/embedded/data/changesets';
 
 let seq = 0;
 
@@ -114,4 +115,46 @@ export function sampleModel() {
       feature, constraint, operation, pathItem, test, heimdall, vite, orphan, schema, property,
     },
   };
+}
+
+// ─── Changes over the sample model (for the overlay and the C4 diff) ────────
+
+
+const asRecord = (n: ModelNode): Record<string, unknown> => ({ ...n, path: dottedId(n) });
+const endOf = (end: ModelNode | string) => (typeof end === 'string' ? end : dottedId(end));
+
+/** A staged element add; the element gets the UUID `new:<name>`. */
+export function addElement(type: string, name: string, attributes: Record<string, unknown> = {}, sequenceNumber?: number): ChangeRecord {
+  const [layer_id, short] = type.split('.');
+  const after = { id: `new:${name}`, type: short, layer_id, name, attributes, description: '' };
+  return { type: 'add', elementId: `${layer_id}.${short}.${dottedId(after as ModelNode).split('.').pop()}`, layerName: layer_id, after, sequenceNumber };
+}
+
+/** An update of `target` with `patch` merged into it. */
+export function updateElement(target: ModelNode, patch: Partial<ModelNode>, sequenceNumber?: number): ChangeRecord {
+  return { type: 'update', elementId: dottedId(target), layerName: target.layer_id, before: asRecord(target), after: { ...asRecord(target), ...patch }, sequenceNumber };
+}
+
+export function deleteElement(target: ModelNode, sequenceNumber?: number): ChangeRecord {
+  return { type: 'delete', elementId: dottedId(target), layerName: target.layer_id, before: asRecord(target), after: null, sequenceNumber };
+}
+
+function relationshipChange(op: 'add' | 'delete', source: ModelNode | string, predicate: string, target: ModelNode | string, sequenceNumber?: number): ChangeRecord {
+  const rel = { source: endOf(source), target: endOf(target), predicate };
+  return {
+    type: `relationship-${op}`,
+    elementId: `${rel.source}::${predicate}::${rel.target}`,
+    ...(op === 'add' ? { after: rel } : { before: rel }),
+    sequenceNumber,
+  };
+}
+
+export const addRelationship = (source: ModelNode | string, predicate: string, target: ModelNode | string, sequenceNumber?: number) =>
+  relationshipChange('add', source, predicate, target, sequenceNumber);
+export const deleteRelationship = (source: ModelNode | string, predicate: string, target: ModelNode | string, sequenceNumber?: number) =>
+  relationshipChange('delete', source, predicate, target, sequenceNumber);
+
+/** Numbers changes 1, 2, 3… in the order given. */
+export function numbered(changes: ChangeRecord[]): ChangeRecord[] {
+  return changes.map((c, i) => ({ ...c, sequenceNumber: i + 1 }));
 }

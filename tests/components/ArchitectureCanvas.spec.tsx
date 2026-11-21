@@ -37,7 +37,9 @@ import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { buildC4Model, C4_SYSTEM_ID } from '@/apps/embedded/data/c4/c4Model';
 import { buildC4View, defaultComponentScope } from '@/apps/embedded/data/c4/c4Views';
 import type { ModelPayload } from '@/apps/embedded/data/useModel';
+import { http, HttpResponse } from 'msw';
 import { renderWithProviders } from '../helpers/renderWithProviders';
+import { mswServer } from '../helpers/mswServer';
 import { derive } from '../unit/c4/fixture';
 import modelFixture from '../fixtures/model.json';
 
@@ -136,5 +138,78 @@ describe('ArchitectureCanvas', () => {
     act(() => useUiStore.getState().selectC4(firstContainer.id));
     fireEvent.click(await screen.findByTestId('c4-details-close'));
     expect(useUiStore.getState().c4SelectedId).toBeNull();
+  });
+
+  describe('Changeset picker', () => {
+    /** A changeset list with staged and applied changesets, newest first by created. */
+    function serveChangesets() {
+      const entry = (name: string, status: string, created: string, changes = 3, purpose?: string) => ({
+        name,
+        status,
+        created,
+        changes_count: changes,
+        ...(purpose ? { purpose } : {}),
+      });
+      mswServer.use(
+        http.get('*/api/changesets', () =>
+          HttpResponse.json({
+            version: '1',
+            changesets: {
+              'cs-applied-new': entry('applied-newest', 'committed', '2026-11-20T00:00:00Z', 5, 'plan'),
+              'cs-staged-old': entry('staged-older', 'staged', '2026-11-01T00:00:00Z', 2, 'chat'),
+              'cs-staged-new': entry('staged-newer', 'staged', '2026-11-19T00:00:00Z', 4, 'plan'),
+              'cs-discarded': entry('thrown-away', 'discarded', '2026-11-18T00:00:00Z'),
+              'cs-empty': entry('nothing-in-it', 'staged', '2026-11-17T00:00:00Z', 0),
+            },
+          }),
+        ),
+      );
+    }
+
+    async function openPicker() {
+      const picker = await screen.findByTestId('c4-changeset-picker');
+      fireEvent.click(within(picker).getByRole('button'));
+      return screen.findByRole('listbox');
+    }
+
+    it('lists staged changesets before applied ones, with None first, and leaves out discarded and empty ones', async () => {
+      serveChangesets();
+      await renderAt('context');
+      const listbox = await openPicker();
+      await waitFor(() => expect(within(listbox).getAllByRole('option')).toHaveLength(4));
+      const options = within(listbox).getAllByRole('option');
+      expect(options.map((o) => o.textContent)).toEqual([
+        'No changeset',
+        expect.stringContaining('staged-newer'),
+        expect.stringContaining('staged-older'),
+        expect.stringContaining('applied-newest'),
+      ]);
+      expect(options[1]).toHaveTextContent('plan · staged, shown applied');
+      expect(options[3]).toHaveTextContent('plan · applied, shown reverted');
+      expect(listbox).not.toHaveTextContent('thrown-away');
+      expect(listbox).not.toHaveTextContent('nothing-in-it');
+    });
+
+    it('selecting a changeset overlays it (a navigation) and keeps the diagram; None clears it', async () => {
+      serveChangesets();
+      await renderAt('container');
+      const before = useUiStore.getState().navSeq;
+      let listbox = await openPicker();
+      fireEvent.click(await within(listbox).findByRole('option', { name: /staged-older/ }));
+      expect(useUiStore.getState()).toMatchObject({ c4ChangesetId: 'cs-staged-old', c4Level: 'container', changesetId: null });
+      expect(useUiStore.getState().navSeq).toBe(before + 1);
+
+      listbox = await openPicker();
+      fireEvent.click(within(listbox).getByRole('option', { name: /No changeset/ }));
+      expect(useUiStore.getState().c4ChangesetId).toBeNull();
+    });
+
+    it('still shows a ?changeset= the list does not hold, by its id', async () => {
+      serveChangesets();
+      await renderAt('context');
+      act(() => useUiStore.getState().restoreC4('context', null, null, 'cs-unknown'));
+      const listbox = await openPicker();
+      expect(await within(listbox).findByRole('option', { name: /cs-unknown/ })).toHaveAttribute('aria-selected', 'true');
+    });
   });
 });

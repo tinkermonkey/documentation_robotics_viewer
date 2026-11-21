@@ -176,3 +176,23 @@ ux.subview.c4-diagram:
     created_at: 2026-11-20T15:40:02.906Z
     updated_at: 2026-11-20T15:40:02.906Z
     version: 1
+ux.subview.c4-changeset-bar:
+  id: e2568d76-6a12-4221-92f6-a4d07b77b8df
+  path: ux.subview.c4-changeset-bar
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: C4 Changeset Bar
+  description: "The Architecture view's changeset overlay bar under the
+    breadcrumb: a changeset picker (staged first, then applied), its name and
+    purpose, a drift badge when commit is blocked, a tally, the legend and
+    Clear."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/C4ChangesetBar.tsx
+        symbol: C4ChangesetBar
+  metadata:
+    created_at: 2026-11-21T01:28:54.108Z
+    updated_at: 2026-11-21T01:28:54.108Z
+    version: 1

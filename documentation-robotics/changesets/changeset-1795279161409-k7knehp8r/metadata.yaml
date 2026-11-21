@@ -1,0 +1,16 @@
+id: changeset-1795279161409-k7knehp8r
+name: extract-02ab31d..59209a4
+description: As-built extraction of the code at 59209a4, files changed since
+  main. Staged by codebase_extract.
+created: 2026-11-21T16:39:21.420Z
+modified: 2026-11-21T16:42:09.842Z
+status: committed
+baseSnapshot: v2:sha256:599de6f56fecb3d94aa415eb79c53c15b1c2f17b7f35236ff2a1deb37b41b0c7
+origin:
+  kind: extract
+purpose: reconcile
+stats:
+  additions: 120
+  modifications: 4
+  deletions: 0
+lastSequence: 123

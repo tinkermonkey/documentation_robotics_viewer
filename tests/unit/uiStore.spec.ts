@@ -16,6 +16,7 @@ function reset() {
       selectedEdgeId: null,
       highlightedEdgeId: null,
       changesetId: null,
+      c4ChangesetId: null,
       canvasDark: false,
       chatOpen: false,
       chatPanelSize: { width: 440, height: 640 },
@@ -833,5 +834,77 @@ describe('Architecture view state (C4 level, scope, selected box)', () => {
     expect(stored.state).not.toHaveProperty('c4Level');
     expect(stored.state).not.toHaveProperty('c4Scope');
     expect(stored.state).not.toHaveProperty('c4SelectedId');
+  });
+});
+
+describe('Architecture view: the overlaid changeset (c4ChangesetId)', () => {
+  it('starts with no changeset overlaid', () => {
+    expect(INITIAL.c4ChangesetId).toBeNull();
+  });
+
+  it('showC4Overlay is a navigation that keeps the level, scope and selected box', () => {
+    get().showC4('component', 'scope');
+    get().selectC4('box');
+    const before = get().navSeq;
+    get().showC4Overlay('cs-1');
+    expect(get()).toMatchObject({
+      view: 'architecture',
+      c4ChangesetId: 'cs-1',
+      c4Level: 'component',
+      c4Scope: 'scope',
+      c4SelectedId: 'box',
+    });
+    expect(get().navSeq).toBe(before + 1);
+    get().showC4Overlay(null);
+    expect(get().c4ChangesetId).toBeNull();
+    expect(get().navSeq).toBe(before + 2);
+  });
+
+  it('showC4Overlay with the changeset already shown is a no-op (no history entry)', () => {
+    get().showC4Overlay('cs-1');
+    const before = get().navSeq;
+    get().showC4Overlay('cs-1');
+    expect(get().navSeq).toBe(before);
+  });
+
+  it("never touches the Changesets view's own changesetId", () => {
+    get().selectChangeset('cs-open');
+    get().showC4Overlay('cs-1');
+    expect(get()).toMatchObject({ changesetId: 'cs-open', c4ChangesetId: 'cs-1' });
+    get().showC4Overlay(null);
+    expect(get().changesetId).toBe('cs-open');
+  });
+
+  it('showC4 keeps the overlay across levels, and sets view + overlay in one step when asked', () => {
+    get().showC4Overlay('cs-1');
+    get().showC4('container');
+    expect(get().c4ChangesetId).toBe('cs-1');
+
+    get().setView('changesets');
+    const before = get().navSeq;
+    get().showC4('context', null, { changesetId: 'cs-2' });
+    expect(get()).toMatchObject({ view: 'architecture', c4Level: 'context', c4ChangesetId: 'cs-2', c4SelectedId: null });
+    expect(get().navSeq).toBe(before + 1);
+
+    get().showC4('context', null, { changesetId: null });
+    expect(get().c4ChangesetId).toBeNull();
+  });
+
+  it('restoreC4 sets the overlay from the URL without a navigation, and leaves it when not given', () => {
+    const before = get().navSeq;
+    get().restoreC4('context', null, null, 'cs-1');
+    expect(get().c4ChangesetId).toBe('cs-1');
+    get().restoreC4('container', null, null);
+    expect(get().c4ChangesetId).toBe('cs-1');
+    get().restoreC4('container', null, null, null);
+    expect(get().c4ChangesetId).toBeNull();
+    expect(get().navSeq).toBe(before);
+  });
+
+  it('does not persist the overlaid changeset (the URL owns it)', () => {
+    get().showC4Overlay('cs-1');
+    get().toggleCanvasDark();
+    const stored = JSON.parse(localStorage.getItem(PERSIST_KEY) ?? '{}');
+    expect(stored.state).not.toHaveProperty('c4ChangesetId');
   });
 });

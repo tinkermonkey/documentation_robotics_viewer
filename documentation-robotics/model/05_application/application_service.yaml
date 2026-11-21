@@ -1072,8 +1072,11 @@ application.applicationservice.use-c4model:
   name: useC4Model
   description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
     per /api/model payload and spec catalog and shared by the Architecture
-    canvas, the nav tree and DrBot's context; and useC4Layout, one view laid out
-    through a React Query keyed on the view's content."
+    canvas, the nav tree and DrBot's context; useC4Overlay, a changeset's C4
+    Diff (the model with the changeset applied or reverted, rebuilt as a C4
+    model and diffed against the base), cached per payload and changeset
+    revision; and useC4Layout, one view laid out through a React Query keyed on
+    the view's content and overlay."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1101,4 +1104,53 @@ application.applicationservice.use-c4model:
   metadata:
     created_at: 2026-11-20T16:45:15.400Z
     updated_at: 2026-11-20T16:45:15.400Z
+    version: 1
+application.applicationservice.changeset-model-overlay:
+  id: 5290c381-1718-46f9-8547-9af8d6e8cbaa
+  path: application.applicationservice.changeset-model-overlay
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Changeset Model Overlay
+  description: "`data/modelOverlay.ts`: the model with a changeset applied
+    (staged) or reversed (applied), netted in change order, as a `ModelDerived`.
+    Extracted from `changesetImpact.ts`, which then uses it too; changes that
+    don't resolve against the model are counted, not dropped."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/modelOverlay.ts
+        symbol: overlayModel
+  metadata:
+    created_at: 2026-11-21T01:28:54.100Z
+    updated_at: 2026-11-21T01:28:54.100Z
+    version: 1
+application.applicationservice.c4-changeset-diff:
+  id: 736617eb-c972-4d45-9d64-8276e10dbe9f
+  path: application.applicationservice.c4-changeset-diff
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Changeset Diff
+  description: "`data/c4/c4Diff.ts`: `diffC4(base, after, trace)` matches C4
+    elements across the two models by the model elements behind them (UUID, then
+    dotted id), so a rename reads as changed; it gives each box a status (added,
+    removed, moved, changed, parts changed) and each arrow one (added, removed,
+    relabelled, or relinked: same label, different model links), with the change
+    sequences behind each, roll-ups of changes below a box, and the changes no
+    diagram shows (counted, never dropped). Ids are union ids (the after id,
+    else a removed element's base id). `unionC4View` is the diagram drawn: the
+    after view plus removed boxes and arrows as ghosts."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/c4/c4Diff.ts
+        symbol: diffC4
+  metadata:
+    created_at: 2026-11-21T01:28:54.103Z
+    updated_at: 2026-11-21T01:28:54.103Z
     version: 1

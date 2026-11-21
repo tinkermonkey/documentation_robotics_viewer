@@ -135,10 +135,11 @@ application.applicationcomponent.changeset-canvas:
     plan it verifies and what extraction read; a plan names its verification
     records), then the changeset's description as markdown (a long one folded
     behind Show more, so the change list stays near the top), the op-coded
-    change list and a Changes / Impact switch. Its header carries the 'Base
-    changed since this was staged' badge when the base drift blocks a commit. A
-    changeset the server no longer has (a discard deletes it) shows as gone,
-    with a way back to the inbox."
+    change list and a Changes / Impact switch, beside which \"Open in
+    Architecture\" shows the changeset on the C4 diagrams. Its header carries
+    the 'Base changed since this was staged' badge when the base drift blocks a
+    commit. A changeset the server no longer has (a discard deletes it) shows as
+    gone, with a way back to the inbox."
   attributes:
     type: internal
   source_reference:
@@ -885,12 +886,16 @@ application.applicationcomponent.architecture-canvas:
   name: Architecture Canvas
   description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
     header with the level control (Context · Containers · Components) and a
-    scope breadcrumb, the C4 Diagram below it, and a details drawer for the
+    scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
+    (`?changeset=`), the C4 Diagram below it, and a details drawer for the
     selected box listing the model elements behind it, each a link into the
-    Model view. Reads the model through useModel and the spec through useSpec;
-    level, scope and selection live in the UI store and the URL. Shows a plain
-    message when the model yields no C4 elements, and how many model elements
-    the rules left out."
+    Model view, and with an overlay an \"In this changeset\" section: each
+    change behind the box with its op, before and after, and a link to it in the
+    Changesets view. Reads the model through useModel and the spec through
+    useSpec; level, scope, selection and the overlaid changeset live in the UI
+    store and the URL. Shows a plain message when the model yields no C4
+    elements, and how many model elements (and overlaid changes) the rules left
+    out."
   attributes:
     type: internal
   source_reference:
@@ -915,11 +920,15 @@ application.applicationcomponent.c4-diagram:
     GraphCanvas); a dashed boundary rectangle titled with the scope; a card per
     element (name, kind and technology, one line of description; a person and a
     data store get their own shape); right-angle edges with a label of the
-    predicates and a count. Colours from canvas tokens, so it flips with the
-    dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter
-    drills into a card that has parts, Escape clears the selection; the arrows
-    are also listed as text. Proof of concept for boundary rendering and a C4
-    card in Heimdall."
+    predicates and a count. With a C4 Diff, cards and arrows carry op marks in
+    the Impact tab's outline styles (ui/opStyles.ts) plus a text chip and the
+    status in their accessible name, never colour alone; removed boxes and
+    arrows are drawn as ghosts; a box whose parts changed shows a count. Colours
+    from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop
+    with arrow keys between cards, Enter drills into a card that has parts
+    (focus follows into the new diagram), Escape clears the selection; the
+    arrows, with their status, are also listed as text. Proof of concept for
+    boundary rendering, a C4 card and its status slot in Heimdall."
   attributes:
     type: internal
   source_reference:

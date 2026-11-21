@@ -36,8 +36,9 @@ import { useModel } from '../data/useModel';
 import { useChangesets } from '../data/useChangesets';
 import { buildModelIndex, dottedId, edgeMetadata } from '../data/modelGraph';
 import { buildChatContext, type ChatContextC4, type ChatContextElement } from '../data/chatContext';
-import { useC4Model } from '../data/c4/useC4Model';
+import { useC4Model, useC4Overlay } from '../data/c4/useC4Model';
 import { buildC4View } from '../data/c4/c4Views';
+import { elementStatusWords } from './c4Marks';
 import { toHeimdallMessages, type HeimdallChatRow } from './chatAdapter';
 
 const BASE_SUGGESTIONS = [
@@ -91,6 +92,10 @@ export function ChatPanel() {
   const index = useMemo(() => buildModelIndex(model), [model]);
   const { model: c4Model } = useC4Model();
   const c4SelectedId = useUiStore((s) => s.c4SelectedId);
+  const c4ChangesetId = useUiStore((s) => s.c4ChangesetId);
+  // With a changeset laid over the diagram, the boxes drawn (ghosts too) are the overlay's.
+  const c4Overlay = useC4Overlay(view === 'architecture' ? c4ChangesetId : null);
+  const c4Drawn = c4Overlay.overlay?.union ?? c4Model;
   const selectedNode =
     view === 'model' && selectedId ? index.byUuid.get(selectedId) : undefined;
   const selectedName = selectedNode?.name;
@@ -103,12 +108,12 @@ export function ChatPanel() {
       return cs ? cs.name : 'changesets';
     }
     if (view === 'architecture') {
-      return (c4SelectedId && c4Model.byId.get(c4SelectedId)?.name) || 'architecture';
+      return (c4SelectedId && c4Drawn.byId.get(c4SelectedId)?.name) || 'architecture';
     }
     if (selectedName) return selectedName;
     if (layerName) return `${layerName} layer`;
     return 'meta-model';
-  }, [view, changesets.list, changesetId, selectedName, layerName, c4SelectedId, c4Model]);
+  }, [view, changesets.list, changesetId, selectedName, layerName, c4SelectedId, c4Drawn]);
 
   // ─── contextual suggestions ───────────────────────────────────────────────
   const suggestions = useMemo(() => {
@@ -150,14 +155,35 @@ export function ChatPanel() {
     const cs = s.view === 'changesets' ? changesets.list.find((c) => c.id === s.changesetId) : undefined;
     let c4: ChatContextC4 | undefined;
     if (s.view === 'architecture') {
-      const c4View = buildC4View(c4Model, s.c4Level, s.c4Scope);
-      const selected = s.c4SelectedId ? c4Model.byId.get(s.c4SelectedId) : undefined;
+      const c4View = buildC4View(c4Drawn, s.c4Level, s.c4Scope);
+      const selected = s.c4SelectedId ? c4Drawn.byId.get(s.c4SelectedId) : undefined;
+      const { overlay, detail } = c4Overlay;
+      const csName = s.c4ChangesetId
+        ? (detail?.name ?? changesets.list.find((c) => c.id === s.c4ChangesetId)?.name ?? s.c4ChangesetId)
+        : undefined;
+      const status =
+        overlay && selected
+          ? elementStatusWords(
+              overlay.diff.elements.get(selected.id),
+              overlay.diff.rollUp.get(selected.id),
+              (id) => overlay.union.byId.get(id)?.name,
+            ).join(', ')
+          : '';
       c4 = {
         level: c4View.level,
         scopeName: c4View.scope?.name,
         selected: selected
           ? { name: selected.name, kind: selected.kind, refs: selected.sources.map((src) => src.ref) }
           : undefined,
+        changeset:
+          s.c4ChangesetId && csName
+            ? {
+                id: s.c4ChangesetId,
+                name: csName,
+                shown: overlay ? (overlay.mode === 'apply' ? 'applied' : 'reverted') : undefined,
+                selectedStatus: status || undefined,
+              }
+            : undefined,
       };
     }
     return buildChatContext({

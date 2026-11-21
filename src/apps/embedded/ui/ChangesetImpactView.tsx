@@ -57,6 +57,7 @@ import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
 import { useSpec } from '../data/useSpec';
 import { specTypeLabel } from '../data/typeLabel';
 import { useTypeName } from '../data/useTypeName';
+import { OP_OUTLINE, opOutlineCss, opStyles } from './opStyles';
 
 const FOLLOW_OPTIONS = FOLLOW_DEPTHS.map((d) => ({ value: d, label: followOptionLabel(d) }));
 const LABEL_OPTIONS = [
@@ -69,30 +70,9 @@ export const GROUP_THRESHOLD = 24;
 const TYPE_FACETS = 6;
 const MAX_MATCHES = 40;
 
-/** Outline per op: a colour token and a line style, so the op isn't colour alone. */
-export const OP_OUTLINE: Record<ImpactOp, { token: string; style: string; label: string }> = {
-  add: { token: '--status-emerald', style: 'solid', label: 'added' },
-  update: { token: '--status-cyan', style: 'dashed', label: 'modified' },
-  delete: { token: '--status-rose', style: 'dotted', label: 'deleted' },
-  relink: { token: '--status-violet', style: 'double', label: 'relationships changed' },
-};
-
-function cssId(id: string): string {
-  return typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(id) : id.replace(/["\\]/g, '\\$&');
-}
-
-/** Scoped outline rules, one per marked element. */
-export function opStyles(scope: string, opOf: ReadonlyMap<string, ImpactOp>): string {
-  const rules: string[] = [];
-  for (const [id, op] of opOf) {
-    const o = OP_OUTLINE[op];
-    const width = op === 'relink' ? 3 : 2;
-    rules.push(
-      `${scope} [data-node-id="${cssId(id)}"] .graph-lane-node{outline:${width}px ${o.style} rgb(var(${o.token}));outline-offset:2px}`,
-    );
-  }
-  return rules.join('\n');
-}
+// The op outlines live in ./opStyles (shared with the C4 overlay); re-exported
+// for the change inspector's neighbourhood.
+export { OP_OUTLINE, opStyles };
 
 function plural(n: number, word: string): string {
   return `${n} ${word}${n === 1 ? '' : 's'}`;
@@ -379,12 +359,11 @@ export function ChangesetImpactView({
             name={(v) => OP_OUTLINE[v as ImpactOp].label}
             onToggle={(v) => setFilter((f) => ({ ...f, ops: toggled(f.ops, v as ImpactOp) }))}
             swatch={(v) => {
-              const o = OP_OUTLINE[v as ImpactOp];
               return (
                 <span
                   aria-hidden="true"
                   className="drv-impact__swatch"
-                  style={{ outline: `${v === 'relink' ? 3 : 2}px ${o.style} rgb(var(${o.token}))` }}
+                  style={{ outline: opOutlineCss(v as ImpactOp) }}
                 />
               );
             }}
