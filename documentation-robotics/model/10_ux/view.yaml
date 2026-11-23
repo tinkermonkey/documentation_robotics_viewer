@@ -183,7 +183,10 @@ ux.view.architecture-view:
     diagram. Clicking a box selects it and opens its details; a box with parts
     drills into them. A changeset can be laid over the diagrams (`?changeset=`,
     from the C4 Changeset Bar's picker or the Changesets view): what it adds,
-    removes or changes is marked on the boxes and arrows."
+    removes or changes is marked on the boxes and arrows. A plan can be compared
+    with what was built (`?changeset=` + `?built=`, from the C4 Plan Comparison
+    Bar or a verification record in the Changesets view): each box and arrow
+    carries the plan verification's verdict."
   attributes:
     type: page
     title: Architecture

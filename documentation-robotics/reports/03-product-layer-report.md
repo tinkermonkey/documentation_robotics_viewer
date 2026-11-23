@@ -16,11 +16,11 @@ Product features, capabilities, personas, and milestones.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 30    |
-| Intra-Layer Relationships | 56    |
-| Inter-Layer Relationships | 77    |
-| Inbound Relationships     | 54    |
-| Outbound Relationships    | 23    |
+| Elements                  | 31    |
+| Intra-Layer Relationships | 59    |
+| Inter-Layer Relationships | 85    |
+| Inbound Relationships     | 59    |
+| Outbound Relationships    | 26    |
 
 **Cross-Layer References**:
 
@@ -29,97 +29,41 @@ Product features, capabilities, personas, and milestones.
 
 ## Intra-Layer Relationships
 
-```mermaid
-flowchart LR
-  subgraph product
-    product_feature_c4_architecture_diagrams["C4 Architecture Diagrams"]
-    product_feature_c4_changeset_overlay["C4 Changeset Overlay"]
-    product_feature_change_origin_badges["Change Origin Badges"]
-    product_feature_changeset_impact_tab["Changeset Impact Tab"]
-    product_feature_changeset_inbox["Changeset Inbox"]
-    product_feature_cross_layer_follow["Cross-Layer Follow"]
-    product_feature_dr_bot_chat_drawer["DrBot Chat Drawer"]
-    product_feature_element_annotations["Element Annotations"]
-    product_feature_model_graph_view["Model Graph View"]
-    product_feature_model_view_by_type["Model View by Type"]
-    product_feature_nav_tree_type_groups["Nav Tree Type Groups"]
-    product_feature_page_view["Page View"]
-    product_feature_per_change_review["Per-Change Review"]
-    product_feature_schema_graph_view["Schema Graph View"]
-    product_feature_tier1_mode_and_routing["Tier1 Mode And Routing"]
-    product_feature_tier1_spend_panel["Tier1 Spend Panel"]
-    product_feature_tier1_warming_progress["Tier1 Warming Progress"]
-    product_feature_topbar_search["Topbar Search"]
-    product_persona_architecture_reviewer["Architecture Reviewer"]
-    product_persona_model_author["Model Author"]
-    product_softwarecapability_changeset_review["Changeset Review"]
-    product_softwarecapability_model_annotation["Model Annotation"]
-    product_softwarecapability_model_chat["Model Chat"]
-    product_softwarecapability_model_visualization["Model Visualization"]
-    product_softwarecapability_schema_exploration["Schema Exploration"]
-    product_userworkflow_review_a_staged_changeset["Review a Staged Changeset"]
-    product_workflowstep_apply_the_kept_changes["Apply the Kept Changes"]
-    product_workflowstep_check_the_reach["Check the Reach"]
-    product_workflowstep_decide_each_change["Decide Each Change"]
-    product_workflowstep_pick_a_changeset_to_review["Pick a Changeset to Review"]
-    product_feature_c4_architecture_diagrams -->|realizes| product_softwarecapability_model_visualization
-    product_feature_c4_architecture_diagrams -->|serves| product_persona_architecture_reviewer
-    product_feature_c4_architecture_diagrams -->|serves| product_persona_model_author
-    product_feature_c4_changeset_overlay -->|realizes| product_softwarecapability_model_visualization
-    product_feature_c4_changeset_overlay -->|serves| product_persona_architecture_reviewer
-    product_feature_change_origin_badges -->|realizes| product_softwarecapability_changeset_review
-    product_feature_change_origin_badges -->|serves| product_persona_architecture_reviewer
-    product_feature_changeset_impact_tab -->|realizes| product_softwarecapability_changeset_review
-    product_feature_changeset_impact_tab -->|serves| product_persona_architecture_reviewer
-    product_feature_changeset_inbox -->|realizes| product_softwarecapability_changeset_review
-    product_feature_changeset_inbox -->|serves| product_persona_architecture_reviewer
-    product_feature_cross_layer_follow -->|realizes| product_softwarecapability_model_visualization
-    product_feature_cross_layer_follow -->|serves| product_persona_architecture_reviewer
-    product_feature_dr_bot_chat_drawer -->|realizes| product_softwarecapability_model_chat
-    product_feature_dr_bot_chat_drawer -->|serves| product_persona_model_author
-    product_feature_element_annotations -->|realizes| product_softwarecapability_model_annotation
-    product_feature_element_annotations -->|serves| product_persona_architecture_reviewer
-    product_feature_model_graph_view -->|realizes| product_softwarecapability_model_visualization
-    product_feature_model_graph_view -->|serves| product_persona_architecture_reviewer
-    product_feature_model_graph_view -->|serves| product_persona_model_author
-    product_feature_model_view_by_type -->|realizes| product_softwarecapability_model_visualization
-    product_feature_model_view_by_type -->|serves| product_persona_architecture_reviewer
-    product_feature_model_view_by_type -->|serves| product_persona_model_author
-    product_feature_nav_tree_type_groups -->|realizes| product_softwarecapability_model_visualization
-    product_feature_nav_tree_type_groups -->|serves| product_persona_architecture_reviewer
-    product_feature_nav_tree_type_groups -->|serves| product_persona_model_author
-    product_feature_page_view -->|realizes| product_softwarecapability_model_visualization
-    product_feature_page_view -->|serves| product_persona_architecture_reviewer
-    product_feature_per_change_review -->|realizes| product_softwarecapability_changeset_review
-    product_feature_per_change_review -->|serves| product_persona_architecture_reviewer
-    product_feature_schema_graph_view -->|realizes| product_softwarecapability_schema_exploration
-    product_feature_schema_graph_view -->|serves| product_persona_model_author
-    product_feature_tier1_mode_and_routing -->|depends-on| product_feature_tier1_spend_panel
-    product_feature_tier1_mode_and_routing -->|realizes| product_softwarecapability_changeset_review
-    product_feature_tier1_mode_and_routing -->|serves| product_persona_model_author
-    product_feature_tier1_spend_panel -->|realizes| product_softwarecapability_changeset_review
-    product_feature_tier1_spend_panel -->|serves| product_persona_model_author
-    product_feature_tier1_warming_progress -->|depends-on| product_feature_tier1_spend_panel
-    product_feature_tier1_warming_progress -->|realizes| product_softwarecapability_changeset_review
-    product_feature_tier1_warming_progress -->|serves| product_persona_model_author
-    product_feature_topbar_search -->|realizes| product_softwarecapability_model_visualization
-    product_feature_topbar_search -->|realizes| product_softwarecapability_schema_exploration
-    product_feature_topbar_search -->|serves| product_persona_architecture_reviewer
-    product_feature_topbar_search -->|serves| product_persona_model_author
-    product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_apply_the_kept_changes
-    product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_check_the_reach
-    product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_decide_each_change
-    product_userworkflow_review_a_staged_changeset -->|composes| product_workflowstep_pick_a_changeset_to_review
-    product_userworkflow_review_a_staged_changeset -->|serves| product_persona_architecture_reviewer
-    product_workflowstep_apply_the_kept_changes -->|uses| product_feature_per_change_review
-    product_workflowstep_check_the_reach -->|flows-to| product_workflowstep_apply_the_kept_changes
-    product_workflowstep_check_the_reach -->|uses| product_feature_changeset_impact_tab
-    product_workflowstep_decide_each_change -->|flows-to| product_workflowstep_check_the_reach
-    product_workflowstep_decide_each_change -->|uses| product_feature_per_change_review
-    product_workflowstep_pick_a_changeset_to_review -->|flows-to| product_workflowstep_decide_each_change
-    product_workflowstep_pick_a_changeset_to_review -->|uses| product_feature_changeset_inbox
-  end
-```
+*This layer has >30 elements. Summary table shown instead of diagram.*
+
+| Element                                           | Type                 | Relationships |
+| ------------------------------------------------- | -------------------- | ------------- |
+| `product.feature.c4-architecture-diagrams`        | `feature`            | 3             |
+| `product.feature.c4-changeset-overlay`            | `feature`            | 3             |
+| `product.feature.c4-plan-vs-as-built`             | `feature`            | 3             |
+| `product.feature.change-origin-badges`            | `feature`            | 2             |
+| `product.feature.changeset-impact-tab`            | `feature`            | 3             |
+| `product.feature.changeset-inbox`                 | `feature`            | 3             |
+| `product.feature.cross-layer-follow`              | `feature`            | 2             |
+| `product.feature.dr-bot-chat-drawer`              | `feature`            | 2             |
+| `product.feature.element-annotations`             | `feature`            | 2             |
+| `product.feature.model-graph-view`                | `feature`            | 3             |
+| `product.feature.model-view-by-type`              | `feature`            | 3             |
+| `product.feature.nav-tree-type-groups`            | `feature`            | 3             |
+| `product.feature.page-view`                       | `feature`            | 2             |
+| `product.feature.per-change-review`               | `feature`            | 4             |
+| `product.feature.schema-graph-view`               | `feature`            | 2             |
+| `product.feature.tier1-mode-and-routing`          | `feature`            | 3             |
+| `product.feature.tier1-spend-panel`               | `feature`            | 4             |
+| `product.feature.tier1-warming-progress`          | `feature`            | 3             |
+| `product.feature.topbar-search`                   | `feature`            | 4             |
+| `product.persona.architecture-reviewer`           | `persona`            | 15            |
+| `product.persona.model-author`                    | `persona`            | 10            |
+| `product.softwarecapability.changeset-review`     | `softwarecapability` | 7             |
+| `product.softwarecapability.model-annotation`     | `softwarecapability` | 1             |
+| `product.softwarecapability.model-chat`           | `softwarecapability` | 1             |
+| `product.softwarecapability.model-visualization`  | `softwarecapability` | 9             |
+| `product.softwarecapability.schema-exploration`   | `softwarecapability` | 2             |
+| `product.userworkflow.review-a-staged-changeset`  | `userworkflow`       | 5             |
+| `product.workflowstep.apply-the-kept-changes`     | `workflowstep`       | 3             |
+| `product.workflowstep.check-the-reach`            | `workflowstep`       | 4             |
+| `product.workflowstep.decide-each-change`         | `workflowstep`       | 4             |
+| `product.workflowstep.pick-a-changeset-to-review` | `workflowstep`       | 3             |
 
 ## Inter-Layer Dependencies
 
@@ -155,10 +99,12 @@ flowchart TB
 | `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-mode-and-routing`                           | `product`    | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-spend-panel`                                | `product`    | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-warming-progress`                           | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-changeset-verification`                                                                                            | `product.feature.c4-plan-vs-as-built`                              | `product`    | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                                | `product.feature.per-change-review`                                | `product`    | `exposes`    | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-changeset-diff`                                                                                    | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-layout`                                                                                    | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-model-transform`                                                                                   | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-plan-comparison`                                                                                   | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-view-scoping`                                                                                      | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.change-origin-helpers`                                                                                | `product.feature.change-origin-badges`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.changeset-impact-analysis`                                                                            | `product.feature.changeset-impact-tab`                             | `product`    | `realizes`   | many-to-many | medium   |
@@ -171,6 +117,7 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                                      | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.node-type-label`                                                                                      | `product.feature.nav-tree-type-groups`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                                    | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.plan-verification`                                                                                    | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                         | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                                 | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.type-bands`                                                                                           | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
@@ -185,6 +132,9 @@ flowchart TB
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.changesets-read-as-architecture-change`    | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.plan-outcome-reads-as-architecture`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.dr-bot-chat-drawer`                                                                                                  | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas` | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.dr-bot-chat-drawer`                                                                                                  | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.model-graph-view`                                                                                                    | `motivation.requirement.viewer-covers-every-spec-layer`            | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -206,6 +156,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                     | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`  | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a` | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                              | `product.feature.c4-plan-vs-as-built`                              | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                        | `product.feature.model-view-by-type`                               | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                   | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-selection-made-elsewhere-opens-its-group-and-reveals-its-row`                          | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
@@ -218,6 +169,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.tier1-mode-and-routing`                           | `product`    | `realizes`   | many-to-many | medium   |
@@ -284,16 +236,49 @@ A changeset laid over the Architecture view's C4 diagrams: op marks on cards and
 
 #### Relationships
 
-| Type        | Related Element                                                 | Predicate   | Direction |
-| ----------- | --------------------------------------------------------------- | ----------- | --------- |
-| inter-layer | `application.applicationservice.c4-changeset-diff`              | `realizes`  | inbound   |
-| inter-layer | `application.applicationservice.changeset-model-overlay`        | `realizes`  | inbound   |
-| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`      | `satisfies` | outbound  |
-| inter-layer | `motivation.requirement.changesets-read-as-architecture-change` | `satisfies` | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                  | `satisfies` | outbound  |
-| inter-layer | `ux.view.architecture-view`                                     | `realizes`  | inbound   |
-| intra-layer | `product.softwarecapability.model-visualization`                | `realizes`  | outbound  |
-| intra-layer | `product.persona.architecture-reviewer`                         | `serves`    | outbound  |
+| Type        | Related Element                                                 | Predicate    | Direction |
+| ----------- | --------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.c4-changeset-diff`              | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.changeset-model-overlay`        | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`      | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.changesets-read-as-architecture-change` | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                  | `satisfies`  | outbound  |
+| inter-layer | `ux.view.architecture-view`                                     | `realizes`   | inbound   |
+| intra-layer | `product.softwarecapability.model-visualization`                | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                         | `serves`     | outbound  |
+| intra-layer | `product.feature.c4-plan-vs-as-built`                           | `depends-on` | inbound   |
+
+### C4 Plan vs As-Built {#c4-plan-vs-as-built}
+
+**ID**: `product.feature.c4-plan-vs-as-built`
+
+**Type**: `feature`
+
+A plan changeset compared with what was built, on the Architecture view's C4 diagrams. The diagram is the model as the plan leaves it, with the as-built record's unplanned elements laid over it. Each box and arrow gets the plan verification's verdict (built as planned, probable, built differently, planned but not built, can't be checked, built but not planned): a glyph and a line style, never colour alone, rolled up to the boxes above it. A verification record pairs with the plan it verifies; any as-built or reconcile changeset can be picked by hand.
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | high    |
+| size     | m       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                          | Predicate    | Direction |
+| ----------- | ---------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `api.operation.get-changeset-verification`                                               | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.c4-plan-comparison`                                      | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.plan-verification`                                       | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                               | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                              | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                           | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark` | `tests`      | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                              | `realizes`   | inbound   |
+| intra-layer | `product.feature.c4-changeset-overlay`                                                   | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.model-visualization`                                         | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                  | `serves`     | outbound  |
 
 ### Change Origin Badges {#change-origin-badges}
 
@@ -733,6 +718,7 @@ Reads a DR model and the changesets proposed against it, decides each change, an
 | inter-layer | `motivation.stakeholder.architecture-team`       | `references` | outbound  |
 | intra-layer | `product.feature.c4-architecture-diagrams`       | `serves`     | inbound   |
 | intra-layer | `product.feature.c4-changeset-overlay`           | `serves`     | inbound   |
+| intra-layer | `product.feature.c4-plan-vs-as-built`            | `serves`     | inbound   |
 | intra-layer | `product.feature.change-origin-badges`           | `serves`     | inbound   |
 | intra-layer | `product.feature.changeset-impact-tab`           | `serves`     | inbound   |
 | intra-layer | `product.feature.changeset-inbox`                | `serves`     | inbound   |
@@ -873,6 +859,7 @@ Render a DR model layer by layer as a navigable graph or as pages, with relation
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`  | `supports` | outbound  |
 | intra-layer | `product.feature.c4-architecture-diagrams`                   | `realizes` | inbound   |
 | intra-layer | `product.feature.c4-changeset-overlay`                       | `realizes` | inbound   |
+| intra-layer | `product.feature.c4-plan-vs-as-built`                        | `realizes` | inbound   |
 | intra-layer | `product.feature.cross-layer-follow`                         | `realizes` | inbound   |
 | intra-layer | `product.feature.model-graph-view`                           | `realizes` | inbound   |
 | intra-layer | `product.feature.model-view-by-type`                         | `realizes` | inbound   |
@@ -1024,4 +1011,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

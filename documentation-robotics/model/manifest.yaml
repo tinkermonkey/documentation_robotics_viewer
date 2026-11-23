@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.7.0
+cli_version: 0.7.1
 spec_version: 0.14.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-21T16:42:09.849Z
+updated: 2026-11-23T20:18:09.918Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 11
+      requirement: 12
       stakeholder: 3
   business:
     order: 2
@@ -39,7 +39,7 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
-      feature: 18
+      feature: 19
       persona: 2
       softwarecapability: 5
       userworkflow: 1
@@ -69,7 +69,7 @@ layers:
       applicationfunction: 5
       applicationinterface: 2
       applicationprocess: 1
-      applicationservice: 49
+      applicationservice: 51
   technology:
     order: 6
     name: Technology
@@ -91,8 +91,8 @@ layers:
     elements:
       info: 1
       openapidocument: 1
-      operation: 19
-      pathitem: 14
+      operation: 20
+      pathitem: 15
       securityscheme: 2
   data-model:
     order: 8
@@ -100,7 +100,7 @@ layers:
     path: documentation-robotics/model/08_data-model/
     enabled: true
     elements:
-      objectschema: 31
+      objectschema: 33
       schemadefinition: 3
   data-store:
     order: 9
@@ -117,7 +117,7 @@ layers:
     enabled: true
     elements:
       statepattern: 2
-      subview: 10
+      subview: 11
       uxapplication: 1
       uxspec: 2
       view: 8
@@ -154,7 +154,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 1011
+      testcasesketch: 1017
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -226,6 +226,9 @@ changeset_history:
     action: committed
   - name: extract-02ab31d..59209a4
     committed_at: 2026-11-21T16:42:09.848Z
+    action: committed
+  - name: c4-plan-vs-as-built
+    committed_at: 2026-11-23T20:18:09.918Z
     action: committed
 reconciled:
   changeset: extract-02ab31d..59209a4

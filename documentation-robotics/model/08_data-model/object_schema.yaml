@@ -659,3 +659,47 @@ data-model.objectschema.c4-diff:
     created_at: 2026-11-21T01:28:57.577Z
     updated_at: 2026-11-21T01:28:57.577Z
     version: 1
+data-model.objectschema.plan-verification:
+  id: fa54cd28-9feb-4038-a669-13a35af46c80
+  path: data-model.objectschema.plan-verification
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Plan Verification
+  description: "The wire shape of Get Changeset Verification, validated before it
+    reaches React (as `tier1.ts` does): the plan and as-built ids, a verdict,
+    per-element and per-relationship verdicts by id, unplanned ids, the
+    extraction summary and counts. Malformed entries are dropped and counted."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/planVerification.ts
+        symbol: PlanVerification
+  metadata:
+    created_at: 2026-11-23T16:33:54.248Z
+    updated_at: 2026-11-23T16:33:54.248Z
+    version: 1
+data-model.objectschema.c4-plan-comparison:
+  id: 4483507b-baaa-4c66-959b-4fc385140d4a
+  path: data-model.objectschema.c4-plan-comparison
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: C4 Plan Comparison
+  description: "The result of `compareC4Plan`: per C4 element and relationship the
+    worst verdict of the model elements and links behind it and the ids behind
+    each verdict, a roll-up of verdict counts per ancestor, the tally, and what
+    no diagram shows (counted, never dropped)."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/c4/c4PlanCompare.ts
+        symbol: C4PlanComparison
+  metadata:
+    created_at: 2026-11-23T16:33:54.250Z
+    updated_at: 2026-11-23T16:33:54.250Z
+    version: 1

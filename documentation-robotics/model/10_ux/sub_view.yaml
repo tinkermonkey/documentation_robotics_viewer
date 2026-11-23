@@ -169,7 +169,9 @@ ux.subview.c4-diagram:
   name: C4 Diagram
   description: "Architecture view, the diagram area: the scope's boundary, a card
     per person, system, container or component, and labelled arrows between
-    them, with pan, zoom and fit."
+    them, with pan, zoom and fit. With an overlaid changeset, op marks on cards
+    and arrows; with a plan + as-built pair, verdict marks instead (glyph and
+    line style, never colour alone)."
   attributes:
     title: C4 Diagram
   metadata:
@@ -195,4 +197,26 @@ ux.subview.c4-changeset-bar:
   metadata:
     created_at: 2026-11-21T01:28:54.108Z
     updated_at: 2026-11-21T01:28:54.108Z
+    version: 1
+ux.subview.c4-plan-comparison-bar:
+  id: 00f8c9e0-225b-45d8-9c4c-e453865db3de
+  path: ux.subview.c4-plan-comparison-bar
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: C4 Plan Comparison Bar
+  description: "The Architecture view's bar for a plan + as-built pair
+    (`?changeset=` + `?built=`): the plan and as-built names with a picker for
+    the as-built (the plan's verification records first, then any as-built or
+    reconcile changeset), the overall verdict, a tally per verdict, the legend,
+    what the diagrams leave out, Review in Changesets and Clear. With an older
+    dr CLI it says the server can't compare and how to upgrade."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/C4PlanComparisonBar.tsx
+        symbol: C4PlanComparisonBar
+  metadata:
+    created_at: 2026-11-23T16:33:54.252Z
+    updated_at: 2026-11-23T16:33:54.252Z
     version: 1

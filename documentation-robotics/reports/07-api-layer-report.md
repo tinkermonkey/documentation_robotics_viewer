@@ -16,11 +16,11 @@ REST APIs, operations, endpoints, and API integrations.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 37    |
-| Intra-Layer Relationships | 35    |
-| Inter-Layer Relationships | 45    |
+| Elements                  | 39    |
+| Intra-Layer Relationships | 37    |
+| Inter-Layer Relationships | 50    |
 | Inbound Relationships     | 1     |
-| Outbound Relationships    | 44    |
+| Outbound Relationships    | 49    |
 
 **Cross-Layer References**:
 
@@ -45,6 +45,7 @@ REST APIs, operations, endpoints, and API integrations.
 | `api.operation.get-api-tier1`                                       | `operation`       | 2             |
 | `api.operation.get-architecture-model`                              | `operation`       | 2             |
 | `api.operation.get-changeset-details`                               | `operation`       | 1             |
+| `api.operation.get-changeset-verification`                          | `operation`       | 2             |
 | `api.operation.get-layer`                                           | `operation`       | 2             |
 | `api.operation.get-schema-specifications`                           | `operation`       | 1             |
 | `api.operation.health-check`                                        | `operation`       | 1             |
@@ -61,6 +62,7 @@ REST APIs, operations, endpoints, and API integrations.
 | `api.pathitem.changeset-detail-path`                                | `pathitem`        | 1             |
 | `api.pathitem.changeset-discard-path`                               | `pathitem`        | 1             |
 | `api.pathitem.changeset-review-path`                                | `pathitem`        | 1             |
+| `api.pathitem.changeset-verification-path`                          | `pathitem`        | 1             |
 | `api.pathitem.changesets-path`                                      | `pathitem`        | 1             |
 | `api.pathitem.health-path`                                          | `pathitem`        | 1             |
 | `api.pathitem.layer-path`                                           | `pathitem`        | 1             |
@@ -68,7 +70,7 @@ REST APIs, operations, endpoints, and API integrations.
 | `api.pathitem.spec-path`                                            | `pathitem`        | 1             |
 | `api.pathitem.tier1-path`                                           | `pathitem`        | 1             |
 | `api.pathitem.web-socket-path`                                      | `pathitem`        | 1             |
-| `api.securityscheme.bearer-auth-scheme`                             | `securityscheme`  | 15            |
+| `api.securityscheme.bearer-auth-scheme`                             | `securityscheme`  | 16            |
 | `api.securityscheme.query-auth-scheme`                              | `securityscheme`  | 2             |
 
 ## Inter-Layer Dependencies
@@ -126,6 +128,11 @@ flowchart TB
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-api-tier1`                          | `application.applicationservice.use-tier1`                          | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                          | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-architecture-model`                 | `application.applicationservice.use-model`                          | `application` | `references` | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-changeset-verification`             | `product.feature.c4-plan-vs-as-built`                               | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-changeset-verification`             | `application.applicationservice.plan-verification`                  | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-changeset-verification`             | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.satisfies.motivation.requirement`                                       | `api.operation.get-changeset-verification`             | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `api.operation.serves.application.applicationcomponent`                                | `api.operation.get-changeset-verification`             | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.get-layer`                              | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                              | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
 | `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
@@ -460,6 +467,36 @@ Returns detailed changeset including all element changes with before/after state
 | Type        | Related Element                      | Predicate  | Direction |
 | ----------- | ------------------------------------ | ---------- | --------- |
 | intra-layer | `api.pathitem.changeset-detail-path` | `composes` | inbound   |
+
+### Get Changeset Verification {#get-changeset-verification}
+
+**ID**: `api.operation.get-changeset-verification`
+
+**Type**: `operation`
+
+The per-element result of `changeset_verify` for a plan against an as-built changeset: matched, probable, divergent, missing, unverifiable and unplanned elements and relationships, with their ids, the extraction summary and the counts. Read-only; served by the dr CLI's `dr visualize` (documentation_robotics). An older CLI answers 404.
+
+#### Attributes
+
+| Name        | Value                                               |
+| ----------- | --------------------------------------------------- |
+| http_method | GET                                                 |
+| http_path   | /api/changesets/\{changesetId\}/verification        |
+| operationId | getChangesetVerification                            |
+| summary     | Compare a plan changeset with an as-built changeset |
+| tags        | Changesets                                          |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate    | Direction |
+| ----------- | ----------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                       | `exposes`    | outbound  |
+| inter-layer | `application.applicationservice.plan-verification`          | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`               | `requires`   | outbound  |
+| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture` | `satisfies`  | outbound  |
+| inter-layer | `application.applicationcomponent.architecture-canvas`      | `serves`     | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`                     | `uses`       | outbound  |
+| intra-layer | `api.pathitem.changeset-verification-path`                  | `composes`   | inbound   |
 
 ### Get Layer {#get-layer}
 
@@ -841,6 +878,20 @@ A staged changeset's review verdicts.
 | ----------- | ------------------------------------------------------ | ---------- | --------- |
 | intra-layer | `api.operation.put-api-changesets-changeset-id-review` | `composes` | outbound  |
 
+### Changeset Verification Path {#changeset-verification-path}
+
+**ID**: `api.pathitem.changeset-verification-path`
+
+**Type**: `pathitem`
+
+Path /api/changesets/\{changesetId\}/verification: a plan compared with an as-built changeset (`?against=`); read-only.
+
+#### Relationships
+
+| Type        | Related Element                            | Predicate  | Direction |
+| ----------- | ------------------------------------------ | ---------- | --------- |
+| intra-layer | `api.operation.get-changeset-verification` | `composes` | outbound  |
+
 ### Changesets Path {#changesets-path}
 
 **ID**: `api.pathitem.changesets-path`
@@ -1018,6 +1069,7 @@ Token in Authorization header; used for REST API endpoints requiring authenticat
 | intra-layer | `api.operation.get-annotations`                                     | `uses`     | inbound   |
 | intra-layer | `api.operation.get-api-tier1`                                       | `uses`     | inbound   |
 | intra-layer | `api.operation.get-architecture-model`                              | `uses`     | inbound   |
+| intra-layer | `api.operation.get-changeset-verification`                          | `uses`     | inbound   |
 | intra-layer | `api.operation.get-layer`                                           | `uses`     | inbound   |
 | intra-layer | `api.operation.list-annotation-replies`                             | `uses`     | inbound   |
 | intra-layer | `api.operation.list-changesets`                                     | `uses`     | inbound   |
@@ -1049,4 +1101,4 @@ Token as ?token= query param; used for WebSocket connection authentication where
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

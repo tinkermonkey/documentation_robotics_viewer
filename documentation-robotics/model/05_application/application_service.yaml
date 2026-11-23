@@ -1154,3 +1154,76 @@ application.applicationservice.c4-changeset-diff:
     created_at: 2026-11-21T01:28:54.103Z
     updated_at: 2026-11-21T01:28:54.103Z
     version: 1
+application.applicationservice.plan-verification:
+  id: b34dc660-f2e4-4844-af73-3cccbc35db56
+  path: application.applicationservice.plan-verification
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Plan Verification
+  description: "`data/planVerification.ts` + `usePlanVerification(planId,
+    asBuiltId)`: fetches Get Changeset Verification through React Query,
+    validates it into a Plan Verification (malformed items dropped and counted),
+    and pairs a plan with its verification records first, then any other
+    as-built changeset (`asBuiltChoices`). A 405/501 or a non-JSON 404 reads as
+    \"this dr CLI can't compare\", not an error; refetched on
+    `changesets.updated` and `model.updated`."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/usePlanVerification.ts
+        symbol: usePlanVerification
+  accepted_gaps:
+    - direction: incoming
+      predicate: covers
+      other_spec_node_id: testing.testcoveragetarget
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest
+        coverage include (src/apps/embedded/{ui,data}); the slice adds no
+        coverage target of its own.
+      decided_by: agent
+      decided_at: 2026-11-23T16:35:02.761Z
+      changeset: changeset-1795451597047-v7kr9sz5s
+  metadata:
+    created_at: 2026-11-23T16:33:54.250Z
+    updated_at: 2026-11-23T16:33:54.250Z
+    version: 1
+application.applicationservice.c4-plan-comparison:
+  id: 4089d032-d6da-4e7b-9800-29f1ae5e0f9e
+  path: application.applicationservice.c4-plan-comparison
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Plan Comparison
+  description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(model, c4,
+    verification)` lifts the plan verification's verdicts onto the C4 model the
+    comparison is drawn on (built by `useC4PlanComparison`: the plan applied,
+    the as-built laid over it with `overlayModel`). An element goes to the C4
+    element it is or the ones it is folded onto (`elementOf` / `anchorsOf`); a
+    relationship to every arrow carrying its model link (`viewArrowVerdicts` per
+    drawn view). Each box shows the worst verdict behind it (planned but not
+    built > built differently > probable > can't be checked > built as planned;
+    built but not planned only alone), rolled up to its ancestors; what reaches
+    no box is counted."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/c4/c4PlanCompare.ts
+        symbol: compareC4Plan
+  accepted_gaps:
+    - direction: incoming
+      predicate: covers
+      other_spec_node_id: testing.testcoveragetarget
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest
+        coverage include (src/apps/embedded/{ui,data}); the slice adds no
+        coverage target of its own.
+      decided_by: agent
+      decided_at: 2026-11-23T16:35:04.041Z
+      changeset: changeset-1795451597047-v7kr9sz5s
+  metadata:
+    created_at: 2026-11-23T16:33:54.252Z
+    updated_at: 2026-11-23T16:33:54.252Z
+    version: 1

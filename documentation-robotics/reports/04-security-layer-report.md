@@ -18,8 +18,8 @@ Authentication, authorization, security threats, and controls.
 | ------------------------- | ----- |
 | Elements                  | 12    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 24    |
-| Inbound Relationships     | 22    |
+| Inter-Layer Relationships | 25    |
+| Inbound Relationships     | 23    |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
@@ -104,6 +104,7 @@ flowchart TB
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                                                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                                                                                                  | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                                                                                                   | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-changeset-verification`                                                                                      | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                                                                                                       | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-changesets-changeset-id-review`                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
@@ -370,6 +371,7 @@ All REST requests inject Authorization: Bearer via the global fetch interceptor;
 | inter-layer | `api.operation.discard-changeset`                                     | `requires`       | inbound   |
 | inter-layer | `api.operation.get-annotation`                                        | `requires`       | inbound   |
 | inter-layer | `api.operation.get-api-tier1`                                         | `requires`       | inbound   |
+| inter-layer | `api.operation.get-changeset-verification`                            | `requires`       | inbound   |
 | inter-layer | `api.operation.get-layer`                                             | `requires`       | inbound   |
 | inter-layer | `api.operation.list-annotation-replies`                               | `requires`       | inbound   |
 | inter-layer | `api.operation.put-api-changesets-changeset-id-review`                | `requires`       | inbound   |
@@ -407,4 +409,4 @@ Risk that an unauthenticated user accesses model data if bearer token is absent 
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

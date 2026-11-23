@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 1017  |
+| Elements                  | 1023  |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 1184  |
+| Inter-Layer Relationships | 1193  |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 1184  |
+| Outbound Relationships    | 1193  |
 
 **Cross-Layer References**:
 
@@ -69,6 +69,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                                | `testcasesketch`      | 0             |
@@ -140,6 +141,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.c4-model-relationships-folds-what-is-not-a-c4-element-onto-the-one-it-tests-or-references-and-31f28e39`                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                                         | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`                                                                  | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`                            | `testcasesketch`      | 0             |
@@ -316,6 +318,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.chat-streamed-answer-renders-exactly-once-double-emit-regression`                                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size`                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up`                                                            | `testcasesketch`      | 0             |
+| `testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-left-edge`                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-right-edge`                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.compute-tooltip-position-does-not-flag-overlaps-anchor-for-a-normal-placement`                                                   | `testcasesketch`      | 0             |
@@ -735,6 +739,8 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-has-no-role-tab-index-when-on-48439e30`                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-is-a-keyboard-focusable-button-19db9652`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-reflects-selected-state-via-14e2c308`                       | `testcasesketch`      | 0             |
+| `testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan`                                                                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli`                                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.predicate-definitions-predicate-definition-defines-every-predicate-used-in-the-live-fixture-model`                               | `testcasesketch`      | 0             |
 | `testing.testcasesketch.predicate-definitions-predicate-definition-every-catalog-entry-has-a-non-empty-description-and-a-af566223`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.predicate-definitions-predicate-definition-every-predicates-ts-structural-predicates-entry-resolves-5732ed6f`                    | `testcasesketch`      | 0             |
@@ -1134,6 +1140,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `product.feature.c4-plan-vs-as-built`                              | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-select-c4-and-restore-c4-are-not-navigations`                                | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
@@ -1209,6 +1218,8 @@ flowchart TB
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation`  | `satisfies` | many-to-many | high     |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship`                                                   | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-model-relationships-turns-serves-round-so-every-arrow-reads-as-a-use`                                                         | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`                                                                  | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`                                             | `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`                                                                  | `ux.subview.c4-plan-comparison-bar`                                | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded`                                                             | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-reads-a-catalog-from-an-api-spec-payload-and-reports-what-an-older-spec-19cafe14`                      | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-rules-against-the-spec-reports-rules-that-name-types-the-spec-does-not-define-and-leaves-them-out`                            | `application.applicationservice.c4-model-transform`                | `application` | `tests`     | many-to-many | medium   |
@@ -1409,6 +1420,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.chat-streamed-answer-renders-exactly-once-double-emit-regression`                                                                | `application.applicationcomponent.chat-panel`                      | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.clamp-panel-size-resize-by-key-clamps-and-fills-in-a-malformed-size`                                                             | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.clamp-panel-size-resize-by-key-grows-on-arrow-left-shrinks-on-arrow-right-jumps-on-home-end-ignores-f944b243`                    | `application.applicationservice.chat-panel-layout`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up`                                                            | `application.applicationservice.c4-plan-comparison`                | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram`                                                         | `application.applicationservice.c4-plan-comparison`                | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-left-edge`                                              | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-clamps-left-within-the-viewport-margin-near-the-right-edge`                                             | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.compute-tooltip-position-does-not-flag-overlaps-anchor-for-a-normal-placement`                                                   | `application.applicationcomponent.rich-tooltip`                    | `application` | `tests`     | many-to-many | medium   |
@@ -1856,6 +1869,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-has-no-role-tab-index-when-on-48439e30`                     | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-is-a-keyboard-focusable-button-19db9652`                    | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.pill-node-selection-accessibility-parity-with-the-default-graph-node-reflects-selected-state-via-14e2c308`                       | `application.applicationcomponent.pill-node`                       | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan`                                                                     | `application.applicationservice.plan-verification`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli`                                                     | `application.applicationservice.plan-verification`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.predicate-definitions-predicate-definition-defines-every-predicate-used-in-the-live-fixture-model`                               | `application.applicationservice.predicate-definitions`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.predicate-definitions-predicate-definition-every-catalog-entry-has-a-non-empty-description-and-a-af566223`                       | `application.applicationservice.predicate-definitions`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.predicate-definitions-predicate-definition-every-predicates-ts-structural-predicates-entry-resolves-5732ed6f`                    | `application.applicationservice.predicate-definitions`             | `application` | `tests`     | many-to-many | medium   |
@@ -2923,6 +2938,28 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                            | Predicate | Direction |
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `product.feature.c4-architecture-diagrams` | `tests`   | outbound  |
+
+### Architecture view plan vs as built passes axe in light and dark {#architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark}
+
+**ID**: `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`
+
+**Type**: `testcasesketch`
+
+Planned E2E test, tests/e2e/architecture.spec.ts: ?changeset= + ?built= draws the comparison.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                  | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                            | `tests`   | outbound  |
 
 ### Architecture view state (C4 level, scope, selected box) &gt; does not persist the C4 level, scope or selection (the URL owns them) {#architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-selection-the-url-owns-them}
 
@@ -4202,6 +4239,27 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                     | Predicate | Direction |
 | ----------- | --------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.c4-model-transform` | `tests`   | outbound  |
+
+### C4 plan comparison bar tallies verdicts and cards carry glyphs {#c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs}
+
+**ID**: `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`
+
+**Type**: `testcasesketch`
+
+Planned component test, tests/components/C4PlanCompare.spec.tsx: never colour alone; verdict in each card's accessible name.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `ux.subview.c4-plan-comparison-bar`                    | `tests`   | outbound  |
 
 ### c4 rules against the spec &gt; applies every rule when no spec is loaded {#c4-rules-against-the-spec-applies-every-rule-when-no-spec-is-loaded}
 
@@ -7396,6 +7454,46 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | Type        | Related Element                                    | Predicate | Direction |
 | ----------- | -------------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationservice.chat-panel-layout` | `tests`   | outbound  |
+
+### compareC4Plan gives each box the worst verdict behind it, rolled up {#comparec4plan-gives-each-box-the-worst-verdict-behind-it-rolled-up}
+
+**ID**: `testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts, over the hand-built C4 fixture; arrows too.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-plan-comparison` | `tests`   | outbound  |
+
+### compareC4Plan places unplanned as-built elements on the plan's diagram {#comparec4plan-places-unplanned-as-built-elements-on-the-plan-s-diagram}
+
+**ID**: `testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts: an unplanned test folds onto what it tests.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                     | Predicate | Direction |
+| ----------- | --------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-plan-comparison` | `tests`   | outbound  |
 
 ### computeTooltipPosition &gt; clamps left within the viewport margin near the left edge {#computetooltipposition-clamps-left-within-the-viewport-margin-near-the-left-edge}
 
@@ -14959,6 +15057,46 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | -------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.pill-node` | `tests`   | outbound  |
 
+### planVerification pairs a verification record with its plan {#planverification-pairs-a-verification-record-with-its-plan}
+
+**ID**: `testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/planVerification.spec.ts: other as-built changesets are offered by hand.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.plan-verification` | `tests`   | outbound  |
+
+### planVerification validates the wire result and reads a 404 as an older CLI {#planverification-validates-the-wire-result-and-reads-a-404-as-an-older-cli}
+
+**ID**: `testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/planVerification.spec.ts: malformed entries dropped and counted.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.plan-verification` | `tests`   | outbound  |
+
 ### PREDICATE_DEFINITIONS / predicateDefinition &gt; defines every predicate used in the live fixture model {#predicate-definitions-predicatedefinition-defines-every-predicate-used-in-the-live-fixture-model}
 
 **ID**: `testing.testcasesketch.predicate-definitions-predicate-definition-defines-every-predicate-used-in-the-live-fixture-model`
@@ -20757,4 +20895,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-21T16:42:09.853Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
