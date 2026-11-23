@@ -362,7 +362,7 @@ function AppShellRoute() {
     // would make this effect re-fire the moment IT calls
     // selectLayer/selectNode/selectEdge/selectChangeset, fighting its own update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [section, search.layer, search.node, search.edge, search.changeset, search.level, search.scope, modelLoaded, model.links]);
+  }, [section, search.layer, search.node, search.edge, search.changeset, search.level, search.scope, search.built, modelLoaded, model.links]);
 
   // URL → store: viewport. Runs after the selection effect above, so on
   // back/forward the layer it scopes to is already in the store. A URL with

@@ -11,7 +11,7 @@ import { compareC4Plan, rollUpTotal, viewArrowVerdicts, worstVerdict } from '@/a
 import { comparisonModel } from '@/apps/embedded/data/c4/useC4Model';
 import type { PlanVerification, RelationshipVerdictItem, VerdictItem } from '@/apps/embedded/data/planVerification';
 import { elementVerdictLabel, verdictRollUpChip, verdictRollUpLabel } from '@/apps/embedded/ui/verdictStyles';
-import { addElement, addRelationship, ref, sampleModel } from './fixture';
+import { addElement, addRelationship, derive, link, node, ref, sampleModel } from './fixture';
 
 const { model, n } = sampleModel();
 const c4 = buildC4Model(model);
@@ -96,6 +96,41 @@ describe('compareC4Plan: verdicts per box', () => {
     expect(cmp.elements.get(ref(n.tooltip))?.verdict).toBe('built');
     expect(cmp.unshown.elements.map((i) => i.id)).toEqual([ref(n.orphan), 'application.applicationcomponent.not-in-the-model']);
     expect(cmp.tally.elements).toMatchObject({ built: 1, missing: 2 });
+  });
+
+  it('finds an element by the shortened id the CLI gives a long name, and its links', () => {
+    const longName = 'Plan comparison renderer that names the pair tallies the verdicts and marks every card with a glyph never colour alone';
+    const comp = node('application.applicationcomponent', longName, { type: 'internal' });
+    const m = derive([...model.nodes, comp], [...model.links, link(comp, 'uses', n.tooltip)]);
+    const slug = ref(comp).split('.')[2];
+    expect(slug.length).toBeGreaterThan(100);
+    // As the CLI cuts it: at a word within 100 characters, then a hash of the whole slug.
+    const cut = slug.slice(0, 100);
+    const shortened = `application.applicationcomponent.${cut.slice(0, cut.lastIndexOf('-'))}-1a2b3c4d`;
+    const drawn = buildC4Model(m);
+    const cmp = compareC4Plan(
+      m,
+      drawn,
+      verification(
+        [{ id: shortened, verdict: 'unplanned' }],
+        [{ source: shortened, predicate: 'uses', target: ref(n.tooltip), verdict: 'unplanned' }],
+      ),
+    );
+    expect(cmp.unshown).toEqual({ elements: [], relationships: [] });
+    expect(cmp.elements.get(ref(comp))?.items.map((i) => i.id)).toEqual([shortened]);
+    expect(cmp.links.size).toBe(1);
+  });
+
+  it('marks the as-built twin of a probable match too, so it never reads as untouched', () => {
+    const cmp = compareC4Plan(
+      model,
+      c4,
+      verification([{ id: ref(n.lanes), builtId: ref(n.hive), verdict: 'probable', op: 'add' }]),
+    );
+    expect(cmp.elements.get(ref(n.lanes))?.verdict).toBe('probable');
+    expect(cmp.elements.get(ref(n.hive))?.verdict).toBe('probable');
+    // Counted once per box above them.
+    expect(cmp.rollUp.get(ref(n.canvas))?.probable).toBe(2);
   });
 
   it('orders verdicts worst first, with built-not-planned last', () => {

@@ -253,7 +253,7 @@ test.describe('Architecture view — C4 diagrams', () => {
       return (await tally.isVisible()) ? 'verdicts' : 'unavailable';
     }
 
-    test('draws the plan with each box marked by its verdict, and Show the plan only goes back to the overlay', async ({ page }) => {
+    test('draws the plan with each box marked by its verdict; Show the plan only goes back to the overlay, and Back to the comparison', async ({ page }) => {
       await gotoView(page, URL);
       await diagramAt(page, 'component');
       if ((await compared(page)) === 'verdicts') {
@@ -265,6 +265,12 @@ test.describe('Architecture view — C4 diagrams', () => {
       await expect.poll(() => hashSearchParams(page.url()).get('built')).toBeNull();
       expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE2_PLAN);
       await expect(page.getByTestId('c4-changeset-bar')).toBeVisible();
+
+      // Back returns to the comparison: ?built= is history, in the URL and on screen.
+      await page.goBack();
+      await expect.poll(() => hashSearchParams(page.url()).get('built')).toBe(SLICE2_BUILT);
+      await expect(page.getByTestId('c4-compare-bar')).toBeVisible();
+      await expect(page.getByTestId('c4-changeset-bar')).toHaveCount(0);
     });
 
     for (const tone of ['light', 'dark'] as const) {

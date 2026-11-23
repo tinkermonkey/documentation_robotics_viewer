@@ -206,6 +206,26 @@ describe('C4 plan comparison', () => {
     await screen.findByTestId('c4-changeset-bar');
   });
 
+  it("never offers to compare a plan with an as-built changeset that isn't its own record", async () => {
+    serve();
+    // The record verifies another plan: it stays in the comparison's picker, never the bar's default.
+    mswServer.use(
+      http.get('*/api/changesets', () =>
+        HttpResponse.json({
+          version: '1',
+          changesets: {
+            [PLAN]: { name: 'probe-plan', status: 'staged', created: '2026-11-23T00:00:00Z', changes_count: 2, purpose: 'plan' },
+            [BUILT]: { name: 'other-as-built', status: 'staged', created: '2026-11-23T00:00:00Z', changes_count: 2, purpose: 'verification', verifies: 'another-plan' },
+          },
+        }),
+      ),
+    );
+    renderWithProviders(<ArchitectureCanvas />);
+    act(() => useUiStore.getState().showC4('container', null, { changesetId: PLAN }));
+    await screen.findByTestId('c4-bar-tally');
+    expect(screen.queryByTestId('c4-bar-compare')).toBeNull();
+  });
+
   it('with a dr CLI that has no verification route, says so and draws the plan without verdicts', async () => {
     serve({ verification: false });
     await renderCompare('component', container);

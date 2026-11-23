@@ -66,6 +66,7 @@ describe('planVerification: reading the report', () => {
       'motivation.requirement.r:unverifiable',
       'application.applicationcomponent.extra:unplanned',
     ]);
+    expect(v.elements[5].change).toBe('added');
     expect(v.elements[1]).toMatchObject({ builtId: 'application.applicationservice.loose-svc', reason: 'same source file' });
     expect(v.elements[2].fields).toEqual(['description']);
     expect(v.relationships.map((r) => `${r.predicate}:${r.verdict}`)).toEqual(['uses:built', 'depends-on:missing', 'uses:unplanned']);

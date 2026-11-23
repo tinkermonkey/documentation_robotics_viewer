@@ -309,7 +309,9 @@ For local dev use `dr visualize --no-auth`.
   (`asBuiltChoices`); an older CLI reads as `unavailable` (the bar says so, the diagram shows the plan without
   verdicts). `useC4PlanComparison` (in `useC4Model.ts`) draws the model as the plan leaves it with the as-built laid
   over it (`comparisonModel`: staged sides applied, applied ones already in the model) and `compareC4Plan` lifts the
-  verdicts onto it: an element onto the C4 element it is or the ones it is folded onto, a relationship onto every
+  verdicts onto it (report ids resolve exactly, loosely, or, for a slug the CLI shortened past 100 characters to
+  `<cut>-<8 hex>`, by the one element of that type whose slug starts with the cut; a probable match's as-built
+  twin is marked too): an element onto the C4 element it is or the ones it is folded onto, a relationship onto every
   arrow carrying its model link (`viewArrowVerdicts` per drawn view); a box shows its worst verdict (missing >
   divergent > probable > unverifiable > built; unplanned only alone, "unplanned additions" when only folded parts
   are), a box above counts its marked boxes ("17 inside"); what reaches no box is counted (`unshown`). Marks:
@@ -317,7 +319,8 @@ For local dev use `dr visualize --no-auth`.
   groove; arrows by dash pattern), drawn by `C4Diagram`'s `comparison` prop in the overlay's slots (never both).
   `C4PlanComparisonBar` replaces the changeset bar (as-built picker, the CLI's verdict text, tally, legend, left
   out, Show the plan only, Clear); the drawer gets "Plan vs as built". Entry points: the changeset bar's "Compare
-  with what was built" (a plan with an as-built to compare) and the Changesets view's "Compare on the diagrams" (a
+  with what was built" (a plan with a verification record of its own; other as-built changesets only through the
+  bar's picker, never as a default) and the Changesets view's "Compare on the diagrams" (a
   plan with a record, or the record). The route runs `changeset_verify` on each read: a second or more.
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
   section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:

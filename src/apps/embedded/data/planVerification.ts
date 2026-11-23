@@ -52,6 +52,8 @@ export interface VerdictItem {
   reason?: string;
   /** The fields that differ (divergent). */
   fields?: string[];
+  /** An unplanned element: what the build did to it (`added`, `updated`, `deleted`, `present`). */
+  change?: string;
 }
 
 export interface RelationshipVerdictItem {
@@ -147,7 +149,12 @@ export function toPlanVerification(raw: unknown): PlanVerification | null {
       dropped++;
       continue;
     }
-    elements.push({ id, verdict: 'unplanned', ...(str(item.name) ? { name: str(item.name) } : {}) });
+    elements.push({
+      id,
+      verdict: 'unplanned',
+      ...(str(item.name) ? { name: str(item.name) } : {}),
+      ...(str(item.change) ? { change: str(item.change) } : {}),
+    });
   }
 
   const relationships: RelationshipVerdictItem[] = [];

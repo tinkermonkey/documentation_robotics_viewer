@@ -66,18 +66,40 @@ function looseRef(ref: string): string {
   return `${layer}.${type}.${rest.join('.').toLowerCase().replace(/[^a-z0-9]/g, '')}`;
 }
 
-/** Finds the model element (UUID) a report's dotted id names. */
+/**
+ * A slug the dr CLI shortened: past 100 characters it is cut at a word and
+ * ended with `-<8 hex>`, a hash of the whole slug, which the viewer can't
+ * rebuild from a name. The cut part is a prefix of the full slug.
+ */
+const SHORTENED = /^(.{50,100})-[0-9a-f]{8}$/;
+
+/**
+ * Finds the model element (UUID) a report's dotted id names: exactly, then by
+ * a loose spelling, then (a shortened id) by the one element of that layer
+ * and type whose slug starts with the cut part. Ambiguous ids resolve to
+ * nothing rather than to a guess.
+ */
 function refResolver(model: ModelDerived): (ref: string) => string | undefined {
   const exact = new Map<string, string>();
   const loose = new Map<string, string | null>();
+  const byType = new Map<string, { slug: string; id: string }[]>();
   for (const node of model.nodes) {
     const ref = dottedId(node);
     exact.set(ref, node.id);
     // The loose key only when it names one element.
     const key = looseRef(`${node.layer_id}.${node.type}.${slugifyName(node.name)}`);
     loose.set(key, loose.has(key) ? null : node.id);
+    const type = `${node.layer_id}.${node.type}`;
+    (byType.get(type) ?? byType.set(type, []).get(type)!).push({ slug: slugifyName(node.name), id: node.id });
   }
-  return (ref) => exact.get(ref) ?? loose.get(looseRef(ref)) ?? undefined;
+  const shortened = (ref: string): string | undefined => {
+    const [layer, type, ...rest] = ref.split('.');
+    const cut = SHORTENED.exec(rest.join('.'))?.[1];
+    if (!cut) return undefined;
+    const hits = (byType.get(`${layer}.${type}`) ?? []).filter((n) => n.slug.length > cut.length && n.slug.startsWith(cut));
+    return hits.length === 1 ? hits[0].id : undefined;
+  };
+  return (ref) => exact.get(ref) ?? loose.get(looseRef(ref)) ?? shortened(ref) ?? undefined;
 }
 
 export function compareC4Plan(model: ModelDerived, c4: C4Model, verification: PlanVerification): C4PlanComparison {
@@ -92,36 +114,37 @@ export function compareC4Plan(model: ModelDerived, c4: C4Model, verification: Pl
   };
 
   for (const item of verification.elements) {
-    const uuid = uuidOf(item.id) ?? (item.builtId ? uuidOf(item.builtId) : undefined);
-    const own = uuid ? c4.elementOf.get(uuid) : undefined;
-    const anchors = uuid && !own ? (c4.anchorsOf.get(uuid) ?? []) : [];
-    if (own) entry(own).items.push(item);
-    for (const anchor of anchors) entry(anchor).folded.push(item);
-    if (!own && anchors.length === 0) unshown.elements.push(item);
+    // The planned element and, when the build named it differently (a probable or
+    // divergent match), its as-built twin: both are drawn, so both carry the verdict.
+    const uuids = [...new Set([uuidOf(item.id), item.builtId ? uuidOf(item.builtId) : undefined].filter((u): u is string => !!u))];
+    const owns = new Set(uuids.map((u) => c4.elementOf.get(u)).filter((id): id is string => !!id));
+    const anchors = new Set(
+      uuids.filter((u) => !c4.elementOf.has(u)).flatMap((u) => c4.anchorsOf.get(u) ?? []),
+    );
+    for (const own of owns) entry(own).items.push(item);
+    for (const anchor of anchors) if (!owns.has(anchor)) entry(anchor).folded.push(item);
+    if (owns.size === 0 && anchors.size === 0) unshown.elements.push(item);
   }
   for (const e of elements.values()) {
     e.verdict = worstVerdict([...e.items, ...e.folded].map((i) => i.verdict)) ?? 'built';
   }
 
-  // Relationships: the model links behind each verdict, then the C4 arrows that carry them.
+  // Relationships: the model links behind each verdict (ends resolved as the elements
+  // are, so a shortened id finds its link too), then the C4 arrows that carry them.
   const index = buildModelIndex(model);
-  const refOfEnd = (end: string) => {
-    const node = index.byEndpoint.get(end);
-    return node ? dottedId(node) : undefined;
-  };
   const linkIdsOf = new Map<string, string[]>();
   for (const link of model.links) {
-    const src = refOfEnd(link.source);
-    const tgt = refOfEnd(link.target);
+    const src = index.byEndpoint.get(link.source)?.id;
+    const tgt = index.byEndpoint.get(link.target)?.id;
     if (!src || !tgt) continue;
-    const key = `${looseRef(src)}|${link.type}|${looseRef(tgt)}`;
+    const key = `${src}|${link.type}|${tgt}`;
     (linkIdsOf.get(key) ?? linkIdsOf.set(key, []).get(key)!).push(link.id);
   }
   const drawnLinks = new Set(c4.relationships.flatMap((r) => r.linkIds));
   const links = new Map<string, RelationshipVerdictItem[]>();
   for (const item of verification.relationships) {
     const keys = [item, ...(item.built ? [item.built] : [])].map(
-      (t) => `${looseRef(t.source)}|${t.predicate}|${looseRef(t.target)}`,
+      (t) => `${uuidOf(t.source) ?? `?${t.source}`}|${t.predicate}|${uuidOf(t.target) ?? `?${t.target}`}`,
     );
     const ids = [...new Set(keys.flatMap((k) => linkIdsOf.get(k) ?? []))].filter((id) => drawnLinks.has(id));
     if (ids.length === 0) {

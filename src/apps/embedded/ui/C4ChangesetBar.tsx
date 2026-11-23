@@ -4,8 +4,8 @@
  * is read (staged: applied forward; applied: reverted), a drift badge when the
  * server would refuse to apply it, the tally of what differs on the diagrams,
  * a legend of the marks, the changes no diagram shows, and Clear. A plan
- * with an as-built changeset to compare it with offers "Compare with what was
- * built" (the C4 Plan Comparison Bar takes over).
+ * with a verification record of its own offers "Compare with what was built"
+ * (the C4 Plan Comparison Bar takes over).
  *
  * The picker stays in the page header (it is there with or without an
  * overlay); this bar only shows while one is set.
@@ -57,10 +57,11 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
   const how =
     overlay?.mode === 'revert' ? 'applied, shown reverted' : overlay?.mode === 'apply' ? 'staged, shown applied' : undefined;
   const drift = detail?.drift ?? summary?.drift;
-  // A plan can be compared with what was built: its own verification record first, else any as-built changeset.
+  // A plan with a verification record of its own can be compared with what was built. Other as-built
+  // changesets are offered only in the comparison's picker: one unrelated to the plan would compare
+  // nonsense, so it is never the default.
   const isPlan = (detail?.purpose ?? summary?.purpose) === 'plan';
-  const choices = isPlan ? asBuiltChoices(changesetId, derived.list) : { records: [], others: [] };
-  const compareWith = choices.records[0] ?? choices.others[0] ?? null;
+  const compareWith = isPlan ? (asBuiltChoices(changesetId, derived.list).records[0] ?? null) : null;
 
   let body: React.ReactNode;
   if (error) {

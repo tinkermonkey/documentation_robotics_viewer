@@ -243,7 +243,7 @@ function VerdictRow({ item }: { item: VerdictItem }) {
     <li data-testid="c4-verdict-row" data-verdict={item.verdict}>
       <span className="c4-details__op" style={outline ? { border: outline } : undefined}>
         <span aria-hidden="true">{style.glyph}&nbsp;</span>
-        {style.label}
+        {item.verdict === 'unplanned' && item.change === 'deleted' ? 'removed, not planned' : style.label}
       </span>
       <span title={item.id}>{name}</span>
       {item.reason && <span className="c4-details__muted">{item.reason}</span>}

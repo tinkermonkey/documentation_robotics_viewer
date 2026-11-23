@@ -8,6 +8,7 @@
  * retried; other failures are retried once.
  */
 
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import {
   PLAN_VERIFICATION_KEY,
@@ -32,12 +33,15 @@ export function usePlanVerification(planId: string | null, asBuiltId: string | n
     staleTime: 5 * 60 * 1000,
     retry: (failures, error) => !isVerificationUnavailable(error) && failures < 1,
   });
-  if (!enabled) return { kind: 'none' };
-  if (query.error) {
-    return isVerificationUnavailable(query.error)
-      ? { kind: 'unavailable' }
-      : { kind: 'error', message: query.error instanceof Error ? query.error.message : String(query.error) };
-  }
-  if (!query.data) return { kind: 'loading' };
-  return { kind: 'ready', verification: query.data };
+  // One object per answer, so what is built from it (the C4 comparison) isn't rebuilt on every render.
+  return useMemo<PlanVerificationView>(() => {
+    if (!enabled) return { kind: 'none' };
+    if (query.error) {
+      return isVerificationUnavailable(query.error)
+        ? { kind: 'unavailable' }
+        : { kind: 'error', message: query.error instanceof Error ? query.error.message : String(query.error) };
+    }
+    if (!query.data) return { kind: 'loading' };
+    return { kind: 'ready', verification: query.data };
+  }, [enabled, query.error, query.data]);
 }
