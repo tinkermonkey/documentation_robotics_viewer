@@ -12,7 +12,9 @@
  * as heimdall-ui lanes. Its follow depth is the Model inspector's
  * (`uiStore.inspectorFollow`), so "+1 layer" means the same in both places.
  * Beside it, "Open in Architecture" shows a staged or applied changeset on the
- * C4 diagrams (`#/architecture/diagram?level=context&changeset=<id>`).
+ * C4 diagrams (`#/architecture/diagram?level=context&changeset=<id>`), and on
+ * a plan with a verification record (or the record itself) "Compare on the
+ * diagrams" opens the plan against it (`&built=<record id>`).
  *
  * The eyebrow names the changeset's purpose (a dr CLI with purposes), and a
  * note over the list says what this kind of changeset is for and what happens
@@ -199,6 +201,13 @@ export function ChangesetCanvas() {
   const gone = isChangesetGone(error);
   // Staged (shown applied) or applied (shown reverted); nothing to show for a discarded or empty one.
   const canOpenInArchitecture = (status === 'staged' || status === 'committed') && changesCount > 0;
+  // A plan with a verification record, or the record itself: the pair can be compared on the diagrams.
+  const comparePair: { planId: string; builtId: string } | null =
+    purpose === 'verification' && verifies && changesetId
+      ? { planId: verifies, builtId: changesetId }
+      : purpose === 'plan' && changesetId && records[0]
+        ? { planId: changesetId, builtId: records[0].id }
+        : null;
   const eyebrow = ['CHANGESET', purposeLabel(purpose), origin].filter(Boolean).join(' · ').toUpperCase();
   // Set when this page discarded the changeset and went back to the inbox.
   const [notice, setNotice] = useState<string | null>(null);
@@ -280,6 +289,17 @@ export function ChangesetCanvas() {
                   data-testid="changeset-open-architecture"
                 >
                   Open in Architecture
+                </Button>
+              )}
+              {comparePair && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => showC4('context', null, { changesetId: comparePair.planId, builtId: comparePair.builtId })}
+                  title="Show the plan on the C4 diagrams, each box marked with whether it was built as planned"
+                  data-testid="changeset-compare-architecture"
+                >
+                  Compare on the diagrams
                 </Button>
               )}
             </div>

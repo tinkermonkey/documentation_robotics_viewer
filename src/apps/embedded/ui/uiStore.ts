@@ -12,7 +12,7 @@
  * showAllRelations/nodeMarginPreset/nodeDisplay/showInterLayerNodes/modelView), and the
  * Model inspector's follow depth (inspectorFollow). Navigation state (view/layerId/
  * selectedId/changesetId/mode/focus/expanded*, and the Architecture view's c4Level/
- * c4Scope/c4SelectedId/c4ChangesetId) is deliberately NOT persisted
+ * c4Scope/c4SelectedId/c4ChangesetId/c4BuiltId) is deliberately NOT persisted
  * here — that's the URL router's job (see router.tsx), so the two mechanisms
  * don't fight over which one is authoritative for "where you are."
  */
@@ -91,6 +91,10 @@ interface UiState {
    *  the Changesets view's `changesetId`. Not persisted (the URL's `?changeset=`
    *  on an Architecture URL). */
   c4ChangesetId: string | null;
+  /** Architecture view: the as-built changeset `c4ChangesetId` (a plan) is
+   *  compared with (null: no comparison, the plain overlay). Not persisted (the
+   *  URL's `?built=`). */
+  c4BuiltId: string | null;
   canvasDark: boolean;
   chatOpen: boolean;
   /** The floating DrBot panel's size (#597), persisted; see chatPanelLayout. */
@@ -227,17 +231,24 @@ interface UiState {
    *  changeset stays unless `options.changesetId` is given (null clears it):
    *  the Changesets view's "Open in Architecture" opens view, diagram and
    *  overlay in one step. */
-  showC4: (level: C4Level, scope?: string | null, options?: { changesetId?: string | null }) => void;
+  showC4: (level: C4Level, scope?: string | null, options?: { changesetId?: string | null; builtId?: string | null }) => void;
   /** Lay a changeset over the current C4 diagram (null: none). A deliberate
    *  navigation (pushes history); keeps the level, scope and selected box (a
    *  box that only the old overlay drew is for the canvas to let go of). The
-   *  same id again is a no-op. */
-  showC4Overlay: (changesetId: string | null) => void;
+   *  same id again is a no-op. `builtId` compares it with that as-built
+   *  changeset instead (null, the default: the plain overlay). */
+  showC4Overlay: (changesetId: string | null, builtId?: string | null) => void;
   /** Select a box on the current C4 diagram (null clears). */
   selectC4: (id: string | null) => void;
-  /** Restore a C4 diagram from the URL: no history push. `changesetId`
-   *  undefined leaves the overlay as it is. */
-  restoreC4: (level: C4Level, scope: string | null, selectedId: string | null, changesetId?: string | null) => void;
+  /** Restore a C4 diagram from the URL: no history push. `changesetId` /
+   *  `builtId` undefined leave the overlay / comparison as they are. */
+  restoreC4: (
+    level: C4Level,
+    scope: string | null,
+    selectedId: string | null,
+    changesetId?: string | null,
+    builtId?: string | null,
+  ) => void;
   /** Switch the main panel between the live graph and the page-view scaffold.
    *  Persists across layer/node selections (design's "mode toggle persists"). */
   setMode: (mode: CanvasMode) => void;
@@ -320,6 +331,7 @@ export const useUiStore = create<UiState>()(
       c4Scope: null,
       c4SelectedId: null,
       c4ChangesetId: null,
+      c4BuiltId: null,
       // A first visit (nothing persisted yet) gets a light canvas and DrBot
       // closed, at any width (#596, #597). A later explicit choice via
       // toggleCanvasDark / toggleChat persists and overrides these.
@@ -468,27 +480,31 @@ export const useUiStore = create<UiState>()(
           c4Level,
           c4Scope: c4Level === 'component' ? scope : null,
           c4SelectedId: null,
-          ...(options && options.changesetId !== undefined ? { c4ChangesetId: options.changesetId } : {}),
+          ...(options && options.changesetId !== undefined
+            ? { c4ChangesetId: options.changesetId, c4BuiltId: options.changesetId ? (options.builtId ?? null) : null }
+            : {}),
           expandedSections: onlySection('architecture'),
         })),
-      showC4Overlay: (c4ChangesetId) =>
+      showC4Overlay: (c4ChangesetId, builtId = null) =>
         set((s) =>
-          s.c4ChangesetId === c4ChangesetId && s.view === 'architecture'
+          s.c4ChangesetId === c4ChangesetId && s.c4BuiltId === (c4ChangesetId ? builtId : null) && s.view === 'architecture'
             ? {}
             : {
                 navSeq: s.navSeq + 1,
                 view: 'architecture',
                 c4ChangesetId,
+                c4BuiltId: c4ChangesetId ? builtId : null,
                 expandedSections: onlySection('architecture'),
               },
         ),
       selectC4: (c4SelectedId) => set({ c4SelectedId }),
-      restoreC4: (c4Level, c4Scope, c4SelectedId, c4ChangesetId) =>
+      restoreC4: (c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId) =>
         set({
           c4Level,
           c4Scope: c4Level === 'component' ? c4Scope : null,
           c4SelectedId,
           ...(c4ChangesetId !== undefined ? { c4ChangesetId } : {}),
+          ...(c4BuiltId !== undefined ? { c4BuiltId } : {}),
         }),
 
       setMode: (mode) => set({ mode }),

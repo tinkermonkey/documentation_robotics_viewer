@@ -1,0 +1,20 @@
+id: changeset-1795455264113-vv4nkqekf
+name: c4-plan-vs-as-built-as-built
+description: As-built extraction of the code at 1b96484, files changed since
+  main. Staged by codebase_extract.
+created: 2026-11-23T17:34:24.125Z
+modified: 2026-11-23T17:35:27.841Z
+status: staged
+baseSnapshot: v2:sha256:1db965879370c07bc18b830fdd2adc6fb11ddea5ad30e9b55496973900146717
+origin:
+  kind: extract
+purpose: verification
+verifies: changeset-1795451597047-v7kr9sz5s
+scope:
+  since: main
+  codeCommit: 1b9648487e76c0e3f8220acf5b72c002997da845
+stats:
+  additions: 84
+  modifications: 0
+  deletions: 0
+lastSequence: 83

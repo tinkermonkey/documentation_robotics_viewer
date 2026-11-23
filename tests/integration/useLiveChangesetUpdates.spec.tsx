@@ -53,6 +53,7 @@ describe('useLiveChangesetUpdates', () => {
       ['getapichangesets'],
       ['getapichangesetschangesetId'],
       ['getapitier1'],
+      ['changeset-verification'],
     ]);
 
     invalidate.mockClear();

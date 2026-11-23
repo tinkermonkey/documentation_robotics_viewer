@@ -21,6 +21,11 @@
  * arrow list, so a mark never reads by colour alone. Removed boxes and arrows
  * are ghosts (dimmed, dotted, never drillable); a box whose parts changed
  * carries a "3 changes inside" chip; a moved box says where it came from.
+ *
+ * With a plan comparison (`comparison`) the same slots carry the plan
+ * verification's verdict instead (`verdictStyles.ts`): an outline, a glyph
+ * and words per card and arrow, and a box with marked parts says what is
+ * inside. The two never show at once.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -30,6 +35,10 @@ import type { C4View, C4ViewElement } from '../data/c4/c4Views';
 import { C4_CARD, c4EdgeLabel, type C4Layout } from '../data/c4/c4Layout';
 import type { C4ElementDiff, C4RollUp, C4ViewRelationshipDiff } from '../data/c4/c4Diff';
 import { OP_OUTLINE, OVERLAY_OPS, opOutlineCss } from './opStyles';
+import type { PlanVerdict } from '../data/planVerification';
+import type { C4ElementVerdict, VerdictCounts } from '../data/c4/c4PlanCompare';
+import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss, verdictRollUpChip, verdictRollUpLabel } from './verdictStyles';
+import { PLAN_VERDICTS } from '../data/planVerification';
 import {
   ELEMENT_MARKS,
   RELATIONSHIP_MARKS,
@@ -45,6 +54,31 @@ export interface C4DiagramOverlay {
   relationships: ReadonlyMap<string, C4ViewRelationshipDiff>;
   /** The name of a union id that may not be on this diagram (a moved box's former parent). */
   nameOf: (id: string) => string | undefined;
+}
+
+/** A plan compared with what was built, on the drawn diagram (view ids are the drawn model's). */
+export interface C4DiagramComparison {
+  elements: ReadonlyMap<string, C4ElementVerdict>;
+  /** View arrow id → the worst verdict behind it. */
+  arrows: ReadonlyMap<string, { verdict: PlanVerdict }>;
+  rollUp: ReadonlyMap<string, VerdictCounts>;
+}
+
+/** One mark on a card or an arrow, from an overlay or a comparison. */
+interface ResolvedMark {
+  /** `data-status` and the class suffix. */
+  status: string;
+  glyph: string;
+  /** The words: the first is the chip's. */
+  words: string[];
+  /** Outline / stroke token, null for none. */
+  token: string | null;
+  /** Card outline (`border` shorthand), null for none. */
+  outline: string | null;
+  /** Arrow marker id, null for the plain one. */
+  marker: string | null;
+  /** Arrow dash pattern set inline (a comparison); an overlay's comes from its class. */
+  dash: string | null;
 }
 
 export interface C4DiagramProps {
@@ -63,6 +97,8 @@ export interface C4DiagramProps {
   onFocused?: () => void;
   /** A changeset laid over the diagram: marks, ghosts and roll-ups. */
   overlay?: C4DiagramOverlay | null;
+  /** A plan compared with what was built: verdict marks and roll-ups (instead of `overlay`). */
+  comparison?: C4DiagramComparison | null;
 }
 
 export const C4_KIND_LABELS: Record<C4Kind, string> = {
@@ -122,7 +158,18 @@ export function nearestCard(layout: C4Layout, fromId: string, direction: Directi
   return best;
 }
 
-export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFocus, onFocused, overlay }: C4DiagramProps) {
+export function C4Diagram({
+  view,
+  layout,
+  selectedId,
+  onSelect,
+  onDrill,
+  takeFocus,
+  onFocused,
+  overlay: overlayProp,
+  comparison,
+}: C4DiagramProps) {
+  const overlay = comparison ? null : overlayProp;
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Map<string, HTMLButtonElement>());
   const { transform, bind, zoomTo, panTo, getViewport } = usePanZoom({
@@ -220,6 +267,65 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
 
   const nameOf = useMemo(() => new Map(view.elements.map((e) => [e.id, e.element.name])), [view.elements]);
   const relationshipOf = useMemo(() => new Map(view.relationships.map((r) => [r.id, r])), [view.relationships]);
+
+  const edgeMark = (relId: string): ResolvedMark | null => {
+    if (comparison) {
+      const arrow = comparison.arrows.get(relId);
+      if (!arrow) return null;
+      const v = VERDICT_STYLES[arrow.verdict];
+      return {
+        status: `v-${arrow.verdict}`,
+        glyph: v.glyph,
+        words: [v.label],
+        token: v.token,
+        outline: null,
+        marker: v.token ? `c4-arrow-v-${arrow.verdict}` : null,
+        dash: v.dash,
+      };
+    }
+    const change = overlay?.relationships.get(relId);
+    if (!change) return null;
+    const mark = RELATIONSHIP_MARKS[change.status];
+    return {
+      status: change.status,
+      glyph: mark.glyph,
+      words: [relationshipStatusWords(change)],
+      token: mark.op ? OP_OUTLINE[mark.op].token : null,
+      outline: null,
+      marker: mark.op ? `c4-arrow-${mark.op}` : null,
+      dash: null,
+    };
+  };
+
+  /** A card's mark, its status words and its roll-up chip. */
+  const cardMark = (id: string): { mark: ResolvedMark | null; words: string[]; inside: string } => {
+    if (comparison) {
+      const e = comparison.elements.get(id);
+      const counts = comparison.rollUp.get(id);
+      const words: string[] = [];
+      let mark: ResolvedMark | null = null;
+      if (e) {
+        const v = VERDICT_STYLES[e.verdict];
+        const label = elementVerdictLabel(e);
+        words.push(label);
+        mark = { status: `v-${e.verdict}`, glyph: v.glyph, words: [label], token: v.token, outline: verdictOutlineCss(e.verdict), marker: null, dash: null };
+      }
+      const rollUp = verdictRollUpLabel(counts);
+      if (rollUp) words.push(rollUp);
+      return { mark, words, inside: verdictRollUpChip(counts) };
+    }
+    const change = overlay?.elements.get(id);
+    const rollUp = overlay?.rollUp.get(id);
+    const words = overlay ? elementStatusWords(change, rollUp, overlay.nameOf) : [];
+    const m = change ? ELEMENT_MARKS[change.status] : null;
+    const mark: ResolvedMark | null =
+      change && m?.op
+        ? { status: change.status, glyph: m.glyph, words, token: OP_OUTLINE[m.op].token, outline: opOutlineCss(m.op), marker: null, dash: null }
+        : change
+          ? { status: change.status, glyph: '', words, token: null, outline: null, marker: null, dash: null }
+          : null;
+    return { mark, words, inside: rollUpLabel(rollUp) };
+  };
   const touchesSelection = (sourceId: string, targetId: string) =>
     !!selectedId && (sourceId === selectedId || targetId === selectedId);
 
@@ -259,6 +365,12 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
             <marker id="c4-arrow-hot" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
               <path d="M0,0 L9,4.5 L0,9 z" className="c4-diagram__arrowhead c4-diagram__arrowhead--hot" />
             </marker>
+            {comparison &&
+              PLAN_VERDICTS.filter((v) => VERDICT_STYLES[v].token).map((v) => (
+                <marker key={v} id={`c4-arrow-v-${v}`} markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
+                  <path d="M0,0 L9,4.5 L0,9 z" style={{ fill: `rgb(var(${VERDICT_STYLES[v].token}))` }} />
+                </marker>
+              ))}
             {overlay &&
               OVERLAY_OPS.map((op) => (
                 <marker key={op} id={`c4-arrow-${op}`} markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto" markerUnits="userSpaceOnUse">
@@ -285,26 +397,29 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
             const rel = relationshipOf.get(edge.id);
             if (!rel) return null;
             const hot = touchesSelection(rel.sourceId, rel.targetId);
-            const change = overlay?.relationships.get(rel.id);
-            const mark = change ? RELATIONSHIP_MARKS[change.status] : null;
+            const mark = edgeMark(rel.id);
             const base = c4EdgeLabel(rel.labels, rel.count);
             const full = mark ? `${mark.glyph} ${base}` : base;
             const text = full.length > LABEL_CHARS ? `${full.slice(0, LABEL_CHARS - 1)}…` : full;
             const classes = [
               'c4-diagram__edge',
               hot ? 'c4-diagram__edge--hot' : '',
-              change ? `c4-diagram__edge--${change.status}` : '',
+              mark ? `c4-diagram__edge--${mark.status}` : '',
             ]
               .filter(Boolean)
               .join(' ');
-            const marker = hot ? 'url(#c4-arrow-hot)' : mark?.op ? `url(#c4-arrow-${mark.op})` : 'url(#c4-arrow)';
+            const marker = hot ? 'url(#c4-arrow-hot)' : mark?.marker ? `url(#${mark.marker})` : 'url(#c4-arrow)';
+            const stroke: React.CSSProperties = {
+              ...(mark?.token && !hot ? { stroke: `rgb(var(${mark.token}))` } : {}),
+              ...(mark?.dash ? { strokeDasharray: mark.dash } : {}),
+            };
             return (
-              <g key={edge.id} className={classes} data-testid="c4-edge" data-status={change?.status}>
-                {change && <title>{`${base}: ${relationshipStatusWords(change)}`}</title>}
+              <g key={edge.id} className={classes} data-testid="c4-edge" data-status={mark?.status}>
+                {mark && <title>{`${base}: ${mark.words[0]}`}</title>}
                 <polyline
                   points={edge.points.map((p) => `${p.x},${p.y}`).join(' ')}
                   markerEnd={marker}
-                  style={mark?.op && !hot ? { stroke: `rgb(var(${OP_OUTLINE[mark.op].token}))` } : undefined}
+                  style={Object.keys(stroke).length > 0 ? stroke : undefined}
                 />
                 {edge.label && text && (
                   <g>
@@ -340,13 +455,9 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
           const icon = element.shape === 'datastore' ? 'data' : KIND_ICONS[element.kind];
           const drillable = canDrill(item);
           const parts = drillable ? `, ${item.childCount} ${item.childCount === 1 ? 'part' : 'parts'}, Enter opens it` : '';
-          const change = overlay?.elements.get(item.id);
-          const rollUp = overlay?.rollUp.get(item.id);
-          const mark = change ? ELEMENT_MARKS[change.status] : null;
-          const words = overlay ? elementStatusWords(change, rollUp, overlay.nameOf) : [];
+          const { mark, words, inside } = cardMark(item.id);
           const status = words.length > 0 ? `, ${words.join(', ')}` : '';
-          const inside = rollUpLabel(rollUp);
-          const ghost = change?.status === 'removed';
+          const ghost = isGhost(item.id);
           const classes = [
             'c4-card',
             `c4-card--${element.kind}`,
@@ -366,12 +477,12 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
               data-testid="c4-card"
               data-c4-id={item.id}
               data-kind={element.kind}
-              data-status={change?.status}
+              data-status={mark?.status}
             >
-              {mark?.op && (
+              {mark?.outline && (
                 <span
                   className="c4-card__mark"
-                  style={{ border: opOutlineCss(mark.op) }}
+                  style={{ border: mark.outline }}
                   aria-hidden="true"
                   data-testid="c4-card-mark"
                 />
@@ -398,10 +509,10 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
                 <span className="c4-card__kind">[{c4KindLine(item)}]</span>
                 {element.description && <span className="c4-card__description">{element.description}</span>}
               </button>
-              {mark?.op && (
+              {mark && (mark.outline || comparison) && (
                 <span
                   className="c4-card__status"
-                  style={{ borderColor: `rgb(var(${OP_OUTLINE[mark.op].token}))` }}
+                  style={mark.token ? { borderColor: `rgb(var(${mark.token}))` } : undefined}
                   title={words[0]}
                   aria-hidden="true"
                   data-testid="c4-card-status"
@@ -436,7 +547,7 @@ export function C4Diagram({ view, layout, selectedId, onSelect, onDrill, takeFoc
       {/* The arrows, as text: the SVG above is decorative. */}
       <ul className="heimdall-visually-hidden" aria-label="Relationships on this diagram" data-testid="c4-relationship-list">
         {view.relationships.map((rel) => {
-          const words = relationshipStatusWords(overlay?.relationships.get(rel.id));
+          const words = edgeMark(rel.id)?.words[0] ?? '';
           return (
             <li key={rel.id}>
               {nameOf.get(rel.sourceId)} {rel.labels.join(', ')} {nameOf.get(rel.targetId)}

@@ -21,6 +21,12 @@
  * `C4ChangesetBar` under the breadcrumb says what it is and what differs; the
  * drawer lists the changes behind the selected box, each a link to it in the
  * Changesets view. A selection the overlaid diagram doesn't draw is dropped.
+ *
+ * A plan can instead be compared with what was built (`?built=`, the
+ * as-built changeset): the diagram is the model as the plan leaves it with the
+ * as-built laid over it (`useC4PlanComparison`), each box and arrow carries
+ * the dr CLI's plan verification verdict, the `C4PlanComparisonBar` replaces
+ * the changeset bar, and the drawer lists the verdicts behind the box.
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -29,14 +35,18 @@ import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { useChatAnchor } from './chatAnchor';
 import { MarkdownText } from './MarkdownText';
-import { C4Diagram, C4_KIND_LABELS, type C4DiagramOverlay } from './C4Diagram';
+import { C4Diagram, C4_KIND_LABELS, type C4DiagramComparison, type C4DiagramOverlay } from './C4Diagram';
+import { C4PlanComparisonBar } from './C4PlanComparisonBar';
+import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss } from './verdictStyles';
 import { C4ChangesetPicker } from './C4ChangesetPicker';
 import { C4ChangesetBar } from './C4ChangesetBar';
 import { OP_OUTLINE, type OverlayOp } from './opStyles';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { specTypeLabel, withCount } from '../data/typeLabel';
-import { useC4Layout, useC4Model, useC4Overlay, type C4Overlay } from '../data/c4/useC4Model';
+import { useC4Layout, useC4Model, useC4Overlay, useC4PlanComparison, type C4Overlay } from '../data/c4/useC4Model';
+import { viewArrowVerdicts, type C4PlanComparison } from '../data/c4/c4PlanCompare';
+import type { VerdictItem } from '../data/planVerification';
 import { C4_SYSTEM_ID, isEmptyC4, type C4Model } from '../data/c4/c4Model';
 import { buildC4View, type C4Level, type C4View, type C4ViewElement } from '../data/c4/c4Views';
 import { unionC4View, type C4DiffView } from '../data/c4/c4Diff';
@@ -222,6 +232,98 @@ function C4ChangesSection({
   );
 }
 
+/** Rows shown per list of "Plan vs as built" before the rest are counted. */
+const VERDICT_ROWS = 20;
+
+function VerdictRow({ item }: { item: VerdictItem }) {
+  const style = VERDICT_STYLES[item.verdict];
+  const outline = verdictOutlineCss(item.verdict);
+  const name = item.name ?? item.id.split('.').slice(2).join('.');
+  return (
+    <li data-testid="c4-verdict-row" data-verdict={item.verdict}>
+      <span className="c4-details__op" style={outline ? { border: outline } : undefined}>
+        <span aria-hidden="true">{style.glyph}&nbsp;</span>
+        {item.verdict === 'unplanned' && item.change === 'deleted' ? 'removed, not planned' : style.label}
+      </span>
+      <span title={item.id}>{name}</span>
+      {item.reason && <span className="c4-details__muted">{item.reason}</span>}
+      {item.fields && <span className="c4-details__muted">differs in {item.fields.join(', ')}</span>}
+    </li>
+  );
+}
+
+/**
+ * "Plan vs as built": the verdicts behind the selected box: the model
+ * elements it is, the ones folded onto it, and the links behind its arrows on
+ * this diagram.
+ */
+function C4VerdictSection({ id, view, comparison }: { id: string; view: C4View; comparison: C4PlanComparison }) {
+  const entry = comparison.elements.get(id);
+  const arrows = viewArrowVerdicts(
+    { relationships: view.relationships.filter((r) => r.sourceId === id || r.targetId === id) },
+    comparison,
+  );
+  const links = [...new Set([...arrows.values()].flatMap((a) => a.items))];
+  if (!entry && links.length === 0) {
+    return (
+      <section aria-label="Plan vs as built">
+        <h3 className="c4-details__section">Plan vs as built</h3>
+        <p className="c4-details__muted" data-testid="c4-verdict-none">
+          Neither the plan nor the build touches this box.
+        </p>
+      </section>
+    );
+  }
+  const list = (items: VerdictItem[], label: string) =>
+    items.length > 0 && (
+      <>
+        <h4 className="c4-details__subsection">{label}</h4>
+        <ul className="c4-details__list">
+          {items.slice(0, VERDICT_ROWS).map((item) => (
+            <VerdictRow key={`${item.verdict}:${item.id}`} item={item} />
+          ))}
+          {items.length > VERDICT_ROWS && <li className="c4-details__muted">and {items.length - VERDICT_ROWS} more</li>}
+        </ul>
+      </>
+    );
+  return (
+    <section aria-label="Plan vs as built" data-testid="c4-verdicts">
+      <h3 className="c4-details__section">Plan vs as built</h3>
+      {entry && (
+        <p className="c4-details__muted" data-testid="c4-verdict-box">
+          This box: {elementVerdictLabel(entry)}
+        </p>
+      )}
+      {entry && list(entry.items, 'This box')}
+      {entry && list(entry.folded, 'Attached to it')}
+      {links.length > 0 && (
+        <>
+          <h4 className="c4-details__subsection">Its links on this diagram</h4>
+          <ul className="c4-details__list">
+            {links.slice(0, VERDICT_ROWS).map((link) => {
+              const style = VERDICT_STYLES[link.verdict];
+              const outline = verdictOutlineCss(link.verdict);
+              const short = (ref: string) => ref.split('.').slice(2).join('.');
+              return (
+                <li key={`${link.verdict}:${link.source}|${link.predicate}|${link.target}`} data-testid="c4-verdict-link">
+                  <span className="c4-details__op" style={outline ? { border: outline } : undefined}>
+                    <span aria-hidden="true">{style.glyph}&nbsp;</span>
+                    {style.label}
+                  </span>
+                  <span>
+                    {short(link.source)} —{link.predicate}→ {short(link.target)}
+                  </span>
+                </li>
+              );
+            })}
+            {links.length > VERDICT_ROWS && <li className="c4-details__muted">and {links.length - VERDICT_ROWS} more</li>}
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
 /** The drawer's content for the selected box. */
 function C4Details({
   item,
@@ -232,6 +334,7 @@ function C4Details({
   onClose,
   overlay,
   detail,
+  comparison,
 }: {
   item: C4ViewElement;
   view: C4View;
@@ -242,6 +345,8 @@ function C4Details({
   /** The changeset laid over the diagram, if any (with `view` its union view). */
   overlay?: C4Overlay | null;
   detail?: ChangesetDetail | null;
+  /** A plan compared with what was built, if any (with `view` drawn from its model). */
+  comparison?: C4PlanComparison | null;
 }) {
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const { derived: spec } = useSpec();
@@ -289,6 +394,8 @@ function C4Details({
           Open its {item.childCount} {item.childCount === 1 ? 'part' : 'parts'}
         </Button>
       )}
+
+      {comparison && <C4VerdictSection id={item.id} view={view} comparison={comparison} />}
 
       {overlay && detail && 'relationshipDiff' in view && (
         <C4ChangesSection id={item.id} view={view as C4DiffView} overlay={overlay} detail={detail} />
@@ -379,21 +486,40 @@ export function ArchitectureCanvas() {
   const c4Scope = useUiStore((s) => s.c4Scope);
   const c4SelectedId = useUiStore((s) => s.c4SelectedId);
   const c4ChangesetId = useUiStore((s) => s.c4ChangesetId);
+  const c4BuiltId = useUiStore((s) => s.c4BuiltId);
   const showC4 = useUiStore((s) => s.showC4);
   const selectC4 = useUiStore((s) => s.selectC4);
 
   const { derived: raw } = useModel();
   const { model, isLoading, isError } = useC4Model();
-  const overlayState = useC4Overlay(c4ChangesetId);
+  // A plan compared with what was built, or else the plain overlay: never both.
+  const comparing = !!c4ChangesetId && !!c4BuiltId;
+  const compareState = useC4PlanComparison(comparing ? c4ChangesetId : null, comparing ? c4BuiltId : null);
+  const overlayState = useC4Overlay(comparing ? null : c4ChangesetId);
   const { overlay, detail } = overlayState;
+  const comparison = compareState.comparison;
+  const compareView = useMemo(
+    () => (compareState.c4 ? buildC4View(compareState.c4, c4Level, c4Scope) : null),
+    [compareState.c4, c4Level, c4Scope],
+  );
   const diffView = useMemo(
     () => (overlay ? unionC4View(overlay.base, overlay.after, overlay.diff, c4Level, c4Scope) : null),
     [overlay, c4Level, c4Scope],
   );
   const baseView = useMemo(() => buildC4View(model, c4Level, c4Scope), [model, c4Level, c4Scope]);
-  const view: C4View = diffView ?? baseView;
-  const drawn = overlay?.union ?? model;
-  const { layout, error: layoutError } = useC4Layout(view, overlay ? overlayState.key : '');
+  const view: C4View = compareView ?? diffView ?? baseView;
+  const drawn = compareState.c4 ?? overlay?.union ?? model;
+  const { layout, error: layoutError } = useC4Layout(
+    view,
+    compareView ? compareState.key : overlay ? overlayState.key : '',
+  );
+  const diagramComparison = useMemo<C4DiagramComparison | null>(
+    () =>
+      comparison && compareView
+        ? { elements: comparison.elements, arrows: viewArrowVerdicts(compareView, comparison), rollUp: comparison.rollUp }
+        : null,
+    [comparison, compareView],
+  );
   const diagramOverlay = useMemo<C4DiagramOverlay | null>(
     () =>
       overlay && diffView
@@ -416,7 +542,7 @@ export function ArchitectureCanvas() {
   // A selected box this diagram doesn't draw (a ghost of another changeset, a
   // box the overlay took away) is let go, once the diagram it's checked against
   // is the one that will be drawn.
-  const settled = !isLoading && !isError && !empty && !overlayState.isLoading;
+  const settled = !isLoading && !isError && !empty && !overlayState.isLoading && !compareState.isLoading;
   useEffect(() => {
     if (settled && c4SelectedId && !selected) selectC4(null);
   }, [settled, c4SelectedId, selected, selectC4]);
@@ -477,7 +603,7 @@ export function ArchitectureCanvas() {
         }
       />
       <ScopeTrail view={view} onOpen={open} />
-      <C4ChangesetBar state={overlayState} />
+      {comparing ? <C4PlanComparisonBar state={compareState} /> : <C4ChangesetBar state={overlayState} />}
 
       <div ref={bodyRef} style={{ flex: 1, position: 'relative', minHeight: 0 }} data-testid="c4-body">
         {isError ? (
@@ -503,6 +629,7 @@ export function ArchitectureCanvas() {
             takeFocus={focusDiagram}
             onFocused={diagramFocused}
             overlay={diagramOverlay}
+            comparison={diagramComparison}
           />
         )}
         <DetailDrawer open={!!selected} width={DRAWER_WIDTH}>
@@ -516,6 +643,7 @@ export function ArchitectureCanvas() {
               onClose={() => selectC4(null)}
               overlay={overlay}
               detail={detail}
+              comparison={comparison}
             />
           )}
         </DetailDrawer>

@@ -371,6 +371,13 @@
   color: rgb(var(--canvas-fg-2));
 }
 
+.c4-details__subsection {
+  margin: 8px 0 4px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgb(var(--canvas-fg-1));
+}
+
 .c4-details__list {
   margin: 0;
   padding: 0;
@@ -578,4 +585,16 @@
   font-family: 'JetBrains Mono', monospace;
   font-size: 10.5px;
   color: rgb(var(--canvas-fg-2));
+}
+
+/* ---- plan vs as built: verdict arrows (dash set inline; a heavier line for the marked ones) ---- */
+
+.c4-diagram__edge--v-missing polyline,
+.c4-diagram__edge--v-divergent polyline,
+.c4-diagram__edge--v-unplanned polyline {
+  stroke-width: 2;
+}
+
+.c4-diagram__edge--v-unverifiable polyline {
+  opacity: 0.75;
 }
