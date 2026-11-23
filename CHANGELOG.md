@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.15.0] - 2026-11-23
+
+The C4 diagrams can now show a plan against what was built: every box and arrow the plan or the build touched is
+marked built as planned, built differently, planned but not built, or built but not planned, so a plan's outcome
+reads at the level of the architecture. The verdicts come from the dr CLI's plan verification. A dr CLI with the
+verification route (documentation_robotics#1315) shows them; an older one shows the plan without verdicts and says
+so. Works with dr CLI 0.6.0 and later.
+
+### Added
+- **Plan vs as built on the C4 diagrams** (#617): compare a plan with its verification record (or any as-built
+  changeset) from the changeset bar's **Compare with what was built** or the Changesets view's **Compare on the
+  diagrams**. Each mark has a glyph, words and its own outline or line style, never colour alone: `✓ built as
+  planned`, `≈ probably built`, `≠ built differently`, `∅ planned, not built`, `? can't be checked`, `+ built, not
+  planned`. A box above marked parts says how many it holds. A bar names the pair, picks the as-built changeset,
+  gives the CLI's verdict, tallies and explains the marks and says what the diagrams leave out; the details drawer
+  lists the verdicts behind a box. The comparison is in the URL (`?built=`), and Back and Forward follow it.
+
+### Chores
+- The API spec is synced with the dr CLI's (with the verification route) and the client regenerated (#618).
+- The viewer's own model holds the slice 3 plan, landed, and its as-built record (#617, #618).
+
 ## [0.14.0] - 2026-11-21
 
 A new **Architecture** view draws the model as C4 diagrams (System Context, Containers and Components), and any
