@@ -16,11 +16,11 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 34    |
+| Elements                  | 36    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 49    |
-| Inbound Relationships     | 36    |
-| Outbound Relationships    | 13    |
+| Inter-Layer Relationships | 56    |
+| Inbound Relationships     | 41    |
+| Outbound Relationships    | 15    |
 
 **Cross-Layer References**:
 
@@ -37,6 +37,7 @@ Data entities, relationships, and data structure definitions.
 | `data-model.objectschema.annotation-create`       | `objectschema`     | 1             |
 | `data-model.objectschema.c4-diff`                 | `objectschema`     | 0             |
 | `data-model.objectschema.c4-model`                | `objectschema`     | 0             |
+| `data-model.objectschema.c4-plan-comparison`      | `objectschema`     | 0             |
 | `data-model.objectschema.c4-view`                 | `objectschema`     | 0             |
 | `data-model.objectschema.change-origin`           | `objectschema`     | 0             |
 | `data-model.objectschema.changeset-action-result` | `objectschema`     | 0             |
@@ -52,6 +53,7 @@ Data entities, relationships, and data structure definitions.
 | `data-model.objectschema.meta-model`              | `objectschema`     | 1             |
 | `data-model.objectschema.model-element`           | `objectschema`     | 2             |
 | `data-model.objectschema.model-metadata`          | `objectschema`     | 0             |
+| `data-model.objectschema.plan-verification`       | `objectschema`     | 0             |
 | `data-model.objectschema.predicate-definition`    | `objectschema`     | 1             |
 | `data-model.objectschema.reference`               | `objectschema`     | 0             |
 | `data-model.objectschema.relationship`            | `objectschema`     | 3             |
@@ -103,8 +105,11 @@ flowchart TB
 | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-plan-comparison`      | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.plan-verification`       | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                             | `data-model.objectschema.c4-plan-comparison`      | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.c4-diagram`                                                             | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.change-inspector`                                                       | `data-model.objectschema.delete-blocker`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-canvas`                                                       | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
@@ -124,12 +129,14 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                        | `data-model.objectschema.c4-diff`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                       | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-plan-comparison`                                                       | `data-model.objectschema.c4-plan-comparison`      | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                          | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-view-scoping`                                                          | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.change-origin-helpers`                                                    | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-impact-analysis`                                                | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.plan-verification`                                                        | `data-model.objectschema.plan-verification`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
@@ -137,10 +144,12 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-model`                                                                        | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-plan-comparison`                                                              | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-detail`                                                                | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-summary`                                                               | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.extracted-reference`                                                             | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.model-metadata`                                                                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.plan-verification`                                                               | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.reference`                                                                       | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.annotation-id`                                                               | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
 | `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.changeset-id`                                                                | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -232,6 +241,29 @@ The C4 reading of a DR model: elements (id, kind, name, technology, description,
 | inter-layer | `application.applicationservice.c4-model-transform`    | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.c4-view-scoping`       | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.use-c4model`           | `accesses` | inbound   |
+| inter-layer | `business.businessobject.architecture-model`           | `realizes` | outbound  |
+
+### C4 Plan Comparison {#c4-plan-comparison}
+
+**ID**: `data-model.objectschema.c4-plan-comparison`
+
+**Type**: `objectschema`
+
+The result of `compareC4Plan`: per C4 element and relationship the worst verdict of the model elements and links behind it and the ids behind each verdict, a roll-up of verdict counts per ancestor, the tally, and what no diagram shows (counted, never dropped).
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `accesses` | inbound   |
+| inter-layer | `application.applicationcomponent.c4-diagram`          | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-plan-comparison`    | `accesses` | inbound   |
 | inter-layer | `business.businessobject.architecture-model`           | `realizes` | outbound  |
 
 ### C4 View {#c4-view}
@@ -555,6 +587,28 @@ Metadata bag attached to the MetaModel root; includes author, timestamps, parse 
 | ----------- | -------------------------------------------- | ---------- | --------- |
 | inter-layer | `business.businessobject.architecture-model` | `realizes` | outbound  |
 
+### Plan Verification {#plan-verification}
+
+**ID**: `data-model.objectschema.plan-verification`
+
+**Type**: `objectschema`
+
+The wire shape of Get Changeset Verification, validated before it reaches React (as `tier1.ts` does): the plan and as-built ids, a verdict, per-element and per-relationship verdicts by id, unplanned ids, the extraction summary and counts. Malformed entries are dropped and counted.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.plan-verification`     | `accesses` | inbound   |
+| inter-layer | `business.businessobject.changeset`                    | `realizes` | outbound  |
+
 ### PredicateDefinition {#predicatedefinition}
 
 **ID**: `data-model.objectschema.predicate-definition`
@@ -874,4 +928,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-21T16:42:09.853Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

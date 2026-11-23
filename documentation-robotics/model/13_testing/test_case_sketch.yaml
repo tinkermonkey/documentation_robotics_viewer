@@ -19917,3 +19917,93 @@ testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-
     created_at: 2026-11-21T16:39:21.370Z
     updated_at: 2026-11-21T16:39:21.370Z
     version: 1
+testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli:
+  id: 151b3da3-9404-44c5-b8e6-d18a9a0d5037
+  path: testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: planVerification validates the wire result and reads a 404 as an older CLI
+  description: "Planned unit test, tests/unit/planVerification.spec.ts: malformed
+    entries dropped and counted."
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.244Z
+    updated_at: 2026-11-23T16:34:43.244Z
+    version: 1
+testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan:
+  id: ada50da1-7595-468d-8906-056c1ff2ea29
+  path: testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: planVerification pairs a verification record with its plan
+  description: "Planned unit test, tests/unit/planVerification.spec.ts: other
+    as-built changesets are offered by hand."
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.245Z
+    updated_at: 2026-11-23T16:34:43.245Z
+    version: 1
+testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up:
+  id: 4bdf378d-892b-44f0-89ec-414e7538c4ce
+  path: testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: compareC4Plan gives each box the worst verdict behind it, rolled up
+  description: Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts, over the
+    hand-built C4 fixture; arrows too.
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.246Z
+    updated_at: 2026-11-23T16:34:43.246Z
+    version: 1
+testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram:
+  id: c95fbfd5-65b6-46b1-a707-3985b24e10ea
+  path: testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: compareC4Plan places unplanned as-built elements on the plan's diagram
+  description: "Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts: an
+    unplanned test folds onto what it tests."
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.246Z
+    updated_at: 2026-11-23T16:34:43.246Z
+    version: 1
+testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs:
+  id: a6e3d3a4-2c17-461f-8104-4ab8025bd2d2
+  path: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 plan comparison bar tallies verdicts and cards carry glyphs
+  description: "Planned component test, tests/components/C4PlanCompare.spec.tsx:
+    never colour alone; verdict in each card's accessible name."
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.246Z
+    updated_at: 2026-11-23T16:34:43.246Z
+    version: 1
+testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark:
+  id: f265bd32-852a-4ed4-a2e1-e706c5590e21
+  path: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view plan vs as built passes axe in light and dark
+  description: "Planned E2E test, tests/e2e/architecture.spec.ts: ?changeset= +
+    ?built= draws the comparison."
+  attributes:
+    status: draft
+  metadata:
+    created_at: 2026-11-23T16:34:43.246Z
+    updated_at: 2026-11-23T16:34:43.246Z
+    version: 1

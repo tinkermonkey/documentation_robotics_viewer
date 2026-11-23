@@ -16,11 +16,11 @@ User interface components, screens, and user experience elements.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 23    |
-| Intra-Layer Relationships | 21    |
-| Inter-Layer Relationships | 61    |
-| Inbound Relationships     | 18    |
-| Outbound Relationships    | 43    |
+| Elements                  | 24    |
+| Intra-Layer Relationships | 22    |
+| Inter-Layer Relationships | 65    |
+| Inbound Relationships     | 20    |
+| Outbound Relationships    | 45    |
 
 **Cross-Layer References**:
 
@@ -36,6 +36,7 @@ flowchart LR
     ux_statepattern_data_loading_pattern["Data Loading Pattern"]
     ux_subview_c4_changeset_bar["C4 Changeset Bar"]
     ux_subview_c4_diagram["C4 Diagram"]
+    ux_subview_c4_plan_comparison_bar["C4 Plan Comparison Bar"]
     ux_subview_change_inspector_panel["Change Inspector Panel"]
     ux_subview_changeset_impact_tab["Changeset Impact Tab"]
     ux_subview_changeset_inbox["Changeset Inbox"]
@@ -67,6 +68,7 @@ flowchart LR
     ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
     ux_view_architecture_view -->|composes| ux_subview_c4_changeset_bar
     ux_view_architecture_view -->|composes| ux_subview_c4_diagram
+    ux_view_architecture_view -->|composes| ux_subview_c4_plan_comparison_bar
     ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
     ux_view_changesets_view -->|composes| ux_subview_changeset_inbox
@@ -122,6 +124,8 @@ flowchart TB
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                   | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`  | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                  | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                            | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`       | `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`                                             | `ux.subview.c4-plan-comparison-bar`                             | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                        | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.escape-inside-the-drbot-panel-closes-it-and-returns-focus-to-the-launcher`                                  | `ux.view.dr-bot-chat-drawer`                                    | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.subview`       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                      | `ux.subview.hive-by-type`                                       | `ux`         | `tests`      | many-to-many | medium   |
@@ -134,9 +138,11 @@ flowchart TB
 | `ux.view.depends-on.technology.systemsoftware`  | `ux.view.architecture-view`                                                                                                         | `technology.systemsoftware.elk`                                 | `technology` | `depends-on` | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-architecture-diagrams`                      | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-changeset-overlay`                          | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-plan-vs-as-built`                           | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`    | `ux.view.architecture-view`                                                                                                         | `business.businessobject.architecture-model`                    | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`      | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.architecture-reads-as-c4-diagrams`      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`      | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.changesets-read-as-architecture-change` | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`      | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.plan-outcome-reads-as-architecture`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`      | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.wcag-21-aa-compliance`                  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`          | `ux.view.architecture-view`                                                                                                         | `business.businessrole.architecture-reviewer`                   | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`          | `ux.view.architecture-view`                                                                                                         | `business.businessrole.model-author`                            | `business`   | `serves`     | many-to-many | medium   |
@@ -235,7 +241,7 @@ The Architecture view's changeset overlay bar under the breadcrumb: a changeset 
 
 **Type**: `subview`
 
-Architecture view, the diagram area: the scope's boundary, a card per person, system, container or component, and labelled arrows between them, with pan, zoom and fit.
+Architecture view, the diagram area: the scope's boundary, a card per person, system, container or component, and labelled arrows between them, with pan, zoom and fit. With an overlaid changeset, op marks on cards and arrows; with a plan + as-built pair, verdict marks instead (glyph and line style, never colour alone).
 
 #### Attributes
 
@@ -248,6 +254,21 @@ Architecture view, the diagram area: the scope's boundary, a card per person, sy
 | Type        | Related Element             | Predicate  | Direction |
 | ----------- | --------------------------- | ---------- | --------- |
 | intra-layer | `ux.view.architecture-view` | `composes` | inbound   |
+
+### C4 Plan Comparison Bar {#c4-plan-comparison-bar}
+
+**ID**: `ux.subview.c4-plan-comparison-bar`
+
+**Type**: `subview`
+
+The Architecture view's bar for a plan + as-built pair (`?changeset=` + `?built=`): the plan and as-built names with a picker for the as-built (the plan's verification records first, then any as-built or reconcile changeset), the overall verdict, a tally per verdict, the legend, what the diagrams leave out, Review in Changesets and Clear. With an older dr CLI it says the server can't compare and how to upgrade.
+
+#### Relationships
+
+| Type        | Related Element                                                                         | Predicate  | Direction |
+| ----------- | --------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs` | `tests`    | inbound   |
+| intra-layer | `ux.view.architecture-view`                                                             | `composes` | inbound   |
 
 ### Change Inspector Panel {#change-inspector-panel}
 
@@ -464,7 +485,7 @@ UX specification for token-based authentication flow; extracts bearer token from
 
 **Type**: `view`
 
-The model as C4 diagrams (#/architecture): a level control (Context · Containers · Components), a breadcrumb of the scope, and the diagram. Clicking a box selects it and opens its details; a box with parts drills into them. A changeset can be laid over the diagrams (`?changeset=`, from the C4 Changeset Bar's picker or the Changesets view): what it adds, removes or changes is marked on the boxes and arrows.
+The model as C4 diagrams (#/architecture): a level control (Context · Containers · Components), a breadcrumb of the scope, and the diagram. Clicking a box selects it and opens its details; a box with parts drills into them. A changeset can be laid over the diagrams (`?changeset=`, from the C4 Changeset Bar's picker or the Changesets view): what it adds, removes or changes is marked on the boxes and arrows. A plan can be compared with what was built (`?changeset=` + `?built=`, from the C4 Plan Comparison Bar or a verification record in the Changesets view): each box and arrow carries the plan verification's verdict.
 
 #### Attributes
 
@@ -485,13 +506,16 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 | inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                  | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                 | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                           | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                       | `tests`      | inbound   |
 | inter-layer | `technology.systemsoftware.elk`                                                                                                    | `depends-on` | outbound  |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                         | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-changeset-overlay`                                                                                             | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                              | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.architecture-model`                                                                                       | `references` | outbound  |
 | inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                         | `satisfies`  | outbound  |
 | inter-layer | `motivation.requirement.changesets-read-as-architecture-change`                                                                    | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                                                                        | `satisfies`  | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                     | `satisfies`  | outbound  |
 | inter-layer | `business.businessrole.architecture-reviewer`                                                                                      | `serves`     | outbound  |
 | inter-layer | `business.businessrole.model-author`                                                                                               | `serves`     | outbound  |
@@ -499,6 +523,7 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 | intra-layer | `ux.uxspec.architecture-exploration-spec`                                                                                          | `aggregates` | inbound   |
 | intra-layer | `ux.subview.c4-changeset-bar`                                                                                                      | `composes`   | outbound  |
 | intra-layer | `ux.subview.c4-diagram`                                                                                                            | `composes`   | outbound  |
+| intra-layer | `ux.subview.c4-plan-comparison-bar`                                                                                                | `composes`   | outbound  |
 
 ### Auth View {#auth-view}
 
@@ -698,4 +723,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

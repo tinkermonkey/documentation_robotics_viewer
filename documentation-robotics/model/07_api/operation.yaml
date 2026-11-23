@@ -468,3 +468,25 @@ api.operation.put-api-changesets-changeset-id-review:
     created_at: 2026-11-18T16:22:43.196Z
     updated_at: 2026-11-18T16:22:43.196Z
     version: 1
+api.operation.get-changeset-verification:
+  id: a0fbf531-d1f6-49a6-aa0e-df3d4063538c
+  path: api.operation.get-changeset-verification
+  spec_node_id: api.operation
+  type: operation
+  layer_id: api
+  name: Get Changeset Verification
+  description: "The per-element result of `changeset_verify` for a plan against an
+    as-built changeset: matched, probable, divergent, missing, unverifiable and
+    unplanned elements and relationships, with their ids, the extraction summary
+    and the counts. Read-only; served by the dr CLI's `dr visualize`
+    (documentation_robotics). An older CLI answers 404."
+  attributes:
+    operationId: getChangesetVerification
+    summary: Compare a plan changeset with an as-built changeset
+    tags: Changesets
+    http_method: GET
+    http_path: /api/changesets/{changesetId}/verification
+  metadata:
+    created_at: 2026-11-23T16:33:54.245Z
+    updated_at: 2026-11-23T16:33:54.245Z
+    version: 1

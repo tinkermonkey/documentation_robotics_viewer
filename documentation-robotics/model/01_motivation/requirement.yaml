@@ -224,3 +224,21 @@ motivation.requirement.changesets-read-as-architecture-change:
     created_at: 2026-11-21T01:28:54.086Z
     updated_at: 2026-11-21T01:28:54.086Z
     version: 1
+motivation.requirement.plan-outcome-reads-as-architecture:
+  id: 9e020955-3466-4dc5-b222-7989b4c5c39f
+  path: motivation.requirement.plan-outcome-reads-as-architecture
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Plan outcome reads as architecture
+  description: "A person can see, on the C4 diagrams, whether a plan was built as
+    planned: which planned boxes and arrows were built, which were not, and what
+    was built that the plan didn't name. The verdicts are the ones the dr CLI's
+    plan verification gives, never a second matcher of the viewer's own."
+  attributes:
+    requirementType: functional
+    priority: high
+  metadata:
+    created_at: 2026-11-23T16:33:54.225Z
+    updated_at: 2026-11-23T16:33:54.225Z
+    version: 1

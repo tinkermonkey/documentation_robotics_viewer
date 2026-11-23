@@ -16,10 +16,10 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 26    |
-| Intra-Layer Relationships | 32    |
-| Inter-Layer Relationships | 72    |
-| Inbound Relationships     | 72    |
+| Elements                  | 27    |
+| Intra-Layer Relationships | 33    |
+| Inter-Layer Relationships | 79    |
+| Inbound Relationships     | 79    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
@@ -52,6 +52,7 @@ flowchart LR
     motivation_requirement_embedded_deployment_mode["Embedded Deployment Mode"]
     motivation_requirement_find_anything_by_name["Find anything by name"]
     motivation_requirement_only_the_servers_allowed_moves_are_offered["Only the server's allowed moves are offered"]
+    motivation_requirement_plan_outcome_reads_as_architecture["Plan outcome reads as architecture"]
     motivation_requirement_viewer_covers_every_spec_layer["Viewer covers every spec layer"]
     motivation_requirement_wcag_21_aa_compliance["WCAG 2.1 AA Compliance"]
     motivation_stakeholder_architecture_team["Architecture Team"]
@@ -81,6 +82,7 @@ flowchart LR
     motivation_requirement_embedded_deployment_mode -->|realizes| motivation_goal_accelerate_architecture_documentation
     motivation_requirement_find_anything_by_name -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_only_the_servers_allowed_moves_are_offered -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
+    motivation_requirement_plan_outcome_reads_as_architecture -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_viewer_covers_every_spec_layer -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_wcag_21_aa_compliance -->|realizes| motivation_goal_ensure_accessible_architecture_views
     motivation_stakeholder_architecture_team -->|associated-with| motivation_requirement_dr_cli_server_integration
@@ -130,13 +132,16 @@ flowchart TB
 | `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`                                                                                              | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                                                                                              | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                                                                                              | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
+| `api.operation.satisfies.motivation.requirement`                                      | `api.operation.get-changeset-verification`                                                                                          | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-changeset-diff`                                                                                  | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-model-transform`                                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-plan-comparison`                                                                                 | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-drift`                                                                                    | `motivation.requirement.drift-shows-before-apply`                   | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-impact-analysis`                                                                          | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-purpose`                                                                                  | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-review-model`                                                                             | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`                                                                               | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.plan-verification`                                                                                  | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.search-index`                                                                                       | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-changeset-review`                                                                               | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                                                              | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
@@ -160,6 +165,9 @@ flowchart TB
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                                                                | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.dr-bot-chat-drawer`                                                                                                | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.model-graph-view`                                                                                                  | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -187,6 +195,7 @@ flowchart TB
 | `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                                                                                                     | `motivation.requirement.dr-cli-server-integration`                  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`                                                    | `ux.view.architecture-view`                                                                                                         | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -414,6 +423,7 @@ Provide interactive, navigable visualization of the DR spec's multi-layer archit
 | intra-layer | `motivation.requirement.each-review-change-reads-on-its-own`        | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.find-anything-by-name`                      | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `realizes`  | inbound   |
+| intra-layer | `motivation.requirement.plan-outcome-reads-as-architecture`         | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.viewer-covers-every-spec-layer`             | `realizes`  | inbound   |
 | intra-layer | `motivation.stakeholder.architecture-team`                          | `influence` | inbound   |
 
@@ -503,6 +513,7 @@ A person can read the modelled system as the established C4 diagrams (Context, C
 | inter-layer | `application.applicationservice.c4-model-transform`                                                    | `satisfies` | inbound   |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                             | `satisfies` | inbound   |
 | inter-layer | `product.feature.c4-changeset-overlay`                                                                 | `satisfies` | inbound   |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                                                                  | `satisfies` | inbound   |
 | inter-layer | `testing.testcasesketch.c4-model-relationships-keeps-the-source-ids-of-every-element-and-relationship` | `satisfies` | inbound   |
 | inter-layer | `ux.view.architecture-view`                                                                            | `satisfies` | inbound   |
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                            | `realizes`  | outbound  |
@@ -699,6 +710,32 @@ The viewer offers Apply and Discard for a changeset only when the dr CLI's actio
 | inter-layer | `application.applicationservice.changeset-purpose`          | `satisfies` | inbound   |
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
 
+### Plan outcome reads as architecture {#plan-outcome-reads-as-architecture}
+
+**ID**: `motivation.requirement.plan-outcome-reads-as-architecture`
+
+**Type**: `requirement`
+
+A person can see, on the C4 diagrams, whether a plan was built as planned: which planned boxes and arrows were built, which were not, and what was built that the plan didn't name. The verdicts are the ones the dr CLI's plan verification gives, never a second matcher of the viewer's own.
+
+#### Attributes
+
+| Name            | Value      |
+| --------------- | ---------- |
+| priority        | high       |
+| requirementType | functional |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `api.operation.get-changeset-verification`                  | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.c4-plan-comparison`         | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.plan-verification`          | `satisfies` | inbound   |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                       | `satisfies` | inbound   |
+| inter-layer | `ux.view.architecture-view`                                 | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
+
 ### Viewer covers every spec layer {#viewer-covers-every-spec-layer}
 
 **ID**: `motivation.requirement.viewer-covers-every-spec-layer`
@@ -745,6 +782,7 @@ All interactive components must pass axe-core automated accessibility testing an
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------- | --------- |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                          | `satisfies`       | inbound   |
 | inter-layer | `product.feature.c4-changeset-overlay`                                                                                              | `satisfies`       | inbound   |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                               | `satisfies`       | inbound   |
 | inter-layer | `product.feature.dr-bot-chat-drawer`                                                                                                | `satisfies`       | inbound   |
 | inter-layer | `product.feature.model-view-by-type`                                                                                                | `satisfies`       | inbound   |
 | inter-layer | `product.feature.topbar-search`                                                                                                     | `satisfies`       | inbound   |
@@ -829,4 +867,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-21T12:54:29.662Z | Model Version: 0.1.0
+Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0

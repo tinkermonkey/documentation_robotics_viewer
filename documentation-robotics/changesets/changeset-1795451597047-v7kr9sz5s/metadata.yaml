@@ -37,8 +37,8 @@ description: >-
 
   - Unit, component and E2E tests (axe in light and dark) cover it.
 created: 2026-11-23T16:33:17.070Z
-modified: 2026-11-23T17:36:07.698Z
-status: staged
+modified: 2026-11-23T20:18:09.912Z
+status: committed
 baseSnapshot: v2:sha256:1db965879370c07bc18b830fdd2adc6fb11ddea5ad30e9b55496973900146717
 origin:
   kind: plan

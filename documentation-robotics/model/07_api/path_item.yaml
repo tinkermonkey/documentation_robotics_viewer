@@ -265,3 +265,16 @@ api.pathitem.changeset-review-path:
     created_at: 2026-11-18T16:27:42.057Z
     updated_at: 2026-11-18T16:27:42.057Z
     version: 1
+api.pathitem.changeset-verification-path:
+  id: 713e5466-8d29-4ff5-b52c-df682e595270
+  path: api.pathitem.changeset-verification-path
+  spec_node_id: api.pathitem
+  type: pathitem
+  layer_id: api
+  name: Changeset Verification Path
+  description: "Path /api/changesets/{changesetId}/verification: a plan compared
+    with an as-built changeset (`?against=`); read-only."
+  metadata:
+    created_at: 2026-11-23T16:34:32.922Z
+    updated_at: 2026-11-23T16:34:32.922Z
+    version: 1
