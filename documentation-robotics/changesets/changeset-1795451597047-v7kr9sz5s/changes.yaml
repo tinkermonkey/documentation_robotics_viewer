@@ -97,7 +97,12 @@
       created_at: 2026-11-23T16:33:54.248Z
       updated_at: 2026-11-23T16:33:54.248Z
       version: 1
-  timestamp: 2026-11-23T16:33:54.263Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/planVerification.ts
+          symbol: PlanVerification
+  timestamp: 2026-11-23T17:35:45.763Z
   sequenceNumber: 3
 - type: add
   elementId: data-model.objectschema.c4-plan-comparison
@@ -119,7 +124,12 @@
       created_at: 2026-11-23T16:33:54.250Z
       updated_at: 2026-11-23T16:33:54.250Z
       version: 1
-  timestamp: 2026-11-23T16:33:54.263Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/c4/c4PlanCompare.ts
+          symbol: C4PlanComparison
+  timestamp: 2026-11-23T17:35:45.763Z
   sequenceNumber: 4
 - type: add
   elementId: application.applicationservice.plan-verification
@@ -133,10 +143,11 @@
     name: Plan Verification
     description: "`data/planVerification.ts` + `usePlanVerification(planId,
       asBuiltId)`: fetches Get Changeset Verification through React Query,
-      validates it into a Plan Verification, and pairs a verification record
-      with the plan it `verifies` (any other as-built changeset is picked by
-      hand). A 404/405/501 reads as \"this dr CLI can't compare\", not an error;
-      refetched on `changesets.updated`."
+      validates it into a Plan Verification (malformed items dropped and
+      counted), and pairs a plan with its verification records first, then any
+      other as-built changeset (`asBuiltChoices`). A 405/501 or a non-JSON 404
+      reads as \"this dr CLI can't compare\", not an error; refetched on
+      `changesets.updated` and `model.updated`."
     attributes:
       serviceType: synchronous
     metadata:
@@ -153,7 +164,12 @@
         decided_by: agent
         decided_at: 2026-11-23T16:35:02.761Z
         changeset: changeset-1795451597047-v7kr9sz5s
-  timestamp: 2026-11-23T16:35:02.776Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/usePlanVerification.ts
+          symbol: usePlanVerification
+  timestamp: 2026-11-23T17:36:07.683Z
   sequenceNumber: 5
 - type: add
   elementId: application.applicationservice.c4-plan-comparison
@@ -165,14 +181,16 @@
     type: applicationservice
     layer_id: application
     name: C4 Plan Comparison
-    description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(planAfter, union,
+    description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(model, c4,
       verification)` lifts the plan verification's verdicts onto the C4 model
-      the plan leaves, through `elementOf` / `anchorsOf`, and places the
-      as-built's unplanned elements by laying the as-built over that model
-      (`overlayModel` + `diffC4`). Each box and arrow gets the worst verdict
+      the comparison is drawn on (built by `useC4PlanComparison`: the plan
+      applied, the as-built laid over it with `overlayModel`). An element goes
+      to the C4 element it is or the ones it is folded onto (`elementOf` /
+      `anchorsOf`); a relationship to every arrow carrying its model link
+      (`viewArrowVerdicts` per drawn view). Each box shows the worst verdict
       behind it (planned but not built > built differently > probable > can't be
-      checked > built as planned; built but not planned on its own), rolled up
-      to its ancestors."
+      checked > built as planned; built but not planned only alone), rolled up
+      to its ancestors; what reaches no box is counted."
     attributes:
       serviceType: synchronous
     metadata:
@@ -189,7 +207,12 @@
         decided_by: agent
         decided_at: 2026-11-23T16:35:04.041Z
         changeset: changeset-1795451597047-v7kr9sz5s
-  timestamp: 2026-11-23T16:35:04.057Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/c4/c4PlanCompare.ts
+          symbol: compareC4Plan
+  timestamp: 2026-11-23T17:36:07.638Z
   sequenceNumber: 6
 - type: add
   elementId: ux.subview.c4-plan-comparison-bar
@@ -211,7 +234,12 @@
       created_at: 2026-11-23T16:33:54.252Z
       updated_at: 2026-11-23T16:33:54.252Z
       version: 1
-  timestamp: 2026-11-23T16:33:54.263Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/C4PlanComparisonBar.tsx
+          symbol: C4PlanComparisonBar
+  timestamp: 2026-11-23T17:35:45.799Z
   sequenceNumber: 7
 - type: relationship-add
   elementId: motivation.requirement.plan-outcome-reads-as-architecture::realizes::motivation.goal.visualize-multi-layer-architecture-models
@@ -398,28 +426,6 @@
     category: structural
   timestamp: 2026-11-23T16:33:54.263Z
   sequenceNumber: 23
-- type: relationship-add
-  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.changeset-model-overlay
-  layerName: application
-  after:
-    source: application.applicationservice.c4-plan-comparison
-    target: application.applicationservice.changeset-model-overlay
-    predicate: depends-on
-    layer: application
-    category: structural
-  timestamp: 2026-11-23T16:33:54.263Z
-  sequenceNumber: 24
-- type: relationship-add
-  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.c4-changeset-diff
-  layerName: application
-  after:
-    source: application.applicationservice.c4-plan-comparison
-    target: application.applicationservice.c4-changeset-diff
-    predicate: depends-on
-    layer: application
-    category: structural
-  timestamp: 2026-11-23T16:33:54.263Z
-  sequenceNumber: 25
 - type: relationship-add
   elementId: application.applicationservice.c4-plan-comparison::accesses::data-model.objectschema.c4-plan-comparison
   layerName: application
@@ -815,17 +821,6 @@
     category: structural
   timestamp: 2026-11-23T16:34:14.614Z
   sequenceNumber: 41
-- type: relationship-add
-  elementId: application.applicationservice.plan-verification::serves::application.applicationcomponent.changeset-canvas
-  layerName: application
-  after:
-    source: application.applicationservice.plan-verification
-    target: application.applicationcomponent.changeset-canvas
-    predicate: serves
-    layer: application
-    category: structural
-  timestamp: 2026-11-23T16:34:14.614Z
-  sequenceNumber: 42
 - type: add
   elementId: api.pathitem.changeset-verification-path
   layerName: api
@@ -903,17 +898,6 @@
     category: structural
   timestamp: 2026-11-23T16:34:34.098Z
   sequenceNumber: 48
-- type: relationship-add
-  elementId: application.applicationservice.plan-verification::depends-on::application.applicationservice.use-changesets
-  layerName: application
-  after:
-    source: application.applicationservice.plan-verification
-    target: application.applicationservice.use-changesets
-    predicate: depends-on
-    layer: application
-    category: structural
-  timestamp: 2026-11-23T16:34:34.098Z
-  sequenceNumber: 49
 - type: relationship-add
   elementId: application.applicationservice.plan-verification::depends-on::application.applicationservice.changeset-purpose
   layerName: application
