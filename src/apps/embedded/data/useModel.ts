@@ -10,6 +10,7 @@ import { useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { useGetapimodel } from '../../../core/services/generatedApiClient';
 import { websocketClient } from '../services/websocketClient';
+import { PLAN_VERIFICATION_KEY } from './planVerification';
 
 export interface ModelNode {
   id: string;
@@ -99,6 +100,7 @@ export function useLiveModelUpdates() {
       queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
       queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
       queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
+      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY] });
     };
     websocketClient.on(MODEL_UPDATED_EVENT, refetch);
     return () => websocketClient.off(MODEL_UPDATED_EVENT, refetch);

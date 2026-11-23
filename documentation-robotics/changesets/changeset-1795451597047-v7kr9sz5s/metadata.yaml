@@ -1,0 +1,107 @@
+id: changeset-1795451597047-v7kr9sz5s
+name: c4-plan-vs-as-built
+description: >-
+  Show a plan changeset against what was built on the C4 diagrams: each box and
+  arrow marked built as planned, planned but not built, or built but not
+  planned, so the plan's outcome reads at the level of the architecture.
+
+
+  **In scope**
+
+  - dr CLI: `GET /api/changesets/{planId}/verification?against={asBuiltId}`, the
+  per-element result of `changeset_verify` (matched, probable, divergent,
+  missing, unverifiable, unplanned). A separate PR in documentation_robotics;
+  the viewer says plainly when the server doesn't have it.
+
+  - Pairing: a verification record pairs with the plan it `verifies`; any other
+  as-built or reconcile changeset can be picked by hand.
+
+  - `data/c4/c4PlanCompare.ts`: lifts the verdicts onto the C4 model the plan
+  leaves (the plan applied), with the as-built's unplanned elements laid over
+  it, worst verdict per box and arrow, rolled up to each ancestor.
+
+  - Architecture view: a plan + as-built pair (`?changeset=` + `?built=`), a
+  comparison bar with tally and legend, verdict marks on cards and arrows (glyph
+  and line style, never colour alone), and the verdicts in the details drawer.
+
+
+  **Done when**
+
+  - Opening the slice 2 plan `c4-changeset-overlay` against
+  `extract-02ab31d..59209a4` shows every planned box marked, the unplanned test
+  sketches folded onto what they test, and the tally matching
+  `changeset_verify`.
+
+  - An older dr CLI shows a clear "this server can't compare" note, not an
+  error.
+
+  - Unit, component and E2E tests (axe in light and dark) cover it.
+created: 2026-11-23T16:33:17.070Z
+modified: 2026-11-23T16:35:09.478Z
+status: staged
+baseSnapshot: v2:sha256:1db965879370c07bc18b830fdd2adc6fb11ddea5ad30e9b55496973900146717
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 64
+  modifications: 5
+  deletions: 0
+lastSequence: 70
+unstaged:
+  - sequence: 5
+    removedAt: 65
+    change:
+      type: add
+      elementId: application.applicationservice.plan-verification
+      layerName: application
+      after:
+        id: b34dc660-f2e4-4844-af73-3cccbc35db56
+        path: application.applicationservice.plan-verification
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Plan Verification
+        description: "`data/planVerification.ts` + `usePlanVerification(planId,
+          asBuiltId)`: fetches Get Changeset Verification through React Query,
+          validates it into a Plan Verification, and pairs a verification record
+          with the plan it `verifies` (any other as-built changeset is picked by
+          hand). A 404/405/501 reads as \"this dr CLI can't compare\", not an
+          error; refetched on `changesets.updated`."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-23T16:33:54.250Z
+          updated_at: 2026-11-23T16:33:54.250Z
+          version: 1
+      timestamp: 2026-11-23T16:33:54.263Z
+    rewritten: true
+  - sequence: 6
+    removedAt: 66
+    change:
+      type: add
+      elementId: application.applicationservice.c4-plan-comparison
+      layerName: application
+      after:
+        id: 4089d032-d6da-4e7b-9800-29f1ae5e0f9e
+        path: application.applicationservice.c4-plan-comparison
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: C4 Plan Comparison
+        description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(planAfter, union,
+          verification)` lifts the plan verification's verdicts onto the C4
+          model the plan leaves, through `elementOf` / `anchorsOf`, and places
+          the as-built's unplanned elements by laying the as-built over that
+          model (`overlayModel` + `diffC4`). Each box and arrow gets the worst
+          verdict behind it (planned but not built > built differently >
+          probable > can't be checked > built as planned; built but not planned
+          on its own), rolled up to its ancestors."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-23T16:33:54.252Z
+          updated_at: 2026-11-23T16:33:54.252Z
+          version: 1
+      timestamp: 2026-11-23T16:33:54.263Z
+    rewritten: true

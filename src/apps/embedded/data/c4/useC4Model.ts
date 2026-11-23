@@ -12,6 +12,11 @@
  * model with the changeset applied (staged) or reverted (applied), rebuilt as a
  * C4 model and diffed against the other side (`c4Diff.ts`). Cached per model
  * payload, spec and changeset payload, so every caller shares one diff.
+ *
+ * `useC4PlanComparison` compares a plan with an as-built changeset (the view's
+ * `?changeset=` + `?built=`): the model as the plan leaves it with the as-built
+ * laid over it, and the dr CLI's plan verification lifted onto it
+ * (`c4PlanCompare.ts`).
  */
 
 import { useMemo } from 'react';
@@ -25,6 +30,8 @@ import { diffC4, unionC4, type C4Diff } from './c4Diff';
 import { specCatalog, type SpecCatalog } from './c4Rules';
 import { c4ViewKey, type C4View } from './c4Views';
 import { layoutC4View, type C4Layout } from './c4Layout';
+import { compareC4Plan, type C4PlanComparison } from './c4PlanCompare';
+import { usePlanVerification, type PlanVerificationView } from '../usePlanVerification';
 
 /** Keyed on the payload's `nodes` array: shared by every `useModel()` caller, new on a refetch. */
 const built = new WeakMap<object, { catalog: SpecCatalog | null; model: C4Model }>();
@@ -155,5 +162,94 @@ export function useC4Overlay(changesetId: string | null): C4OverlayState {
     isLoading: !!changesetId && (isLoading || modelLoading),
     error: changesetId ? error : null,
     key: changesetId ? `${changesetId}@${current?.revision ?? ''}:${current?.modified ?? ''}` : '',
+  };
+}
+
+// ─── A plan compared with what was built ────────────────────────────────────
+
+/** A plan + as-built pair on the C4 diagrams: the model drawn, its C4 model and the verdicts on it. */
+export interface C4PlanComparisonState {
+  planId: string | null;
+  asBuiltId: string | null;
+  plan: ChangesetDetail | null;
+  asBuilt: ChangesetDetail | null;
+  /** The plan verification as the server reported it (or why there is none). */
+  verification: PlanVerificationView;
+  /** The model as the plan leaves it, with the as-built laid over it: what is drawn. */
+  c4: C4Model | null;
+  /** The verdicts lifted onto `c4`; null until the model, both changesets and the verification are in. */
+  comparison: C4PlanComparison | null;
+  isLoading: boolean;
+  error: unknown;
+  /** A layout key: both changesets and their revisions. */
+  key: string;
+}
+
+/**
+ * The model a comparison is drawn on: `model` with the plan applied (when it is
+ * staged; an applied plan is already in it), then the as-built laid over that
+ * (when staged). An element both add is one element.
+ */
+export function comparisonModel(
+  model: ModelDerived,
+  plan: Pick<ChangesetDetail, 'status' | 'changes'>,
+  asBuilt: Pick<ChangesetDetail, 'status' | 'changes'>,
+): ModelDerived {
+  const planned = plan.status === 'staged' ? overlayModel(model, plan.changes, 'apply').model : model;
+  return asBuilt.status === 'staged' ? overlayModel(planned, asBuilt.changes, 'apply').model : planned;
+}
+
+/** Keyed on the model payload's `nodes`; a hit needs the same spec and both changeset payloads. */
+const comparisonModels = new WeakMap<object, Map<string, { catalog: SpecCatalog | null; plan: object; built: object; model: ModelDerived; c4: C4Model }>>();
+
+function comparisonC4For(
+  model: ModelDerived,
+  catalog: SpecCatalog | null,
+  plan: Pick<ChangesetDetail, 'id' | 'status' | 'changes'>,
+  asBuilt: Pick<ChangesetDetail, 'id' | 'status' | 'changes'>,
+): { model: ModelDerived; c4: C4Model } {
+  const byPair = comparisonModels.get(model.nodes) ?? comparisonModels.set(model.nodes, new Map()).get(model.nodes)!;
+  const key = `${plan.id}>${asBuilt.id}`;
+  const hit = byPair.get(key);
+  if (hit && hit.catalog === catalog && hit.plan === plan.changes && hit.built === asBuilt.changes) return hit;
+  const drawn = comparisonModel(model, plan, asBuilt);
+  const entry = { catalog, plan: plan.changes, built: asBuilt.changes, model: drawn, c4: c4ModelFor(drawn, catalog) };
+  byPair.set(key, entry);
+  return entry;
+}
+
+/** The plan `planId` compared with the as-built `asBuiltId` (the view's `?changeset=` + `?built=`). */
+export function useC4PlanComparison(planId: string | null, asBuiltId: string | null): C4PlanComparisonState {
+  const { derived, isLoading: modelLoading } = useModel();
+  const { raw: spec } = useSpec();
+  const catalog = useMemo(() => catalogFor(spec), [spec]);
+  const enabled = !!planId && !!asBuiltId;
+  const planQuery = useChangeset(enabled ? planId : null);
+  const builtQuery = useChangeset(enabled ? asBuiltId : null);
+  const plan = enabled ? planQuery.detail : null;
+  const asBuilt = enabled ? builtQuery.detail : null;
+  const verification = usePlanVerification(enabled ? planId : null, enabled ? asBuiltId : null);
+
+  const drawn = useMemo(
+    () => (plan && asBuilt && !modelLoading ? comparisonC4For(derived, catalog, plan, asBuilt) : null),
+    [plan, asBuilt, derived, catalog, modelLoading],
+  );
+  const comparison = useMemo(
+    () => (drawn && verification.kind === 'ready' ? compareC4Plan(drawn.model, drawn.c4, verification.verification) : null),
+    [drawn, verification],
+  );
+  return {
+    planId: enabled ? planId : null,
+    asBuiltId: enabled ? asBuiltId : null,
+    plan,
+    asBuilt,
+    verification,
+    c4: drawn?.c4 ?? null,
+    comparison,
+    isLoading: enabled && (planQuery.isLoading || builtQuery.isLoading || modelLoading || verification.kind === 'loading'),
+    error: enabled ? (planQuery.error ?? builtQuery.error ?? null) : null,
+    key: enabled
+      ? `plan:${planId}@${plan?.revision ?? ''}:${plan?.modified ?? ''}>${asBuiltId}@${asBuilt?.revision ?? ''}:${asBuilt?.modified ?? ''}`
+      : '',
   };
 }

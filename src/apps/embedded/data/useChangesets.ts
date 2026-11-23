@@ -16,6 +16,7 @@ import {
   useGetapichangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
 import { toChangeRows, type ChangeRecord, type ChangeRow } from './changesets';
+import { PLAN_VERIFICATION_KEY } from './planVerification';
 import {
   reviewCounts,
   type ChangesetOrigin,
@@ -339,7 +340,7 @@ export function changesetLoadErrorMessage(error: unknown): string {
  * discard from the viewer. Without it the cached list would stay stale for its
  * 5-minute `staleTime`, so a changeset DrBot just made wouldn't show up for
  * review. It also refetches Tier 1's spend (useTier1), which an extraction
- * moves. A model change arrives through useLiveModelUpdates. Mount once
+ * moves, and any plan-vs-as-built comparison (usePlanVerification). A model change arrives through useLiveModelUpdates. Mount once
  * (AppShell).
  */
 export function useLiveChangesetUpdates() {
@@ -350,6 +351,8 @@ export function useLiveChangesetUpdates() {
       queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
       // An extraction stages a changeset as it spends: Tier 1's month moves with it.
       queryClient.invalidateQueries({ queryKey: ['getapitier1'] });
+      // A plan compared with what was built (usePlanVerification) reads both changesets.
+      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY] });
     };
     websocketClient.on(CHANGESETS_UPDATED_EVENT, refetch);
     return () => websocketClient.off(CHANGESETS_UPDATED_EVENT, refetch);

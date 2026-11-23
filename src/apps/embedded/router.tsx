@@ -159,6 +159,9 @@ interface AppShellSearch {
   /** Architecture view, Component level: the C4 element whose parts are shown.
    *  There, `node` is the selected box (a C4 element id), not a model element. */
   scope?: string;
+  /** Architecture view: the as-built changeset the `changeset` plan is compared
+   *  with (`uiStore.c4BuiltId`). Only with `changeset`. */
+  built?: string;
   /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
    *  Schema only. Kept on page-mode URLs too, so switching back to the graph
    *  returns to the same view. */
@@ -178,8 +181,14 @@ function selectionKey(
 }
 
 /** The Architecture view's part of the selection key: level, scope, selected box, overlaid changeset. */
-function c4Key(level: C4Level, scope: string | null, selectedId: string | null, changesetId: string | null): string {
-  return `${level}:${scope ?? ''}:${selectedId ?? ''}:${changesetId ?? ''}`;
+function c4Key(
+  level: C4Level,
+  scope: string | null,
+  selectedId: string | null,
+  changesetId: string | null,
+  builtId: string | null,
+): string {
+  return `${level}:${scope ?? ''}:${selectedId ?? ''}:${changesetId ?? ''}:${builtId ?? ''}`;
 }
 
 /**
@@ -239,6 +248,7 @@ function AppShellRoute() {
   const c4Scope = useUiStore((s) => s.c4Scope);
   const c4SelectedId = useUiStore((s) => s.c4SelectedId);
   const c4ChangesetId = useUiStore((s) => s.c4ChangesetId);
+  const c4BuiltId = useUiStore((s) => s.c4BuiltId);
   const restoreC4 = useUiStore((s) => s.restoreC4);
   const graphViewport = useUiStore((s) => s.graphViewport);
   const canvasKey = useUiStore(graphCanvasKey);
@@ -263,7 +273,7 @@ function AppShellRoute() {
   // and navigate "backward" to correct it, oscillating forever.
   const prevViewRef = useRef(view);
   const prevSelectionKeyRef = useRef(
-    selectionKey(layerId, selectedId, selectedEdgeId, changesetId, c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId)),
+    selectionKey(layerId, selectedId, selectedEdgeId, changesetId, c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId)),
   );
   const prevModeRef = useRef(mode);
   const prevLayerRef = useRef(layerId);
@@ -287,7 +297,8 @@ function AppShellRoute() {
   // originated in the app itself (see the store → URL effect below).
   useEffect(() => {
     // Architecture: `?level=` / `?scope=` pick the diagram, `?node=` the
-    // selected box, `?changeset=` the overlaid changeset. Its `node` is a C4
+    // selected box, `?changeset=` the overlaid changeset (`?built=` the
+    // as-built it is compared with). Its `node` is a C4
     // element id and its `changeset` the overlay's, so neither may reach the
     // Model selection or the Changesets view's changeset below.
     if (section === 'architecture') {
@@ -295,9 +306,16 @@ function AppShellRoute() {
       const scope = level === 'component' ? (search.scope ?? null) : null;
       const selected = search.node ?? null;
       const overlay = search.changeset ?? null;
+      const built = overlay ? (search.built ?? null) : null;
       const s = useUiStore.getState();
-      if (s.c4Level !== level || s.c4Scope !== scope || s.c4SelectedId !== selected || s.c4ChangesetId !== overlay) {
-        restoreC4(level, scope, selected, overlay);
+      if (
+        s.c4Level !== level ||
+        s.c4Scope !== scope ||
+        s.c4SelectedId !== selected ||
+        s.c4ChangesetId !== overlay ||
+        s.c4BuiltId !== built
+      ) {
+        restoreC4(level, scope, selected, overlay, built);
       }
       return;
     }
@@ -378,7 +396,7 @@ function AppShellRoute() {
       selectedId,
       selectedEdgeId,
       changesetId,
-      c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId),
+      c4Key(c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId),
     );
     if (!mountedRef.current) {
       mountedRef.current = true;
@@ -425,6 +443,7 @@ function AppShellRoute() {
             scope: c4Level === 'component' ? (c4Scope ?? undefined) : undefined,
             node: c4SelectedId ?? undefined,
             changeset: c4ChangesetId ?? undefined,
+            built: c4ChangesetId ? (c4BuiltId ?? undefined) : undefined,
           }
         : view === 'changesets'
         ? { changeset: changesetId ?? undefined }
@@ -448,7 +467,8 @@ function AppShellRoute() {
       (search.edge ?? undefined) === targetSearch.edge &&
       (search.changeset ?? undefined) === targetSearch.changeset &&
       (search.level ?? undefined) === targetSearch.level &&
-      (search.scope ?? undefined) === targetSearch.scope;
+      (search.scope ?? undefined) === targetSearch.scope &&
+      (search.built ?? undefined) === targetSearch.built;
     if (destinationMatchesUrl && (search.vp ?? undefined) === targetSearch.vp) {
       return;
     }
@@ -463,7 +483,8 @@ function AppShellRoute() {
       (parseC4Level(search.level) ?? 'context') === targetSearch.level &&
       (targetSearch.level !== 'component' || (search.scope ?? undefined) === targetSearch.scope) &&
       (search.node ?? undefined) === targetSearch.node &&
-      (search.changeset ?? undefined) === targetSearch.changeset;
+      (search.changeset ?? undefined) === targetSearch.changeset &&
+      (search.built ?? undefined) === targetSearch.built;
 
     // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
     // after back/forward. Never a new destination, so always replace.
@@ -489,7 +510,7 @@ function AppShellRoute() {
     // guard; re-running on their own changes would re-check a URL the store
     // effects above are about to make it match.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId]);
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId]);
 
   return <AppShell />;
 }
@@ -517,6 +538,7 @@ const appShellRoute = createRoute({
     changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
     level: typeof search.level === 'string' ? search.level : undefined,
     scope: typeof search.scope === 'string' ? search.scope : undefined,
+    built: typeof search.built === 'string' ? search.built : undefined,
     vp: typeof search.vp === 'string' ? search.vp : undefined,
   }),
   component: AppShellRoute,

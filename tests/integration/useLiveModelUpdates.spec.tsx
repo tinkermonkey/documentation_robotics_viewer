@@ -48,6 +48,8 @@ describe('useLiveModelUpdates', () => {
       ['getapilayerslayerName'],
       ['getapichangesets'],
       ['getapichangesetschangesetId'],
+      // A plan compared with what was built reads the model too.
+      ['changeset-verification'],
     ]);
 
     invalidate.mockClear();

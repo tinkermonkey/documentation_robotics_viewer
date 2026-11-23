@@ -1,0 +1,1190 @@
+- type: add
+  elementId: motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: motivation
+  after:
+    id: 9e020955-3466-4dc5-b222-7989b4c5c39f
+    path: motivation.requirement.plan-outcome-reads-as-architecture
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Plan outcome reads as architecture
+    description: "A person can see, on the C4 diagrams, whether a plan was built as
+      planned: which planned boxes and arrows were built, which were not, and
+      what was built that the plan didn't name. The verdicts are the ones the dr
+      CLI's plan verification gives, never a second matcher of the viewer's
+      own."
+    attributes:
+      requirementType: functional
+      priority: high
+    metadata:
+      created_at: 2026-11-23T16:33:54.225Z
+      updated_at: 2026-11-23T16:33:54.225Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 0
+- type: add
+  elementId: product.feature.c4-plan-vs-as-built
+  layerName: product
+  after:
+    id: f2c160ad-188f-4727-a3f6-a154bb885695
+    path: product.feature.c4-plan-vs-as-built
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Plan vs As-Built
+    description: "A plan changeset compared with what was built, on the Architecture
+      view's C4 diagrams. The diagram is the model as the plan leaves it, with
+      the as-built record's unplanned elements laid over it. Each box and arrow
+      gets the plan verification's verdict (built as planned, probable, built
+      differently, planned but not built, can't be checked, built but not
+      planned): a glyph and a line style, never colour alone, rolled up to the
+      boxes above it. A verification record pairs with the plan it verifies; any
+      as-built or reconcile changeset can be picked by hand."
+    attributes:
+      priority: high
+      status: planned
+      size: m
+    metadata:
+      created_at: 2026-11-23T16:33:54.243Z
+      updated_at: 2026-11-23T16:33:54.243Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 1
+- type: add
+  elementId: api.operation.get-changeset-verification
+  layerName: api
+  after:
+    id: a0fbf531-d1f6-49a6-aa0e-df3d4063538c
+    path: api.operation.get-changeset-verification
+    spec_node_id: api.operation
+    type: operation
+    layer_id: api
+    name: Get Changeset Verification
+    description: "The per-element result of `changeset_verify` for a plan against an
+      as-built changeset: matched, probable, divergent, missing, unverifiable
+      and unplanned elements and relationships, with their ids, the extraction
+      summary and the counts. Read-only; served by the dr CLI's `dr visualize`
+      (documentation_robotics). An older CLI answers 404."
+    attributes:
+      operationId: getChangesetVerification
+      summary: Compare a plan changeset with an as-built changeset
+      tags: Changesets
+      http_method: GET
+      http_path: /api/changesets/{changesetId}/verification
+    metadata:
+      created_at: 2026-11-23T16:33:54.245Z
+      updated_at: 2026-11-23T16:33:54.245Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 2
+- type: add
+  elementId: data-model.objectschema.plan-verification
+  layerName: data-model
+  after:
+    id: fa54cd28-9feb-4038-a669-13a35af46c80
+    path: data-model.objectschema.plan-verification
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Plan Verification
+    description: "The wire shape of Get Changeset Verification, validated before it
+      reaches React (as `tier1.ts` does): the plan and as-built ids, a verdict,
+      per-element and per-relationship verdicts by id, unplanned ids, the
+      extraction summary and counts. Malformed entries are dropped and counted."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-23T16:33:54.248Z
+      updated_at: 2026-11-23T16:33:54.248Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 3
+- type: add
+  elementId: data-model.objectschema.c4-plan-comparison
+  layerName: data-model
+  after:
+    id: 4483507b-baaa-4c66-959b-4fc385140d4a
+    path: data-model.objectschema.c4-plan-comparison
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Plan Comparison
+    description: "The result of `compareC4Plan`: per C4 element and relationship the
+      worst verdict of the model elements and links behind it and the ids behind
+      each verdict, a roll-up of verdict counts per ancestor, the tally, and
+      what no diagram shows (counted, never dropped)."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-23T16:33:54.250Z
+      updated_at: 2026-11-23T16:33:54.250Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 4
+- type: add
+  elementId: application.applicationservice.plan-verification
+  layerName: application
+  after:
+    id: b34dc660-f2e4-4844-af73-3cccbc35db56
+    path: application.applicationservice.plan-verification
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Plan Verification
+    description: "`data/planVerification.ts` + `usePlanVerification(planId,
+      asBuiltId)`: fetches Get Changeset Verification through React Query,
+      validates it into a Plan Verification, and pairs a verification record
+      with the plan it `verifies` (any other as-built changeset is picked by
+      hand). A 404/405/501 reads as \"this dr CLI can't compare\", not an error;
+      refetched on `changesets.updated`."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-23T16:33:54.250Z
+      updated_at: 2026-11-23T16:33:54.250Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its planned unit test sketches and the repo-wide Vitest
+          coverage include (src/apps/embedded/{ui,data}); the slice adds no
+          coverage target of its own.
+        decided_by: agent
+        decided_at: 2026-11-23T16:35:02.761Z
+        changeset: changeset-1795451597047-v7kr9sz5s
+  timestamp: 2026-11-23T16:35:02.776Z
+  sequenceNumber: 5
+- type: add
+  elementId: application.applicationservice.c4-plan-comparison
+  layerName: application
+  after:
+    id: 4089d032-d6da-4e7b-9800-29f1ae5e0f9e
+    path: application.applicationservice.c4-plan-comparison
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 Plan Comparison
+    description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(planAfter, union,
+      verification)` lifts the plan verification's verdicts onto the C4 model
+      the plan leaves, through `elementOf` / `anchorsOf`, and places the
+      as-built's unplanned elements by laying the as-built over that model
+      (`overlayModel` + `diffC4`). Each box and arrow gets the worst verdict
+      behind it (planned but not built > built differently > probable > can't be
+      checked > built as planned; built but not planned on its own), rolled up
+      to its ancestors."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-23T16:33:54.252Z
+      updated_at: 2026-11-23T16:33:54.252Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its planned unit test sketches and the repo-wide Vitest
+          coverage include (src/apps/embedded/{ui,data}); the slice adds no
+          coverage target of its own.
+        decided_by: agent
+        decided_at: 2026-11-23T16:35:04.041Z
+        changeset: changeset-1795451597047-v7kr9sz5s
+  timestamp: 2026-11-23T16:35:04.057Z
+  sequenceNumber: 6
+- type: add
+  elementId: ux.subview.c4-plan-comparison-bar
+  layerName: ux
+  after:
+    id: 00f8c9e0-225b-45d8-9c4c-e453865db3de
+    path: ux.subview.c4-plan-comparison-bar
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Plan Comparison Bar
+    description: "The Architecture view's bar for a plan + as-built pair
+      (`?changeset=` + `?built=`): the plan and as-built names with a picker for
+      the as-built (the plan's verification records first, then any as-built or
+      reconcile changeset), the overall verdict, a tally per verdict, the
+      legend, what the diagrams leave out, Review in Changesets and Clear. With
+      an older dr CLI it says the server can't compare and how to upgrade."
+    metadata:
+      created_at: 2026-11-23T16:33:54.252Z
+      updated_at: 2026-11-23T16:33:54.252Z
+      version: 1
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: motivation.requirement.plan-outcome-reads-as-architecture::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.plan-outcome-reads-as-architecture
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::satisfies::motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: motivation.requirement.plan-outcome-reads-as-architecture
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::satisfies::motivation.requirement.architecture-reads-as-c4-diagrams
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: motivation.requirement.architecture-reads-as-c4-diagrams
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::uses::api.securityscheme.bearer-auth-scheme
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: api.securityscheme.bearer-auth-scheme
+    predicate: uses
+    layer: api
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::references::application.applicationservice.plan-verification
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: application.applicationservice.plan-verification
+    predicate: references
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::exposes::product.feature.c4-plan-vs-as-built
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: product.feature.c4-plan-vs-as-built
+    predicate: exposes
+    layer: api
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::satisfies::motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: motivation.requirement.plan-outcome-reads-as-architecture
+    predicate: satisfies
+    layer: api
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::accesses::data-model.objectschema.plan-verification
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: data-model.objectschema.plan-verification
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::realizes::product.feature.c4-plan-vs-as-built
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: product.feature.c4-plan-vs-as-built
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::satisfies::motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: motivation.requirement.plan-outcome-reads-as-architecture
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.plan-verification
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: application.applicationservice.plan-verification
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.c4-model-transform
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: application.applicationservice.c4-model-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.changeset-model-overlay
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: application.applicationservice.changeset-model-overlay
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::depends-on::application.applicationservice.c4-changeset-diff
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: application.applicationservice.c4-changeset-diff
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::accesses::data-model.objectschema.c4-plan-comparison
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: data-model.objectschema.c4-plan-comparison
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::realizes::product.feature.c4-plan-vs-as-built
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: product.feature.c4-plan-vs-as-built
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: application.applicationservice.c4-plan-comparison::satisfies::motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: application
+  after:
+    source: application.applicationservice.c4-plan-comparison
+    target: motivation.requirement.plan-outcome-reads-as-architecture
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: application.applicationservice.use-c4model::depends-on::application.applicationservice.c4-plan-comparison
+  layerName: application
+  after:
+    source: application.applicationservice.use-c4model
+    target: application.applicationservice.c4-plan-comparison
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: ux.view.architecture-view::composes::ux.subview.c4-plan-comparison-bar
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: ux.subview.c4-plan-comparison-bar
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: ux.view.architecture-view::realizes::product.feature.c4-plan-vs-as-built
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: product.feature.c4-plan-vs-as-built
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: ux.view.architecture-view::satisfies::motivation.requirement.plan-outcome-reads-as-architecture
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.requirement.plan-outcome-reads-as-architecture
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T16:33:54.263Z
+  sequenceNumber: 34
+- type: update
+  elementId: ux.view.architecture-view
+  layerName: ux
+  before:
+    id: a69be5e5-d12d-4753-b45a-7560b165c116
+    path: ux.view.architecture-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Architecture View
+    description: "The model as C4 diagrams (#/architecture): a level control
+      (Context · Containers · Components), a breadcrumb of the scope, and the
+      diagram. Clicking a box selects it and opens its details; a box with parts
+      drills into them. A changeset can be laid over the diagrams
+      (`?changeset=`, from the C4 Changeset Bar's picker or the Changesets
+      view): what it adds, removes or changes is marked on the boxes and
+      arrows."
+    attributes: &a1
+      type: page
+      title: Architecture
+      routable: true
+    metadata: &a2
+      created_at: 2026-11-20T15:40:02.904Z
+      updated_at: 2026-11-20T15:40:02.904Z
+      version: 1
+  after:
+    id: a69be5e5-d12d-4753-b45a-7560b165c116
+    path: ux.view.architecture-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Architecture View
+    description: "The model as C4 diagrams (#/architecture): a level control
+      (Context · Containers · Components), a breadcrumb of the scope, and the
+      diagram. Clicking a box selects it and opens its details; a box with parts
+      drills into them. A changeset can be laid over the diagrams
+      (`?changeset=`, from the C4 Changeset Bar's picker or the Changesets
+      view): what it adds, removes or changes is marked on the boxes and arrows.
+      A plan can be compared with what was built (`?changeset=` + `?built=`,
+      from the C4 Plan Comparison Bar or a verification record in the Changesets
+      view): each box and arrow carries the plan verification's verdict."
+    attributes: *a1
+    metadata: *a2
+  timestamp: 2026-11-23T16:33:54.903Z
+  sequenceNumber: 35
+- type: update
+  elementId: ux.subview.c4-diagram
+  layerName: ux
+  before:
+    id: b543a98a-b9ab-4a68-aeef-b34f9d3de76c
+    path: ux.subview.c4-diagram
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Diagram
+    description: "Architecture view, the diagram area: the scope's boundary, a card
+      per person, system, container or component, and labelled arrows between
+      them, with pan, zoom and fit."
+    attributes: &a3
+      title: C4 Diagram
+    metadata: &a4
+      created_at: 2026-11-20T15:40:02.906Z
+      updated_at: 2026-11-20T15:40:02.906Z
+      version: 1
+  after:
+    id: b543a98a-b9ab-4a68-aeef-b34f9d3de76c
+    path: ux.subview.c4-diagram
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Diagram
+    description: "Architecture view, the diagram area: the scope's boundary, a card
+      per person, system, container or component, and labelled arrows between
+      them, with pan, zoom and fit. With an overlaid changeset, op marks on
+      cards and arrows; with a plan + as-built pair, verdict marks instead
+      (glyph and line style, never colour alone)."
+    attributes: *a3
+    metadata: *a4
+  timestamp: 2026-11-23T16:34:11.546Z
+  sequenceNumber: 36
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. With a C4 Diff, cards and arrows carry op
+      marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip
+      and the status in their accessible name, never colour alone; removed boxes
+      and arrows are drawn as ghosts; a box whose parts changed shows a count.
+      Colours from canvas tokens, so it flips with the dark canvas. Keyboard:
+      one Tab stop with arrow keys between cards, Enter drills into a card that
+      has parts (focus follows into the new diagram), Escape clears the
+      selection; the arrows, with their status, are also listed as text. Proof
+      of concept for boundary rendering, a C4 card and its status slot in
+      Heimdall."
+    attributes: &a5
+      type: internal
+    source_reference: &a6
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a7
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. With a C4 Diff, cards and arrows carry op
+      marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip
+      and the status in their accessible name, never colour alone; removed boxes
+      and arrows are drawn as ghosts; a box whose parts changed shows a count.
+      With a C4 Plan Comparison, the same slots carry the verdict instead
+      (ui/verdictStyles.ts + a chip: ✓ built as planned, ≈ probable, ≠ built
+      differently, ∅ planned but not built, ? can't be checked, + built but not
+      planned) and a box whose parts carry verdicts shows a count per verdict.
+      Colours from canvas tokens, so it flips with the dark canvas. Keyboard:
+      one Tab stop with arrow keys between cards, Enter drills into a card that
+      has parts (focus follows into the new diagram), Escape clears the
+      selection; the arrows, with their status, are also listed as text. Proof
+      of concept for boundary rendering, a C4 card and its status slot in
+      Heimdall."
+    attributes: *a5
+    source_reference: *a6
+    metadata: *a7
+  timestamp: 2026-11-23T16:34:11.569Z
+  sequenceNumber: 37
+- type: update
+  elementId: application.applicationcomponent.architecture-canvas
+  layerName: application
+  before:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
+      (`?changeset=`), the C4 Diagram below it, and a details drawer for the
+      selected box listing the model elements behind it, each a link into the
+      Model view, and with an overlay an \"In this changeset\" section: each
+      change behind the box with its op, before and after, and a link to it in
+      the Changesets view. Reads the model through useModel and the spec through
+      useSpec; level, scope, selection and the overlaid changeset live in the UI
+      store and the URL. Shows a plain message when the model yields no C4
+      elements, and how many model elements (and overlaid changes) the rules
+      left out."
+    attributes: &a8
+      type: internal
+    source_reference: &a9
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ArchitectureCanvas.tsx
+          symbol: ArchitectureCanvas
+    metadata: &a10
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+  after:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
+      (`?changeset=`) or the C4 Plan Comparison Bar when a plan is compared with
+      an as-built changeset (`?changeset=` + `?built=`), the C4 Diagram below
+      it, and a details drawer for the selected box listing the model elements
+      behind it, each a link into the Model view; with an overlay an \"In this
+      changeset\" section (each change behind the box with its op, before and
+      after, and a link to it in the Changesets view), and with a comparison a
+      \"Plan vs as built\" section (each planned element behind the box with its
+      verdict, and each unplanned one). Reads the model through useModel and the
+      spec through useSpec; level, scope, selection, the overlaid changeset and
+      the as-built live in the UI store and the URL. Shows a plain message when
+      the model yields no C4 elements, and how many model elements (and overlaid
+      changes or verdicts) the rules left out."
+    attributes: *a8
+    source_reference: *a9
+    metadata: *a10
+  timestamp: 2026-11-23T16:34:11.597Z
+  sequenceNumber: 38
+- type: update
+  elementId: application.applicationcomponent.changeset-canvas
+  layerName: application
+  before:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the changeset's description as markdown (a
+      long one folded behind Show more, so the change list stays near the top),
+      the op-coded change list and a Changes / Impact switch, beside which
+      \"Open in Architecture\" shows the changeset on the C4 diagrams. Its
+      header carries the 'Base changed since this was staged' badge when the
+      base drift blocks a commit. A changeset the server no longer has (a
+      discard deletes it) shows as gone, with a way back to the inbox."
+    attributes: &a11
+      type: internal
+    source_reference: &a12
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ChangesetCanvas.tsx
+          symbol: ChangesetCanvas
+    metadata: &a13
+      created_at: 2026-11-12T13:44:46.091Z
+      updated_at: 2026-11-12T13:44:46.091Z
+      version: 1
+  after:
+    id: c19e85f7-0b44-41dd-be09-52621bb3d55b
+    path: application.applicationcomponent.changeset-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Canvas
+    description: "The Changesets view's main pane: the header names the changeset's
+      purpose and where it came from, a lifecycle line says what this kind of
+      changeset is for and what happens next (a verification record leads with
+      the plan it verifies and what extraction read; a plan names its
+      verification records), then the changeset's description as markdown (a
+      long one folded behind Show more, so the change list stays near the top),
+      the op-coded change list and a Changes / Impact switch, beside which
+      \"Open in Architecture\" shows the changeset on the C4 diagrams, and, on a
+      plan with a verification record or on the record itself, \"Compare on the
+      diagrams\" opens the plan against it. Its header carries the 'Base changed
+      since this was staged' badge when the base drift blocks a commit. A
+      changeset the server no longer has (a discard deletes it) shows as gone,
+      with a way back to the inbox."
+    attributes: *a11
+    source_reference: *a12
+    metadata: *a13
+  timestamp: 2026-11-23T16:34:11.623Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.c4-plan-comparison
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: data-model.objectschema.c4-plan-comparison
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T16:34:14.614Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationcomponent.c4-diagram::accesses::data-model.objectschema.c4-plan-comparison
+  layerName: application
+  after:
+    source: application.applicationcomponent.c4-diagram
+    target: data-model.objectschema.c4-plan-comparison
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T16:34:14.614Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::serves::application.applicationcomponent.changeset-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: application.applicationcomponent.changeset-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:14.614Z
+  sequenceNumber: 42
+- type: add
+  elementId: api.pathitem.changeset-verification-path
+  layerName: api
+  after:
+    id: 713e5466-8d29-4ff5-b52c-df682e595270
+    path: api.pathitem.changeset-verification-path
+    spec_node_id: api.pathitem
+    type: pathitem
+    layer_id: api
+    name: Changeset Verification Path
+    description: "Path /api/changesets/{changesetId}/verification: a plan compared
+      with an as-built changeset (`?against=`); read-only."
+    metadata:
+      created_at: 2026-11-23T16:34:32.922Z
+      updated_at: 2026-11-23T16:34:32.922Z
+      version: 1
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: api.pathitem.changeset-verification-path::composes::api.operation.get-changeset-verification
+  layerName: api
+  after:
+    source: api.pathitem.changeset-verification-path
+    target: api.operation.get-changeset-verification
+    predicate: composes
+    layer: api
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::requires::security.securitypolicy.bearer-token-policy
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: security.securitypolicy.bearer-token-policy
+    predicate: requires
+    layer: api
+    targetLayer: security
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: data-model.objectschema.c4-plan-comparison::realizes::business.businessobject.architecture-model
+  layerName: data-model
+  after:
+    source: data-model.objectschema.c4-plan-comparison
+    target: business.businessobject.architecture-model
+    predicate: realizes
+    layer: data-model
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 46
+- type: relationship-add
+  elementId: data-model.objectschema.plan-verification::realizes::business.businessobject.changeset
+  layerName: data-model
+  after:
+    source: data-model.objectschema.plan-verification
+    target: business.businessobject.changeset
+    predicate: realizes
+    layer: data-model
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::depends-on::application.applicationservice.use-changesets
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: application.applicationservice.use-changesets
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: application.applicationservice.plan-verification::depends-on::application.applicationservice.changeset-purpose
+  layerName: application
+  after:
+    source: application.applicationservice.plan-verification
+    target: application.applicationservice.changeset-purpose
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:34.098Z
+  sequenceNumber: 50
+- type: add
+  elementId: testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli
+  layerName: testing
+  after:
+    id: 151b3da3-9404-44c5-b8e6-d18a9a0d5037
+    path: testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: planVerification validates the wire result and reads a 404 as an older CLI
+    description: "Planned unit test, tests/unit/planVerification.spec.ts: malformed
+      entries dropped and counted."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.244Z
+      updated_at: 2026-11-23T16:34:43.244Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 51
+- type: add
+  elementId: testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan
+  layerName: testing
+  after:
+    id: ada50da1-7595-468d-8906-056c1ff2ea29
+    path: testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: planVerification pairs a verification record with its plan
+    description: "Planned unit test, tests/unit/planVerification.spec.ts: other
+      as-built changesets are offered by hand."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.245Z
+      updated_at: 2026-11-23T16:34:43.245Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 52
+- type: add
+  elementId: testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up
+  layerName: testing
+  after:
+    id: 4bdf378d-892b-44f0-89ec-414e7538c4ce
+    path: testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: compareC4Plan gives each box the worst verdict behind it, rolled up
+    description: Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts, over the
+      hand-built C4 fixture; arrows too.
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.246Z
+      updated_at: 2026-11-23T16:34:43.246Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 53
+- type: add
+  elementId: testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram
+  layerName: testing
+  after:
+    id: c95fbfd5-65b6-46b1-a707-3985b24e10ea
+    path: testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: compareC4Plan places unplanned as-built elements on the plan's diagram
+    description: "Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts: an
+      unplanned test folds onto what it tests."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.246Z
+      updated_at: 2026-11-23T16:34:43.246Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 54
+- type: add
+  elementId: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs
+  layerName: testing
+  after:
+    id: a6e3d3a4-2c17-461f-8104-4ab8025bd2d2
+    path: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4 plan comparison bar tallies verdicts and cards carry glyphs
+    description: "Planned component test, tests/components/C4PlanCompare.spec.tsx:
+      never colour alone; verdict in each card's accessible name."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.246Z
+      updated_at: 2026-11-23T16:34:43.246Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 55
+- type: add
+  elementId: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+  layerName: testing
+  after:
+    id: f265bd32-852a-4ed4-a2e1-e706c5590e21
+    path: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Architecture view plan vs as built passes axe in light and dark
+    description: "Planned E2E test, tests/e2e/architecture.spec.ts: ?changeset= +
+      ?built= draws the comparison."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T16:34:43.246Z
+      updated_at: 2026-11-23T16:34:43.246Z
+      version: 1
+  timestamp: 2026-11-23T16:34:43.278Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli::tests::application.applicationservice.plan-verification
+  layerName: testing
+  after:
+    source: testing.testcasesketch.plan-verification-validates-the-wire-result-and-reads-a-404-as-an-older-cli
+    target: application.applicationservice.plan-verification
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan::tests::application.applicationservice.plan-verification
+  layerName: testing
+  after:
+    source: testing.testcasesketch.plan-verification-pairs-a-verification-record-with-its-plan
+    target: application.applicationservice.plan-verification
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up::tests::application.applicationservice.c4-plan-comparison
+  layerName: testing
+  after:
+    source: testing.testcasesketch.compare-c4-plan-gives-each-box-the-worst-verdict-behind-it-rolled-up
+    target: application.applicationservice.c4-plan-comparison
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram::tests::application.applicationservice.c4-plan-comparison
+  layerName: testing
+  after:
+    source: testing.testcasesketch.compare-c4-plan-places-unplanned-as-built-elements-on-the-plans-diagram
+    target: application.applicationservice.c4-plan-comparison
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark::tests::ux.view.architecture-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+    target: ux.view.architecture-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-23T16:34:49.668Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:34:57.289Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.plan-verification
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: data-model.objectschema.plan-verification
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T16:34:57.289Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: product.feature.c4-plan-vs-as-built::depends-on::product.feature.c4-changeset-overlay
+  layerName: product
+  after:
+    source: product.feature.c4-plan-vs-as-built
+    target: product.feature.c4-changeset-overlay
+    predicate: depends-on
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T16:35:09.463Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark::tests::product.feature.c4-plan-vs-as-built
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark
+    target: product.feature.c4-plan-vs-as-built
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T16:35:09.463Z
+  sequenceNumber: 68
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs::tests::ux.subview.c4-plan-comparison-bar
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs
+    target: ux.subview.c4-plan-comparison-bar
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-23T16:35:09.463Z
+  sequenceNumber: 69
+- type: relationship-add
+  elementId: api.operation.get-changeset-verification::serves::application.applicationcomponent.architecture-canvas
+  layerName: api
+  after:
+    source: api.operation.get-changeset-verification
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: api
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T16:35:09.463Z
+  sequenceNumber: 70

@@ -2,7 +2,8 @@
  * architecture.spec.ts — the Architecture view (C4 diagrams) against the built
  * bundle and the repo's committed model: the Container diagram's content, the
  * drill-down into components, and `?level=` / `?scope=` / `?node=` /
- * `?changeset=` in the URL (router.tsx's AppShellRoute).
+ * `?changeset=` (and `?built=`, a plan compared with what was built) in the
+ * URL (router.tsx's AppShellRoute).
  */
 
 import { test, expect, type Page } from '@playwright/test';
@@ -223,6 +224,54 @@ test.describe('Architecture view — C4 diagrams', () => {
         await gotoView(page, `${ROUTES.architecture}?level=container&changeset=${SLICE1_PLAN}`);
         await diagramAt(page, 'container');
         await expect(page.getByTestId('c4-card-rollup').first()).toBeVisible();
+        await page.getByRole('radio', { name: tone, exact: true }).click();
+        await expect
+          .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
+          .toBe(tone === 'dark');
+        await page.waitForTimeout(300); // style recalc after the tone flip (see a11y.spec.ts)
+        const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+        const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+        expect(serious.map((v) => `${v.id} × ${v.nodes.length}: ${v.nodes[0]?.target.join(' ')}`)).toEqual([]);
+      });
+    }
+  });
+
+  test.describe('plan vs as built: ?changeset= + ?built=', () => {
+    // Slice 2's plan (c4-changeset-overlay) and the extraction of what was built, both applied.
+    const SLICE2_PLAN = 'changeset-1795224515851-xnhjkg1i4';
+    const SLICE2_BUILT = 'changeset-1795279161409-k7knehp8r';
+    const URL = `${ROUTES.architecture}?level=component&changeset=${SLICE2_PLAN}&built=${SLICE2_BUILT}`;
+
+    /** The bar's verdict tally, or (a dr CLI without the verification route) its note saying it can't compare. */
+    async function compared(page: Page): Promise<'verdicts' | 'unavailable'> {
+      const bar = page.getByTestId('c4-compare-bar');
+      await expect(bar).toBeVisible();
+      const tally = bar.getByTestId('c4-compare-tally');
+      const unavailable = bar.getByTestId('c4-compare-unavailable');
+      // The server runs changeset_verify on the read: a second or more, longer with the suite's workers at it.
+      await expect(tally.or(unavailable)).toBeVisible({ timeout: 30_000 });
+      return (await tally.isVisible()) ? 'verdicts' : 'unavailable';
+    }
+
+    test('draws the plan with each box marked by its verdict, and Show the plan only goes back to the overlay', async ({ page }) => {
+      await gotoView(page, URL);
+      await diagramAt(page, 'component');
+      if ((await compared(page)) === 'verdicts') {
+        await expect(page.getByTestId('c4-compare-tally')).toContainText('built as planned');
+        await expect(page.locator('[data-testid="c4-card"][data-status^="v-"]').first()).toBeVisible();
+        await expect(page.getByTestId('c4-card-status').first()).toBeVisible();
+      }
+      await page.getByTestId('c4-compare-plan-only').click();
+      await expect.poll(() => hashSearchParams(page.url()).get('built')).toBeNull();
+      expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE2_PLAN);
+      await expect(page.getByTestId('c4-changeset-bar')).toBeVisible();
+    });
+
+    for (const tone of ['light', 'dark'] as const) {
+      test(`the compared Component diagram passes axe (WCAG 2.1 AA) on the ${tone} canvas`, async ({ page }) => {
+        await gotoView(page, URL);
+        await diagramAt(page, 'component');
+        await compared(page);
         await page.getByRole('radio', { name: tone, exact: true }).click();
         await expect
           .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))

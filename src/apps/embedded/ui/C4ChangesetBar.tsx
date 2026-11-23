@@ -3,7 +3,9 @@
  * diagrams (`?changeset=`), under the breadcrumb: its name, purpose and how it
  * is read (staged: applied forward; applied: reverted), a drift badge when the
  * server would refuse to apply it, the tally of what differs on the diagrams,
- * a legend of the marks, the changes no diagram shows, and Clear.
+ * a legend of the marks, the changes no diagram shows, and Clear. A plan
+ * with an as-built changeset to compare it with offers "Compare with what was
+ * built" (the C4 Plan Comparison Bar takes over).
  *
  * The picker stays in the page header (it is there with or without an
  * overlay); this bar only shows while one is set.
@@ -16,6 +18,7 @@ import { OP_OUTLINE, opOutlineCss, type OverlayOp } from './opStyles';
 import { ELEMENT_MARKS, RELATIONSHIP_MARKS } from './c4Marks';
 import { purposeLabel } from '../data/changesetPurpose';
 import { useChangesets, isChangesetGone } from '../data/useChangesets';
+import { asBuiltChoices } from '../data/planVerification';
 import { C4_ELEMENT_STATUSES, C4_RELATIONSHIP_STATUSES, type C4Diff } from '../data/c4/c4Diff';
 import type { C4OverlayState } from '../data/c4/useC4Model';
 
@@ -54,6 +57,10 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
   const how =
     overlay?.mode === 'revert' ? 'applied, shown reverted' : overlay?.mode === 'apply' ? 'staged, shown applied' : undefined;
   const drift = detail?.drift ?? summary?.drift;
+  // A plan can be compared with what was built: its own verification record first, else any as-built changeset.
+  const isPlan = (detail?.purpose ?? summary?.purpose) === 'plan';
+  const choices = isPlan ? asBuiltChoices(changesetId, derived.list) : { records: [], others: [] };
+  const compareWith = choices.records[0] ?? choices.others[0] ?? null;
 
   let body: React.ReactNode;
   if (error) {
@@ -132,6 +139,17 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
         <DriftBadge drift={drift} />
       </div>
       <div className="c4-bar__actions">
+        {compareWith && (
+          <Button
+            size="sm"
+            variant="secondary"
+            onClick={() => showC4Overlay(changesetId, compareWith.id)}
+            title={`Compare this plan with ${compareWith.name}`}
+            data-testid="c4-bar-compare"
+          >
+            Compare with what was built
+          </Button>
+        )}
         <button
           type="button"
           className="drv-linkbtn"

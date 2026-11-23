@@ -52,6 +52,7 @@ src/
 │   │   │                                          # details drawer) + the POC renderer (boundary, C4 cards, right-angle arrows)
 │   │   ├── C4ChangesetPicker.tsx C4ChangesetBar.tsx c4Marks.ts opStyles.ts  # changeset overlay: picker, bar, mark words,
 │   │   │                                          # op outlines shared with the Impact tab
+│   │   ├── C4PlanComparisonBar.tsx verdictStyles.ts  # plan vs as built: the pair's bar + verdict marks
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
@@ -72,7 +73,9 @@ src/
 │   │   ├── c4/                # the model as a C4 model (pure): c4Rules.ts (rules as data, checked against the spec),
 │   │   │                      # c4Model.ts (elements, containment, folds, relationships), c4Views.ts (one diagram per level + scope),
 │   │   │                      # c4Layout.ts (ELK adapter, lazy), c4Level.ts, useC4Model.ts (shared hook, useC4Overlay,
-│   │   │                      # layout query), c4Diff.ts (a changeset's C4 diff + union view)
+│   │   │                      # layout query), c4Diff.ts (a changeset's C4 diff + union view),
+│   │   │                      # c4PlanCompare.ts (a plan verification's verdicts lifted onto C4 boxes/arrows)
+│   │   ├── planVerification.ts usePlanVerification.ts  # the dr CLI's plan-vs-as-built report (validated) + pairing
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
@@ -174,6 +177,11 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
   `notChecked { elements, relationships, sentence }` and `rebaselined`, `baseChanges.page { offset, limit,
   totals, returned, nextOffset?, more? }` pages the lists (`?driftLimit=` / `?driftOffset=` on the detail), and
   the commit result may carry `drift { message, overlapping? }`.
+- `GET /api/changesets/:id/verification?against=<as-built id>` (dr CLI with documentation_robotics' verification
+  route; older: a non-JSON 404) → `changeset_verify`'s report for the plan `:id` against an as-built changeset:
+  per element / relationship `matched` (exact | probable), `divergent`, `missing`, `unverifiable`, `unplanned`,
+  `deletionsNotDone`, by dotted id, plus `verdict`, `verdictText`, `asBuiltChangeset`. Not in the generated client
+  yet: `data/planVerification.ts` declares and validates it.
 - `GET /api/tier1` → Tier 1 state + this month's spend (`Tier1Status`; read-only, never a credential value; an
   older dr CLI answers 404). Each change in `GET /api/changesets/:id` (and `unstaged[].change`) may carry
   `origin: { by: tier0|tier1|agent, rule?, provider?, model?, upstream?, p?: { layer, type }, confirmed? }`
@@ -269,7 +277,7 @@ For local dev use `dr visualize --no-auth`.
   element id, and the router returns early so it never reaches the Model selection. DrBot's context names the
   diagram and the selected box's model elements. Known model gaps it exposes: no ownership (which system an
   element belongs to) and no container membership in the spec. Not built yet: Deployment and Dynamic diagrams,
-  export, plan-vs-as-built comparison.
+  export.
   **Changeset overlay** (slice 2): `?changeset=` ⇄ `uiStore.c4ChangesetId` (not persisted; separate from the
   Changesets view's `changesetId`), set by the header's `C4ChangesetPicker` (staged, then applied; testid
   `c4-changeset-picker`), `showC4Overlay` (a navigation; keeps level, scope, selection) or the Changesets view's
@@ -293,6 +301,24 @@ For local dev use `dr visualize --no-auth`.
   (`selectChangeset` + `selectChange`); a staged changeset's new box lists its model elements without links. A
   selection the drawn diagram doesn't hold is dropped once the overlay has loaded. DrBot's context names the
   overlaid changeset, how it is drawn and the selected box's status.
+  **Plan vs as built** (slice 3): `?changeset=<plan>&built=<as-built>` ⇄ `uiStore.c4BuiltId` (not persisted; set
+  with `showC4Overlay(planId, builtId)`, `showC4(level, scope, { changesetId, builtId })`; any overlay change without
+  it clears it). The verdicts are the dr CLI's (`GET /api/changesets/:id/verification`), never a viewer matcher:
+  `data/planVerification.ts` validates the report (malformed items dropped and counted) and pairs a plan with its
+  verification records (`verifies`) first, then any verification / reconcile / bootstrap changeset by hand
+  (`asBuiltChoices`); an older CLI reads as `unavailable` (the bar says so, the diagram shows the plan without
+  verdicts). `useC4PlanComparison` (in `useC4Model.ts`) draws the model as the plan leaves it with the as-built laid
+  over it (`comparisonModel`: staged sides applied, applied ones already in the model) and `compareC4Plan` lifts the
+  verdicts onto it: an element onto the C4 element it is or the ones it is folded onto, a relationship onto every
+  arrow carrying its model link (`viewArrowVerdicts` per drawn view); a box shows its worst verdict (missing >
+  divergent > probable > unverifiable > built; unplanned only alone, "unplanned additions" when only folded parts
+  are), a box above counts its marked boxes ("17 inside"); what reaches no box is counted (`unshown`). Marks:
+  `ui/verdictStyles.ts` (✓ emerald solid, ≈ cyan dashed, ≠ amber double, ∅ rose dotted, ? no outline, + violet
+  groove; arrows by dash pattern), drawn by `C4Diagram`'s `comparison` prop in the overlay's slots (never both).
+  `C4PlanComparisonBar` replaces the changeset bar (as-built picker, the CLI's verdict text, tally, legend, left
+  out, Show the plan only, Clear); the drawer gets "Plan vs as built". Entry points: the changeset bar's "Compare
+  with what was built" (a plan with an as-built to compare) and the Changesets view's "Compare on the diagrams" (a
+  plan with a record, or the record). The route runs `changeset_verify` on each read: a second or more.
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
   section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
   react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
