@@ -34,9 +34,9 @@ export interface C4ExportMark {
   glyph: string;
   /** The words for titles, the first the mark's own ("changed, 12 changes"). */
   words: string[];
-  /** A card's chip text without the glyph ("changed · 12 changes"); the first word when absent. */
+  /** A card's chip words without the glyph or count ("changed"); the first word when absent. */
   chip?: string;
-  /** An arrow's change count past one ("4 changes"), drawn after its label; none when absent. */
+  /** The change count past one ("4 changes"), drawn whole after a card's chip words or an arrow's label; none when absent. */
   count?: string;
   /** The status's own words, the same for every box or arrow it marks ("moved"): a legend's. */
   legend: string;
@@ -210,6 +210,9 @@ export function wrap(text: string, chars: number, lines: number): string[] {
   return out;
 }
 
+/** Characters of a chip drawn before it is cut. */
+const CHIP_CHARS = 32;
+
 function cut(text: string, chars: number): string {
   return text.length > chars ? `${text.slice(0, Math.max(0, chars - 1))}…` : text;
 }
@@ -377,14 +380,17 @@ function svgCard(
   }
 
   const chip = (text: string, cx: number, cy: number, border: string, anchorEnd: boolean) => {
-    const label = cut(text, 32);
+    const label = cut(text, CHIP_CHARS);
     const cw = Math.round(label.length * 6.2 + 16);
     const left = anchorEnd ? cx - cw : cx;
     return `<g><rect x="${left}" y="${cy}" width="${cw}" height="18" rx="9" fill="${c('--canvas-card')}" stroke="${border}" stroke-width="1.5"/><text x="${left + 8}" y="${cy + 9}" dominant-baseline="central" font-family="${SANS}" font-size="10.5" fill="${c('--canvas-fg-1')}">${xmlEscape(label)}</text></g>`;
   };
-  const chipText = mark?.chip || words[0];
-  if (mark && (mark.glyph || mark.color) && chipText) {
-    parts.push(chip(`${mark.glyph ? `${mark.glyph} ` : ''}${chipText}`, x + 10, y - 16, mark.color ?? c('--canvas-border'), false));
+  const chipWords = mark?.chip || words[0];
+  if (mark && (mark.glyph || mark.color) && chipWords) {
+    // The words are cut to make room for the count, which is never cut.
+    const tail = mark.count ? ` · ${mark.count}` : '';
+    const text = cut(`${mark.glyph ? `${mark.glyph} ` : ''}${chipWords}`, CHIP_CHARS - tail.length) + tail;
+    parts.push(chip(text, x + 10, y - 16, mark.color ?? c('--canvas-border'), false));
   }
   if (inside) parts.push(chip(inside, x + w - 10, y + h - 2, marks.insideColor?.get(item.id) ?? c('--canvas-fg-3'), true));
 

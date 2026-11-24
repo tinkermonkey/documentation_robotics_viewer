@@ -418,7 +418,15 @@ export function C4Diagram({
                   aria-hidden="true"
                   data-testid="c4-card-status"
                 >
-                  <span className="c4-card__glyph">{mark.glyph}</span> {mark.chip}
+                  <span className="c4-card__status-words">
+                    <span className="c4-card__glyph">{mark.glyph}</span> {mark.chip}
+                  </span>
+                  {mark.count && (
+                    <>
+                      {' '}
+                      <span className="c4-card__status-count">· {mark.count}</span>
+                    </>
+                  )}
                 </span>
               )}
               {inside && (

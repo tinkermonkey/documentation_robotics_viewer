@@ -19,7 +19,7 @@ import {
   RELATIONSHIP_MARKS,
   changeCount,
   changeCountLabel,
-  elementChipLabel,
+  elementStatusLabel,
   elementStatusWords,
   relationshipStatusLabel,
   relationshipStatusWords,
@@ -58,9 +58,12 @@ export interface ResolvedMark {
   glyph: string;
   /** The words for accessible names and tooltips: the first is the mark's own ("changed, 12 changes"). */
   words: string[];
-  /** A card's status chip, without the glyph: "changed · 12 changes" (a comparison: its verdict). */
+  /** The status words a card's chip shows, without the glyph or count: "changed", "moved from Web App" (a comparison: its verdict). */
   chip: string;
-  /** The changes behind the mark past one, "4 changes" (an arrow's label ends with it), else ''. */
+  /**
+   * The changes behind the mark past one, "4 changes", else ''. A card's chip and an arrow's label end
+   * with it after a middle dot; it is drawn whole, and only the words before it are cut to fit.
+   */
   count: string;
   /** The status's own words, the same wherever it marks (an export's legend). */
   legend: string;
@@ -146,7 +149,7 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
     status: change.status,
     glyph: mark.glyph,
     words: [relationshipStatusWords(change)],
-    chip: count ? `${label} · ${count}` : label,
+    chip: label,
     count,
     legend: mark.label,
     token: mark.op ? OP_OUTLINE[mark.op].token : null,
@@ -213,7 +216,7 @@ export function cardMark(
         status: change.status,
         glyph: m?.glyph ?? '',
         words,
-        chip: overlay ? elementChipLabel(change, overlay.nameOf) : '',
+        chip: overlay ? elementStatusLabel(change, overlay.nameOf) : '',
         count: changeCountLabel(changeCount(change)),
         legend: m?.label ?? change.status,
         token: outline?.token ?? null,

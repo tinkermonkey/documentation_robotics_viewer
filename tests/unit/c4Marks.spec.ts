@@ -7,7 +7,6 @@ import { describe, it, expect } from 'vitest';
 import type { C4ElementDiff, C4RollUp, C4ViewRelationshipDiff } from '@/apps/embedded/data/c4/c4Diff';
 import {
   changeCountLabel,
-  elementChipLabel,
   elementStatusWords,
   relationshipStatusWords,
   rollUpLabel,
@@ -33,15 +32,6 @@ describe('c4Marks: change counts', () => {
     expect(changeCountLabel(2)).toBe('2 changes');
     expect(changeCountLabel(1)).toBe('');
     expect(changeCountLabel(0)).toBe('');
-  });
-
-  it("puts the count on a box's chip after a middle dot, as the roll-up words it", () => {
-    expect(elementChipLabel(box('changed', 12), nameOf)).toBe('changed · 12 changes');
-    expect(elementChipLabel(box('added', 8), nameOf)).toBe('added · 8 changes');
-    expect(elementChipLabel(box('removed', 3), nameOf)).toBe('removed · 3 changes');
-    expect(elementChipLabel(box('moved', 1, { previousParentId: 'web' }), nameOf)).toBe('moved from Web App');
-    expect(elementChipLabel(box('parts-changed', 4), nameOf)).toBe('');
-    expect(elementChipLabel(undefined, nameOf)).toBe('');
   });
 
   it('puts the count in the words for accessible names, after a comma, before the roll-up', () => {

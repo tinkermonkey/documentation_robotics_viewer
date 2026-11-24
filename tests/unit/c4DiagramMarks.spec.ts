@@ -59,9 +59,9 @@ describe('c4DiagramMarks: change counts (#629)', () => {
   };
 
   it("puts the count on a box's chip and in its words, and leaves it off at one", () => {
-    expect(cardMark({ overlay: counted }, 'a').mark).toMatchObject({ chip: 'changed · 12 changes', count: '12 changes' });
+    expect(cardMark({ overlay: counted }, 'a').mark).toMatchObject({ chip: 'changed', count: '12 changes' });
     expect(cardMark({ overlay: counted }, 'a').words).toEqual(['changed, 12 changes']);
-    expect(cardMark({ overlay: counted }, 'c').mark?.chip).toBe('moved from Old Home · 4 changes');
+    expect(cardMark({ overlay: counted }, 'c').mark).toMatchObject({ chip: 'moved from Old Home', count: '4 changes' });
     expect(cardMark({ overlay: counted }, 'c').words).toEqual(['moved from Old Home, 4 changes']);
     expect(cardMark({ overlay: counted }, 'b').mark).toMatchObject({ chip: 'added', count: '' });
     expect(cardMark({ overlay: counted }, 'b').words).toEqual(['added']);
@@ -74,7 +74,7 @@ describe('c4DiagramMarks: change counts (#629)', () => {
 
   it('exports the same chip and count', () => {
     const marks = toExportMarks(view, { overlay: counted }, colorOf);
-    expect(marks.elements.get('a')).toMatchObject({ chip: 'changed · 12 changes', words: ['changed, 12 changes'] });
+    expect(marks.elements.get('a')).toMatchObject({ chip: 'changed', count: '12 changes', words: ['changed, 12 changes'] });
     expect(marks.relationships.get('a>b')).toMatchObject({ count: '4 changes' });
   });
 

@@ -77,13 +77,6 @@ export function elementStatusLabel(diff: C4ElementDiff | undefined, nameOf: (id:
   return ELEMENT_MARKS[diff.status].label;
 }
 
-/** A box's status chip, without its glyph: "changed · 12 changes", "added". Empty for none or parts changed. */
-export function elementChipLabel(diff: C4ElementDiff | undefined, nameOf: (id: string) => string | undefined): string {
-  const label = elementStatusLabel(diff, nameOf);
-  const n = changeCountLabel(changeCount(diff));
-  return label && n ? `${label} · ${n}` : label;
-}
-
 /**
  * A box's status words for its accessible name and tooltip: "added",
  * "changed, 12 changes", "moved from Web App", "3 changes inside". Empty when

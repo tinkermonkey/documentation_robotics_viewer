@@ -137,6 +137,7 @@ describe('C4 changeset overlay (staged changeset)', () => {
     // Two changes are behind it: the chip and the accessible name count them (#629).
     expect(diff.elements.get(edited.id)?.sequences).toEqual([2, 4]);
     expect(within(changed).getByTestId('c4-card-status')).toHaveTextContent('~ changed · 2 changes');
+    expect(within(changed).getByTestId('c4-card-status').querySelector('.c4-card__status-count')).toHaveTextContent('· 2 changes');
     // The status is in the accessible name, not only drawn.
     expect(
       within(changed).getByRole('button', { name: new RegExp(`^${edited.element.name}, .*, changed, 2 changes`) }),
@@ -233,7 +234,7 @@ describe('C4 changeset overlay (staged changeset)', () => {
     await renderOverlay('component', parent.id);
     await waitFor(() => expect(card(doomed.id)).toBeInTheDocument());
     const list = screen.getByTestId('c4-relationship-list');
-    const removedArrows = [...list.querySelectorAll('li')].filter((li) => li.textContent?.endsWith('— removed'));
+    const removedArrows = [...list.querySelectorAll('li')].filter((li) => /— removed(, \d+ changes)?$/.test(li.textContent ?? ''));
     const drawnRemoved = document.querySelectorAll('[data-testid="c4-edge"][data-status="removed"]').length;
     expect(drawnRemoved).toBeGreaterThan(0);
     expect(removedArrows).toHaveLength(drawnRemoved);

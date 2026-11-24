@@ -135,7 +135,8 @@ describe('c4Export: SVG', () => {
       status: 'changed',
       glyph: '~',
       words: ['changed, 12 changes'],
-      chip: 'changed · 12 changes',
+      chip: 'changed',
+      count: '12 changes',
       legend: 'changed',
       color: '#22d3ee',
     };
@@ -151,6 +152,15 @@ describe('c4Export: SVG', () => {
     expect(card.querySelector('title')?.textContent).toContain('changed, 12 changes');
     const edge = doc.querySelector('[data-c4="edge"][data-status="added"]')!;
     expect(edge.querySelector('text')?.textContent).toMatch(/^\+ .* · 4 changes$/);
+    // A long chip cuts its words, never its count.
+    const long: C4ExportMarks = {
+      ...marks,
+      elements: new Map([[first.id, { ...changed, status: 'moved', glyph: '→', chip: 'moved from Embedded Architecture Viewer', count: '4 changes' }]]),
+    };
+    const longCard = parse(toSvg(view, grid(view), long)).querySelector(`[data-c4-id="${CSS.escape(first.id)}"]`)!;
+    const chipText = [...longCard.querySelectorAll('text')].map((t) => t.textContent ?? '').find((t) => t.startsWith('→'));
+    expect(chipText).toMatch(/^→ moved from .*… · 4 changes$/);
+    expect(chipText!.length).toBeLessThanOrEqual(32);
     expect(edge.querySelector('title')?.textContent).toContain('added, 4 changes');
   });
 
