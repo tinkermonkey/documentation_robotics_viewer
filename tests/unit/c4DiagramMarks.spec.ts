@@ -22,7 +22,9 @@ const overlay: C4DiagramOverlay = {
     ['c', diff('c', 'moved', { previousParentId: 'old' })],
     ['parent', diff('parent', 'parts-changed')],
   ]),
-  rollUp: new Map([['parent', { elements: 2, relationships: 0, sequences: [3, 4] }]]),
+  rollUp: new Map([
+    ['parent', { elements: 3, relationships: 1, sequences: [3, 4], byStatus: { elements: { added: 1, changed: 2 }, relationships: { removed: 1 } } }],
+  ]),
   relationships: new Map<string, C4ViewRelationshipDiff>([
     ['a>b', { status: 'relabelled', baseLabels: ['uses'], sequences: [5] }],
     ['b>c', { status: 'removed', baseLabels: ['reads'], sequences: [6] }],
@@ -52,6 +54,9 @@ describe('c4DiagramMarks: an overlay', () => {
     const parent = cardMark({ overlay }, 'parent');
     expect(parent.mark).toMatchObject({ status: 'parts-changed', outline: null, token: null });
     expect(parent.inside).toBe('2 changes inside');
+    // The chip follows the legend: the op most changes inside are (2 modified) sets its border; each op gets a swatch.
+    expect(parent.insideMark).toMatchObject({ token: '--status-cyan', style: 'dashed' });
+    expect(parent.insideMark?.ops.map((o) => o.glyph)).toEqual(['+', '~', '−']);
     expect(isGhost({ overlay }, 'b')).toBe(true);
   });
 
@@ -69,6 +74,8 @@ describe('c4DiagramMarks: a comparison', () => {
     expect(cardMark({ comparison }, 'b').mark).toMatchObject({ outline: null, lineStyle: null, token: null });
     expect(isGhost({ overlay, comparison }, 'b')).toBe(false);
     expect(cardMark({ comparison }, 'parent').inside).toBe('3 inside · 1 ∅');
+    // Its chip takes the worst verdict's colour and line.
+    expect(cardMark({ comparison }, 'parent').insideMark).toEqual({ token: '--status-rose', style: 'dotted', ops: [] });
   });
 });
 
@@ -86,7 +93,8 @@ describe('c4DiagramMarks: as C4 Export Marks', () => {
       dash: null,
     });
     expect(marks.elements.get('parent')).toMatchObject({ color: null, words: ['2 changes inside'] });
-    expect(marks.inside.get('parent')).toBe('2 changes inside');
+    expect(marks.inside.get('parent')).toBe('+ ~ − · 2 changes inside');
+    expect(marks.insideColor?.get('parent')).toBe('color(--status-cyan)');
     expect([...marks.ghosts]).toEqual(['b']);
     expect(marks.relationships.get('b>c')).toMatchObject({ color: 'color(--status-rose)', dash: '2 4' });
   });
