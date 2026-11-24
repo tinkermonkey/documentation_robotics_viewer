@@ -706,7 +706,9 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   `clearGraphSelection`, a C4 box `selectC4`, a reviewed change `selectChange`), `focus` (`focusImpact`) and
   `expand` (`openGroup`). `dwell` and `fit` (from `setGraphViewport(vp, cause)`) REPLACE; `recentre`
   (centerOnSelect) COALESCES when it centres on what the entry selects, else pushes; a repeat of the last push
-  on the same target within `COALESCE_MS` (500ms, a double-click) coalesces. A store change with no new move
+  on the same target within `COALESCE_MS` (500ms, a double-click) coalesces. A clear (deselect, unfocus,
+  closing a change) is a move with `target: null` and never coalesces, so a toggle's double-click is two
+  steps, never an entry Back can't leave. `graphMove.seq` only rises (a checkout switch keeps it). A store change with no new move
   and no destination (a restore, a stale selection dropped) replaces. Restores never write a move: the router
   uses `selectNode`/`selectEdge`/`restoreC4`/`restoreChangeset`/`restoreOpenGroups`, and the code that drops
   a selection the data no longer holds uses `clearC4Selection`/`clearEdgeSelection` (a new UI path that
@@ -715,7 +717,9 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   move changes is in the URL, each param read only in its own view (`routes/shellParams.ts`): `?tab=impact`,
   `?seq=` (a number), `?focus=` (Impact focus) and `?open=` (the opened lanes / groups, `uiStore.openGroups`,
   sorted, comma-separated: the Model by-type lanes' folded types, the Impact tab's `layer|type` groups;
-  cleared with the layer, changeset, view or Model view). The router restores the Changesets view in one
+  cleared with the layer, changeset, view or Model view, and by a navigation into another view).
+  `?focus=` / `?open=` stay in the URL on the Review tab while the changeset is open, so returning to Impact
+  finds them. The router restores the Changesets view in one
   write (`restoreChangeset`). Not built: a cap or grouping of long explorations (the issue's optional item;
   a browser history entry can't be merged after the fact, so it would have to coalesce while exploring).
 - **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4; #619) — `ui/useViewportHistory.ts`
@@ -727,7 +731,8 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   report). The router writes it into `?vp=` and never pushes for it (a dwell or fit replaces, a recentre
   coalesces), so each history entry holds the last view seen there. A viewport is tagged with the key of the
   canvas it belongs to, `liveCanvasKey` (`ui/graphViewport.ts`): `graphCanvasKey` (Model/Schema, also the
-  GraphCanvas React key), `impactCanvasKey` (changeset, focus, follow depth, `uiStore.impactLabels`) or
+  GraphCanvas React key), `impactCanvasKey` (changeset, focus, follow depth; not the Labels control, which isn't in the URL: the
+  lanes' React key adds it, `impactLanesKey`) or
   `c4CanvasKey` (level, scope, overlay, as-built; also `C4Diagram`'s React key); none on the inbox or the
   Review tab. A layer, view, layout, focus or diagram change drops it rather than applying world coordinates
   to a different layout. The URL's `tag` is `scopeTag(key)`: layout/display settings live in each viewer's
@@ -753,7 +758,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~1180 tests)
+npm test            # Vitest: unit + integration + component (~1190 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -794,12 +799,12 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~1180 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~1190 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **90 tests** in `tests/e2e/`): drives the **production bundle** served
+- **Playwright** (`npm run test:e2e`, **92 tests** in `tests/e2e/`): drives the **production bundle** served
   by `dr serve` on a dedicated port (`scripts/e2e-server.sh`: a scratch farm whose one project, `viewer`, is a
   clone of the repo's committed model, checkout `main`; `DR_CLI` overrides the command, e.g. a CLI built from
   source). The central process makes a new token each start: the script writes it to `tests/e2e/.server.json`,

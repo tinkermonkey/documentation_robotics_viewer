@@ -18,7 +18,9 @@
  *   selection dropped, a restore). Replace.
  *
  * Rapid repeats coalesce: the same move on the same target within
- * `COALESCE_MS` of the push it repeats (a double-click) is one step.
+ * `COALESCE_MS` of the push it repeats (a double-click) is one step. A clear
+ * (a move with target null: deselect, unfocus) never coalesces: it undoes the
+ * select before it, and merging the two would leave Back with nothing to do.
  */
 
 export type GraphMoveKind = 'select' | 'focus' | 'expand' | 'recentre' | 'dwell' | 'fit';
@@ -61,8 +63,10 @@ export function decideHistoryStep({ destination, move, entrySelection, lastPush 
   if (destination) return 'push';
   if (!move) return 'replace';
   if (move.kind === 'dwell' || move.kind === 'fit') return 'replace';
+  // A clear (target null) is never a repeat: it undoes the select before it.
   const repeatsLastPush =
     !!lastPush &&
+    move.target !== null &&
     lastPush.target === move.target &&
     (lastPush.kind === move.kind || (move.kind === 'recentre' && lastPush.kind !== 'recentre')) &&
     move.at - lastPush.at >= 0 &&

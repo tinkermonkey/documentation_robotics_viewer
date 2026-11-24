@@ -46,14 +46,22 @@ export function graphCanvasKey(s: GraphCanvasKeyInput): string {
   return s.view === 'model' && s.modelView && s.modelView !== 'graph' ? `${base}:${s.modelView}` : base;
 }
 
-/** Identity of the Changesets view's Impact lanes: they refit (remount) on any change. */
+/** Identity of the Changesets view's Impact lanes, which `?vp=` is scoped to:
+ *  changeset, focus and follow depth (all in the URL or the persisted
+ *  preferences). The Labels control is not part of it: it isn't in the URL, so
+ *  a viewport recorded under "All" would never apply after a reload. The lanes'
+ *  React key adds it (`impactLanesKey`), so a label switch still refits. */
 export function impactCanvasKey(s: {
   changesetId: string | null;
   impactFocus: string | null;
   inspectorFollow: number;
-  impactLabels: ImpactLabels;
 }): string {
-  return `impact:${s.changesetId ?? ''}:${s.impactFocus ?? ''}:${s.inspectorFollow}:${s.impactLabels}`;
+  return `impact:${s.changesetId ?? ''}:${s.impactFocus ?? ''}:${s.inspectorFollow}`;
+}
+
+/** The Impact lanes' React key: the canvas key plus the labels. */
+export function impactLanesKey(canvasKey: string, labels: ImpactLabels): string {
+  return `${canvasKey}:${labels}`;
 }
 
 /** Identity of the Architecture view's C4 diagram: level, scope and what is laid over it. */
@@ -71,7 +79,6 @@ export interface LiveCanvasKeyInput extends GraphCanvasKeyInput {
   changesetTab: 'changes' | 'impact';
   impactFocus: string | null;
   inspectorFollow: number;
-  impactLabels: ImpactLabels;
   c4Level: C4Level;
   c4Scope: string | null;
   c4ChangesetId: string | null;

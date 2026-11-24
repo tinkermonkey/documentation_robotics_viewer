@@ -14,7 +14,7 @@ import {
   type HistoryStepInput,
 } from '@/apps/embedded/routes/historyPolicy';
 import { formatOpenParam, parseOpenParam, parseSeqParam } from '@/apps/embedded/routes/shellParams';
-import { c4CanvasKey, graphCanvasKey, impactCanvasKey, liveCanvasKey, type LiveCanvasKeyInput } from '@/apps/embedded/ui/graphViewport';
+import { c4CanvasKey, graphCanvasKey, impactCanvasKey, impactLanesKey, liveCanvasKey, type LiveCanvasKeyInput } from '@/apps/embedded/ui/graphViewport';
 
 const move = (kind: GraphMoveKind, target: string | null, at = 10_000): GraphMove => ({ seq: 1, kind, target, at });
 const input = (over: Partial<HistoryStepInput>): HistoryStepInput => ({
@@ -71,6 +71,25 @@ describe('decideHistoryStep', () => {
     expect(decideHistoryStep(input({ move: move('select', 'a', 10_001 + COALESCE_MS), lastPush }))).toBe('push');
   });
 
+  it('pushes a clear right after its select: the double-click a toggle undoes is two steps, never a no-op Back', () => {
+    const lastPush = { kind: 'select' as const, target: 'a', at: 10_000 };
+    expect(decideHistoryStep(input({ move: move('select', null, 10_100), lastPush }))).toBe('push');
+    const focused = { kind: 'focus' as const, target: 'x', at: 10_000 };
+    expect(decideHistoryStep(input({ move: move('focus', null, 10_100), lastPush: focused }))).toBe('push');
+  });
+
+  it('never coalesces two clears, nor a recentre with no target', () => {
+    const lastPush = { kind: 'select' as const, target: null, at: 10_000 };
+    expect(decideHistoryStep(input({ move: move('select', null, 10_100), lastPush }))).toBe('push');
+    expect(decideHistoryStep(input({ move: move('recentre', null), entrySelection: null }))).toBe('push');
+  });
+
+  it('coalesces a recentre after a pushed recentre onto the same node, within the window', () => {
+    const lastPush = { kind: 'recentre' as const, target: 'n2', at: 10_000 };
+    expect(decideHistoryStep(input({ move: move('recentre', 'n2', 10_300), lastPush, entrySelection: 'n1' }))).toBe('coalesce');
+    expect(decideHistoryStep(input({ move: move('recentre', 'n2', 10_000 + COALESCE_MS + 1), lastPush, entrySelection: 'n1' }))).toBe('push');
+  });
+
   it('does not coalesce a different kind of move on the same target', () => {
     const lastPush = { kind: 'select' as const, target: 'a', at: 10_000 };
     expect(decideHistoryStep(input({ move: move('focus', 'a', 10_100), lastPush }))).toBe('push');
@@ -108,7 +127,6 @@ describe('liveCanvasKey', () => {
     changesetTab: 'impact',
     impactFocus: null,
     inspectorFollow: 1,
-    impactLabels: 'reached',
     c4Level: 'component',
     c4Scope: 'web',
     c4ChangesetId: null,
@@ -127,6 +145,11 @@ describe('liveCanvasKey', () => {
 
   it('changes with the Impact focus, so a viewport never crosses foci', () => {
     expect(impactCanvasKey({ ...base, impactFocus: 'x' })).not.toBe(impactCanvasKey(base));
+  });
+
+  it('leaves the Impact labels out of the scope (not in the URL), but not out of the lanes\' React key', () => {
+    expect(impactCanvasKey(base)).toBe('impact:cs::1');
+    expect(impactLanesKey(impactCanvasKey(base), 'all')).not.toBe(impactLanesKey(impactCanvasKey(base), 'reached'));
   });
 
   it('is the C4 diagram in Architecture, ignoring a scope the level ignores', () => {

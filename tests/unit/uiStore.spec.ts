@@ -923,7 +923,8 @@ describe('graph moves (#619)', () => {
     expect(s().graphMove).toMatchObject({ seq: 2, kind: 'select', target: 'e1' });
     s().clearGraphSelection('application');
     expect(s().selectedEdgeId).toBeNull();
-    expect(s().graphMove).toMatchObject({ seq: 3, kind: 'select', target: 'e1' });
+    // A clear has no target, so it never coalesces with the select it undoes.
+    expect(s().graphMove).toMatchObject({ seq: 3, kind: 'select', target: null });
     s().focusImpact('x');
     expect(s().graphMove).toMatchObject({ kind: 'focus', target: 'x' });
     expect(s().changesetTab).toBe('impact');
@@ -958,6 +959,41 @@ describe('graph moves (#619)', () => {
     expect(s().graphMove).toMatchObject({ kind: 'recentre', target: 'n9' });
     s().setGraphViewport(vp, { kind: 'fit', reason: 'toolbar' });
     expect(s().graphMove).toMatchObject({ kind: 'fit' });
+  });
+
+  it('records every clear with target null', () => {
+    const s = () => useUiStore.getState();
+    s().selectC4('box');
+    s().selectC4(null);
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: null });
+    s().focusImpact('x');
+    s().focusImpact(null);
+    expect(s().graphMove).toMatchObject({ kind: 'focus', target: null });
+    s().selectChange(3);
+    s().selectChange(null);
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: null });
+  });
+
+  it('keeps the move seq rising across a checkout switch', () => {
+    const s = () => useUiStore.getState();
+    s().selectGraphNode('n1');
+    const seq = s().graphMove!.seq;
+    s().clearCheckoutSelection();
+    s().selectGraphNode('n2');
+    expect(s().graphMove!.seq).toBe(seq + 1);
+  });
+
+  it("drops Impact's opened groups when a navigation lands in Model on the same layer id", () => {
+    const s = () => useUiStore.getState();
+    useUiStore.setState({ view: 'changesets', layerId: 'application', openGroups: ['application|applicationservice'] });
+    s().navigateToElement('n1', 'application');
+    expect(s().openGroups).toEqual([]);
+    useUiStore.setState({ view: 'model', openGroups: ['applicationservice'] });
+    s().navigateToElement('n2', 'application');
+    expect(s().openGroups).toEqual(['applicationservice']);
+    useUiStore.setState({ view: 'changesets', openGroups: ['x|y'] });
+    s().navigateToSpecNode('t', 'application');
+    expect(s().openGroups).toEqual([]);
   });
 
   it('drops opened groups with the layer, the view or the by-type view', () => {

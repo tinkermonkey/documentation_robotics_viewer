@@ -500,8 +500,9 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
             changeset: changesetId ?? undefined,
             tab: impactTab ? 'impact' : undefined,
             seq: changesetId && changeSeq !== null ? changeSeq : undefined,
-            focus: impactTab ? (impactFocus ?? undefined) : undefined,
-            open: impactTab ? formatOpenParam(openGroups) : undefined,
+            // Kept on the Review tab too, so returning to Impact finds them.
+            focus: changesetId ? (impactFocus ?? undefined) : undefined,
+            open: changesetId ? formatOpenParam(openGroups) : undefined,
             vp,
           }
         : {

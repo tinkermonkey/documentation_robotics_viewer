@@ -447,7 +447,8 @@ export const useUiStore = create<UiState>()(
           highlightedEdgeId: null,
           focus: 'layer',
           ...(s.layerId !== layerId ? { openGroups: [] } : {}),
-          graphMove: nextMove(s, 'select', s.selectedId ?? s.selectedEdgeId),
+          // A clear is its own step: target null never coalesces with the select it undoes.
+          graphMove: nextMove(s, 'select', null),
         })),
 
       selectNode: (selectedId) =>
@@ -498,7 +499,8 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('model'),
             expandedLayers,
-            ...(sameLayer ? {} : { openGroups: [] }),
+            // Opened groups belong to one view's graph: Impact's `layer|type` ids mean nothing in Model.
+            ...(sameLayer && s.view === 'model' ? {} : { openGroups: [] }),
           };
         }),
 
@@ -519,7 +521,8 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('model'),
             expandedLayers,
-            ...(sameLayer ? {} : { openGroups: [] }),
+            // Opened groups belong to one view's graph: Impact's `layer|type` ids mean nothing in Model.
+            ...(sameLayer && s.view === 'model' ? {} : { openGroups: [] }),
           };
         }),
 
@@ -539,7 +542,7 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('spec'),
             expandedLayers,
-            ...(sameLayer ? {} : { openGroups: [] }),
+            ...(sameLayer && s.view === 'spec' ? {} : { openGroups: [] }),
           };
         }),
 
@@ -570,7 +573,7 @@ export const useUiStore = create<UiState>()(
       selectChange: (changeSeq) =>
         set((s) => ({
           changeSeq,
-          graphMove: nextMove(s, 'select', `seq:${changeSeq ?? s.changeSeq ?? ''}`),
+          graphMove: nextMove(s, 'select', changeSeq === null ? null : `seq:${changeSeq}`),
         })),
       clearCheckoutSelection: () =>
         set((s) => ({
@@ -582,7 +585,7 @@ export const useUiStore = create<UiState>()(
           changesetTab: 'changes',
           impactFocus: null,
           openGroups: [],
-          graphMove: null,
+          // graphMove is kept: its seq must stay monotonic for the router.
           c4Scope: null,
           c4SelectedId: null,
           c4ChangesetId: null,
@@ -595,7 +598,7 @@ export const useUiStore = create<UiState>()(
         set((s) => ({
           impactFocus,
           ...(impactFocus ? { changesetTab: 'impact' as const } : {}),
-          graphMove: nextMove(s, 'focus', impactFocus ?? s.impactFocus),
+          graphMove: nextMove(s, 'focus', impactFocus),
         })),
       setImpactLabels: (impactLabels) => set({ impactLabels }),
       openGroup: (id) =>
@@ -631,7 +634,7 @@ export const useUiStore = create<UiState>()(
               },
         ),
       selectC4: (c4SelectedId) =>
-        set((s) => ({ c4SelectedId, graphMove: nextMove(s, 'select', c4SelectedId ?? s.c4SelectedId) })),
+        set((s) => ({ c4SelectedId, graphMove: nextMove(s, 'select', c4SelectedId) })),
       clearC4Selection: () => set({ c4SelectedId: null }),
       restoreC4: (c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId) =>
         set({

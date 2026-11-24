@@ -40,7 +40,7 @@ import {
 } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { useViewportHistory } from './useViewportHistory';
-import { impactCanvasKey } from './graphViewport';
+import { impactCanvasKey, impactLanesKey } from './graphViewport';
 import { layerColor, layerLabel } from './domain';
 import {
   GROUP_PREFIX,
@@ -164,7 +164,7 @@ export function ChangesetImpactView({
   const openGroup = useUiStore((s) => s.openGroup);
   const restoreOpenGroups = useUiStore((s) => s.restoreOpenGroups);
   const expanded = useMemo<ReadonlySet<string>>(() => new Set(openGroups), [openGroups]);
-  const canvasKey = impactCanvasKey({ changesetId, impactFocus: focusRef, inspectorFollow: follow, impactLabels: labels });
+  const canvasKey = impactCanvasKey({ changesetId, impactFocus: focusRef, inspectorFollow: follow });
   const viewportProps = useViewportHistory(canvasKey);
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
@@ -466,7 +466,7 @@ export function ChangesetImpactView({
           ) : (
             <GraphCanvas
               // Refit when the graph's extent changes (another changeset, focus, follow depth or label mode).
-              key={canvasKey}
+              key={impactLanesKey(canvasKey, labels)}
               layout="layer-lanes"
               layeredGraph={graph}
               laneOptions={{ intraLinks: 'bundled', skipLayerRouting: 'gutter', nodeLabels: labels }}

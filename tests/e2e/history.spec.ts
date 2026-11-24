@@ -93,6 +93,52 @@ test.describe('Back and Forward replay graph moves (#619)', () => {
     });
   }
 
+  test('Model: a nav-tree selection and the recentre it causes make exactly one entry', async ({ page }) => {
+    await gotoView(page, ROUTES.model);
+    const leaf = await openLayer(page, 'Application'); // the first element of the first type group
+    await graphIdle(page);
+    await expect.poll(() => param(page, 'vp')).toBeTruthy();
+    const before = param(page, 'vp');
+    const start = await historyLength(page);
+
+    await leaf.click();
+    await expect.poll(() => param(page, 'node')).toBeTruthy();
+    // centerOnSelect pans to it and reports the move: the same entry takes the new viewport.
+    await expect.poll(() => param(page, 'vp'), { timeout: 6_000 }).not.toBe(before);
+    await page.waitForTimeout(800);
+    expect(await historyLength(page)).toBe(start + 1);
+
+    await page.goBack();
+    await expect.poll(() => param(page, 'node')).toBeNull();
+    expect(param(page, 'vp')).toBe(before);
+  });
+
+  test('Changesets review: each change opened is a step (?seq=)', async ({ page }) => {
+    await gotoView(page, ROUTES.changesets);
+    await openChangesetGroups(page);
+    await page.getByTestId('nav-tree').locator('.drv-nav-l2').first().click();
+    await expect(page.getByTestId('review-panel')).toBeVisible({ timeout: 15_000 });
+    const showFilter = page.getByTestId('review-filter');
+    if ((await showFilter.count()) > 0) await showFilter.getByRole('radio', { name: /^All/ }).click();
+    const rows = page.getByTestId('review-row');
+    await expect(rows.nth(1)).toBeVisible();
+    const start = await historyLength(page);
+
+    await rows.nth(0).click();
+    await expect.poll(() => param(page, 'seq')).toMatch(/^\d+$/);
+    const first = param(page, 'seq');
+    await rows.nth(1).click();
+    await expect.poll(() => param(page, 'seq')).not.toBe(first);
+    expect(await historyLength(page)).toBe(start + 2);
+
+    await page.goBack();
+    await expect.poll(() => param(page, 'seq')).toBe(first);
+    await page.goBack();
+    await expect.poll(() => param(page, 'seq')).toBeNull();
+    await page.goForward();
+    await expect.poll(() => param(page, 'seq')).toBe(first);
+  });
+
   test('Model by-type lanes: opening a folded lane is a step', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'Testing');
