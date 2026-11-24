@@ -13,8 +13,8 @@ import type { C4ElementDiff, C4RollUp, C4ViewRelationshipDiff } from '../data/c4
 import type { C4ElementVerdict, VerdictCounts } from '../data/c4/c4PlanCompare';
 import type { C4ExportMark, C4ExportMarks, C4LineStyle } from '../data/c4/c4Export';
 import type { C4View } from '../data/c4/c4Views';
-import type { PlanVerdict } from '../data/planVerification';
-import { ELEMENT_MARKS, RELATIONSHIP_MARKS, elementStatusWords, relationshipStatusWords, rollUpLabel } from './c4Marks';
+import { PLAN_VERDICTS, type PlanVerdict } from '../data/planVerification';
+import { ELEMENT_MARKS, RELATIONSHIP_MARKS, elementStatusWords, relationshipStatusWords, rollUpLabel, rollUpOps } from './c4Marks';
 import { OP_OUTLINE, opOutlineCss } from './opStyles';
 import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss, verdictRollUpChip, verdictRollUpLabel } from './verdictStyles';
 
@@ -64,6 +64,21 @@ export interface ResolvedMark {
    */
   dash: string | null;
   exportDash: string | null;
+}
+
+/**
+ * A roll-up chip's mark, from the same legend as the boxes: its border takes
+ * the colour and line style of the op most of the changes inside are (a
+ * comparison: the worst verdict inside), and each op inside gets a swatch with
+ * its glyph (no count: the chip's number is the changeset's changes, which
+ * don't map one to one onto the C4 differences the ops are counted from), so a reader scanning for a colour finds the boxes to open.
+ */
+export interface RollUpMark {
+  /** Border token, null for the plain chip. */
+  token: string | null;
+  style: C4LineStyle | null;
+  /** The ops inside, in legend order (an overlay's; a comparison's chip names its verdict in its text). */
+  ops: { glyph: string; count: number; token: string; label: string }[];
 }
 
 /** An overlay arrow's dash, as `c4-diagram.css` draws it (`.c4-diagram__edge--<status>`). */
@@ -127,7 +142,7 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
 export function cardMark(
   source: C4DiagramMarkSource,
   id: string,
-): { mark: ResolvedMark | null; words: string[]; inside: string } {
+): { mark: ResolvedMark | null; words: string[]; inside: string; insideMark: RollUpMark | null } {
   const { comparison } = source;
   if (comparison) {
     const e = comparison.elements.get(id);
@@ -154,7 +169,15 @@ export function cardMark(
     }
     const rollUp = verdictRollUpLabel(counts);
     if (rollUp) words.push(rollUp);
-    return { mark, words, inside: verdictRollUpChip(counts) };
+    const inside = verdictRollUpChip(counts);
+    const lead = counts
+      ? (PLAN_VERDICTS.find((v) => counts[v] > 0 && v !== 'built' && v !== 'unplanned') ??
+        (counts.built > 0 ? 'built' : counts.unplanned > 0 ? 'unplanned' : null))
+      : null;
+    const style = lead ? VERDICT_STYLES[lead] : null;
+    const insideMark: RollUpMark | null =
+      inside && style ? { token: style.token, style: style.token ? style.style : null, ops: [] } : null;
+    return { mark, words, inside, insideMark };
   }
   const overlay = activeOverlay(source);
   const change = overlay?.elements.get(id);
@@ -177,7 +200,19 @@ export function cardMark(
         exportDash: null,
       }
     : null;
-  return { mark, words, inside: rollUpLabel(rollUp) };
+  const inside = rollUpLabel(rollUp);
+  const ops = rollUpOps(rollUp);
+  // The op most changes inside are; a tie goes to the first in legend order.
+  const lead = ops.reduce<(typeof ops)[number] | null>((best, o) => (!best || o.count > best.count ? o : best), null);
+  const insideMark: RollUpMark | null =
+    inside && lead
+      ? {
+          token: OP_OUTLINE[lead.op].token,
+          style: OP_OUTLINE[lead.op].style,
+          ops: ops.map(({ op, count }) => ({ glyph: OP_OUTLINE[op].glyph, count, token: OP_OUTLINE[op].token, label: OP_OUTLINE[op].label })),
+        }
+      : null;
+  return { mark, words, inside, insideMark };
 }
 
 /**
@@ -202,11 +237,13 @@ export function toExportMarks(
   });
   const elements = new Map<string, C4ExportMark>();
   const inside = new Map<string, string>();
+  const insideColor = new Map<string, string>();
   const ghosts = new Set<string>();
   for (const item of view.elements) {
-    const { mark, words, inside: chip } = cardMark(source, item.id);
+    const { mark, words, inside: chip, insideMark } = cardMark(source, item.id);
     if (mark) elements.set(item.id, exported(mark, words));
-    if (chip) inside.set(item.id, chip);
+    if (chip) inside.set(item.id, insideMark?.ops.length ? `${insideMark.ops.map((o) => o.glyph).join(' ')} · ${chip}` : chip);
+    if (chip && insideMark?.token) insideColor.set(item.id, colorOf(insideMark.token));
     if (isGhost(source, item.id)) ghosts.add(item.id);
   }
   const relationships = new Map<string, C4ExportMark>();
@@ -214,5 +251,5 @@ export function toExportMarks(
     const mark = edgeMark(source, rel.id);
     if (mark) relationships.set(rel.id, exported(mark, mark.words));
   }
-  return { elements, relationships, inside, ghosts };
+  return { elements, relationships, inside, insideColor, ghosts };
 }

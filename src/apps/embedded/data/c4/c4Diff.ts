@@ -83,6 +83,11 @@ export interface C4RollUp {
   relationships: number;
   /** The changes behind them, ascending. */
   sequences: number[];
+  /** The changed elements and arrows below, by status (a box whose own parts changed is not counted as a status). */
+  byStatus: {
+    elements: Partial<Record<Exclude<C4ElementStatus, 'parts-changed'>, number>>;
+    relationships: Partial<Record<C4RelationshipStatus, number>>;
+  };
 }
 
 export interface C4Diff {
@@ -361,13 +366,15 @@ export function diffC4(base: C4Model, after: C4Model, trace: OverlayTrace): C4Di
     }
     return out;
   };
-  const rollSets = new Map<string, { elements: number; relationships: number; sequences: Set<number> }>();
+  const rollSets = new Map<string, { elements: number; relationships: number; sequences: Set<number>; byStatus: C4RollUp['byStatus'] }>();
   const roll = (id: string) =>
-    rollSets.get(id) ?? rollSets.set(id, { elements: 0, relationships: 0, sequences: new Set() }).get(id)!;
+    rollSets.get(id) ??
+    rollSets.set(id, { elements: 0, relationships: 0, sequences: new Set(), byStatus: { elements: {}, relationships: {} } }).get(id)!;
   for (const diff of elements.values()) {
     for (const ancestor of ancestorsAbove(diff.id)) {
       const entry = roll(ancestor);
       entry.elements++;
+      if (diff.status !== 'parts-changed') entry.byStatus.elements[diff.status] = (entry.byStatus.elements[diff.status] ?? 0) + 1;
       for (const seq of diff.sequences) entry.sequences.add(seq);
     }
   }
@@ -377,6 +384,7 @@ export function diffC4(base: C4Model, after: C4Model, trace: OverlayTrace): C4Di
       if (!targetAbove.has(ancestor)) continue;
       const entry = roll(ancestor);
       entry.relationships++;
+      entry.byStatus.relationships[diff.status] = (entry.byStatus.relationships[diff.status] ?? 0) + 1;
       for (const seq of diff.sequences) entry.sequences.add(seq);
     }
   }

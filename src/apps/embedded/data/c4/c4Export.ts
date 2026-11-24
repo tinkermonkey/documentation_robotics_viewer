@@ -50,8 +50,10 @@ export interface C4ExportMarks {
   elements: ReadonlyMap<string, C4ExportMark>;
   /** View relationship id → its mark. */
   relationships: ReadonlyMap<string, C4ExportMark>;
-  /** View element id → its roll-up chip ("3 changes inside"). */
+  /** View element id → its roll-up chip ("+ ~ · 3 changes inside"). */
   inside: ReadonlyMap<string, string>;
+  /** View element id → its roll-up chip's border colour (the legend's, for the op most changes inside are). */
+  insideColor?: ReadonlyMap<string, string>;
   /** Removed boxes drawn back as ghosts. */
   ghosts: ReadonlySet<string>;
 }
@@ -378,7 +380,7 @@ function svgCard(
   if (mark && (mark.glyph || mark.color) && words[0]) {
     parts.push(chip(`${mark.glyph ? `${mark.glyph} ` : ''}${words[0]}`, x + 10, y - 16, mark.color ?? c('--canvas-border'), false));
   }
-  if (inside) parts.push(chip(inside, x + w - 10, y + h - 2, c('--canvas-fg-3'), true));
+  if (inside) parts.push(chip(inside, x + w - 10, y + h - 2, marks.insideColor?.get(item.id) ?? c('--canvas-fg-3'), true));
 
   parts.push('</g>');
   return parts.join('');

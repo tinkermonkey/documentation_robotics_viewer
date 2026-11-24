@@ -7,7 +7,7 @@
  */
 
 import type { C4ElementDiff, C4ElementStatus, C4RelationshipStatus, C4RollUp, C4ViewRelationshipDiff } from '../data/c4/c4Diff';
-import type { OverlayOp } from './opStyles';
+import { OVERLAY_OPS, type OverlayOp } from './opStyles';
 
 export interface C4Mark {
   /** The op outline it borrows (null: no outline of its own, e.g. parts changed: the roll-up says it). */
@@ -37,6 +37,18 @@ export const RELATIONSHIP_MARKS: Record<C4RelationshipStatus, C4Mark> = {
 export function rollUpCount(rollUp: C4RollUp | undefined): number {
   if (!rollUp) return 0;
   return rollUp.sequences.length > 0 ? rollUp.sequences.length : rollUp.elements + rollUp.relationships;
+}
+
+/** The ops below a box, in legend order, each with how many changed elements and arrows carry it. */
+export function rollUpOps(rollUp: C4RollUp | undefined): { op: OverlayOp; count: number }[] {
+  if (!rollUp?.byStatus) return [];
+  const counts = new Map<OverlayOp, number>();
+  const add = (op: OverlayOp | null, n: number | undefined) => {
+    if (op && n) counts.set(op, (counts.get(op) ?? 0) + n);
+  };
+  for (const [status, n] of Object.entries(rollUp.byStatus.elements)) add(ELEMENT_MARKS[status as C4ElementStatus].op, n);
+  for (const [status, n] of Object.entries(rollUp.byStatus.relationships)) add(RELATIONSHIP_MARKS[status as C4RelationshipStatus].op, n);
+  return OVERLAY_OPS.filter((op) => counts.has(op)).map((op) => ({ op, count: counts.get(op)! }));
 }
 
 /** "3 changes inside", or '' when nothing below the box changed. */
