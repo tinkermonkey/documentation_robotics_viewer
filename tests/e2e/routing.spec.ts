@@ -225,7 +225,7 @@ test.describe('URL routing — browser history for navigation', () => {
     expect(await page.evaluate(() => history.length)).toBe(length);
   });
 
-  test('a plain graph-node click replaces the entry instead of pushing', async ({ page }) => {
+  test('a plain graph-node click pushes its own entry (#619)', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
@@ -235,9 +235,10 @@ test.describe('URL routing — browser history for navigation', () => {
     await expect(page).toHaveURL(/[?&]node=[^&]+/);
     const clickedNode = hashSearchParams(page.url()).get('node');
 
-    // Back skips the in-layer click (it replaced the APM entry) and leaves APM.
+    // Back undoes the in-layer click: APM, nothing selected.
     await page.goBack();
-    await expect(page).not.toHaveURL(/[?&]layer=apm(&|$)/);
+    await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
+    await expect.poll(() => hashSearchParams(page.url()).get('node')).toBeNull();
     await page.goForward();
     await expect.poll(() => hashSearchParams(page.url()).get('node')).toBe(clickedNode);
   });
@@ -245,8 +246,9 @@ test.describe('URL routing — browser history for navigation', () => {
 
 /**
  * Viewport history (`?vp=`, heimdall-ui 0.9.4): Canvas records the viewport when
- * a pan/zoom settles or the canvas recentres itself, the router REPLACES the
- * current entry with it, and reloads / back / forward restore it.
+ * a pan/zoom settles or the canvas fits or recentres itself (the mount fit
+ * included, #619), the router REPLACES the current entry with it, and
+ * reloads / back / forward restore it.
  */
 test.describe('URL routing — graph viewport history', () => {
   const vpOf = (url: string) => hashSearchParams(url).get('vp');
@@ -278,7 +280,8 @@ test.describe('URL routing — graph viewport history', () => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');
     await graphIdle(page);
-    expect(vpOf(page.url())).toBeNull();
+    // The mount fit is recorded in place (#619).
+    await expect.poll(() => vpOf(page.url())).toBeTruthy();
     const length = await page.evaluate(() => history.length);
 
     const vp = await zoomAndSettle(page, -300);
@@ -301,7 +304,8 @@ test.describe('URL routing — graph viewport history', () => {
 
     await openLayer(page, 'Security');
     await expect(page).toHaveURL(/[?&]layer=security(&|$)/);
-    expect(vpOf(page.url())).toBeNull();
+    // The new layer's entry gets its own mount fit, never APM's viewport.
+    await expect.poll(() => vpOf(page.url())).not.toBe(vp);
 
     await page.goBack();
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
@@ -370,14 +374,16 @@ test.describe('URL routing — graph viewport history', () => {
     expect(vpOf(page.url())).toBe(vp);
   });
 
-  test('changing the layout drops ?vp= (the coordinates belong to the old layout)', async ({ page }) => {
+  test('changing the layout replaces ?vp= with the new layout\'s own (the coordinates belong to the old one)', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');
     await graphIdle(page);
-    await zoomAndSettle(page, -300);
+    const vp = await zoomAndSettle(page, -300);
+    const tag = (v: string | null) => v?.split(',')[3] ?? null;
 
     await page.getByTestId('graph-layout-control').getByRole('radio', { name: 'Orthogonal' }).click();
-    await expect.poll(() => vpOf(page.url())).toBeNull();
+    // The old viewport is dropped; the new layout's mount fit is recorded under its own tag.
+    await expect.poll(() => tag(vpOf(page.url()))).not.toBe(tag(vp));
   });
 
   test('Back to an entry recorded under another layout drops its ?vp= without pushing', async ({ page }) => {

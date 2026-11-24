@@ -23,11 +23,13 @@ import { dottedId } from './data/modelGraph';
 import { useUiStore, type ViewKind } from './ui/uiStore';
 import {
   formatViewportParam,
-  graphCanvasKey,
+  liveCanvasKey,
   parseViewportParam,
   sameViewport,
   viewportParamFits,
 } from './ui/graphViewport';
+import { decideHistoryStep, type LastPush } from './routes/historyPolicy';
+import { formatOpenParam, parseOpenParam, parseSeqParam, sameList } from './routes/shellParams';
 import { useAuthStore } from './stores/authStore';
 import { useConnectionStore } from './stores/connectionStore';
 import { websocketClient } from './services/websocketClient';
@@ -177,11 +179,26 @@ interface AppShellSearch {
   /** Changesets view: the element whose change to select in `changeset` (the
    *  dr CLI's `changesets/<id>?element=<id>` link). Dropped once applied. */
   element?: string;
-  /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
-   *  Schema only. Kept on page-mode URLs too, so switching back to the graph
-   *  returns to the same view. */
+  /** Graph viewport `centerX,centerY,zoom,tag` (see ui/graphViewport.ts) of the
+   *  canvas the view draws: the Model / Schema graph (kept on page-mode URLs
+   *  too, so switching back to the graph returns to the same view), the Impact
+   *  lanes or the C4 diagram. The tag scopes it to that canvas. */
   vp?: string;
+  /** Changesets view: `impact` when the Impact tab is shown (absent: Review). */
+  tab?: string;
+  /** Changesets view: the reviewed change (`uiStore.changeSeq`), by sequence.
+   *  A number, so the URL reads `seq=12` (a numeric string would be quoted). */
+  seq?: number;
+  /** Changesets view, Impact tab: the focused element (`uiStore.impactFocus`). */
+  focus?: string;
+  /** The opened lanes / groups (`uiStore.openGroups`), comma-separated: the
+   *  Model by-type lanes' folded types, or the Impact tab's type groups. */
+  open?: string;
 }
+
+/** The search params the router compares to tell a new destination from the
+ *  one in the URL: every key but `vp` (and `element`, consumed on arrival). */
+const COMPARED_KEYS = ['layer', 'node', 'edge', 'changeset', 'level', 'scope', 'built', 'tab', 'seq', 'focus', 'open'] as const;
 
 /** Combine layer/node/edge/changeset into one string so a single ref comparison
  *  (see prevSelectionKeyRef below) detects a change in any of them. */
@@ -229,20 +246,22 @@ function c4Key(
  *
  * store → URL: when the view, mode, or selection changes from inside the app,
  * push/replace the matching `/$section/$view?layer=...&node=...` (or
- * `?changeset=...`) so the hash always reflects the truth. Destination changes
- * PUSH a history entry: view, mode, layer, a deliberate navigation (see
- * `uiStore.navSeq`), or any selection change in page mode. Plain on-canvas
- * selection within a layer REPLACES the entry, so graph clicks don't flood
- * history. Guarded (mount ref + prev-value refs + an "already matches the
- * URL" check) so the two effects never ping-pong and back/forward never
- * pushes a duplicate entry.
+ * `?changeset=...`) so the hash always reflects the truth. Whether it pushes,
+ * replaces or coalesces is `routes/historyPolicy.ts`'s `decideHistoryStep`
+ * (#619): a destination change (view, mode, layer, tab, an opened changeset,
+ * a deliberate navigation via `uiStore.navSeq`, a selection in page mode)
+ * pushes; so does a graph move (`uiStore.graphMove`: a selection in a graph, an
+ * Impact focus, a lane or group opened). A viewport dwell or fit replaces; a
+ * recentre coalesces with the selection it centres on, and a repeat of the
+ * last push within a double-click coalesces too. Guarded (mount ref +
+ * prev-value refs + an "already matches the URL" check) so the two effects
+ * never ping-pong and back/forward never pushes a duplicate entry.
  *
- * `?vp=` carries the graph viewport. It never pushes: Canvas records a
- * viewport when the user stops panning/zooming or the canvas recentres
- * itself, and the router replaces the current entry with it, so each history
- * entry ends up holding the last view seen there. Back/forward and reloads
- * restore it (Canvas applies it silently). It's only written while it belongs
- * to the live canvas (`graphCanvasKey`), so a layer or layout change drops it.
+ * `?vp=` carries the viewport of the canvas the view draws (`liveCanvasKey`:
+ * the Model / Schema graph, the Impact lanes, the C4 diagram). Each history
+ * entry holds the last view seen there; back/forward and reloads restore it
+ * silently. It's only written while it belongs to the live canvas, so a
+ * layer, layout, focus or diagram change drops it.
  */
 function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
   const { section, view: viewParam } = useParams({ strict: false }) as {
@@ -266,12 +285,19 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
   const c4BuiltId = useUiStore((s) => s.c4BuiltId);
   const restoreC4 = useUiStore((s) => s.restoreC4);
   const graphViewport = useUiStore((s) => s.graphViewport);
-  const canvasKey = useUiStore(graphCanvasKey);
+  const canvasKey = useUiStore(liveCanvasKey);
+  const changesetTab = useUiStore((s) => s.changesetTab);
+  const changeSeq = useUiStore((s) => s.changeSeq);
+  const impactFocus = useUiStore((s) => s.impactFocus);
+  const openGroups = useUiStore((s) => s.openGroups);
+  const modelView = useUiStore((s) => s.modelView);
+  const graphMove = useUiStore((s) => s.graphMove);
+  const restoreChangeset = useUiStore((s) => s.restoreChangeset);
+  const restoreOpenGroups = useUiStore((s) => s.restoreOpenGroups);
   const setGraphViewport = useUiStore((s) => s.setGraphViewport);
   const selectLayer = useUiStore((s) => s.selectLayer);
   const selectNode = useUiStore((s) => s.selectNode);
   const selectEdge = useUiStore((s) => s.selectEdge);
-  const selectChangeset = useUiStore((s) => s.selectChangeset);
   const { derived: model, isSuccess: modelLoaded } = useModel();
 
   // On mount (incl. a deep-link / reload) the URL is authoritative: the URL →
@@ -294,6 +320,12 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
   const prevLayerRef = useRef(layerId);
   const prevNavSeqRef = useRef(navSeq);
   const prevVpRef = useRef<string | undefined>(undefined);
+  const prevTabRef = useRef(useUiStore.getState().changesetTab);
+  const prevMoveSeqRef = useRef(0);
+  const prevStateKeyRef = useRef<string | null>(null);
+  // The last push this tab made, so a repeat of it (a double-click) or the
+  // recentre that follows it coalesces (see routes/historyPolicy.ts).
+  const lastPushRef = useRef<LastPush | null>(null);
 
   // URL → store: section/view (unchanged from before).
   useEffect(() => {
@@ -334,14 +366,28 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
       }
       return;
     }
-    if (search.changeset && search.changeset !== changesetId) {
-      selectChangeset(search.changeset);
-      return;
-    }
-    // A Changesets entry without `?changeset=` is the inbox: back/forward onto
-    // it closes the changeset we're leaving.
-    if (section === 'changesets' && !search.changeset && changesetId) {
-      selectChangeset(null);
+    // Changesets: the open changeset (none: the inbox, so back/forward onto
+    // it closes the one we're leaving), its tab, reviewed change, Impact focus
+    // and opened groups, restored in one write.
+    if (section === 'changesets') {
+      const id = search.changeset ?? null;
+      const next = {
+        changesetId: id,
+        tab: search.tab === 'impact' ? ('impact' as const) : ('changes' as const),
+        seq: parseSeqParam(search.seq),
+        focus: search.focus ?? null,
+        open: parseOpenParam(search.open),
+      };
+      const s = useUiStore.getState();
+      const differs =
+        s.view !== 'changesets' ||
+        s.changesetId !== id ||
+        (id !== null &&
+          (s.changesetTab !== next.tab ||
+            s.changeSeq !== next.seq ||
+            s.impactFocus !== next.focus ||
+            !sameList(s.openGroups, next.open)));
+      if (differs) restoreChangeset(next);
       return;
     }
     const layerChanged = !!search.layer && search.layer !== layerId;
@@ -372,12 +418,17 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
     } else if (search.node && search.node !== selectedId) {
       selectNode(search.node);
     }
+    // The by-type lanes' opened types (after selectLayer, which clears them).
+    if (section === 'model') {
+      const open = parseOpenParam(search.open);
+      if (!sameList(useUiStore.getState().openGroups, open)) restoreOpenGroups(open);
+    }
     // Deliberately keyed on the URL values (plus the model data `?edge=`
     // validation needs) only — reacting to the rest of the store here too
     // would make this effect re-fire the moment IT calls
     // selectLayer/selectNode/selectEdge/selectChangeset, fighting its own update.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [section, search.layer, search.node, search.edge, search.changeset, search.level, search.scope, search.built, modelLoaded, model.links]);
+  }, [section, search.layer, search.node, search.edge, search.changeset, search.level, search.scope, search.built, search.tab, search.seq, search.focus, search.open, modelLoaded, model.links]);
 
   // URL → store: viewport. Runs after the selection effect above, so on
   // back/forward the layer it scopes to is already in the store. A URL with
@@ -387,24 +438,21 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
   // from the URL too.
   useEffect(() => {
     const s = useUiStore.getState();
-    const scope = graphCanvasKey(s);
+    const scope = liveCanvasKey(s);
     const parsed = parseViewportParam(search.vp);
-    const next = parsed && viewportParamFits(parsed, scope) ? parsed : null;
+    const next = scope && parsed && viewportParamFits(parsed, scope) ? parsed : null;
     const current = s.graphViewport;
-    if (!next) {
+    if (!next || !scope) {
       if (current) setGraphViewport(null);
       return;
     }
     if (current && current.scope === scope && sameViewport(current, next)) return;
     setGraphViewport({ scope, center: next.center, zoom: next.zoom });
-  }, [section, search.layer, search.vp, setGraphViewport]);
+  }, [section, search.layer, search.vp, search.changeset, search.tab, search.focus, search.level, search.scope, search.built, setGraphViewport]);
 
-  // store → URL. Push a history entry for a destination change — view,
-  // graph/page mode, layer, a deliberate navigation (navSeq: cross-layer
-  // links, relationship links, neighborhood-graph clicks), or any selection
-  // change in page mode (each page is its own destination). Replace for plain
-  // on-canvas selection within a layer so graph clicks don't flood history.
-  // Skip first render — see mountedRef above.
+  // store → URL, through the history policy (routes/historyPolicy.ts): a
+  // destination change or a graph move pushes, a dwell or fit replaces, a
+  // recentre or a double-click coalesces. Skip first render — see mountedRef.
   useEffect(() => {
     const key = selectionKey(
       layerId,
@@ -421,36 +469,22 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
       prevLayerRef.current = layerId;
       prevNavSeqRef.current = navSeq;
       prevVpRef.current = search.vp;
+      prevTabRef.current = changesetTab;
+      prevMoveSeqRef.current = graphMove?.seq ?? 0;
       return;
     }
-    const viewChanged = prevViewRef.current !== view;
-    const selectionChanged = prevSelectionKeyRef.current !== key;
-    const modeChanged = prevModeRef.current !== mode;
-    // A layer change from "no layer yet" is the data-driven default selection
-    // landing, not a user navigation — pushing it would leave a dead entry
-    // that Back can't leave (it re-defaults straight back).
-    const layerChanged = prevLayerRef.current !== null && prevLayerRef.current !== layerId;
-    const navigated = prevNavSeqRef.current !== navSeq;
     // Read live, not from this render's closure: the URL → store effect above
-    // may have just seeded it in this same flush (a deep link, or StrictMode's
-    // effect re-run in dev), and a stale null here would strip `?vp=`.
+    // may have just seeded the viewport in this same flush (a deep link, or
+    // StrictMode's effect re-run in dev), and a stale null here would strip `?vp=`.
     const live = useUiStore.getState();
-    const vp =
-      view !== 'changesets' && view !== 'architecture' && live.graphViewport?.scope === graphCanvasKey(live)
-        ? formatViewportParam(live.graphViewport)
-        : undefined;
-    const vpChanged = prevVpRef.current !== vp;
-    if (!viewChanged && !selectionChanged && !modeChanged && !navigated && !vpChanged) return;
-    prevViewRef.current = view;
-    prevSelectionKeyRef.current = key;
-    prevModeRef.current = mode;
-    prevLayerRef.current = layerId;
-    prevNavSeqRef.current = navSeq;
-    prevVpRef.current = vp;
+    const canvas = liveCanvasKey(live);
+    const liveVp = live.graphViewport;
+    const vp = canvas && liveVp && liveVp.scope === canvas ? formatViewportParam(liveVp) : undefined;
 
     const targetSection = VIEW_TO_SECTION[view];
     const targetView =
       view === 'changesets' || view === 'architecture' ? SECTION_DEFAULT_VIEW[targetSection] : mode;
+    const impactTab = !!changesetId && changesetTab === 'impact';
     const targetSearch: AppShellSearch =
       view === 'architecture'
         ? {
@@ -459,17 +493,50 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
             node: c4SelectedId ?? undefined,
             changeset: c4ChangesetId ?? undefined,
             built: c4ChangesetId ? (c4BuiltId ?? undefined) : undefined,
+            vp,
           }
         : view === 'changesets'
-        ? { changeset: changesetId ?? undefined }
+        ? {
+            changeset: changesetId ?? undefined,
+            tab: impactTab ? 'impact' : undefined,
+            seq: changesetId && changeSeq !== null ? changeSeq : undefined,
+            focus: impactTab ? (impactFocus ?? undefined) : undefined,
+            open: impactTab ? formatOpenParam(openGroups) : undefined,
+            vp,
+          }
         : {
             layer: layerId ?? undefined,
             // Mutually exclusive: selecting an edge already cleared
             // selectedId, so at most one of these is ever defined here.
             node: selectedId ?? undefined,
             edge: selectedEdgeId ?? undefined,
+            open: view === 'model' && modelView === 'type-lanes' ? formatOpenParam(openGroups) : undefined,
             vp,
           };
+    const stateKey = `${targetSection}/${targetView}?${COMPARED_KEYS.map((k) => targetSearch[k] ?? '').join('&')}`;
+
+    const viewChanged = prevViewRef.current !== view;
+    const selectionChanged = prevSelectionKeyRef.current !== key;
+    const modeChanged = prevModeRef.current !== mode;
+    // A layer change from "no layer yet" is the data-driven default selection
+    // landing, not a user navigation — pushing it would leave a dead entry
+    // that Back can't leave (it re-defaults straight back).
+    const layerChanged = prevLayerRef.current !== null && prevLayerRef.current !== layerId;
+    const navigated = prevNavSeqRef.current !== navSeq;
+    const tabChanged = view === 'changesets' && prevTabRef.current !== changesetTab;
+    const move = graphMove && graphMove.seq !== prevMoveSeqRef.current ? graphMove : null;
+    const vpChanged = prevVpRef.current !== vp;
+    const stateChanged = prevStateKeyRef.current !== stateKey;
+    if (!viewChanged && !selectionChanged && !modeChanged && !navigated && !vpChanged && !stateChanged && !move && !tabChanged) return;
+    prevViewRef.current = view;
+    prevSelectionKeyRef.current = key;
+    prevModeRef.current = mode;
+    prevLayerRef.current = layerId;
+    prevNavSeqRef.current = navSeq;
+    prevVpRef.current = vp;
+    prevTabRef.current = changesetTab;
+    prevStateKeyRef.current = stateKey;
+    if (graphMove) prevMoveSeqRef.current = graphMove.seq;
 
     // The store already matches the URL — this change came FROM the URL
     // (back/forward, a deep link). Navigating here would push a duplicate
@@ -477,13 +544,7 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
     const destinationMatchesUrl =
       section === targetSection &&
       viewParam === targetView &&
-      (search.layer ?? undefined) === targetSearch.layer &&
-      (search.node ?? undefined) === targetSearch.node &&
-      (search.edge ?? undefined) === targetSearch.edge &&
-      (search.changeset ?? undefined) === targetSearch.changeset &&
-      (search.level ?? undefined) === targetSearch.level &&
-      (search.scope ?? undefined) === targetSearch.scope &&
-      (search.built ?? undefined) === targetSearch.built;
+      COMPARED_KEYS.every((k) => (search[k] ?? undefined) === targetSearch[k]);
     if (destinationMatchesUrl && (search.vp ?? undefined) === targetSearch.vp) {
       return;
     }
@@ -501,31 +562,43 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
       (search.changeset ?? undefined) === targetSearch.changeset &&
       (search.built ?? undefined) === targetSearch.built;
 
-    // Only `?vp=` differs: a recorded viewport, or a stale one being dropped
-    // after back/forward. Never a new destination, so always replace.
-    const push =
-      !destinationMatchesUrl &&
-      !sameDiagramNormalized &&
-      (viewChanged ||
-        modeChanged ||
-        layerChanged ||
-        navigated ||
-        (mode === 'page' && view !== 'architecture' && selectionChanged) ||
-        // Opening or closing a changeset: the inbox and each changeset are
-        // destinations of their own.
-        (view === 'changesets' && selectionChanged));
+    const destination =
+      viewChanged ||
+      modeChanged ||
+      layerChanged ||
+      navigated ||
+      tabChanged ||
+      (mode === 'page' && view !== 'architecture' && view !== 'changesets' && selectionChanged) ||
+      // Opening or closing a changeset: the inbox and each changeset are
+      // destinations of their own.
+      (view === 'changesets' && selectionChanged);
+    const step =
+      destinationMatchesUrl || sameDiagramNormalized
+        ? 'replace'
+        : decideHistoryStep({
+            destination,
+            move,
+            entrySelection: search.node ?? search.edge ?? search.focus ?? null,
+            lastPush: lastPushRef.current,
+          });
+    if (step === 'push') {
+      lastPushRef.current =
+        move && !destination
+          ? { kind: move.kind, target: move.target, at: move.at }
+          : { kind: 'destination', target: selectedId ?? c4SelectedId ?? impactFocus, at: Date.now() };
+    }
 
     router.navigate({
       to: CHECKOUT_SHELL_PATH,
       params: { project: checkout.project, checkout: checkout.checkout, section: targetSection, view: targetView },
       search: targetSearch,
-      replace: !push,
+      replace: step !== 'push',
     });
     // `search`/`section`/`viewParam` are read only for the "already matches"
     // guard; re-running on their own changes would re-check a URL the store
     // effects above are about to make it match.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId]);
+  }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, changesetTab, changeSeq, impactFocus, openGroups, modelView, navSeq, graphViewport, graphMove, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId]);
 
   // `?element=` (the dr CLI's changeset link with an element): once the
   // changeset's detail is here, select its change to that element (the first,
@@ -539,7 +612,8 @@ function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
       const change = [...linkedDetail.changes]
         .filter((c) => c.elementId === search.element)
         .sort((a, b) => (a.sequenceNumber ?? 0) - (b.sequenceNumber ?? 0))[0];
-      if (change?.sequenceNumber !== undefined) useUiStore.getState().selectChange(change.sequenceNumber);
+      // Not selectChange: arriving by a link is not a move of its own to push.
+      if (change?.sequenceNumber !== undefined) useUiStore.setState({ changeSeq: change.sequenceNumber });
     } else if (linkedDetail) {
       return; // the URL → store effect hasn't opened the changeset yet
     }
@@ -562,6 +636,10 @@ function validateShellSearch(search: Record<string, unknown>): AppShellSearch {
     scope: str('scope'),
     built: str('built'),
     vp: str('vp'),
+    tab: str('tab'),
+    seq: parseSeqParam(search.seq) ?? undefined,
+    focus: str('focus'),
+    open: str('open'),
   };
 }
 

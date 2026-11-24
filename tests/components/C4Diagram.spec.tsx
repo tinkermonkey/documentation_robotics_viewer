@@ -5,10 +5,12 @@
  * (a grid), so this tests the component, not ELK.
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { afterAll, beforeAll, describe, it, expect, vi } from 'vitest';
+import { createRef } from 'react';
+import type { GraphViewportHandle } from '@tinkermonkey/heimdall-ui';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 
-import { C4Diagram, nearestCard } from '@/apps/embedded/ui/C4Diagram';
+import { C4Diagram, C4_DWELL_MS, nearestCard } from '@/apps/embedded/ui/C4Diagram';
 import { buildC4Model } from '@/apps/embedded/data/c4/c4Model';
 import { buildC4View, type C4View } from '@/apps/embedded/data/c4/c4Views';
 import { C4_CARD, type C4Layout } from '@/apps/embedded/data/c4/c4Layout';
@@ -142,5 +144,95 @@ describe('C4Diagram — keyboard', () => {
     const { onSelect } = setup(buildC4View(c4, 'container'), ref(n.db));
     fireEvent.keyDown(card('Local Storage'), { key: 'Escape' });
     expect(onSelect).toHaveBeenCalledWith(null);
+  });
+});
+
+describe('C4Diagram — viewport history (#619)', () => {
+  // happy-dom lays nothing out: give the container a size so the diagram can report a viewport.
+  const sizes: [string, number][] = [['clientWidth', 800], ['clientHeight', 600]];
+  beforeAll(() => {
+    for (const [prop, value] of sizes) {
+      Object.defineProperty(HTMLElement.prototype, prop, { configurable: true, get: () => value });
+    }
+  });
+  afterAll(() => {
+    for (const [prop] of sizes) delete (HTMLElement.prototype as unknown as Record<string, unknown>)[prop];
+  });
+
+  function mount(props: Partial<React.ComponentProps<typeof C4Diagram>> = {}) {
+    const view = buildC4View(c4, 'container');
+    const viewportRef = createRef<GraphViewportHandle>();
+    const onViewportDwell = vi.fn();
+    const onViewportNavigate = vi.fn();
+    const onSelect = vi.fn();
+    const onDrill = vi.fn();
+    render(
+      <C4Diagram
+        view={view}
+        layout={gridLayout(view)}
+        selectedId={null}
+        onSelect={onSelect}
+        onDrill={onDrill}
+        viewportRef={viewportRef}
+        onViewportDwell={onViewportDwell}
+        onViewportNavigate={onViewportNavigate}
+        {...props}
+      />,
+    );
+    return { viewportRef, onViewportDwell, onViewportNavigate, onSelect, onDrill };
+  }
+
+  it('restores a viewport silently: the world point lands mid-container, nothing is reported', async () => {
+    const { viewportRef, onViewportNavigate } = mount();
+    // The mount fit (a frame), then its report (a frame after).
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+    onViewportNavigate.mockClear();
+    viewportRef.current!.setViewport({ center: { x: 100, y: 50 }, zoom: 1 }, { silent: true });
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+    const vp = viewportRef.current!.getViewport()!;
+    expect(vp.center).toEqual({ x: 100, y: 50 });
+    expect(vp.zoom).toBe(1);
+    expect(onViewportNavigate).not.toHaveBeenCalled();
+  });
+
+  it('reports a non-silent setViewport as imperative and its mount fit as a fit', async () => {
+    const { viewportRef, onViewportNavigate } = mount();
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+    expect(onViewportNavigate).toHaveBeenCalledWith(expect.anything(), { kind: 'fit', reason: 'mount' });
+    viewportRef.current!.setViewport({ center: { x: 10, y: 10 }, zoom: 0.5 });
+    await new Promise((r) => requestAnimationFrame(() => r(null)));
+    expect(onViewportNavigate).toHaveBeenLastCalledWith(
+      expect.objectContaining({ center: { x: 10, y: 10 }, zoom: 0.5 }),
+      { kind: 'imperative' },
+    );
+  });
+
+  it('starts at initialViewport instead of the fit', async () => {
+    const { viewportRef, onViewportNavigate } = mount({ initialViewport: { center: { x: 300, y: 200 }, zoom: 0.8 } });
+    await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))));
+    expect(viewportRef.current!.getViewport()).toMatchObject({ center: { x: 300, y: 200 }, zoom: 0.8 });
+    expect(onViewportNavigate).not.toHaveBeenCalled();
+  });
+
+  it('reports a dwell once a zoom has been still for C4_DWELL_MS, not before', () => {
+    vi.useFakeTimers();
+    try {
+      const { onViewportDwell } = mount();
+      fireEvent.click(screen.getByRole('button', { name: 'Zoom in' }));
+      vi.advanceTimersByTime(C4_DWELL_MS - 1);
+      expect(onViewportDwell).not.toHaveBeenCalled();
+      vi.advanceTimersByTime(1);
+      expect(onViewportDwell).toHaveBeenCalledTimes(1);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('treats a double-click as one step: the second click does not undo the first', () => {
+    const { onSelect } = mount();
+    const target = screen.getAllByTestId('c4-card')[0].querySelector('button')!;
+    fireEvent.click(target, { detail: 1 });
+    fireEvent.click(target, { detail: 2 });
+    expect(onSelect).toHaveBeenCalledTimes(1);
   });
 });

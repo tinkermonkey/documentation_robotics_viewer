@@ -22,6 +22,8 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type { ScopedViewport } from './graphViewport';
 import { FOLLOW_DEPTHS, type FollowDepth } from '../data/followDepth';
 import type { C4Level } from '../data/c4/c4Level';
+import type { GraphMove, GraphMoveKind } from '../routes/historyPolicy';
+import { normalizeGroups } from '../routes/shellParams';
 import {
   CHAT_DOCK_DEFAULT_WIDTH,
   CHAT_PANEL_DEFAULT,
@@ -43,6 +45,20 @@ export type NodeDisplay = 'card' | 'pill';
  *  applies), or the layer's elements grouped by node type as lanes or a hive.
  *  "type" here is a DR node type; Heimdall calls these bands "layers". */
 export type ModelView = 'graph' | 'type-lanes' | 'type-hive';
+/** The Impact lanes' node labels (heimdall-ui's `LaneNodeLabels`). */
+export type ImpactLabels = 'reached' | 'all';
+/** What moved a canvas's viewport, as `setGraphViewport` records it (heimdall-ui's
+ *  `GraphViewportCause` plus `dwell`, the user's own pan or zoom settling). */
+export type ViewportMoveCause =
+  | { kind: 'dwell' }
+  | { kind: 'center-on-select'; nodeId: string }
+  | { kind: 'fit'; reason: string }
+  | { kind: 'imperative' };
+
+/** The next graph move after `s`'s last one. */
+function nextMove(s: { graphMove: GraphMove | null }, kind: GraphMoveKind, target: string | null): GraphMove {
+  return { seq: (s.graphMove?.seq ?? 0) + 1, kind, target, at: Date.now() };
+}
 
 interface UiState {
   view: ViewKind;
@@ -78,6 +94,18 @@ interface UiState {
   changesetTab: 'changes' | 'impact';
   /** Impact tab: the element whose reach it shows alone (null: every change). Not persisted. */
   impactFocus: string | null;
+  /** Impact tab: the lanes' node labels (Reached / All). Not persisted. */
+  impactLabels: ImpactLabels;
+  /** The lanes or groups opened in the graph shown: the Model by-type lanes'
+   *  folded types (`more:<type>`, by type) or the Impact tab's type groups
+   *  (`group:<layer>|<type>`, by `<layer>|<type>`). Sorted, no duplicates.
+   *  Cleared when the layer, changeset or view changes. The URL's `?open=`. */
+  openGroups: string[];
+  /** The last deliberate move in a graph (#619): a selection, focus, expand,
+   *  recentre, dwell or fit, written in the same store write as the state it
+   *  changes. The router reads a new one (by `seq`) to decide push / replace /
+   *  coalesce (routes/historyPolicy.ts). Restores write none. Not persisted. */
+  graphMove: GraphMove | null;
   /** Architecture view: which C4 diagram is drawn. Not persisted (the URL's `?level=`). */
   c4Level: C4Level;
   /** Architecture view, Component level: the C4 element whose parts are shown
@@ -177,8 +205,12 @@ interface UiState {
    * layer-level selection instead of calling this with `null`.
    */
   selectNode: (selectedId: string) => void;
-  /** Select a node clicked in the graph canvas (current layer). */
+  /** Select a node clicked in the graph canvas (current layer): a graph move. */
   selectGraphNode: (selectedId: string) => void;
+  /** Select an edge clicked in the Model graph: a graph move (`selectEdge` is the restore). */
+  selectGraphEdge: (edgeId: string) => void;
+  /** Clear the graph's selection back to its layer (a background click): a graph move. */
+  clearGraphSelection: (layerId: string) => void;
   /** Select an edge clicked in the Model graph (a link id) — clears any node
    *  selection (mutually exclusive). */
   selectEdge: (edgeId: string) => void;
@@ -230,8 +262,22 @@ interface UiState {
    */
   clearCheckoutSelection: () => void;
   setChangesetTab: (tab: 'changes' | 'impact') => void;
-  /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. */
+  /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. A graph move. */
   focusImpact: (elementId: string | null) => void;
+  setImpactLabels: (labels: ImpactLabels) => void;
+  /** Open a folded lane or group (see `openGroups`): a graph move. */
+  openGroup: (id: string) => void;
+  /** Set the opened lanes / groups without a move (the URL, a reset). */
+  restoreOpenGroups: (ids: readonly string[]) => void;
+  /** Restore the Changesets view from the URL in one write, without a move:
+   *  the open changeset, tab, reviewed change, Impact focus and open groups. */
+  restoreChangeset: (state: {
+    changesetId: string | null;
+    tab: 'changes' | 'impact';
+    seq: number | null;
+    focus: string | null;
+    open: readonly string[];
+  }) => void;
   /** Open a C4 diagram: a deliberate navigation (pushes history), clears the
    *  selected box. `scope` only matters at the Component level. The overlaid
    *  changeset stays unless `options.changesetId` is given (null clears it):
@@ -244,8 +290,10 @@ interface UiState {
    *  same id again is a no-op. `builtId` compares it with that as-built
    *  changeset instead (null, the default: the plain overlay). */
   showC4Overlay: (changesetId: string | null, builtId?: string | null) => void;
-  /** Select a box on the current C4 diagram (null clears). */
+  /** Select a box on the current C4 diagram (null clears): a graph move. */
   selectC4: (id: string | null) => void;
+  /** Drop the selected box without a move (the drawn diagram no longer holds it). */
+  clearC4Selection: () => void;
   /** Restore a C4 diagram from the URL: no history push. `changesetId` /
    *  `builtId` undefined leave the overlay / comparison as they are. */
   restoreC4: (
@@ -282,7 +330,9 @@ interface UiState {
   toggleShowInterLayerNodes: () => void;
   setModelView: (modelView: ModelView) => void;
   setInspectorFollow: (inspectorFollow: FollowDepth) => void;
-  setGraphViewport: (graphViewport: ScopedViewport | null) => void;
+  /** Record (or, with null, drop) the viewport. `cause` marks it as a graph
+   *  move (a dwell, a recentre, a fit); without one it is a restore. */
+  setGraphViewport: (graphViewport: ScopedViewport | null, cause?: ViewportMoveCause) => void;
 }
 
 /** The Inspector drawer's initial width in px (it was a fixed 320px sidebar). */
@@ -333,6 +383,9 @@ export const useUiStore = create<UiState>()(
       changeSeq: null,
       changesetTab: 'changes',
       impactFocus: null,
+      impactLabels: 'reached',
+      openGroups: [],
+      graphMove: null,
       c4Level: 'context',
       c4Scope: null,
       c4SelectedId: null,
@@ -367,7 +420,8 @@ export const useUiStore = create<UiState>()(
 
       // A view change opens that view's section alone (the nav is an
       // accordion: opening a section collapses its siblings, #560).
-      setView: (view) => set((s) => (s.view === view ? { view } : { view, expandedSections: onlySection(view) })),
+      setView: (view) =>
+        set((s) => (s.view === view ? { view } : { view, expandedSections: onlySection(view), openGroups: [] })),
 
       selectLayer: (layerId) =>
         set((s) => {
@@ -381,8 +435,20 @@ export const useUiStore = create<UiState>()(
             focus: 'layer',
             expandedSections: onlySection(s.view),
             expandedLayers,
+            ...(s.layerId !== layerId ? { openGroups: [] } : {}),
           };
         }),
+
+      clearGraphSelection: (layerId) =>
+        set((s) => ({
+          layerId,
+          selectedId: null,
+          selectedEdgeId: null,
+          highlightedEdgeId: null,
+          focus: 'layer',
+          ...(s.layerId !== layerId ? { openGroups: [] } : {}),
+          graphMove: nextMove(s, 'select', s.selectedId ?? s.selectedEdgeId),
+        })),
 
       selectNode: (selectedId) =>
         set({ selectedId, selectedEdgeId: null, highlightedEdgeId: null, focus: 'node' }),
@@ -397,6 +463,16 @@ export const useUiStore = create<UiState>()(
           expandedLayers: s.layerId
             ? new Set(s.expandedLayers).add(layerKey(s.view, s.layerId))
             : s.expandedLayers,
+          graphMove: nextMove(s, 'select', selectedId),
+        })),
+
+      selectGraphEdge: (selectedEdgeId) =>
+        set((s) => ({
+          selectedEdgeId,
+          selectedId: null,
+          highlightedEdgeId: null,
+          focus: 'layer',
+          graphMove: nextMove(s, 'select', selectedEdgeId),
         })),
 
       selectEdge: (selectedEdgeId) =>
@@ -422,6 +498,7 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('model'),
             expandedLayers,
+            ...(sameLayer ? {} : { openGroups: [] }),
           };
         }),
 
@@ -442,6 +519,7 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('model'),
             expandedLayers,
+            ...(sameLayer ? {} : { openGroups: [] }),
           };
         }),
 
@@ -461,6 +539,7 @@ export const useUiStore = create<UiState>()(
             focus: 'node',
             expandedSections: onlySection('spec'),
             expandedLayers,
+            ...(sameLayer ? {} : { openGroups: [] }),
           };
         }),
 
@@ -471,11 +550,28 @@ export const useUiStore = create<UiState>()(
           changeSeq: s.changesetId === changesetId ? s.changeSeq : null,
           changesetTab: s.changesetId === changesetId ? s.changesetTab : 'changes',
           impactFocus: s.changesetId === changesetId ? s.impactFocus : null,
+          openGroups: s.changesetId === changesetId && s.view === 'changesets' ? s.openGroups : [],
           highlightedEdgeId: null,
           expandedSections: onlySection('changesets'),
         })),
 
-      selectChange: (changeSeq) => set({ changeSeq }),
+      restoreChangeset: ({ changesetId, tab, seq, focus, open }) =>
+        set({
+          view: 'changesets',
+          changesetId,
+          changesetTab: changesetId ? tab : 'changes',
+          changeSeq: changesetId ? seq : null,
+          impactFocus: changesetId ? focus : null,
+          openGroups: changesetId ? normalizeGroups(open) : [],
+          highlightedEdgeId: null,
+          expandedSections: onlySection('changesets'),
+        }),
+
+      selectChange: (changeSeq) =>
+        set((s) => ({
+          changeSeq,
+          graphMove: nextMove(s, 'select', `seq:${changeSeq ?? s.changeSeq ?? ''}`),
+        })),
       clearCheckoutSelection: () =>
         set((s) => ({
           selectedId: null,
@@ -485,6 +581,8 @@ export const useUiStore = create<UiState>()(
           changeSeq: null,
           changesetTab: 'changes',
           impactFocus: null,
+          openGroups: [],
+          graphMove: null,
           c4Scope: null,
           c4SelectedId: null,
           c4ChangesetId: null,
@@ -493,7 +591,20 @@ export const useUiStore = create<UiState>()(
           focus: s.layerId ? 'layer' : s.focus,
         })),
       setChangesetTab: (changesetTab) => set({ changesetTab }),
-      focusImpact: (impactFocus) => set(impactFocus ? { impactFocus, changesetTab: 'impact' } : { impactFocus }),
+      focusImpact: (impactFocus) =>
+        set((s) => ({
+          impactFocus,
+          ...(impactFocus ? { changesetTab: 'impact' as const } : {}),
+          graphMove: nextMove(s, 'focus', impactFocus ?? s.impactFocus),
+        })),
+      setImpactLabels: (impactLabels) => set({ impactLabels }),
+      openGroup: (id) =>
+        set((s) =>
+          s.openGroups.includes(id)
+            ? {}
+            : { openGroups: normalizeGroups([...s.openGroups, id]), graphMove: nextMove(s, 'expand', id) },
+        ),
+      restoreOpenGroups: (ids) => set({ openGroups: normalizeGroups(ids) }),
 
       showC4: (c4Level, scope = null, options) =>
         set((s) => ({
@@ -519,7 +630,9 @@ export const useUiStore = create<UiState>()(
                 expandedSections: onlySection('architecture'),
               },
         ),
-      selectC4: (c4SelectedId) => set({ c4SelectedId }),
+      selectC4: (c4SelectedId) =>
+        set((s) => ({ c4SelectedId, graphMove: nextMove(s, 'select', c4SelectedId ?? s.c4SelectedId) })),
+      clearC4Selection: () => set({ c4SelectedId: null }),
       restoreC4: (c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId) =>
         set({
           c4Level,
@@ -577,7 +690,7 @@ export const useUiStore = create<UiState>()(
             // view of it. Toggling the ALREADY-active section's own
             // expand/collapse isn't a view switch, so selection is untouched.
             ...(viewChanged
-              ? { selectedId: null, selectedEdgeId: null, highlightedEdgeId: null, focus: 'layer' as const }
+              ? { selectedId: null, selectedEdgeId: null, highlightedEdgeId: null, focus: 'layer' as const, openGroups: [] }
               : {}),
           };
         }),
@@ -601,6 +714,7 @@ export const useUiStore = create<UiState>()(
             focus: collapsing ? s.focus : 'layer',
             expandedSections: onlySection(sectionId),
             expandedLayers,
+            ...(s.layerId !== layerId || s.view !== sectionId ? { openGroups: [] } : {}),
           };
         }),
 
@@ -619,11 +733,23 @@ export const useUiStore = create<UiState>()(
       toggleShowInterLayerNodes: () =>
         set((s) => ({ showInterLayerNodes: !s.showInterLayerNodes })),
 
-      setModelView: (modelView) => set({ modelView }),
+      setModelView: (modelView) => set((s) => (s.modelView === modelView ? {} : { modelView, openGroups: [] })),
 
       setInspectorFollow: (inspectorFollow) => set({ inspectorFollow }),
 
-      setGraphViewport: (graphViewport) => set({ graphViewport }),
+      setGraphViewport: (graphViewport, cause) =>
+        set((s) =>
+          cause
+            ? {
+                graphViewport,
+                graphMove: nextMove(
+                  s,
+                  cause.kind === 'dwell' ? 'dwell' : cause.kind === 'center-on-select' ? 'recentre' : 'fit',
+                  cause.kind === 'center-on-select' ? cause.nodeId : null,
+                ),
+              }
+            : { graphViewport },
+        ),
     }),
     {
       name: PERSIST_KEY,

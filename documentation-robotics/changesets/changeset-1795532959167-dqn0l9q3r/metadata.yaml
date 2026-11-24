@@ -1,0 +1,77 @@
+id: changeset-1795532959167-dqn0l9q3r
+name: graph-history-replay
+description: >-
+  Back/Forward replays graph moves (#619), on heimdall-ui 0.14.0.
+
+
+  **Intent.** The router applies one history policy to graph moves: PUSH on a
+  deliberate graph selection (node, edge, lane, C4 box), an Impact focus change,
+  a lane/group expand and a centre-on-select recentre onto something the entry
+  doesn't already select; REPLACE on a viewport dwell, the mount fit and later
+  fits; COALESCE a selection with its own recentre (and a double-click) into one
+  entry. The store stays the single owner of "where you are"; the router mirrors
+  it.
+
+
+  **In scope**
+
+  - `application.applicationservice.history-policy`: pure `decideHistoryStep`
+  (push / replace / coalesce).
+
+  - `uiStore` records each deliberate move (`graphMove`) in the same write as
+  the state it changes; restore actions record none.
+
+  - URL: `?focus=` (Impact focus), `?open=` (opened lanes / groups), `?seq=`
+  (reviewed change), `?tab=impact`, `?vp=` for Impact and Architecture, each
+  scoped to its view (`liveCanvasKey`).
+
+  - `C4Diagram` reports dwell / navigate and takes `viewportRef` /
+  `initialViewport` like GraphCanvas, so `useViewportHistory` drives it.
+
+  - heimdall-ui 0.12.0 → 0.14.0.
+
+
+  **Done when** Back undoes the last graph move and Forward redoes it, viewport
+  included, in Model, Schema, Impact, by-type lanes and Architecture; a copied
+  URL reopens the state; panning alone adds no entry.
+created: 2026-11-24T15:09:19.178Z
+modified: 2026-11-24T15:10:00.150Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 20
+  modifications: 3
+  deletions: 0
+lastSequence: 23
+unstaged:
+  - sequence: 1
+    removedAt: 23
+    change:
+      type: add
+      elementId: application.applicationservice.history-policy
+      layerName: application
+      after:
+        id: c3ba2339-2c39-45c0-bc60-b2fe14fe7536
+        path: application.applicationservice.history-policy
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: History Policy
+        description: "routes/historyPolicy.ts: pure decideHistoryStep({ destination,
+          move, entrySelection, lastPush }) → push | replace | coalesce.
+          Destination changes and deliberate graph moves (select, focus, expand,
+          a recentre onto something the entry doesn't select) push; dwells and
+          fits replace; a recentre onto the entry's own selection, or a repeat
+          of the last pushed move on the same target within COALESCE_MS (a
+          double-click), coalesces into the current entry."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-24T15:09:41.796Z
+          updated_at: 2026-11-24T15:09:41.796Z
+          version: 1
+      timestamp: 2026-11-24T15:09:41.849Z
+    rewritten: true

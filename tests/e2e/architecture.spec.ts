@@ -96,14 +96,14 @@ test.describe('Architecture view — C4 diagrams', () => {
     expect(params.get('scope')).toBe('application.applicationcomponent.graph-canvas');
   });
 
-  test('selecting a box replaces the history entry; a source link opens the element in the Model view', async ({ page }) => {
+  test('selecting a box pushes a history entry (#619); a source link opens the element in the Model view', async ({ page }) => {
     await gotoView(page, `${ROUTES.architecture}?level=container`);
     await diagramAt(page, 'container');
     const before = await page.evaluate(() => history.length);
 
     await card(page, 'Browser localStorage').locator('.c4-card__main').click();
     await expect(page).toHaveURL(/node=data-store\.database\.browser-local-storage/);
-    expect(await page.evaluate(() => history.length)).toBe(before);
+    expect(await page.evaluate(() => history.length)).toBe(before + 1);
 
     await page.getByTestId('c4-source-link').first().click();
     await expect(page).toHaveURL(/#\/model\//);

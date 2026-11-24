@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Back and Forward replay graph moves** (#619): in the Model, Schema, Changesets Impact, Model by-type lanes and
+  Architecture views, each node, edge, lane or C4 box you click, each Impact focus and each lane or group you open
+  is a history step of its own, so Back undoes the last one and Forward redoes it, with the view where you left
+  it. Panning and zooming never add a step: the step you're on keeps the view you settle on. A selection and the
+  recentre that follows it are one step, and so is a double-click. The URL carries what each step needs, so a
+  copied link reopens it: `?focus=` (Impact focus), `?open=` (opened lanes and groups), `?seq=` (the change open in
+  a review), `?tab=impact`, and `?vp=` for the Impact lanes and the C4 diagrams too. A fresh graph writes its
+  first view into the URL as well, so every step has one to go back to.
 - **Change counts on the C4 changeset overlay** (#629): a box's status chip says how many of the changeset's
   changes are behind it ("~ changed · 12 changes", "+ added · 8 changes"; no count when there is one), and so does
   a marked arrow's label ("+ uses · 4 changes"), its tooltip and its row in the list of arrows for assistive

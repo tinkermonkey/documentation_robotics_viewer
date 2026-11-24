@@ -1,0 +1,436 @@
+- type: add
+  elementId: motivation.requirement.back-and-forward-replay-graph-moves
+  layerName: motivation
+  after:
+    id: fec40970-aab2-4c49-bcea-fa3931e19d6d
+    path: motivation.requirement.back-and-forward-replay-graph-moves
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Back and Forward replay graph moves
+    description: In the Model, Schema, Impact, by-type lanes and Architecture views,
+      Back undoes the last graph move (selection, recentre, focus, expand) and
+      Forward redoes it, with the viewport restored; a copied URL reopens that
+      state; panning and zooming alone never add history entries (#619).
+    attributes:
+      requirementType: functional
+      priority: medium
+    metadata:
+      created_at: 2026-11-24T15:09:41.757Z
+      updated_at: 2026-11-24T15:09:41.757Z
+      version: 1
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 0
+- type: add
+  elementId: application.applicationservice.history-policy
+  layerName: application
+  after:
+    id: c3ba2339-2c39-45c0-bc60-b2fe14fe7536
+    path: application.applicationservice.history-policy
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: History Policy
+    description: "routes/historyPolicy.ts: pure decideHistoryStep({ destination,
+      move, entrySelection, lastPush }) → push | replace | coalesce. Destination
+      changes and deliberate graph moves (select, focus, expand, a recentre onto
+      something the entry doesn't select) push; dwells and fits replace; a
+      recentre onto the entry's own selection, or a repeat of the last pushed
+      move on the same target within COALESCE_MS (a double-click), coalesces
+      into the current entry."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-24T15:09:41.796Z
+      updated_at: 2026-11-24T15:09:41.796Z
+      version: 1
+    accepted_gaps:
+      - direction: outgoing
+        predicate: serves
+        other_spec_node_id: application.applicationcomponent
+        reason: A pure function only the router (navigation.route.checkout-shell-route
+          uses it) calls; no component consumes it.
+        decided_by: agent
+        decided_at: 2026-11-24T15:10:00.119Z
+        changeset: changeset-1795532959167-dqn0l9q3r
+  timestamp: 2026-11-24T15:10:00.126Z
+  sequenceNumber: 1
+- type: add
+  elementId: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre
+  layerName: testing
+  after:
+    id: 8b47d10b-b196-4d28-a88a-b4ca4153d24f
+    path: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: History policy pushes moves, replaces dwells and coalesces a selection
+      with its recentre
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-24T15:09:41.810Z
+      updated_at: 2026-11-24T15:09:41.810Z
+      version: 1
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
+  layerName: testing
+  after:
+    id: 3a219f0b-8188-443c-a312-dfb421e3e846
+    path: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Back steps through graph moves in each view
+    description: "E2E: click through nodes / a focus / a lane expand / a C4 box,
+      then Back restores each previous state and Forward redoes it, in Model,
+      Schema, Impact, by-type lanes and Architecture."
+    attributes:
+      status: draft
+      implementationFormat: automated
+    metadata:
+      created_at: 2026-11-24T15:09:41.819Z
+      updated_at: 2026-11-24T15:09:41.819Z
+      version: 1
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: application.applicationservice.history-policy::satisfies::motivation.requirement.back-and-forward-replay-graph-moves
+  layerName: application
+  after:
+    source: application.applicationservice.history-policy
+    target: motivation.requirement.back-and-forward-replay-graph-moves
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::uses::application.applicationservice.history-policy
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: application.applicationservice.history-policy
+    predicate: uses
+    layer: navigation
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::serves::application.applicationcomponent.c4-diagram
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: application.applicationcomponent.c4-diagram
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::serves::application.applicationcomponent.type-lanes-view
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: application.applicationcomponent.type-lanes-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::satisfies::motivation.requirement.back-and-forward-replay-graph-moves
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: motivation.requirement.back-and-forward-replay-graph-moves
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre::tests::application.applicationservice.history-policy
+  layerName: testing
+  after:
+    source: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre
+    target: application.applicationservice.history-policy
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: testing.testcasesketch.back-steps-through-graph-moves-in-each-view::tests::navigation.route.checkout-shell-route
+  layerName: testing
+  after:
+    source: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
+    target: navigation.route.checkout-shell-route
+    predicate: tests
+    layer: testing
+    targetLayer: navigation
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: testing.testcasesketch.back-steps-through-graph-moves-in-each-view::satisfies::motivation.requirement.back-and-forward-replay-graph-moves
+  layerName: testing
+  after:
+    source: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
+    target: motivation.requirement.back-and-forward-replay-graph-moves
+    predicate: satisfies
+    layer: testing
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationservice.history-policy::realizes::product.feature.model-graph-view
+  layerName: application
+  after:
+    source: application.applicationservice.history-policy
+    target: product.feature.model-graph-view
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: application.applicationservice.history-policy::realizes::product.feature.changeset-impact-tab
+  layerName: application
+  after:
+    source: application.applicationservice.history-policy
+    target: product.feature.changeset-impact-tab
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationservice.history-policy::realizes::product.feature.c4-architecture-diagrams
+  layerName: application
+  after:
+    source: application.applicationservice.history-policy
+    target: product.feature.c4-architecture-diagrams
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T15:09:41.849Z
+  sequenceNumber: 15
+- type: add
+  elementId: data-model.objectschema.graph-move
+  layerName: data-model
+  after:
+    id: 70ad8bc0-8079-40ae-b74f-bb2a79657292
+    path: data-model.objectschema.graph-move
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Graph Move
+    description: "uiStore.graphMove: { seq, kind: select | focus | expand | recentre
+      | dwell | fit, target, at }. Written by the UI actions that make a
+      deliberate graph move, in the same store write as the state they change;
+      restore actions (router, back/forward) write none."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-24T15:09:51.899Z
+      updated_at: 2026-11-24T15:09:51.899Z
+      version: 1
+  timestamp: 2026-11-24T15:09:51.923Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.history-policy::accesses::data-model.objectschema.graph-move
+  layerName: application
+  after:
+    source: application.applicationservice.history-policy
+    target: data-model.objectschema.graph-move
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T15:09:51.923Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::accesses::data-model.objectschema.graph-move
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: data-model.objectschema.graph-move
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T15:09:51.923Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationfunction.ui-store::accesses::data-model.objectschema.graph-move
+  layerName: application
+  after:
+    source: application.applicationfunction.ui-store
+    target: data-model.objectschema.graph-move
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T15:09:51.923Z
+  sequenceNumber: 19
+- type: update
+  elementId: technology.systemsoftware.heimdall-ui
+  layerName: technology
+  before:
+    id: ecfed28a-069b-41d8-9092-427bc1655a1c
+    path: technology.systemsoftware.heimdall-ui
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Heimdall UI
+    description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned
+      from a git commit; provides the app shell components (PageHeader,
+      GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile,
+      etc.) and the real force-directed GraphCanvas layout engine that replaced
+      the old React Flow + custom layout-engine stack in the June 2026 UX
+      rebuild"
+    attributes: &a1
+      softwareType: middleware
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: package.json
+          symbol: "@tinkermonkey/heimdall-ui"
+    metadata: &a3
+      created_at: 2026-09-19T15:17:03.583Z
+      updated_at: 2026-09-19T15:17:03.583Z
+      version: 1
+  after:
+    id: ecfed28a-069b-41d8-9092-427bc1655a1c
+    path: technology.systemsoftware.heimdall-ui
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Heimdall UI
+    description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned to
+      an exact npm version (0.14.0); provides the app shell components
+      (PageHeader, GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff,
+      StatTile, etc.), the GraphCanvas layouts with their viewport events
+      (onViewportDwell / onViewportNavigate, silent setViewport) and usePanZoom
+      (onUserGesture), which replaced the old React Flow + custom layout-engine
+      stack in the June 2026 UX rebuild"
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-24T15:09:52.454Z
+  sequenceNumber: 20
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. An overlay's op marks or a comparison's
+      verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`:
+      outline, glyph, words, colour token, dash per card and arrow), which the
+      export also uses, so an exported diagram carries the same marks. Colours
+      from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab
+      stop with arrow keys between cards, Enter drills into a card that has
+      parts, Escape clears the selection; the arrows, with their status, are
+      also listed as text."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a6
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "The C4 diagram renderer (usePanZoom world of HTML cards over an
+      SVG of boundary and arrows). Reports its viewport like GraphCanvas:
+      onViewportDwell after a user pan/zoom settles (onUserGesture end + dwell),
+      onViewportNavigate for its fits; takes initialViewport and a viewportRef
+      whose setViewport(vp, { silent }) restores without a report, so
+      useViewportHistory records it into ?vp= for the Architecture view."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-24T15:09:52.484Z
+  sequenceNumber: 21
+- type: update
+  elementId: application.applicationservice.graph-viewport-key
+  layerName: application
+  before:
+    id: 9d940b03-0844-40c9-9630-0790585c0f0b
+    path: application.applicationservice.graph-viewport-key
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Graph Viewport Key
+    description: The GraphCanvas key and its scope tag, and the ?vp= format and
+      parse, so a saved viewport only applies to the layout it was taken on.
+    attributes: &a7
+      serviceType: synchronous
+    source_reference: &a8
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/graphViewport.ts
+          symbol: graphCanvasKey
+    metadata: &a9
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 9d940b03-0844-40c9-9630-0790585c0f0b
+    path: application.applicationservice.graph-viewport-key
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Graph Viewport Key
+    description: "The GraphCanvas key and its scope tag, the ?vp= format and
+      parsing, and liveCanvasKey: the key of whichever canvas the view shows
+      (Model/Schema graph, the Impact lanes, the C4 diagram), so ?vp= applies
+      only to the canvas it was recorded on."
+    attributes: *a7
+    source_reference: *a8
+    metadata: *a9
+  timestamp: 2026-11-24T15:09:52.540Z
+  sequenceNumber: 22

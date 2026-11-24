@@ -39,6 +39,8 @@ import {
   type LaneNodeLabels,
 } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
+import { useViewportHistory } from './useViewportHistory';
+import { impactCanvasKey } from './graphViewport';
 import { layerColor, layerLabel } from './domain';
 import {
   GROUP_PREFIX,
@@ -152,10 +154,18 @@ export function ChangesetImpactView({
   const focusRef = useUiStore((s) => s.impactFocus);
   const focusImpact = useUiStore((s) => s.focusImpact);
   const selectChange = useUiStore((s) => s.selectChange);
-  const [labels, setLabels] = useState<LaneNodeLabels>('reached');
+  const labels = useUiStore((s) => s.impactLabels);
+  const setLabels = useUiStore((s) => s.setImpactLabels);
   const [filter, setFilter] = useState<ImpactFilter>(NO_IMPACT_FILTER);
   const [grouping, setGrouping] = useState(true);
-  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
+  // Opened groups, focus and viewport are in the store and the URL (`?open=`,
+  // `?focus=`, `?vp=`), so Back undoes each (#619).
+  const openGroups = useUiStore((s) => s.openGroups);
+  const openGroup = useUiStore((s) => s.openGroup);
+  const restoreOpenGroups = useUiStore((s) => s.restoreOpenGroups);
+  const expanded = useMemo<ReadonlySet<string>>(() => new Set(openGroups), [openGroups]);
+  const canvasKey = impactCanvasKey({ changesetId, impactFocus: focusRef, inspectorFollow: follow, impactLabels: labels });
+  const viewportProps = useViewportHistory(canvasKey);
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const { derived: spec } = useSpec();
@@ -234,7 +244,7 @@ export function ChangesetImpactView({
   const focusChanges = focusId ? impact.changesOf.get(focusId) ?? [] : [];
   const onNode = (id: string) => {
     if (id.startsWith(GROUP_PREFIX)) {
-      setExpanded((s) => new Set(s).add(id.slice(GROUP_PREFIX.length)));
+      openGroup(id.slice(GROUP_PREFIX.length));
       return;
     }
     focusImpact(id === focusId ? null : id);
@@ -330,7 +340,7 @@ export function ChangesetImpactView({
               value={grouping ? 'group' : 'every'}
               onChange={(v) => {
                 setGrouping(v === 'group');
-                setExpanded(new Set());
+                restoreOpenGroups([]);
               }}
               options={[
                 { value: 'group', label: 'Group by type' },
@@ -456,7 +466,7 @@ export function ChangesetImpactView({
           ) : (
             <GraphCanvas
               // Refit when the graph's extent changes (another changeset, focus, follow depth or label mode).
-              key={`${changesetId}:${focusId ?? ''}:${follow}:${labels}`}
+              key={canvasKey}
               layout="layer-lanes"
               layeredGraph={graph}
               laneOptions={{ intraLinks: 'bundled', skipLayerRouting: 'gutter', nodeLabels: labels }}
@@ -464,6 +474,7 @@ export function ChangesetImpactView({
               toolbarPosition="bottom-left"
               onNodeSelect={onNode}
               onBackgroundClick={() => focusImpact(null)}
+              {...viewportProps}
               style={{ flex: 1, minHeight: 360 }}
               aria-label={
                 focusNode

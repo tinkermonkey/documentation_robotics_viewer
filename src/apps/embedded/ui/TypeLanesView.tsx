@@ -6,7 +6,8 @@
  * Impact tab uses it, but the lanes are node types (`data/typeBands.ts`), not
  * DR layers: Heimdall's "layer" is a node type here. Lanes are ordered so
  * linked types sit next to each other. A lane over `BAND_CAP` elements folds
- * its least-linked ones into a "+N more" node; clicking it shows them all.
+ * its least-linked ones into a "+N more" node; clicking it shows them all
+ * (`uiStore.openGroups`, `?open=`: a history step of its own).
  *
  * Selection is the Canvas's: a click goes through `onSelect` (Canvas's
  * `selectFromCanvas`, so centerOnSelect stays off for on-canvas clicks) and
@@ -14,7 +15,7 @@
  * drawer, and Fullscreen takes the Canvas's graph wrapper with it.
  */
 
-import { useMemo, useState, type RefObject } from 'react';
+import { useMemo, type RefObject } from 'react';
 import {
   GraphCanvas,
   useLayeredGraph,
@@ -23,6 +24,7 @@ import {
   type GraphNodeData,
 } from '@tinkermonkey/heimdall-ui';
 import { layerLabel } from './domain';
+import { useUiStore } from './uiStore';
 import { MORE_PREFIX, capBands, typeBands } from '../data/typeBands';
 import type { SpecLayerInfo } from '../data/useSpec';
 
@@ -58,7 +60,11 @@ export function TypeLanesView({
   viewportProps,
   canvasKey,
 }: TypeLanesViewProps) {
-  const [expanded, setExpanded] = useState<ReadonlySet<string>>(new Set());
+  // The opened "+N more" lanes are the store's `openGroups` (the URL's `?open=`),
+  // so Back closes the last one opened (#619).
+  const openGroups = useUiStore((s) => s.openGroups);
+  const openGroup = useUiStore((s) => s.openGroup);
+  const expanded = useMemo<ReadonlySet<string>>(() => new Set(openGroups), [openGroups]);
   const { bands, layering } = useMemo(() => typeBands(layerId, nodes, edges, spec), [layerId, nodes, edges, spec]);
   const capped = useMemo(
     () => capBands(nodes, edges, bands, { keep: new Set(selectedId ? [selectedId] : []), expanded }),
@@ -84,7 +90,7 @@ export function TypeLanesView({
       centerOnSelect={centerOnSelect}
       onNodeSelect={(id) => {
         if (id.startsWith(MORE_PREFIX)) {
-          setExpanded((s) => new Set(s).add(id.slice(MORE_PREFIX.length)));
+          openGroup(id.slice(MORE_PREFIX.length));
           return;
         }
         onSelect(id);

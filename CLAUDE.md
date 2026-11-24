@@ -36,6 +36,8 @@ src/
 │   ├── main.tsx               # Boot: magic-link token (fragment or query; also on hashchange) + fetch interceptor + css/fonts + RouterProvider
 │   ├── router.tsx             # TanStack hash router: / (picker), /p/:project/c/:checkout[/:section/:view] (the shell), old /:section/:view → picker
 │   ├── routes/checkoutLinks.ts # pure: the dr CLI's link forms, fragment token, the picker's carried destination
+│   ├── routes/historyPolicy.ts # pure: push / replace / coalesce for each URL write (graph moves, #619)
+│   ├── routes/shellParams.ts   # pure: ?open= / ?seq= parsing, openGroups' normal form
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
 │   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model); Open / Closed changesets
@@ -670,28 +672,53 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   `?changeset=` search params two-way sync with `uiStore.layerId`/`selectedId`/`changesetId`, on top of
   the existing `:section`/`:view` path sync. Covers selections from ANYWHERE (nav tree clicks, graph node
   clicks, cross-layer navigation), not just the nav tree, since they all drive the same store fields.
-  `:view` carries the graph/page mode for Model + Schema (`#/model/page?...`). Destination changes PUSH a
-  history entry: view, mode, layer, a deliberate navigation (`uiStore.navSeq`, bumped by
-  `navigateToElement`/`navigateToElementWithEdge`/`navigateToSpecNode` — nav-tree leaves, relationship
-  links, neighborhood/page-table clicks, inter-layer nodes), or any selection change in page mode. Plain
-  on-canvas selection within a layer REPLACES the entry so graph clicks don't flood history. The effect
-  skips navigating when the store already matches the URL, so back/forward never push duplicates. An entry with
-  `?layer=` but no `?node=`/`?edge=` means nothing is selected: back/forward onto one clears the selection
-  being left (otherwise the store → URL effect writes that node back onto the older entry).
-- **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4) — `ui/useViewportHistory.ts` spreads
-  onto the Model/Schema `GraphCanvas`: it records `uiStore.graphViewport` on `onViewportDwell` (pan/zoom
-  settled) and on `onViewportNavigate` (centerOnSelect, toolbar/fullscreen fit — not the mount fit), and
-  restores via `initialViewport` (reload/deep link) or a silent `viewportRef.setViewport` (back/forward; the
-  silent call also cancels a pending centerOnSelect report). The router mirrors it into `?vp=` and only ever
-  REPLACES for it, so each history entry holds the last view seen there. A viewport is tagged with its
-  canvas's `graphCanvasKey` (`ui/graphViewport.ts`, also the GraphCanvas React key): a layer, view or layout
-  setting change drops it rather than applying world coordinates to a different layout. The URL's `tag` is
-  `scopeTag(graphCanvasKey)`: layout/display settings live in each viewer's preferences, not the URL, so a
-  `?vp=` from an older history entry or someone else's link only applies when its tag matches the live
-  canvas (a tagless three-number link always applies); otherwise the router drops it, replacing the entry in
-  place rather than pushing. Kept on page-mode
-  URLs so toggling back to graph returns to the same view. After a drag-pan flick the dwell lands ~4–5s
-  later (heimdall's inertia tail + 1.5s `dwellMs`).
+  `:view` carries the graph/page mode for Model + Schema (`#/model/page?...`). The effect skips navigating
+  when the store already matches the URL, so back/forward never push duplicates. An entry with `?layer=` but
+  no `?node=`/`?edge=` means nothing is selected: back/forward onto one clears the selection being left
+  (otherwise the store → URL effect writes that node back onto the older entry).
+  **History policy (#619): Back and Forward replay graph moves.** `routes/historyPolicy.ts`'s pure
+  `decideHistoryStep` picks PUSH / REPLACE / COALESCE (a replace that keeps the entry the step it was) for each
+  URL write. Destination changes PUSH: view, mode, layer, the Changesets tab, opening or closing a changeset,
+  a deliberate navigation (`uiStore.navSeq`, bumped by `navigateToElement`/`navigateToElementWithEdge`/
+  `navigateToSpecNode`/`showC4`/`showC4Overlay`), any selection in page mode. So do GRAPH MOVES,
+  `uiStore.graphMove` (`{ seq, kind, target, at }`, written in the same store write as the state it changes):
+  `select` (an on-canvas node or edge, `selectGraphNode`/`selectGraphEdge`, a background click
+  `clearGraphSelection`, a C4 box `selectC4`, a reviewed change `selectChange`), `focus` (`focusImpact`) and
+  `expand` (`openGroup`). `dwell` and `fit` (from `setGraphViewport(vp, cause)`) REPLACE; `recentre`
+  (centerOnSelect) COALESCES when it centres on what the entry selects, else pushes; a repeat of the last push
+  on the same target within `COALESCE_MS` (500ms, a double-click) coalesces. A store change with no new move
+  and no destination (a restore, a stale selection dropped) replaces. Restores never write a move: the router
+  uses `selectNode`/`selectEdge`/`restoreC4`/`restoreChangeset`/`restoreOpenGroups`, and the code that drops
+  a selection the data no longer holds uses `clearC4Selection`/`clearEdgeSelection` (a new UI path that
+  clears a selection on its own must not record a move either, or it pushes). `C4Diagram` ignores a
+  double-click's second click (`e.detail > 1`), so select + open is one step plus the drill. The state each
+  move changes is in the URL, each param read only in its own view (`routes/shellParams.ts`): `?tab=impact`,
+  `?seq=` (a number), `?focus=` (Impact focus) and `?open=` (the opened lanes / groups, `uiStore.openGroups`,
+  sorted, comma-separated: the Model by-type lanes' folded types, the Impact tab's `layer|type` groups;
+  cleared with the layer, changeset, view or Model view). The router restores the Changesets view in one
+  write (`restoreChangeset`). Not built: a cap or grouping of long explorations (the issue's optional item;
+  a browser history entry can't be merged after the fact, so it would have to coalesce while exploring).
+- **Viewport history** (`?vp=centerX,centerY,zoom,tag`, heimdall-ui 0.9.4; #619) — `ui/useViewportHistory.ts`
+  spreads onto the Model/Schema `GraphCanvas`, the Impact lanes' `GraphCanvas` and `C4Diagram`: it records
+  `uiStore.graphViewport` on `onViewportDwell` (pan/zoom settled) and on every `onViewportNavigate` (the mount
+  fit too, so every entry carries a viewport Back can restore; centerOnSelect; toolbar/fullscreen fit), with
+  the cause as a graph move, and restores via `initialViewport` (reload/deep link/a remount on back/forward)
+  or a silent `viewportRef.setViewport` (back/forward; the silent call also cancels a pending centerOnSelect
+  report). The router writes it into `?vp=` and never pushes for it (a dwell or fit replaces, a recentre
+  coalesces), so each history entry holds the last view seen there. A viewport is tagged with the key of the
+  canvas it belongs to, `liveCanvasKey` (`ui/graphViewport.ts`): `graphCanvasKey` (Model/Schema, also the
+  GraphCanvas React key), `impactCanvasKey` (changeset, focus, follow depth, `uiStore.impactLabels`) or
+  `c4CanvasKey` (level, scope, overlay, as-built; also `C4Diagram`'s React key); none on the inbox or the
+  Review tab. A layer, view, layout, focus or diagram change drops it rather than applying world coordinates
+  to a different layout. The URL's `tag` is `scopeTag(key)`: layout/display settings live in each viewer's
+  preferences, not the URL, so a `?vp=` from an older history entry or someone else's link only applies when
+  its tag matches the live canvas (a tagless three-number link always applies); otherwise the router drops
+  it, replacing the entry in place rather than pushing. Kept on page-mode URLs so toggling back to graph
+  returns to the same view. `C4Diagram` (Heimdall's `usePanZoom`, no GraphCanvas) reports the same events
+  itself: a dwell `C4_DWELL_MS` (1500) after `onUserGesture`'s `end` or a zoom button, `fit` (`mount` /
+  `toolbar`) and `imperative` navigates, world coordinates, and its `viewportRef` / `initialViewport`. After
+  a drag-pan flick the dwell lands ~4–5s later (heimdall's inertia tail + 1.5s `dwellMs`); in a hidden Browser
+  pane rAF is throttled and it lands later still, so check dwell timing in a visible or headless browser.
 
 ## Local Development & Verification
 

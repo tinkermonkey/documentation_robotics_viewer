@@ -44,14 +44,16 @@ describe('useViewportHistory', () => {
     expect(setViewport).not.toHaveBeenCalled();
   });
 
-  it('records canvas moves except the mount fit', () => {
+  it('records every canvas move, the mount fit included, with its cause', () => {
     const { result } = setup();
     act(() => result.current.onViewportNavigate(snapshot(1, 1, 1), { kind: 'fit', reason: 'mount' }));
-    expect(useUiStore.getState().graphViewport).toBeNull();
+    expect(useUiStore.getState().graphViewport?.center).toEqual({ x: 1, y: 1 });
+    expect(useUiStore.getState().graphMove).toMatchObject({ kind: 'fit' });
     act(() =>
       result.current.onViewportNavigate(snapshot(5, 6, 0.5), { kind: 'center-on-select', nodeId: 'n1' }),
     );
     expect(useUiStore.getState().graphViewport?.center).toEqual({ x: 5, y: 6 });
+    expect(useUiStore.getState().graphMove).toMatchObject({ kind: 'recentre', target: 'n1' });
     act(() => result.current.onViewportNavigate(snapshot(7, 8, 0.5), { kind: 'fit', reason: 'toolbar' }));
     expect(useUiStore.getState().graphViewport?.center).toEqual({ x: 7, y: 8 });
   });

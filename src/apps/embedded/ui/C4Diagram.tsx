@@ -26,10 +26,26 @@
  * verification's verdict instead (`verdictStyles.ts`): an outline, a glyph
  * and words per card and arrow, and a box with marked parts says what is
  * inside. The two never show at once.
+ *
+ * Viewport history (#619): it reports its viewport as GraphCanvas does, so
+ * `useViewportHistory` drives it the same way. `onViewportDwell` fires once the
+ * user's pan or zoom (drag and its inertia, wheel, pinch, keys, the zoom
+ * buttons) has been still for `C4_DWELL_MS`; `onViewportNavigate` reports its
+ * own fits (`mount`, `toolbar`). `initialViewport` replaces the mount fit, and
+ * `viewportRef.setViewport(vp, { silent: true })` restores one without a
+ * report. Coordinates are world (layout) coordinates, as GraphCanvas's are.
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Icon, usePanZoom, type IconName } from '@tinkermonkey/heimdall-ui';
+import { useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState, type Ref } from 'react';
+import {
+  Icon,
+  usePanZoom,
+  type GraphViewport,
+  type GraphViewportCause,
+  type GraphViewportHandle,
+  type GraphViewportSnapshot,
+  type IconName,
+} from '@tinkermonkey/heimdall-ui';
 import type { C4Kind } from '../data/c4/c4Model';
 import type { C4View, C4ViewElement } from '../data/c4/c4Views';
 import { C4_CARD, c4EdgeLabel, c4EdgeLabelWidth, c4MarkedEdgeLabel, type C4Layout } from '../data/c4/c4Layout';
@@ -59,7 +75,18 @@ export interface C4DiagramProps {
   overlay?: C4DiagramOverlay | null;
   /** A plan compared with what was built: verdict marks and roll-ups (instead of `overlay`). */
   comparison?: C4DiagramComparison | null;
+  /** Applied after the first layout instead of the fit. Read once. Reports nothing. */
+  initialViewport?: GraphViewport;
+  /** Receives `{ setViewport, getViewport }`, as GraphCanvas's `viewportRef`. */
+  viewportRef?: Ref<GraphViewportHandle>;
+  /** The user's pan or zoom has been still for `C4_DWELL_MS`. */
+  onViewportDwell?: (viewport: GraphViewportSnapshot) => void;
+  /** The diagram moved itself: its mount fit, the Fit button, or a non-silent `setViewport`. */
+  onViewportNavigate?: (viewport: GraphViewportSnapshot, cause: GraphViewportCause) => void;
 }
+
+/** Stillness after a user pan or zoom before `onViewportDwell` (GraphCanvas's default `dwellMs`). */
+export const C4_DWELL_MS = 1500;
 
 export const C4_KIND_LABELS: Record<C4Kind, string> = {
   person: 'Person',
@@ -126,42 +153,136 @@ export function C4Diagram({
   onFocused,
   overlay: overlayProp,
   comparison,
+  initialViewport,
+  viewportRef,
+  onViewportDwell,
+  onViewportNavigate,
 }: C4DiagramProps) {
   const overlay = comparison ? null : overlayProp;
   const containerRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef(new Map<string, HTMLButtonElement>());
+
+  // Read through refs, so inline callbacks never re-run the effects below.
+  const onDwellRef = useRef(onViewportDwell);
+  onDwellRef.current = onViewportDwell;
+  const onNavigateRef = useRef(onViewportNavigate);
+  onNavigateRef.current = onViewportNavigate;
+  const dwellTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const cancelDwell = () => {
+    if (dwellTimer.current !== null) clearTimeout(dwellTimer.current);
+    dwellTimer.current = null;
+  };
+
   const { transform, bind, zoomTo, panTo, getViewport } = usePanZoom({
     containerRef: containerRef as React.RefObject<HTMLElement>,
     minZoom: MIN_ZOOM,
     maxZoom: MAX_ZOOM,
+    onUserGesture: (phase) => (phase === 'end' ? scheduleDwell() : cancelDwell()),
   });
 
-  const fit = useCallback(() => {
+  /** The visible world rectangle, as GraphCanvas reports it; null before the container is measured. */
+  const snapshot = useCallback((): GraphViewportSnapshot | null => {
     const el = containerRef.current;
-    if (!el || layout.width === 0 || layout.height === 0) return;
+    if (!el || el.clientWidth === 0 || el.clientHeight === 0) return null;
+    const { x, y, zoom } = getViewport();
+    const bounds = { minX: -x / zoom, minY: -y / zoom, maxX: (el.clientWidth - x) / zoom, maxY: (el.clientHeight - y) / zoom };
+    return { center: { x: (bounds.minX + bounds.maxX) / 2, y: (bounds.minY + bounds.maxY) / 2 }, zoom, bounds };
+  }, [getViewport]);
+
+  function scheduleDwell() {
+    cancelDwell();
+    dwellTimer.current = setTimeout(() => {
+      dwellTimer.current = null;
+      const vp = snapshot();
+      if (vp) onDwellRef.current?.(vp);
+    }, C4_DWELL_MS);
+  }
+  useEffect(() => cancelDwell, []);
+
+  /** Reports a move once it has rendered, as GraphCanvas does. */
+  const reportNavigate = useCallback(
+    (cause: GraphViewportCause) => {
+      requestAnimationFrame(() => {
+        const vp = snapshot();
+        if (vp) onNavigateRef.current?.(vp, cause);
+      });
+    },
+    [snapshot],
+  );
+
+  /** Puts the world point `center` in the middle of the container at `zoom`. */
+  const apply = useCallback(
+    (vp: GraphViewport) => {
+      const el = containerRef.current;
+      if (!el) return;
+      const zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, vp.zoom));
+      zoomTo(zoom);
+      panTo(el.clientWidth / 2 - vp.center.x * zoom, el.clientHeight / 2 - vp.center.y * zoom);
+    },
+    [zoomTo, panTo],
+  );
+
+  const fitTo = useCallback(() => {
+    const el = containerRef.current;
+    if (!el || layout.width === 0 || layout.height === 0) return false;
     const { clientWidth: cw, clientHeight: ch } = el;
-    if (cw === 0 || ch === 0) return;
+    if (cw === 0 || ch === 0) return false;
     const zoom = Math.max(
       MIN_ZOOM,
       Math.min(1, (cw - FIT_PADDING * 2) / layout.width, (ch - FIT_PADDING * 2) / layout.height),
     );
     zoomTo(zoom);
     panTo((cw - layout.width * zoom) / 2, Math.max(FIT_PADDING / 2, (ch - layout.height * zoom) / 2));
+    return true;
   }, [layout, zoomTo, panTo]);
 
-  // A new diagram is framed whole. Not on resize: the user's own pan and zoom hold.
-  // A frame later, not in the layout effect: usePanZoom drops a zoomTo / panTo
-  // made before its own mount effects have run. `fit` changes with the layout,
-  // which is the only thing this follows.
-  useEffect(() => {
-    const frame = requestAnimationFrame(fit);
-    return () => cancelAnimationFrame(frame);
-  }, [fit]);
+  const fit = () => {
+    cancelDwell();
+    if (fitTo()) reportNavigate({ kind: 'fit', reason: 'toolbar' });
+  };
 
+  // A new diagram is framed whole, or put where `initialViewport` says (a
+  // reload or back/forward onto it). Not on resize: the user's own pan and
+  // zoom hold. A frame later, not in the layout effect: usePanZoom drops a
+  // zoomTo / panTo made before its own mount effects have run. `fitTo`
+  // changes with the layout, which is the only thing this follows.
+  const initialRef = useRef(initialViewport);
+  const framedRef = useRef(false);
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      framedRef.current = true;
+      const initial = initialRef.current;
+      if (initial) {
+        initialRef.current = undefined;
+        apply(initial);
+      } else if (fitTo()) {
+        reportNavigate({ kind: 'fit', reason: 'mount' });
+      }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [fitTo, apply, reportNavigate]);
+
+  useImperativeHandle(
+    viewportRef,
+    () => ({
+      setViewport: (vp, options) => {
+        cancelDwell();
+        // A restore before the first frame wins over the mount fit.
+        if (!framedRef.current) initialRef.current = vp;
+        apply(vp);
+        if (!options?.silent) reportNavigate({ kind: 'imperative' });
+      },
+      getViewport: snapshot,
+    }),
+    [apply, reportNavigate, snapshot],
+  );
+
+  // The zoom buttons are the user's own zoom, as GraphCanvas's toolbar zoom is: a dwell.
   const zoomBy = (factor: number) => {
     const el = containerRef.current;
     const { zoom } = getViewport();
     zoomTo(zoom * factor, el ? el.clientWidth / 2 : undefined, el ? el.clientHeight / 2 : undefined);
+    scheduleDwell();
   };
 
   // Roving focus: the selected card, else the last focused, else the first.
@@ -398,7 +519,12 @@ export function C4Diagram({
                 tabIndex={item.id === tabStop ? 0 : -1}
                 aria-pressed={selected}
                 aria-label={`${element.name}, ${c4KindLine(item)}${status}${parts}`}
-                onClick={() => onSelect(selected ? null : item.id)}
+                onClick={(e) => {
+                  // A double-click's second click would undo its first: the
+                  // double-click is one step (it opens the box, see onDoubleClick).
+                  if (e.detail > 1) return;
+                  onSelect(selected ? null : item.id);
+                }}
                 onDoubleClick={() => drillable && onDrill(item.id)}
                 onFocus={() => setFocusId(item.id)}
                 onKeyDown={(e) => onCardKeyDown(e, item)}

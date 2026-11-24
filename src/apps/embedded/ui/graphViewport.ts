@@ -1,5 +1,6 @@
 /**
- * Viewport history helpers for the Model/Schema GraphCanvas (heimdall-ui 0.9.4).
+ * Viewport history helpers for the graph canvases: the Model/Schema GraphCanvas
+ * (heimdall-ui 0.9.4), the Impact lanes and the C4 diagram (#619).
  *
  * A viewport is stored with the identity of the canvas it belongs to (its
  * `scope`, the same string Canvas keys GraphCanvas by). World coordinates
@@ -17,7 +18,8 @@
  * viewport is dropped. A tagless three-number param is still accepted.
  */
 import type { GraphViewport } from '@tinkermonkey/heimdall-ui';
-import type { GraphLayout, ModelView, NodeDisplay, NodeMarginPreset, ViewKind } from './uiStore';
+import type { GraphLayout, ImpactLabels, ModelView, NodeDisplay, NodeMarginPreset, ViewKind } from './uiStore';
+import type { C4Level } from '../data/c4/c4Level';
 
 export interface ScopedViewport extends GraphViewport {
   scope: string;
@@ -42,6 +44,48 @@ export function graphCanvasKey(s: GraphCanvasKeyInput): string {
   // must never apply to the mixed graph (or each other). 'graph' keeps the
   // old key so existing ?vp= links stay valid.
   return s.view === 'model' && s.modelView && s.modelView !== 'graph' ? `${base}:${s.modelView}` : base;
+}
+
+/** Identity of the Changesets view's Impact lanes: they refit (remount) on any change. */
+export function impactCanvasKey(s: {
+  changesetId: string | null;
+  impactFocus: string | null;
+  inspectorFollow: number;
+  impactLabels: ImpactLabels;
+}): string {
+  return `impact:${s.changesetId ?? ''}:${s.impactFocus ?? ''}:${s.inspectorFollow}:${s.impactLabels}`;
+}
+
+/** Identity of the Architecture view's C4 diagram: level, scope and what is laid over it. */
+export function c4CanvasKey(s: {
+  c4Level: C4Level;
+  c4Scope: string | null;
+  c4ChangesetId: string | null;
+  c4BuiltId: string | null;
+}): string {
+  return `c4:${s.c4Level}:${s.c4Level === 'component' ? (s.c4Scope ?? '') : ''}:${s.c4ChangesetId ?? ''}:${s.c4BuiltId ?? ''}`;
+}
+
+export interface LiveCanvasKeyInput extends GraphCanvasKeyInput {
+  changesetId: string | null;
+  changesetTab: 'changes' | 'impact';
+  impactFocus: string | null;
+  inspectorFollow: number;
+  impactLabels: ImpactLabels;
+  c4Level: C4Level;
+  c4Scope: string | null;
+  c4ChangesetId: string | null;
+  c4BuiltId: string | null;
+}
+
+/** The key of the canvas the current view draws, whose viewport `?vp=` holds:
+ *  the Model / Schema graph (kept in page mode, so the graph comes back where
+ *  it was), the Impact lanes, or the C4 diagram. Null where no canvas is shown
+ *  (the changeset inbox, the Review tab). */
+export function liveCanvasKey(s: LiveCanvasKeyInput): string | null {
+  if (s.view === 'model' || s.view === 'spec') return graphCanvasKey(s);
+  if (s.view === 'changesets') return s.changesetId && s.changesetTab === 'impact' ? impactCanvasKey(s) : null;
+  return c4CanvasKey(s);
 }
 
 /** Rounds to what the URL can carry: 0.1 world px for the centre, 4

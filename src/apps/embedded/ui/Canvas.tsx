@@ -60,11 +60,11 @@
  * only the graph area, not the whole app row. Page mode has no Inspector — the
  * page-view scaffold carries the same data at greater depth already.
  *
- * `GraphCanvas`'s `onBackgroundClick` reuses `selectLayer(layerId)` (a click on
- * empty canvas is functionally "return to the layer-level selection") rather
- * than a dedicated action — it already sets `selectedId: null, focus: 'layer'`,
- * which is exactly what clears the Inspector's `open` (`!!metadata`) so the
- * drawer auto-hides again.
+ * `GraphCanvas`'s `onBackgroundClick` calls `clearGraphSelection(layerId)` (a
+ * click on empty canvas is "return to the layer-level selection"): it sets
+ * `selectedId: null, focus: 'layer'` as `selectLayer` does, which clears the
+ * Inspector's `open` (`!!metadata`) so the drawer auto-hides again, and records
+ * it as a graph move so Back brings the selection back (#619).
  *
  * `centerOnSelect` (heimdall-ui 0.7.0) pans the viewport to the selected node when
  * the selection comes from somewhere else — a NavTree click, a relationship or
@@ -526,7 +526,8 @@ export function Canvas() {
   const selectedId = useUiStore((s) => s.selectedId);
   const highlightedEdgeId = useUiStore((s) => s.highlightedEdgeId);
   const selectGraphNode = useUiStore((s) => s.selectGraphNode);
-  const selectLayer = useUiStore((s) => s.selectLayer);
+  // A background click clears the selection as a graph move (pushed, #619).
+  const clearGraphSelection = useUiStore((s) => s.clearGraphSelection);
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navSeq = useUiStore((s) => s.navSeq);
   const mode = useUiStore((s) => s.mode);
@@ -926,7 +927,7 @@ export function Canvas() {
                     selectedId={selectedId}
                     centerOnSelect={centerOnSelect}
                     onSelect={selectFromCanvas}
-                    onBackgroundClick={() => selectLayer(layerId)}
+                    onBackgroundClick={() => clearGraphSelection(layerId)}
                     fullscreenContainerRef={canvasAreaRef}
                     viewportProps={viewportHistoryProps}
                     canvasKey={canvasKey}
@@ -939,7 +940,7 @@ export function Canvas() {
                     spec={spec.byLayer[layerId]}
                     selectedId={selectedId}
                     onSelect={selectFromCanvas}
-                    onClear={() => selectLayer(layerId)}
+                    onClear={() => clearGraphSelection(layerId)}
                   />
                 ) : (
                 <GraphCanvas
@@ -957,7 +958,7 @@ export function Canvas() {
                   }}
                   {...(!isSpec ? edgeSelectionProps : {})}
                   onEdgeHover={!isSpec ? onEdgeHover : undefined}
-                  onBackgroundClick={() => selectLayer(layerId)}
+                  onBackgroundClick={() => clearGraphSelection(layerId)}
                   renderNode={!isSpec && nodeDisplay === 'card' ? renderCardNode : renderPillNode}
                   centerOnSelect={centerOnSelect}
                   {...viewportHistoryProps}
