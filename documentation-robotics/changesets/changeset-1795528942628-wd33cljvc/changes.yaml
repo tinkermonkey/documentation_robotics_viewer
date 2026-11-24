@@ -23,7 +23,12 @@
       created_at: 2026-11-24T14:02:29.158Z
       updated_at: 2026-11-24T14:02:29.158Z
       version: 1
-  timestamp: 2026-11-24T14:02:29.186Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/c4Marks.ts
+          symbol: changeCountLabel
+  timestamp: 2026-11-24T14:09:01.955Z
   sequenceNumber: 0
 - type: relationship-add
   elementId: product.feature.c4-overlay-change-counts::depends-on::product.feature.c4-changeset-overlay

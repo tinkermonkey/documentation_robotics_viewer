@@ -11,7 +11,7 @@ description: "Issue #629. On the Architecture view's changeset overlay, a box's
   labels. Done when the chips, arrows, bar, drawer and export agree, with unit
   and component tests."
 created: 2026-11-24T14:02:22.637Z
-modified: 2026-11-24T14:02:44.111Z
+modified: 2026-11-24T14:09:01.956Z
 status: staged
 baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
 origin:
@@ -21,4 +21,35 @@ stats:
   additions: 8
   modifications: 3
   deletions: 0
-lastSequence: 10
+lastSequence: 11
+unstaged:
+  - sequence: 0
+    removedAt: 11
+    change:
+      type: add
+      elementId: product.feature.c4-overlay-change-counts
+      layerName: product
+      after:
+        id: 7764c462-d013-4c01-83b9-e0de6d42bf47
+        path: product.feature.c4-overlay-change-counts
+        spec_node_id: product.feature
+        type: feature
+        layer_id: product
+        name: C4 Overlay Change Counts
+        description: "With a changeset overlaid on the C4 diagrams, each marked box and
+          arrow says how many of the changeset's changes are behind it (\"~
+          changed · 12 changes\", \"+ uses · 4 changes\", none when it is 1), in
+          its chip, label, accessible name and the hidden arrow list; the
+          changeset bar states the total for the drawn scope (\"37 changes in
+          Web App, each counted once\") so a reader can check it against the \"N
+          changes inside\" chip they followed. Issue #629."
+        attributes:
+          priority: medium
+          status: planned
+          size: s
+        metadata:
+          created_at: 2026-11-24T14:02:29.158Z
+          updated_at: 2026-11-24T14:02:29.158Z
+          version: 1
+      timestamp: 2026-11-24T14:02:29.186Z
+    rewritten: true
