@@ -31,138 +31,30 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            /** @description Server health status */
+                            /** @description `ok`, or `degraded` when a service failed to start (see `warnings`) */
                             status: string;
+                            /** @description What failed to start, e.g. the chat service; only when `status` is `degraded`, and only with the auth token */
+                            warnings?: string[];
                             /** @description API version (the version of this HTTP API, not of the dr CLI or the spec) */
                             version: string;
                             /** @description Version of the dr CLI that is serving this API, e.g. "0.5.0" */
                             cliVersion: string;
+                            /** @description Id of the process, as its server record has it. Only with the auth token */
+                            serverId?: string;
                             /** @description Process id of the server. Only with the auth token */
                             pid?: number;
-                            /** @description Process id of the `dr visualize` process that runs the server. Only with the auth token */
+                            /** @description Process id of the process that launched the server. Only with the auth token */
                             launcherPid?: number;
-                            /** @description Id of this viewer, as its record in the user's viewer registry has it. Only with the auth token */
-                            viewerId?: string;
-                            /** @description Browser tabs connected now (WebSocket clients). Only with the auth token */
-                            clients?: number;
-                            /** @description Id of the central process, as its server record has it. Central process only, with the auth token */
-                            serverId?: string;
-                            /** @description Real path of the farm root the central process serves. Central process only, with the auth token */
+                            /** @description Real path of the farm root the process serves. Only with the auth token */
                             farmRoot?: string;
-                            /** @description Checkout contexts loaded now. Central process only, with the auth token */
+                            /** @description Websockets open now, subscribed or not. Only with the auth token */
+                            clients?: number;
+                            /** @description MCP sessions open now. Only with the auth token */
+                            mcpSessions?: number;
+                            /** @description DrBot turns running now, across every checkout. Only with the auth token */
+                            drBotTurns?: number;
+                            /** @description Checkout contexts loaded now. Only with the auth token */
                             loadedCheckouts?: number;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/model": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get full model
-         * @description Retrieve the complete architecture model across all layers
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Model data retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description All architecture elements across all layers */
-                            nodes: {
-                                /** @description Element ID (UUID) */
-                                id: string;
-                                /** @description Spec node type ID (e.g. motivation.goal) */
-                                spec_node_id: string;
-                                /** @description Element type (e.g. goal, endpoint) */
-                                type: string;
-                                /** @description Layer this element belongs to */
-                                layer_id: string;
-                                /** @description Element display name */
-                                name: string;
-                                /** @description Element description */
-                                description?: string;
-                                /** @description Typed attribute bag per spec-node schema */
-                                attributes?: {
-                                    [key: string]: unknown;
-                                };
-                                /** @description Source code provenance linking this element to its implementation */
-                                source_reference?: {
-                                    /** @enum {string} */
-                                    provenance: "extracted" | "manual" | "inferred" | "generated";
-                                    locations: {
-                                        file: string;
-                                        symbol?: string;
-                                    }[];
-                                    repository?: {
-                                        url?: string;
-                                        commit?: string;
-                                    };
-                                };
-                                /** @description Element lifecycle metadata (timestamps, version) */
-                                metadata?: {
-                                    created_at?: string;
-                                    updated_at?: string;
-                                    created_by?: string;
-                                    version?: number;
-                                };
-                                /** @description Legacy property bag (deprecated — prefer attributes) */
-                                properties?: {
-                                    [key: string]: unknown;
-                                };
-                            }[];
-                            /** @description Intra-layer relationships and cross-layer references */
-                            links: {
-                                /** @description Stable link ID derived from source, target, and type */
-                                id: string;
-                                /** @description Source element ID */
-                                source: string;
-                                /** @description Target element ID */
-                                target: string;
-                                /** @description Relationship predicate or reference type */
-                                type: string;
-                                /** @description Layer ID for intra-layer relationships */
-                                layer_id?: string;
-                                /** @description Source layer ID for cross-layer references */
-                                source_layer_id?: string;
-                                /** @description Target layer ID for cross-layer references */
-                                target_layer_id?: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
                         };
                     };
                 };
@@ -272,80 +164,6 @@ export interface paths {
                     };
                 };
                 /** @description The farm lists no such project or checkout, or the checkout is not on disk */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/layers/:layerName": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get layer
-         * @description Retrieve a specific layer with all its elements
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    layerName: "motivation" | "business" | "product" | "security" | "application" | "technology" | "api" | "data-model" | "data-store" | "ux" | "navigation" | "apm" | "testing";
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Layer retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Layer name */
-                            name: string;
-                            /** @description Layer elements (each element is an object with id, name, type, and properties) */
-                            elements: {
-                                [key: string]: unknown;
-                            }[];
-                            /** @description Total element count */
-                            elementCount: number;
-                        };
-                    };
-                };
-                /** @description Layer not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
@@ -749,171 +567,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/annotations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get annotations
-         * @description Retrieve all annotations, optionally filtered by element
-         */
-        get: {
-            parameters: {
-                query?: {
-                    elementId?: string;
-                    author?: string;
-                    tags?: string;
-                    resolved?: "true" | "false";
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Annotations retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description List of annotations */
-                            annotations: {
-                                /** @description Annotation ID */
-                                id: string;
-                                /** @description Target element ID */
-                                elementId: string;
-                                /** @description Author name */
-                                author: string;
-                                /** @description Annotation content */
-                                content: string;
-                                /** @description Creation timestamp */
-                                createdAt: string;
-                                /** @description Last update timestamp */
-                                updatedAt?: string;
-                                /** @description Annotation tags */
-                                tags?: string[];
-                                /** @description Resolution status */
-                                resolved?: boolean;
-                                /** @description Annotation replies */
-                                replies?: {
-                                    id: string;
-                                    author: string;
-                                    content: string;
-                                    createdAt: string;
-                                }[];
-                            }[];
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        /**
-         * Create annotation
-         * @description Create a new annotation on a model element
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        elementId: string;
-                        /** @default Anonymous */
-                        author?: string;
-                        content: string;
-                        /** @default [] */
-                        tags?: string[];
-                    };
-                };
-            };
-            responses: {
-                /** @description Annotation created successfully */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Annotation ID */
-                            id: string;
-                            /** @description Target element ID */
-                            elementId: string;
-                            /** @description Author name */
-                            author: string;
-                            /** @description Annotation content */
-                            content: string;
-                            /** @description Creation timestamp */
-                            createdAt: string;
-                            /** @description Last update timestamp */
-                            updatedAt?: string;
-                            /** @description Annotation tags */
-                            tags?: string[];
-                            /** @description Resolution status */
-                            resolved?: boolean;
-                            /** @description Annotation replies */
-                            replies?: {
-                                id: string;
-                                author: string;
-                                content: string;
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Invalid request body */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Element not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/annotations": {
         parameters: {
             query?: never;
@@ -1099,304 +752,6 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
-        trace?: never;
-    };
-    "/api/annotations/:annotationId": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get annotation by ID
-         * @description Retrieve a specific annotation by its ID
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Annotation retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Annotation ID */
-                            id: string;
-                            /** @description Target element ID */
-                            elementId: string;
-                            /** @description Author name */
-                            author: string;
-                            /** @description Annotation content */
-                            content: string;
-                            /** @description Creation timestamp */
-                            createdAt: string;
-                            /** @description Last update timestamp */
-                            updatedAt?: string;
-                            /** @description Annotation tags */
-                            tags?: string[];
-                            /** @description Resolution status */
-                            resolved?: boolean;
-                            /** @description Annotation replies */
-                            replies?: {
-                                id: string;
-                                author: string;
-                                content: string;
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        /**
-         * Update annotation (partial)
-         * @description Update an existing annotation with partial fields (NOTE: partial updates, use PATCH for recommended behavior)
-         */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        content?: string;
-                        tags?: string[];
-                        resolved?: boolean;
-                    };
-                };
-            };
-            responses: {
-                /** @description Annotation updated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Annotation ID */
-                            id: string;
-                            /** @description Target element ID */
-                            elementId: string;
-                            /** @description Author name */
-                            author: string;
-                            /** @description Annotation content */
-                            content: string;
-                            /** @description Creation timestamp */
-                            createdAt: string;
-                            /** @description Last update timestamp */
-                            updatedAt?: string;
-                            /** @description Annotation tags */
-                            tags?: string[];
-                            /** @description Resolution status */
-                            resolved?: boolean;
-                            /** @description Annotation replies */
-                            replies?: {
-                                id: string;
-                                author: string;
-                                content: string;
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        post?: never;
-        /**
-         * Delete annotation
-         * @description Delete an existing annotation
-         */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Annotation deleted successfully */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /**
-         * Partially update annotation
-         * @description Partially update an existing annotation (recommended over PUT)
-         */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        content?: string;
-                        tags?: string[];
-                        resolved?: boolean;
-                    };
-                };
-            };
-            responses: {
-                /** @description Annotation updated successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Annotation ID */
-                            id: string;
-                            /** @description Target element ID */
-                            elementId: string;
-                            /** @description Author name */
-                            author: string;
-                            /** @description Annotation content */
-                            content: string;
-                            /** @description Creation timestamp */
-                            createdAt: string;
-                            /** @description Last update timestamp */
-                            updatedAt?: string;
-                            /** @description Annotation tags */
-                            tags?: string[];
-                            /** @description Resolution status */
-                            resolved?: boolean;
-                            /** @description Annotation replies */
-                            replies?: {
-                                id: string;
-                                author: string;
-                                content: string;
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
         trace?: never;
     };
     "/api/projects/:project/checkouts/:checkout/annotations/:annotationId": {
@@ -1713,136 +1068,6 @@ export interface paths {
         };
         trace?: never;
     };
-    "/api/annotations/:annotationId/replies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get annotation replies
-         * @description Retrieve all replies to an annotation
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Replies retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description List of replies */
-                            replies: {
-                                /** @description Reply ID */
-                                id: string;
-                                /** @description Author name */
-                                author: string;
-                                /** @description Reply content */
-                                content: string;
-                                /** @description Creation timestamp */
-                                createdAt: string;
-                            }[];
-                        };
-                    };
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        /**
-         * Create annotation reply
-         * @description Add a reply to an annotation
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    annotationId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        author: string;
-                        content: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description Reply created successfully */
-                201: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Reply ID */
-                            id: string;
-                            /** @description Author name */
-                            author: string;
-                            /** @description Reply content */
-                            content: string;
-                            /** @description Creation timestamp */
-                            createdAt: string;
-                        };
-                    };
-                };
-                /** @description Annotation not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Server error */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/annotations/:annotationId/replies": {
         parameters: {
             query?: never;
@@ -1981,86 +1206,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/changesets": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get changesets
-         * @description Retrieve a list of all changesets. Each carries its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and overlaps what it stages. GET /api/changesets/:id adds what changed.
-         */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Changesets retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            version: string;
-                            changesets: {
-                                [key: string]: {
-                                    name: string;
-                                    description?: string;
-                                    /** @enum {string} */
-                                    status: "staged" | "committed" | "discarded";
-                                    created: string;
-                                    changes_count: number;
-                                    /** @description Where the changeset came from; absent on changesets made before it was recorded */
-                                    origin?: {
-                                        /**
-                                         * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), `dr changeset create` (cli), or a spec migration run by `dr upgrade` or project_upgrade (upgrade)
-                                         * @enum {string}
-                                         */
-                                        kind: "chat" | "plan" | "extract" | "cli" | "upgrade";
-                                        detail?: string;
-                                    };
-                                    /**
-                                     * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded), upgrade-record (`dr upgrade` or project_upgrade: the relationships a spec migration dropped because the catalog has no replacement for their types, each a staged relationship delete; never lands, it is reviewed, restored from by hand and discarded)
-                                     * @enum {string}
-                                     */
-                                    purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat" | "upgrade-record";
-                                    /** @description For a verification record: the id of the plan changeset it verifies */
-                                    verifies?: string;
-                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
-                                    actions: ("commit" | "discard")[];
-                                    drift: components["schemas"]["ChangesetDriftSummary"];
-                                    /** @description The changeset's nextSequenceNumber */
-                                    revision?: number;
-                                    review?: {
-                                        /** @description Decisions whose change is still staged and was not rewritten after the decision (any verdict, ask included) */
-                                        decided: number;
-                                        /** @description Staged changes */
-                                        total: number;
-                                        /** @description Of the decided, those with verdict ask */
-                                        asked: number;
-                                    };
-                                };
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/changesets": {
         parameters: {
             query?: never;
@@ -2137,172 +1282,6 @@ export interface paths {
                     };
                 };
                 /** @description The farm lists no such project or checkout, or the checkout is not on disk */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/changesets/:changesetId": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get changeset
-         * @description Retrieve a specific changeset with all its changes, and its base drift (drift), checked on this read with no commit attempt: whether the base model changed under it and, when it did, the staged changes the base now overlaps (always all of them, each with what landing does about it) and what was added, removed or changed in the base. Those five lists are a page: driftLimit entries of each from driftOffset, with drift.baseChanges.page giving each list's true total and the nextOffset that continues them.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description How many entries of each drift.baseChanges list to return (default 50; no upper bound) */
-                    driftLimit?: number;
-                    /** @description Where in each drift.baseChanges list to start (default 0); pass drift.baseChanges.page.nextOffset to go on */
-                    driftOffset?: number | null;
-                };
-                header?: never;
-                path: {
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Changeset retrieved successfully */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            name: string;
-                            description?: string;
-                            /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
-                            created: string;
-                            modified: string;
-                            baseSnapshot?: string;
-                            stats: {
-                                additions: number;
-                                modifications: number;
-                                deletions: number;
-                            };
-                            /** @description The changeset's nextSequenceNumber: one past the highest sequence number used */
-                            revision: number;
-                            /** @description Where the changeset came from; absent on changesets made before it was recorded */
-                            origin?: {
-                                /**
-                                 * @description Who created the changeset: DrBot in `dr visualize` (chat), the changeset_create MCP tool (plan), codebase_extract (extract), `dr changeset create` (cli), or a spec migration run by `dr upgrade` or project_upgrade (upgrade)
-                                 * @enum {string}
-                                 */
-                                kind: "chat" | "plan" | "extract" | "cli" | "upgrade";
-                                detail?: string;
-                            };
-                            /**
-                             * @description What the changeset is for, declared when it was made (inferred for one made before that): plan (changeset_create; lands with the code), chat (DrBot; lands after review), bootstrap (codebase_extract of the whole code; lands and reconciles code drift), reconcile (codebase_extract with since and no plan active; lands and reconciles code drift), verification (codebase_extract with since while a plan was active: the record of what was built, compared with the plan; never lands, it is kept as a record or discarded), upgrade-record (`dr upgrade` or project_upgrade: the relationships a spec migration dropped because the catalog has no replacement for their types, each a staged relationship delete; never lands, it is reviewed, restored from by hand and discarded)
-                             * @enum {string}
-                             */
-                            purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat" | "upgrade-record";
-                            /** @description For a verification record: the id of the plan changeset it verifies */
-                            verifies?: string;
-                            /** @description For a verification record: what its extraction read */
-                            scope?: {
-                                /** @description The git ref extraction read the changes since */
-                                since: string;
-                                /** @description The commit extraction read the code at */
-                                codeCommit?: string;
-                            };
-                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
-                            actions: ("commit" | "discard")[];
-                            drift: components["schemas"]["ChangesetDrift"];
-                            /** @description Unstaged and rewritten changes (tombstones), oldest first */
-                            unstaged: {
-                                /** @description The sequence number the change had */
-                                sequence: number;
-                                /** @description The revision the unstage or rewrite took */
-                                removedAt: number;
-                                /**
-                                 * @description The change was rewritten in place (still staged under the same sequence number); the tombstone holds its earlier version
-                                 * @enum {boolean}
-                                 */
-                                rewritten?: true;
-                                change: {
-                                    /** @enum {string} */
-                                    type: "add" | "update" | "delete" | "relationship-add" | "relationship-delete";
-                                    elementId: string;
-                                    layerName: string;
-                                    timestamp?: string;
-                                    before?: unknown;
-                                    after?: unknown;
-                                    origin?: components["schemas"]["ChangeOrigin"];
-                                };
-                            }[];
-                            review: {
-                                /** @description Decisions keyed by the change's sequenceNumber, as a string */
-                                decisions: {
-                                    [key: string]: {
-                                        /** @enum {string} */
-                                        verdict: "keep" | "drop" | "ask";
-                                        note?: string;
-                                        /** @description The changeset revision (nextSequenceNumber) when the decision was made */
-                                        atRevision: number;
-                                        /** @description ISO timestamp of the decision */
-                                        decidedAt: string;
-                                    };
-                                };
-                                /** @description The highest atRevision among the decisions; absent when there are none */
-                                lastReviewedRevision?: number;
-                            };
-                            changes: {
-                                /** @enum {string} */
-                                type: "add" | "update" | "delete" | "relationship-add" | "relationship-delete";
-                                /** @description For relationship changes: source::predicate::target */
-                                elementId: string;
-                                layerName: string;
-                                /** @description Stable identity of the change; never renumbered */
-                                sequenceNumber?: number;
-                                timestamp?: string;
-                                /** @description Previous element state (for update/delete operations) */
-                                before?: unknown;
-                                /** @description New element state (for add/update operations) */
-                                after?: unknown;
-                                origin?: components["schemas"]["ChangeOrigin"];
-                                /** @description Delete changes of a staged changeset only: relationships in the projected model that still reference the deleted element and that the changeset does not delete */
-                                blockers?: {
-                                    /** @description source::predicate::target (dotted ids) */
-                                    relationshipId: string;
-                                    /**
-                                     * @description out: the deleted element is the source; in: it is the target
-                                     * @enum {string}
-                                     */
-                                    direction: "in" | "out";
-                                    /** @description The element at the other end (dotted id) */
-                                    otherElementId: string;
-                                    predicate: string;
-                                }[];
-                            }[];
-                        };
-                    };
-                };
-                /** @description Changeset not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
@@ -2473,308 +1452,6 @@ export interface paths {
                     };
                 };
                 /** @description Changeset not found; or the farm lists no such project or checkout, or the checkout is not on disk */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/changesets/:changesetId/verification": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Compare a plan changeset with an as-built changeset
-         * @description The plan changeset (staged or committed) compared with the changeset named by `against` (a verification record or any as-built changeset): the same report as the changeset_verify MCP tool, in full. Each planned element and relationship is matched (exact or probable), divergent, missing or unverifiable (extraction cannot see it), and each as-built one the plan does not name is unplanned. Element ids are dotted ids. Read-only; nothing is staged or written.
-         */
-        get: {
-            parameters: {
-                query: {
-                    /** @description The as-built changeset id to compare the plan with */
-                    against: string;
-                };
-                header?: never;
-                path: {
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description The comparison */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description The plan */
-                            plannedChangeset: {
-                                id: string;
-                                name: string;
-                            };
-                            /** @description The changeset it was compared with */
-                            asBuiltChangeset: {
-                                id: string;
-                                name: string;
-                            };
-                            planned: {
-                                label: string;
-                                elements: number;
-                                relationships: number;
-                            };
-                            against: {
-                                label: string;
-                                /** @enum {string} */
-                                kind: "changeset" | "base" | "snapshot";
-                            };
-                            /** @enum {string} */
-                            verdict: "match" | "probable-match" | "diverges" | "incomplete" | "unverifiable" | "empty-plan";
-                            /** @description The verdict as a sentence for a person */
-                            verdictText: string;
-                            summary: {
-                                elements: {
-                                    planned: number;
-                                    matched: number;
-                                    probable: number;
-                                    missing: number;
-                                    divergent: number;
-                                    unplanned: number;
-                                    deletionsNotDone: number;
-                                    unverifiable: number;
-                                } & {
-                                    [key: string]: unknown;
-                                };
-                                relationships: {
-                                    planned: number;
-                                    matched: number;
-                                    probable: number;
-                                    missing: number;
-                                    divergent: number;
-                                    unplanned: number;
-                                    deletionsNotDone: number;
-                                    unverifiable: number;
-                                } & {
-                                    [key: string]: unknown;
-                                };
-                            };
-                            elements: {
-                                /** @description Built as planned (match exact) or probably (match probable) */
-                                matched: ({
-                                    /** @description The planned element id */
-                                    planned: string;
-                                    /** @description The as-built element id it matched */
-                                    built: string;
-                                    /** @enum {string} */
-                                    op: "add" | "update" | "delete";
-                                    /** @enum {string} */
-                                    match: "exact" | "probable";
-                                    reason?: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                divergent: ({
-                                    /** @description The planned element id */
-                                    planned: string;
-                                    /** @description The as-built element id it matched */
-                                    built: string;
-                                    /** @enum {string} */
-                                    op: "add" | "update" | "delete";
-                                    /** @enum {string} */
-                                    match: "exact" | "probable";
-                                    reason?: string;
-                                    fields: {
-                                        field: string;
-                                        planned?: unknown;
-                                        built?: unknown;
-                                    }[];
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                /** @description Planned, not found in the build */
-                                missing: ({
-                                    planned: string;
-                                    layer: string;
-                                    type: string;
-                                    name: string;
-                                    /** @enum {string} */
-                                    op: "add" | "update" | "delete";
-                                    reason: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                /** @description Planned, but extraction cannot see this kind of element: not checked */
-                                unverifiable: ({
-                                    planned: string;
-                                    layer: string;
-                                    type: string;
-                                    name: string;
-                                    /** @enum {string} */
-                                    op: "add" | "update" | "delete";
-                                    reason: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                /** @description Built, not in the plan */
-                                unplanned: ({
-                                    id: string;
-                                    layer: string;
-                                    type: string;
-                                    name: string;
-                                    /** @enum {string} */
-                                    change: "added" | "updated" | "deleted" | "present";
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                deletionsNotDone: ({
-                                    planned: string;
-                                    built: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                            };
-                            relationships: {
-                                matched: ({
-                                    planned: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    built: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    /** @enum {string} */
-                                    op: "add" | "delete";
-                                    /** @enum {string} */
-                                    match: "exact" | "probable";
-                                    reason?: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                divergent: ({
-                                    planned: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    built: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    fields: {
-                                        field: string;
-                                        planned?: unknown;
-                                        built?: unknown;
-                                    }[];
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                missing: ({
-                                    planned: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    reason: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                unverifiable: ({
-                                    planned: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    /** @enum {string} */
-                                    op: "add" | "delete";
-                                    reason: string;
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                unplanned: ({
-                                    /** @description Source element id */
-                                    source: string;
-                                    predicate: string;
-                                    /** @description Target element id */
-                                    target: string;
-                                    /** @enum {string} */
-                                    change: "added" | "deleted" | "present";
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                                deletionsNotDone: ({
-                                    planned: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                    built: {
-                                        /** @description Source element id */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element id */
-                                        target: string;
-                                    };
-                                } & {
-                                    [key: string]: unknown;
-                                })[];
-                            };
-                            /** @description Set when the comparison says little about the code */
-                            warning?: string;
-                            notes: string[];
-                        } & {
-                            [key: string]: unknown;
-                        };
-                    };
-                };
-                /** @description against is missing, or names the plan itself */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description The plan or the as-built changeset was not found */
                 404: {
                     headers: {
                         [name: string]: unknown;
@@ -3102,112 +1779,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/changesets/:changesetId/review": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        /**
-         * Record review decisions
-         * @description Set or clear the reviewer's verdict on changes of a staged changeset, by sequence number. A null verdict clears the decision. The server stamps atRevision (the changeset's current revision) and decidedAt. Stored in review.yaml in the changeset's directory, under its file lock. Broadcasts changesets.updated.
-         */
-        put: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        decisions: {
-                            sequence: number;
-                            /**
-                             * @description null clears the decision
-                             * @enum {string|null}
-                             */
-                            verdict: "keep" | "drop" | "ask" | null;
-                            note?: string;
-                        }[];
-                    };
-                };
-            };
-            responses: {
-                /** @description The changeset's review after the update */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Decisions keyed by the change's sequenceNumber, as a string */
-                            decisions: {
-                                [key: string]: {
-                                    /** @enum {string} */
-                                    verdict: "keep" | "drop" | "ask";
-                                    note?: string;
-                                    /** @description The changeset revision (nextSequenceNumber) when the decision was made */
-                                    atRevision: number;
-                                    /** @description ISO timestamp of the decision */
-                                    decidedAt: string;
-                                };
-                            };
-                            /** @description The highest atRevision among the decisions; absent when there are none */
-                            lastReviewedRevision?: number;
-                        };
-                    };
-                };
-                /** @description Changeset not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Changeset is not staged */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description A sequence number names no staged change (or, to clear, no decision) */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/changesets/:changesetId/review": {
         parameters: {
             query?: never;
@@ -3312,177 +1883,6 @@ export interface paths {
             };
         };
         post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/changesets/:changesetId/commit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Commit changeset
-         * @description Apply a staged changeset to the model (same as `dr changeset commit`): validates it, applies every change atomically, marks it committed, and deactivates it if it was active. Drift does not refuse it: when the base overlaps what the changeset stages (its drift.state is drifted), it lands all the same, and the result's drift lists each overlap with what landing did about it. Show GET /api/changesets/:id's drift.overlapping, with each consequence, before calling this. Refused (409) for a verification record or an upgrade record (whose actions do not include commit): it is never landed.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        /** @description Sequence numbers to leave out. Changes that depend on an element a dropped add creates (relationship-adds with it at either end, updates of it) are left out too. All are unstaged (tombstoned) before the commit. */
-                        drop?: number[];
-                        /** @description Sequence numbers of delete changes whose blockers may be deleted with the element. With either field present, any other delete with blockers is refused (422). */
-                        deleteBlockedLinks?: number[];
-                    };
-                };
-            };
-            responses: {
-                /** @description Action completed */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            name: string;
-                            /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
-                            /** @description Changes applied to the model (commit only) */
-                            committed?: number;
-                            /** @description Changes skipped as already present (commit only) */
-                            skipped?: number;
-                            /** @description Changes that failed to apply (commit only) */
-                            failed?: number;
-                            /** @description Validation errors the base model already had (commit only) */
-                            preExistingErrors?: number;
-                            /** @description The changeset was active and was deactivated (commit only) */
-                            deactivated?: boolean;
-                            deactivationError?: string;
-                            /** @description Commit only, when the base had drifted under the changeset: it landed all the same, and this says what the base overlapped */
-                            drift?: {
-                                /** @description What happened, in a sentence */
-                                message: string;
-                                /** @description Absent when the changeset has no base index, so the overlaps could not be listed */
-                                overlapping?: {
-                                    elements: {
-                                        /** @description The element (dotted id) */
-                                        id: string;
-                                        /**
-                                         * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content is not what that change was staged on (an update restaged on the current base is not one); removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
-                                         * @enum {string}
-                                         */
-                                        reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
-                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
-                                        consequence: string;
-                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
-                                        resolve: string;
-                                    }[];
-                                    relationships: {
-                                        /** @description Source element (dotted id) */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element (dotted id) */
-                                        target: string;
-                                        /**
-                                         * @description already-in-base and already-removed as for elements; endpoint-removed-in-base: a staged relationship change with an end on a base element that was removed. An edit to an element at an end is not an overlap (endpoint-changed-in-base is no longer reported)
-                                         * @enum {string}
-                                         */
-                                        reason: "already-in-base" | "already-removed" | "endpoint-removed-in-base";
-                                        /** @description For endpoint-removed-in-base: the ends the base removed */
-                                        endpoints?: string[];
-                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
-                                        consequence: string;
-                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
-                                        resolve: string;
-                                    }[];
-                                };
-                            };
-                            /** @description Commit with a body only: every sequence number left out, cascaded ones included */
-                            dropped?: number[];
-                            /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
-                            linksDeleted?: number;
-                        };
-                    };
-                };
-                /** @description The body is not JSON, or does not match the schema (an empty body is the plain commit) */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Changeset not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Changeset is not staged, or (commit) it is a verification record or an upgrade record, which is never landed. Never for drift: a drifted changeset lands */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description The changeset failed validation; nothing was applied. Or (body given) a sequence number names no staged change, a delete has blockers and is not in deleteBlockedLinks (blockers lists them), or a staged relationship-add names an element the changeset deletes */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            error: string;
-                            /** @description When deletes have blockers and are not in deleteBlockedLinks: their blockers, keyed by sequence number */
-                            blockers?: {
-                                [key: string]: {
-                                    /** @description source::predicate::target (dotted ids) */
-                                    relationshipId: string;
-                                    /**
-                                     * @description out: the deleted element is the source; in: it is the target
-                                     * @enum {string}
-                                     */
-                                    direction: "in" | "out";
-                                    /** @description The element at the other end (dotted id) */
-                                    otherElementId: string;
-                                    predicate: string;
-                                }[];
-                            };
-                        };
-                    };
-                };
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
@@ -3664,142 +2064,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/changesets/:changesetId/discard": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Discard changeset
-         * @description Throw away a staged changeset (same as `dr changeset discard`): deletes it with its changes and its folder under documentation-robotics/changesets/, and deactivates it if it was active. No record is kept, so it no longer appears in GET /api/changesets. The model is not touched.
-         */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    changesetId: string;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Action completed */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            id: string;
-                            name: string;
-                            /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
-                            /** @description Changes applied to the model (commit only) */
-                            committed?: number;
-                            /** @description Changes skipped as already present (commit only) */
-                            skipped?: number;
-                            /** @description Changes that failed to apply (commit only) */
-                            failed?: number;
-                            /** @description Validation errors the base model already had (commit only) */
-                            preExistingErrors?: number;
-                            /** @description The changeset was active and was deactivated (commit only) */
-                            deactivated?: boolean;
-                            deactivationError?: string;
-                            /** @description Commit only, when the base had drifted under the changeset: it landed all the same, and this says what the base overlapped */
-                            drift?: {
-                                /** @description What happened, in a sentence */
-                                message: string;
-                                /** @description Absent when the changeset has no base index, so the overlaps could not be listed */
-                                overlapping?: {
-                                    elements: {
-                                        /** @description The element (dotted id) */
-                                        id: string;
-                                        /**
-                                         * @description already-in-base: a staged add of an element the base now has; already-removed: a staged delete of one the base no longer has; changed-in-base: any staged change (an update, a delete, a delete then an add) of one whose base content is not what that change was staged on (an update restaged on the current base is not one); removed-in-base: a staged update or recreate of one the base removed; linked-in-base: a staged delete of one the base has since linked, whose new relationship the delete would remove
-                                         * @enum {string}
-                                         */
-                                        reason: "already-in-base" | "already-removed" | "changed-in-base" | "removed-in-base" | "linked-in-base";
-                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
-                                        consequence: string;
-                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
-                                        resolve: string;
-                                    }[];
-                                    relationships: {
-                                        /** @description Source element (dotted id) */
-                                        source: string;
-                                        predicate: string;
-                                        /** @description Target element (dotted id) */
-                                        target: string;
-                                        /**
-                                         * @description already-in-base and already-removed as for elements; endpoint-removed-in-base: a staged relationship change with an end on a base element that was removed. An edit to an element at an end is not an overlap (endpoint-changed-in-base is no longer reported)
-                                         * @enum {string}
-                                         */
-                                        reason: "already-in-base" | "already-removed" | "endpoint-removed-in-base";
-                                        /** @description For endpoint-removed-in-base: the ends the base removed */
-                                        endpoints?: string[];
-                                        /** @description What landing does about this overlap, as a sentence to show the person before they commit */
-                                        consequence: string;
-                                        /** @description How the plan resolves the overlap (unstage, restage, stage a delete), for the agent revising it */
-                                        resolve: string;
-                                    }[];
-                                };
-                            };
-                            /** @description Commit with a body only: every sequence number left out, cascaded ones included */
-                            dropped?: number[];
-                            /** @description Commit with a body only: relationships deleted with the deletes named in deleteBlockedLinks */
-                            linksDeleted?: number;
-                        };
-                    };
-                };
-                /** @description Changeset not found */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description Changeset is not staged, or (commit) it is a verification record or an upgrade record, which is never landed. Never for drift: a drifted changeset lands */
-                409: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description The changeset failed validation; nothing was applied */
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/changesets/:changesetId/discard": {
         parameters: {
             query?: never;
@@ -3940,72 +2204,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/tier1": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Get Tier 1 state and spend
-         * @description Whether Tier 1 (the decision model codebase_extract asks about the cards Tier 0 cannot decide) is on for the served project's checkout, and why not: state, provider and model, where each credential comes from (never its value), this calendar month's spend (UTC) against the monthly cap with the 80% warning state, spend by source, and the answer cache. The same body as the tier1_status MCP tool, without its probe: this endpoint never sends a request to a provider and never writes a file. Returns state "off" when the project has not opted in. Tier 1 is enabled and changed only with `dr analyzer tier1 ...`; nothing in this API changes it.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description The analyzer Tier 1 is configured for (default: the active analyzer, else cbm) */
-                    analyzer?: string;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Tier 1's state and spend */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Tier1Status"];
-                    };
-                };
-                /** @description Invalid analyzer name */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-                /** @description The status could not be read */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @description Error message */
-                            error: string;
-                        };
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/api/projects/:project/checkouts/:checkout/tier1": {
         parameters: {
             query?: never;
@@ -4089,10 +2287,258 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/ws": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Open the websocket
+         * @description Upgrades to a websocket (one per browser tab). The token comes as ?token=, as the Sec-WebSocket-Protocol pair ["token", <token>], or as Authorization: Bearer. A socket receives nothing until it subscribes to a checkout: {action: "subscribe", project, checkout}. Every event carries the project and checkout it is about. The frames are in cli/docs/VISUALIZATION_SERVER_PROTOCOL.md; changeset.commit.progress is the ChangesetCommitProgress schema.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Switching to the websocket protocol */
+                101: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No token, or a wrong one */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description The token is wrong */
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mcp": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * MCP (streamable HTTP)
+         * @description The MCP interface for every project of the farm (streamable HTTP: POST a JSON-RPC message, GET the session's event stream, DELETE to end the session). The token comes as Authorization: Bearer only.
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The MCP response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No token, or a wrong one */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        /**
+         * MCP (streamable HTTP)
+         * @description The MCP interface for every project of the farm (streamable HTTP: POST a JSON-RPC message, GET the session's event stream, DELETE to end the session). The token comes as Authorization: Bearer only.
+         */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The MCP response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No token, or a wrong one */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        /**
+         * MCP (streamable HTTP)
+         * @description The MCP interface for every project of the farm (streamable HTTP: POST a JSON-RPC message, GET the session's event stream, DELETE to end the session). The token comes as Authorization: Bearer only.
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The MCP response */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description No token, or a wrong one */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api-spec.yaml": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** This OpenAPI document */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The OpenAPI document */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api-docs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Interactive API documentation (Swagger UI) */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description The Swagger UI page */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @description Websocket broadcast to the subscribers of the checkout a commit lands in, while it runs: after POST .../changesets/{changesetId}/commit or an MCP changeset_commit in the server process. Throttled: the first report, each phase change and the last are always sent, otherwise at most one per 200 ms. A success ends with phase done and applied == total; a failure ends with failed: true. Advisory: the commit's response is what counts. */
+        ChangesetCommitProgress: {
+            /** @enum {string} */
+            type: "changeset.commit.progress";
+            /** @description The changeset being committed */
+            changesetId: string;
+            /** @description Changes handled so far (applied, or skipped as already in the base) */
+            applied: number;
+            /** @description The changes the commit handles: the staged changes left after a reviewed commit drops some. Relationships deleted with a delete (deleteBlockedLinks) count inside that delete. */
+            total: number;
+            /**
+             * @description validating: checking the changeset; applying: writing the changes; saving: writing the files; reloading: the server reloading the model (the viewer's Apply and changeset_commit); done: landed.
+             * @enum {string}
+             */
+            phase: "validating" | "applying" | "saving" | "reloading" | "done";
+            /** @description While applying: the layer of the change being written */
+            layer?: string;
+            /**
+             * @description On the last report of a commit that failed; phase is where it stopped. The commit response says why.
+             * @enum {boolean}
+             */
+            failed?: true;
+            /** @description The project the checkout belongs to */
+            project: string;
+            /** @description The checkout being committed to */
+            checkout: string;
+            /** @description When the server sent it (ISO 8601) */
+            timestamp: string;
+        };
         /** @description Base drift, checked on this read with no commit attempt, against the model as the server last loaded it (it reloads when a model file changes; a commit reads the model from disk). The changeset's own endpoint adds what changed */
         ChangesetDriftSummary: {
             /**
