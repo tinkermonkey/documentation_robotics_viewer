@@ -1,5 +1,7 @@
 /**
- * useModel — thin wrapper over the kept React Query hook `useGetapimodel`.
+ * useModel — thin wrapper over the generated scoped model hook
+ * (`GET /api/projects/{project}/checkouts/{checkout}/model`), for the checkout
+ * the route names (see checkoutScope.ts).
  *
  * Derives the per-layer element counts and the total relationship count the
  * shell needs (nav tree counts, status bar, footer) from the raw `/api/model`
@@ -8,7 +10,8 @@
 
 import { useEffect, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { useGetapimodel } from '../../../core/services/generatedApiClient';
+import { useGetapiprojectsprojectcheckoutscheckoutmodel } from '../../../core/services/generatedApiClient';
+import { SCOPED_QUERY, invalidateCheckout, isCheckoutNotFound, isForCheckout, useCheckoutRef } from './checkoutScope';
 import { websocketClient } from '../services/websocketClient';
 import { PLAN_VERIFICATION_KEY } from './planVerification';
 
@@ -57,7 +60,12 @@ const EMPTY_DERIVED: ModelDerived = {
 };
 
 export function useModel() {
-  const query = useGetapimodel();
+  const ref = useCheckoutRef();
+  const query = useGetapiprojectsprojectcheckoutscheckoutmodel(ref?.project ?? '', ref?.checkout ?? '', {
+    enabled: !!ref,
+    // A 404 is the checkout itself missing: asking again won't bring it back.
+    retry: (failures: number, error: unknown) => !isCheckoutNotFound(error) && failures < 3,
+  });
   const raw = query.data as ModelPayload | undefined;
 
   const derived = useMemo<ModelDerived>(() => {
@@ -86,7 +94,7 @@ export function useModel() {
 }
 
 /**
- * Refetch the model (and changesets) when the `dr visualize` server announces a
+ * Refetch this checkout's model (and changesets) when the server announces a
  * model change: it broadcasts `{ type: 'model.updated' }` after any write to
  * the model files — a CLI edit, a DrBot change, or a changeset applied from
  * the viewer — and otherwise the 5-minute `staleTime` would keep showing the
@@ -94,17 +102,24 @@ export function useModel() {
  */
 export function useLiveModelUpdates() {
   const queryClient = useQueryClient();
+  const ref = useCheckoutRef();
   useEffect(() => {
-    const refetch = () => {
-      queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
-      queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
-      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-      queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
-      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY] });
+    if (!ref) return;
+    const refetch = (message: unknown) => {
+      // The websocket client already drops events stamped for another
+      // checkout; an unstamped one (an older server) is taken as this one's.
+      if (!isForCheckout(message, ref)) return;
+      invalidateCheckout(queryClient, ref, [
+        SCOPED_QUERY.model,
+        SCOPED_QUERY.layer,
+        SCOPED_QUERY.changesets,
+        SCOPED_QUERY.changeset,
+      ]);
+      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY, ref.project, ref.checkout] });
     };
     websocketClient.on(MODEL_UPDATED_EVENT, refetch);
     return () => websocketClient.off(MODEL_UPDATED_EVENT, refetch);
-  }, [queryClient]);
+  }, [queryClient, ref]);
 }
 
 /** The server's model-change broadcast (see the CLI's `reloadAndBroadcast`). */

@@ -1234,8 +1234,7 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.postapiprojectsprojectcheckoutscheckoutannotations(project, checkout, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for postapiprojectsprojectcheckoutscheckoutannotations. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['postapiprojectsprojectcheckoutscheckoutannotations'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotations', project, checkout] });
       },
       ...options
     } as any);
@@ -1322,8 +1321,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.putapiprojectsprojectcheckoutscheckoutannotationsannotationId(project, checkout, annotationId, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for putapiprojectsprojectcheckoutscheckoutannotationsannotationId. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['putapiprojectsprojectcheckoutscheckoutannotationsannotationId'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotationsannotationId', project, checkout, annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotations', project, checkout] });
       },
       ...options
     } as any);
@@ -1338,8 +1337,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.patchapiprojectsprojectcheckoutscheckoutannotationsannotationId(project, checkout, annotationId, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for patchapiprojectsprojectcheckoutscheckoutannotationsannotationId. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['patchapiprojectsprojectcheckoutscheckoutannotationsannotationId'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotationsannotationId', project, checkout, annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotations', project, checkout] });
       },
       ...options
     } as any);
@@ -1354,8 +1353,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: () => apiClient.deleteapiprojectsprojectcheckoutscheckoutannotationsannotationId(project, checkout, annotationId),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for deleteapiprojectsprojectcheckoutscheckoutannotationsannotationId. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['deleteapiprojectsprojectcheckoutscheckoutannotationsannotationId'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotationsannotationId', project, checkout, annotationId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotations', project, checkout] });
       },
       ...options
     } as any);
@@ -1409,8 +1408,7 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.postapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies(project, checkout, annotationId, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for postapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['postapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies', project, checkout, annotationId] });
       },
       ...options
     } as any);
@@ -1513,8 +1511,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview(project, checkout, changesetId, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesets', project, checkout] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', project, checkout, changesetId] });
       },
       ...options
     } as any);
@@ -1547,8 +1545,10 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: (data: unknown) => apiClient.postapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit(project, checkout, changesetId, data),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for postapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['postapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesets', project, checkout] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', project, checkout, changesetId] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutmodel', project, checkout] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutlayerslayerName', project, checkout] });
       },
       ...options
     } as any);
@@ -1579,8 +1579,8 @@ const apiClient = getApiClient();
     return useMutation({
       mutationFn: () => apiClient.postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard(project, checkout, changesetId),
       onSuccess: () => {
-        console.warn('[WARNING] Unmapped cache invalidation for postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard. Add to getInvalidationQueries().');
-        queryClient.invalidateQueries({ queryKey: ['postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard'] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesets', project, checkout] });
+        queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', project, checkout, changesetId] });
       },
       ...options
     } as any);

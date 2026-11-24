@@ -33,12 +33,13 @@ API, Data Model, Data Store, UX, Navigation, APM, Testing.
 ```
 src/
 ├── apps/embedded/              # The application
-│   ├── main.tsx               # Boot: magic-link token + fetch interceptor + Heimdall css/fonts + RouterProvider
-│   ├── router.tsx             # TanStack hash router; RootShell runs the WS bootstrap; routes drive uiStore.view
-│   ├── AuthRoute.tsx          # Magic-link token capture
+│   ├── main.tsx               # Boot: magic-link token (fragment or query; also on hashchange) + fetch interceptor + css/fonts + RouterProvider
+│   ├── router.tsx             # TanStack hash router: / (picker), /p/:project/c/:checkout[/:section/:view] (the shell), old /:section/:view → picker
+│   ├── routes/checkoutLinks.ts # pure: the dr CLI's link forms, fragment token, the picker's carried destination
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
 │   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model)
+│   │   ├── CheckoutPicker.tsx # picker page (bare /), topbar CheckoutSwitcher, CheckoutUnavailablePage
 │   │   ├── TopbarSearch.tsx topbar-search.css     # type-ahead over elements + node types (data/search.ts)
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
@@ -63,7 +64,8 @@ src/
 │   │   ├── domain.ts          # 13-layer slug→color/label map (Product lime #A3E635)
 │   │   └── domain-and-nav.css # 12-domain swatch CSS + nav-item helpers (Heimdall's bundle lacks DR domains)
 │   ├── data/                  # Stateless hooks + transforms over the API (no UI)
-│   │   ├── useModel.ts useSpec.ts useChangesets.ts useAnnotations.ts   # React Query hooks
+│   │   ├── useModel.ts useSpec.ts useChangesets.ts useAnnotations.ts   # React Query hooks (scoped to the route's checkout)
+│   │   ├── checkoutScope.ts useProjects.ts  # the current CheckoutRef, scoped query keys / event filter; GET /api/projects(+/checkouts)
 │   │   ├── modelGraph.ts      # /api/model → GraphCanvas nodes/edges; dottedId() + dual-index link resolver
 │   │   ├── specGraph.ts       # /api/spec → node-type graph
 │   │   ├── relationships.ts   # in/out/cross-layer RelationshipLink derivation
@@ -81,7 +83,7 @@ src/
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
-│   ├── stores/                # KEPT data stores: authStore, chatStore, connectionStore (+ localReviewStore)
+│   ├── stores/                # KEPT data stores: authStore, chatStore, connectionStore (+ localReviewStore, checkoutStore)
 │   ├── types/                 # chat, annotations, websocket, brands
 │   └── utils/                 # fetchInterceptor (auth header), etc.
 ├── core/                      # Framework-agnostic, NO app/route deps
@@ -146,7 +148,28 @@ Pass `domainColor` = the **layer slug** (e.g. `data-model`), not a hex.
 
 ## Data / API (the DR CLI)
 
-The `dr visualize` server (default `:8080`) serves the built viewer AND the data API.
+The dr CLI's **central process** (`dr serve`, default `:8080`; `dr visualize` and DrBot's `review_open` run on it)
+serves the built viewer AND the data API for **every project and git checkout** (main checkout + worktrees) of the
+user's farm, behind one token (#623, documentation_robotics#1279).
+
+**Checkout scope (#623).** Project data lives ONLY under `/api/projects/{project}/checkouts/{checkout}/...`; the
+paths below are relative to that prefix (`/health` and `/api/spec` stay unscoped). The route
+`/#/p/:project/c/:checkout/:section/:view` names the checkout: `router.tsx`'s `CheckoutShellRoute` puts it in
+`stores/checkoutStore.ts` (not persisted), `websocketClient.setCheckout` and `chatService.setCheckout`, and clears
+the previous checkout's selection (`uiStore.clearCheckoutSelection`). Data hooks read it through
+`data/checkoutScope.ts` (`useCheckoutRef`, `scopedKey`, `SCOPED_QUERY`) and call the generated client's
+`...apiprojectsprojectcheckoutscheckout...` operations; query keys are `[operationId, project, checkout, ...]`
+(annotations: `['annotations', project, checkout, elementId]`), so checkouts never share a cache entry. The CLI's
+link forms are read in `routes/checkoutLinks.ts`: `/#/p/<p>/c/<c>/` → Model view, `.../changesets/<id>[?element=<id>]`
+→ that changeset (its change to the element selected, then `element` dropped), `.../elements/<id>` → Model view on
+that element (dotted id or UUID; a missing one says so). The token is in the fragment (`?token=` after the route);
+`main.tsx` stores and strips it at boot and on `popstate`/`hashchange` (a link pasted into an open tab). A bare `/`
+is the picker (`GET /api/projects`; one checkout in the farm opens directly); an old `/#/:section/:view` link opens
+the picker, which carries its page over (`?next=`-style `formatNext`/`parseNext`). The topbar's `CheckoutSwitcher`
+(Heimdall `Select`s; `GET /api/projects/{project}/checkouts`) sets the hash (no router hooks in `ui/`). A 404 on the
+model read, `checkout.removed` or `server.stopping` shows `CheckoutUnavailablePage`. A restarted process has a
+NEW token: open tabs can't reconnect until opened from a new link. The unscoped routes answer 410 on a CLI
+past slice 4B (not used).
 
 **REST:**
 - `GET /health` → `{ status, version }` (no auth)
@@ -190,13 +213,22 @@ The `dr visualize` server (default `:8080`) serves the built viewer AND the data
 - Annotations CRUD: `GET/POST /api/annotations`, `GET/PATCH/DELETE /api/annotations/:id`,
   `GET/POST /api/annotations/:id/replies`
 
-**WebSocket (JSON-RPC 2.0, `ws://:8080/ws`):** notifications `model` / `changesets` / `annotations`; chat
-methods `chat.send` / `chat.status` / `chat.cancel` with streaming notifications `chat.response.chunk` /
-`chat.tool.invoke` / `chat.thinking` / `chat.usage` / `chat.error`.
+**WebSocket (JSON-RPC 2.0, `ws://:8080/ws`):** the client sends `{action: "subscribe" | "unsubscribe", project,
+checkout}` for the checkout shown (on open, after each reconnect, and on a switch); every plain event is stamped
+with `project` + `checkout`, and `websocketClient` drops events for another checkout (`isForCheckout` in the live
+hooks too). New events: `checkout.removed`, `server.stopping`. A server `{type: "error"}` frame is re-emitted as
+`server.error`, never the transport's `error`. Chat methods `chat.send` / `chat.status` / `chat.cancel` carry
+`project` + `checkout`; streaming notifications `chat.response.chunk` / `chat.tool.invoke` / `chat.thinking` /
+`chat.usage` / `chat.error` / `chat.turn.queued` / `chat.turn.started` carry `conversation_id` + `project` +
+`checkout`, and `chatService.isForThisConversation` drops any other conversation's or checkout's. A conversation
+belongs to one checkout: switching checkout resets it (the greeting reseeds). `chat.turn.queued` →
+`chatStore.turnQueued` → a status line in `ChatPanel` until `chat.turn.started`.
 
-**Auth:** Bearer token. `main.tsx` captures a magic-link `?token`, stores it, and cleans the URL;
-`utils/fetchInterceptor` adds the `Authorization` header; the WS authenticates via `Sec-WebSocket-Protocol`.
-For local dev use `dr visualize --no-auth`.
+**Auth:** Bearer token. `main.tsx` captures a magic-link token from the fragment (the CLI's links) or the query
+string, stores it, and cleans the URL; `utils/fetchInterceptor` adds the `Authorization` header; the WS
+authenticates via `Sec-WebSocket-Protocol` (a new token after a REST fallback makes it try the websocket again).
+For a live check use a scratch farm (`DR_FARM_PATH`, `DR_STATE_DIR`, `XDG_CONFIG_HOME`, `DR_VIEWER_PROCESS_SCAN=off`)
+and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.token`.
 
 **Data-shape gotchas (see `data/modelGraph.ts`):**
 - `/api/model` `links[]` reference nodes by **UUID OR a canonical dotted id** `{layer}.{type}.{slug(name)}`.
@@ -651,7 +683,7 @@ For local dev use `dr visualize --no-auth`.
 
 ```bash
 # Backend (API + WS): run from a project with a populated .dr model (this repo has one)
-dr visualize --no-auth --port 8080 --no-browser
+dr visualize --no-auth --port 8080 --no-browser   # a CLI with dr serve: run `dr serve --foreground` on a farm instead (see Auth above)
 
 # Frontend (Vite :3001, proxies /api,/health,/ws → :8080)
 npm run dev

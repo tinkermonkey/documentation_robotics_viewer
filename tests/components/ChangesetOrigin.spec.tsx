@@ -52,7 +52,7 @@ function withOrigins(origins: Record<number, unknown>): ChangeRecord[] {
 function serve(changes: ChangeRecord[], review: ChangesetReview = { decisions: {} }) {
   const puts: DecisionInput[][] = [];
   mswServer.use(
-    http.get('*/api/changesets/:id', ({ params }) =>
+    http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) =>
       HttpResponse.json({
         ...changesetDetail,
         id: params.id,
@@ -63,7 +63,7 @@ function serve(changes: ChangeRecord[], review: ChangesetReview = { decisions: {
         review,
       }),
     ),
-    http.put('*/api/changesets/:id/review', async ({ request }) => {
+    http.put('*/api/projects/:project/checkouts/:checkout/changesets/:id/review', async ({ request }) => {
       const body = (await request.json()) as { decisions: DecisionInput[] };
       puts.push(body.decisions);
       return HttpResponse.json({ decisions: {} });

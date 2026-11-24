@@ -7,6 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+The viewer now runs on the dr CLI's central process (`dr serve`), which serves every project and every git
+checkout (main checkout and worktrees) of your farm from one port. Every page belongs to one checkout, the links
+`dr visualize`, `review_open` and `project_status` give open the checkout they name, and two tabs on two checkouts
+of one project never share data, live updates or DrBot chat (#623, documentation_robotics#1279). It needs a dr CLI
+whose central process serves the project- and checkout-scoped routes.
+
+### Added
+- **Checkout routes** (#623): `/#/p/<project>/c/<checkout>/<section>/<view>` for every page. The CLI's link forms
+  open what they name: `/#/p/<project>/c/<checkout>/` (the Model view), `.../changesets/<id>` (that changeset in
+  the Changesets view), `.../changesets/<id>?element=<id>` (its change to that element selected) and
+  `.../elements/<id>` (the Model view on that element). The token comes from the fragment (`?token=` after the
+  route) and is removed from the address bar.
+- **Project and checkout switcher** in the topbar, from `GET /api/projects` and `.../checkouts`: switching opens
+  the same view in the other checkout, and Back returns to the one left.
+- **Checkout picker**: a bare `/#/` lists every project with its checkouts (main checkout first, then worktrees,
+  with branch, state and staged changesets) and opens the one chosen; a farm with one checkout opens it directly.
+  An old unscoped link (`/#/model/graph?layer=...`) opens the picker, which carries its page to the checkout chosen.
+- **A checkout that can't be shown** gets a page that says why, with the way back to the picker: unknown or gone
+  (a 404), removed while open (`checkout.removed`) or the process stopping (`server.stopping`: a process started again has a new token, so the page says to open the viewer from its link again).
+- **DrBot queue**: a reply waiting behind the process's running-turn cap says so (`chat.turn.queued`) until it
+  starts (`chat.turn.started`).
+
+### Changed
+- **Every project-data call is scoped** to the route's checkout: `/api/projects/{project}/checkouts/{checkout}/...`
+  for the model, layers, Tier 1, changesets (commit, discard, review, verification) and annotations. Query keys
+  carry the project and checkout, so checkouts never share a cache entry.
+- **The websocket subscribes per checkout** (`{action: "subscribe" | "unsubscribe", project, checkout}`), again
+  after every reconnect, and drops events stamped for another checkout.
+- **DrBot chat** sends `project` and `checkout` with `chat.send`, `chat.cancel` and `chat.status`, and takes only
+  its own conversation's frames in its own checkout. A conversation belongs to one checkout: switching checkout
+  starts a new one.
+
+### Removed
+- The query-string magic link's route (`AuthRoute`): `main.tsx` takes the token from the fragment or the query
+  string before the router starts.
+
 ## [0.15.0] - 2026-11-23
 
 The C4 diagrams can now show a plan against what was built: every box and arrow the plan or the build touched is

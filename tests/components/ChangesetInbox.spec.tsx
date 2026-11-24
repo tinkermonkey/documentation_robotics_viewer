@@ -17,7 +17,7 @@ import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
 
 function serveList(changesets: Record<string, object>) {
-  mswServer.use(http.get('*/api/changesets', () => HttpResponse.json({ version: '1.0.0', changesets })));
+  mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/changesets', () => HttpResponse.json({ version: '1.0.0', changesets })));
 }
 
 beforeEach(() => {

@@ -70,13 +70,13 @@ export const handlers = [
   // As today's dr CLI answers: `version` is the API's own, and there is no cliVersion.
   http.get('*/health', () => HttpResponse.json({ status: 'ok', version: '0.1.0' })),
 
-  http.get('*/api/model', () => HttpResponse.json(model)),
+  http.get('*/api/projects/:project/checkouts/:checkout/model', () => HttpResponse.json(model)),
 
   http.get('*/api/spec', () => HttpResponse.json(spec)),
 
-  http.get('*/api/changesets', () => HttpResponse.json(changesets)),
+  http.get('*/api/projects/:project/checkouts/:checkout/changesets', () => HttpResponse.json(changesets)),
 
-  http.get('*/api/changesets/:id', ({ params }) => {
+  http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) => {
     // The single committed fixture is returned for any id; the detail hook keys
     // its cache by id, which is what the test verifies.
     return HttpResponse.json({ ...changesetDetail, id: params.id });
@@ -84,10 +84,10 @@ export const handlers = [
 
   // An older dr CLI has no /api/tier1: the Tier 1 panel stays hidden. Tests
   // of the panel serve a body from fixtures/tier1.json instead.
-  http.get('*/api/tier1', () => new HttpResponse('404 Not Found', { status: 404 })),
+  http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => new HttpResponse('404 Not Found', { status: 404 })),
 
   // ── Annotations: list (filtered by elementId) ─────────────────────────────
-  http.get('*/api/annotations', ({ request }) => {
+  http.get('*/api/projects/:project/checkouts/:checkout/annotations', ({ request }) => {
     const url = new URL(request.url);
     const elementId = url.searchParams.get('elementId');
     const annotations = elementId
@@ -97,7 +97,7 @@ export const handlers = [
   }),
 
   // ── Annotations: create ───────────────────────────────────────────────────
-  http.post('*/api/annotations', async ({ request }) => {
+  http.post('*/api/projects/:project/checkouts/:checkout/annotations', async ({ request }) => {
     const body = (await request.json()) as Partial<AnnotationRecord>;
     const record: AnnotationRecord = {
       id: `ann-created-${++idCounter}`,
@@ -113,7 +113,7 @@ export const handlers = [
   }),
 
   // ── Annotations: patch ────────────────────────────────────────────────────
-  http.patch('*/api/annotations/:id', async ({ params, request }) => {
+  http.patch('*/api/projects/:project/checkouts/:checkout/annotations/:id', async ({ params, request }) => {
     const body = (await request.json()) as Partial<AnnotationRecord>;
     const record = annotationStore.find((a) => a.id === params.id);
     if (!record) {
@@ -127,7 +127,7 @@ export const handlers = [
   }),
 
   // ── Annotations: delete ───────────────────────────────────────────────────
-  http.delete('*/api/annotations/:id', ({ params }) => {
+  http.delete('*/api/projects/:project/checkouts/:checkout/annotations/:id', ({ params }) => {
     const idx = annotationStore.findIndex((a) => a.id === params.id);
     if (idx === -1) {
       return HttpResponse.json({ error: 'not found' }, { status: 404 });
@@ -137,12 +137,12 @@ export const handlers = [
   }),
 
   // ── Annotations: replies (list + create) ──────────────────────────────────
-  http.get('*/api/annotations/:id/replies', ({ params }) => {
+  http.get('*/api/projects/:project/checkouts/:checkout/annotations/:id/replies', ({ params }) => {
     const replies = replyStore[params.id as string] ?? [];
     return HttpResponse.json({ replies });
   }),
 
-  http.post('*/api/annotations/:id/replies', async ({ params, request }) => {
+  http.post('*/api/projects/:project/checkouts/:checkout/annotations/:id/replies', async ({ params, request }) => {
     const body = (await request.json()) as Partial<ReplyRecord>;
     const record: ReplyRecord = {
       id: `reply-created-${++idCounter}`,

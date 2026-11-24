@@ -88,7 +88,7 @@ describe('ChangesetCanvas — header + op rows', () => {
       '- [not this](javascript:alert(1))',
     ].join('\n');
     mswServer.use(
-      http.get('*/api/changesets/:id', ({ params }) =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) =>
         HttpResponse.json({ ...changesetDetail, id: params.id, description }),
       ),
     );
@@ -216,7 +216,7 @@ describe('ChangesetCanvas — a changeset that fails to load', () => {
   it('says why instead of "loading changeset…" forever (canvas and inspector)', async () => {
     // A tab holding an older server's token: the server refuses it.
     mswServer.use(
-      http.get('*/api/changesets/:id', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', () =>
         HttpResponse.json({ error: 'Forbidden' }, { status: 403 }),
       ),
     );
@@ -239,7 +239,7 @@ describe('ChangesetCanvas — Open in Architecture', () => {
   /** Serve the fixture detail with another status / change list. */
   function serveDetail(overrides: Record<string, unknown>) {
     mswServer.use(
-      http.get('*/api/changesets/:id', ({ params }) =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) =>
         HttpResponse.json({ ...changesetDetail, id: params.id, ...overrides }),
       ),
     );

@@ -55,7 +55,11 @@ const GREETING_TEXT =
  * messages so it never duplicates after a conversation has started.
  */
 function useSeedGreeting() {
+  // Seeded again whenever the thread empties: a new conversation, or another
+  // checkout opened (its conversation is a new one).
+  const empty = useChatStore((s) => s.messages.length === 0);
   useEffect(() => {
+    if (!empty) return;
     const store = useChatStore.getState();
     if (store.messages.length > 0) return;
     const now = new Date().toISOString();
@@ -67,7 +71,7 @@ function useSeedGreeting() {
       parts: [{ type: 'text', content: GREETING_TEXT, timestamp: now } as TextContent],
     };
     store.addMessage(greeting);
-  }, []);
+  }, [empty]);
 }
 
 /**

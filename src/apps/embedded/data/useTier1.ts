@@ -1,6 +1,6 @@
 /**
  * useTier1 — Tier 1's state and this month's spend from the dr CLI's
- * `GET /api/tier1` (generated `useGetapitier1`), for the Tier 1 panel.
+ * `GET /api/projects/{project}/checkouts/{checkout}/tier1` (the generated scoped hook), for the Tier 1 panel.
  *
  * Read-only: the endpoint never sends a request to a provider and never writes
  * a file, and it never carries a credential's value (only whether each one is
@@ -23,7 +23,8 @@
  */
 
 import { useMemo } from 'react';
-import { ApiError, useGetapitier1 } from '../../../core/services/generatedApiClient';
+import { ApiError, useGetapiprojectsprojectcheckoutscheckouttier1 } from '../../../core/services/generatedApiClient';
+import { useCheckoutRef } from './checkoutScope';
 import { toTier1Status, type Tier1Status } from './tier1';
 import { changesetActionErrorMessage } from './useChangesets';
 
@@ -49,7 +50,9 @@ export function tier1RefetchInterval(data: unknown): number | false {
 }
 
 export function useTier1(): Tier1View {
-  const query = useGetapitier1({
+  const ref = useCheckoutRef();
+  const query = useGetapiprojectsprojectcheckoutscheckouttier1(ref?.project ?? '', ref?.checkout ?? '', {
+    enabled: !!ref,
     retry: (failures: number, error: unknown) => !isTier1Unavailable(error) && failures < 1,
     refetchInterval: (q: { state: { data: unknown } }) => tier1RefetchInterval(q.state.data),
   });

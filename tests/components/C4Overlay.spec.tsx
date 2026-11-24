@@ -96,13 +96,13 @@ function serveChangeset() {
     changes,
   };
   mswServer.use(
-    http.get('*/api/changesets', () =>
+    http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
       HttpResponse.json({
         version: '1',
         changesets: { [CS_ID]: { name: 'overlay-probe', status: 'staged', created: detail.created, changes_count: 3, purpose: 'plan' } },
       }),
     ),
-    http.get(`*/api/changesets/${CS_ID}`, () => HttpResponse.json(detail)),
+    http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${CS_ID}`, () => HttpResponse.json(detail)),
   );
 }
 
@@ -229,13 +229,13 @@ describe('C4 changeset overlay (applied changeset, shown reverted)', () => {
   function serveApplied() {
     const created = '2026-11-20T00:00:00Z';
     mswServer.use(
-      http.get('*/api/changesets', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
         HttpResponse.json({
           version: '1',
           changesets: { [APPLIED_ID]: { name: 'retire-persona', status: 'committed', created, changes_count: 1, purpose: 'plan' } },
         }),
       ),
-      http.get(`*/api/changesets/${APPLIED_ID}`, () =>
+      http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${APPLIED_ID}`, () =>
         HttpResponse.json({ id: APPLIED_ID, name: 'retire-persona', status: 'committed', created, purpose: 'plan', revision: 1, changes: [deleteElement(gone, 1)] }),
       ),
     );

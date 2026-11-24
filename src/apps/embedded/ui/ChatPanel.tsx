@@ -84,6 +84,7 @@ export function ChatPanel() {
 
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
+  const turnQueued = useChatStore((s) => s.turnQueued);
   const error = useChatStore((s) => s.error);
 
   const { derived: model } = useModel();
@@ -240,6 +241,29 @@ export function ChatPanel() {
         </div>
       )}
 
+      {turnQueued && (
+        <div
+          role="status"
+          data-testid="chat-turn-queued"
+          style={{
+            flex: 'none',
+            margin: '6px 12px 0 12px',
+            padding: '8px 10px',
+            borderRadius: 8,
+            fontSize: 12,
+            lineHeight: 1.45,
+            color: 'rgb(var(--canvas-fg-2))',
+            background: 'rgb(var(--canvas-surface))',
+            border: '1px dashed rgb(var(--canvas-border))',
+          }}
+        >
+          {turnQueued.message ||
+            `Queued: ${turnQueued.running} DrBot ${turnQueued.running === 1 ? 'reply is' : 'replies are'} running` +
+              (turnQueued.maxTurns ? ` (at most ${turnQueued.maxTurns} at once)` : '') +
+              `. This one is ${ordinal(turnQueued.position)} in line and starts when one ends.`}
+        </div>
+      )}
+
       {showSuggestions && (
         <div
           style={{
@@ -283,3 +307,10 @@ export function ChatPanel() {
 }
 
 export default ChatPanel;
+
+/** 1 → "1st", 2 → "2nd", 11 → "11th". */
+function ordinal(n: number): string {
+  const tens = n % 100;
+  if (tens >= 11 && tens <= 13) return `${n}th`;
+  return `${n}${({ 1: 'st', 2: 'nd', 3: 'rd' } as Record<number, string>)[n % 10] ?? 'th'}`;
+}

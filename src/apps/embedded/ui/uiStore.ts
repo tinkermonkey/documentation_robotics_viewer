@@ -223,6 +223,12 @@ interface UiState {
   selectChangeset: (changesetId: string | null) => void;
   /** Open a change of the selected changeset in the review inspector (null: the changeset overview). */
   selectChange: (seq: number | null) => void;
+  /**
+   * Another checkout is shown: drop what was selected in the one before
+   * (elements, changesets, C4 boxes and the viewport are that checkout's). The
+   * view, mode and layer stay: every checkout has the same layers.
+   */
+  clearCheckoutSelection: () => void;
   setChangesetTab: (tab: 'changes' | 'impact') => void;
   /** Focus one element in the Impact tab (null: every change); a focus switches to Impact. */
   focusImpact: (elementId: string | null) => void;
@@ -470,6 +476,22 @@ export const useUiStore = create<UiState>()(
         })),
 
       selectChange: (changeSeq) => set({ changeSeq }),
+      clearCheckoutSelection: () =>
+        set((s) => ({
+          selectedId: null,
+          selectedEdgeId: null,
+          highlightedEdgeId: null,
+          changesetId: null,
+          changeSeq: null,
+          changesetTab: 'changes',
+          impactFocus: null,
+          c4Scope: null,
+          c4SelectedId: null,
+          c4ChangesetId: null,
+          c4BuiltId: null,
+          graphViewport: null,
+          focus: s.layerId ? 'layer' : s.focus,
+        })),
       setChangesetTab: (changesetTab) => set({ changesetTab }),
       focusImpact: (impactFocus) => set(impactFocus ? { impactFocus, changesetTab: 'impact' } : { impactFocus }),
 

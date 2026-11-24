@@ -1,0 +1,457 @@
+id: changeset-1795519840390-19hqml9c4
+name: scoped-checkout-routes
+description: "Move the viewer onto the dr CLI's central process (dr serve): hash
+  routes /p/:project/c/:checkout/... (model, changesets, one changeset with
+  ?element=, one element) with the token read from the fragment; every
+  project-data call through /api/projects/{project}/checkouts/{checkout}/...; a
+  project and checkout picker in the shell from GET /api/projects and
+  .../checkouts; the websocket subscribes and unsubscribes per checkout, ignores
+  events for other checkouts and handles checkout.removed and server.stopping;
+  DrBot sends project and checkout, matches replies by conversation and
+  checkout, and shows chat.turn.queued / started; a bare / opens the picker.
+  Done when each CLI link form opens the named checkout and two tabs on two
+  checkouts of one project don't cross events or chat."
+created: 2026-11-24T11:30:40.401Z
+modified: 2026-11-24T12:01:32.167Z
+status: staged
+baseSnapshot: v2:sha256:1cc6259c13daf9554d82b2946ea3c8a73d6b3606110fff8d7542bf5ee7e98339
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 75
+  modifications: 8
+  deletions: 20
+lastSequence: 119
+unstaged:
+  - sequence: 12
+    removedAt: 103
+    change:
+      type: add
+      elementId: application.applicationevent.chat-turn-queued
+      layerName: application
+      after:
+        id: 099b7c0d-61ef-495d-a2a8-f22e670544a6
+        path: application.applicationevent.chat-turn-queued
+        spec_node_id: application.applicationevent
+        type: applicationevent
+        layer_id: application
+        name: Chat Turn Queued
+        description: "chat.turn.queued {conversation_id, project, checkout, position,
+          running, max_turns, message}: a DrBot send waits behind the process's
+          running-turn cap. The chat shows the queued state on the pending
+          reply."
+        attributes:
+          eventType: integration
+        metadata:
+          created_at: 2026-11-24T11:32:08.573Z
+          updated_at: 2026-11-24T11:32:08.573Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 8
+    removedAt: 104
+    change:
+      type: add
+      elementId: application.applicationservice.use-projects
+      layerName: application
+      after:
+        id: 3f522d29-7f30-4b67-8a5d-123d52b9d94f
+        path: application.applicationservice.use-projects
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Use Projects
+        description: "data/useProjects.ts: React Query hooks over GET /api/projects and
+          GET /api/projects/{project}/checkouts (validated, unknown fields
+          dropped) for the checkout picker and switcher."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-24T11:32:08.572Z
+          updated_at: 2026-11-24T11:32:08.572Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 43
+    removedAt: 105
+    change:
+      type: add
+      elementId: data-model.objectschema.checkout-ref
+      layerName: data-model
+      after:
+        id: 8aeb5761-dc58-40cb-97ad-52f8dcd51bf5
+        path: data-model.objectschema.checkout-ref
+        spec_node_id: data-model.objectschema
+        type: objectschema
+        layer_id: data-model
+        name: Checkout Ref
+        description: "{project, checkout}: names one checkout of the central process's
+          farm (the CLI's CheckoutRef). The route, the API paths, query keys,
+          the feed subscription and every DrBot frame carry it."
+        attributes:
+          type: object
+        metadata:
+          created_at: 2026-11-24T11:32:31.378Z
+          updated_at: 2026-11-24T11:32:31.378Z
+          version: 1
+      timestamp: 2026-11-24T11:32:31.393Z
+    rewritten: true
+  - sequence: 9
+    removedAt: 106
+    change:
+      type: add
+      elementId: application.applicationfunction.checkout-store
+      layerName: application
+      after:
+        id: 2783f9a7-5ad3-4508-8a41-de6b27c1339e
+        path: application.applicationfunction.checkout-store
+        spec_node_id: application.applicationfunction
+        type: applicationfunction
+        layer_id: application
+        name: Checkout Store
+        description: "stores/checkoutStore.ts: Zustand store holding the checkout the
+          route names and whether it is unavailable (and why). Not persisted:
+          the URL is the authority. Read outside React by the websocket client
+          and the chat service."
+        metadata:
+          created_at: 2026-11-24T11:32:08.572Z
+          updated_at: 2026-11-24T11:32:08.572Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 3
+    removedAt: 107
+    change:
+      type: add
+      elementId: navigation.route.checkout-index-route
+      layerName: navigation
+      after:
+        id: df660b62-81bc-4d92-a75b-ce680da400e7
+        path: navigation.route.checkout-index-route
+        spec_node_id: navigation.route
+        type: route
+        layer_id: navigation
+        name: Checkout Index Route
+        description: "/#/p/:project/c/:checkout (with or without a trailing slash): the
+          CLI's checkout link; replaced with the checkout's Model view."
+        attributes:
+          type: redirect
+        metadata:
+          created_at: 2026-11-24T11:32:08.565Z
+          updated_at: 2026-11-24T11:32:08.565Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 2
+    removedAt: 108
+    change:
+      type: add
+      elementId: navigation.route.checkout-shell-route
+      layerName: navigation
+      after:
+        id: f93d2b68-1d01-43d0-9e9f-8263ebc60fcf
+        path: navigation.route.checkout-shell-route
+        spec_node_id: navigation.route
+        type: route
+        layer_id: navigation
+        name: Checkout Shell Route
+        description: "/#/p/:project/c/:checkout/:section/:view: the app shell for one
+          checkout of the central process, with the same search params as the
+          unscoped shell route had (?layer, ?node, ?edge, ?changeset, ?level,
+          ?scope, ?built, ?vp). Its params set the current checkout
+          (checkoutStore) that every API call, query key, websocket subscription
+          and DrBot send is scoped to. It also takes the CLI's link forms:
+          changesets/<id> (with ?element=) and elements/<id> are read as links
+          and replaced with the shell URL they open."
+        attributes:
+          type: protected
+        metadata:
+          created_at: 2026-11-24T11:32:08.563Z
+          updated_at: 2026-11-24T11:32:08.563Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 5
+    removedAt: 109
+    change:
+      type: add
+      elementId: ux.subview.checkout-switcher
+      layerName: ux
+      after:
+        id: 40c9deb2-f6fc-44cb-9a7a-7a0829d6b9c9
+        path: ux.subview.checkout-switcher
+        spec_node_id: ux.subview
+        type: subview
+        layer_id: ux
+        name: Checkout Switcher
+        description: "In the topbar: the current project and checkout as two Heimdall
+          Selects, listing the farm's projects and the chosen project's
+          checkouts; switching opens the same view in the other checkout without
+          a new link."
+        metadata:
+          created_at: 2026-11-24T11:32:08.569Z
+          updated_at: 2026-11-24T11:32:08.569Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 4
+    removedAt: 110
+    change:
+      type: add
+      elementId: ux.view.checkout-picker-view
+      layerName: ux
+      after:
+        id: f96a33a2-793b-48f4-a682-9de83f2382d2
+        path: ux.view.checkout-picker-view
+        spec_node_id: ux.view
+        type: view
+        layer_id: ux
+        name: Checkout Picker View
+        description: "The page a bare /#/ (and any old unscoped /#/:section/:view link)
+          opens: every project the central process serves, each with its
+          checkouts (main checkout first, then worktrees, with branch), from GET
+          /api/projects and GET /api/projects/{project}/checkouts. Choosing one
+          opens it (an old link's section, view and search carried over). A farm
+          with exactly one checkout opens it directly. An older dr CLI without
+          /api/projects gets a message saying the viewer needs dr serve."
+        attributes:
+          type: page
+        metadata:
+          created_at: 2026-11-24T11:32:08.566Z
+          updated_at: 2026-11-24T11:32:08.566Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 6
+    removedAt: 111
+    change:
+      type: add
+      elementId: ux.errorconfig.checkout-unavailable-error
+      layerName: ux
+      after:
+        id: 1ddbe372-cd65-4db2-abdc-1966bee1bf77
+        path: ux.errorconfig.checkout-unavailable-error
+        spec_node_id: ux.errorconfig
+        type: errorconfig
+        layer_id: ux
+        name: Checkout Unavailable Error
+        description: "What the shell shows instead of the views when the route's
+          checkout can't be served: 404 (an unknown project or checkout, or one
+          whose folder is gone), a checkout.removed event, or server.stopping.
+          Names the project and checkout, says why, and offers the checkout
+          picker."
+        metadata:
+          created_at: 2026-11-24T11:32:08.570Z
+          updated_at: 2026-11-24T11:32:08.570Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 7
+    removedAt: 112
+    change:
+      type: add
+      elementId: application.applicationservice.checkout-scope
+      layerName: application
+      after:
+        id: 0abc272c-bee9-4fe1-acd2-28c3e3705c43
+        path: application.applicationservice.checkout-scope
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Checkout Scope
+        description: "data/checkoutScope.ts: the current CheckoutRef ({project,
+          checkout}) from checkoutStore as a hook (useCheckoutRef), the scoped
+          query keys the data hooks share (the generated client's scoped
+          operation ids, then project and checkout), invalidation for one
+          checkout, and whether an API error means the checkout is unavailable
+          (404 on a scoped route). Every project-data hook (model, layers,
+          tier1, changesets with commit/discard/review/verification,
+          annotations) calls the generated client's
+          /api/projects/{project}/checkouts/{checkout}/... operations through
+          it."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-24T11:32:08.571Z
+          updated_at: 2026-11-24T11:32:08.571Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 10
+    removedAt: 113
+    change:
+      type: add
+      elementId: application.applicationevent.checkout-removed
+      layerName: application
+      after:
+        id: 6b7f419a-ab69-4b29-8201-1baf755b5cab
+        path: application.applicationevent.checkout-removed
+        spec_node_id: application.applicationevent
+        type: applicationevent
+        layer_id: application
+        name: Checkout Removed
+        description: "checkout.removed {project, checkout}: the central process found
+          the checkout gone; its subscribers' DrBot turns end. The shell shows
+          the Checkout Unavailable error for it."
+        attributes:
+          eventType: integration
+        metadata:
+          created_at: 2026-11-24T11:32:08.573Z
+          updated_at: 2026-11-24T11:32:08.573Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 11
+    removedAt: 114
+    change:
+      type: add
+      elementId: application.applicationevent.server-stopping
+      layerName: application
+      after:
+        id: f7722a9a-b567-4268-bd39-a077c1a8449e
+        path: application.applicationevent.server-stopping
+        spec_node_id: application.applicationevent
+        type: applicationevent
+        layer_id: application
+        name: Server Stopping
+        description: "server.stopping {project, checkout}: the central process is
+          shutting down. The shell says so; the websocket client reconnects and
+          resubscribes when a process answers again."
+        attributes:
+          eventType: system
+        metadata:
+          created_at: 2026-11-24T11:32:08.573Z
+          updated_at: 2026-11-24T11:32:08.573Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 13
+    removedAt: 115
+    change:
+      type: add
+      elementId: application.applicationevent.chat-turn-started
+      layerName: application
+      after:
+        id: 787d5750-1341-4122-8139-ff4a7eee02e6
+        path: application.applicationevent.chat-turn-started
+        spec_node_id: application.applicationevent
+        type: applicationevent
+        layer_id: application
+        name: Chat Turn Started
+        description: "chat.turn.started {conversation_id, project, checkout, waited_ms}:
+          a queued DrBot send starts. The chat clears the queued state."
+        attributes:
+          eventType: integration
+        metadata:
+          created_at: 2026-11-24T11:32:08.573Z
+          updated_at: 2026-11-24T11:32:08.573Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 14
+    removedAt: 116
+    change:
+      type: add
+      elementId: application.message.feed-subscription
+      layerName: application
+      after:
+        id: 25929ee7-5f83-4ab0-8f2d-7947ea693d09
+        path: application.message.feed-subscription
+        spec_node_id: application.message
+        type: message
+        layer_id: application
+        name: Feed Subscription
+        description: "{action: subscribe | unsubscribe, project, checkout}: the
+          websocket frame that adds or removes the socket's subscription to one
+          checkout's feed on the central process. The client sends subscribe for
+          the shown checkout on connect and on every switch (unsubscribe for the
+          one left) and again after a reconnect."
+        attributes:
+          messageType: command
+        metadata:
+          created_at: 2026-11-24T11:32:08.573Z
+          updated_at: 2026-11-24T11:32:08.573Z
+          version: 1
+      timestamp: 2026-11-24T11:32:08.587Z
+    rewritten: true
+  - sequence: 44
+    removedAt: 117
+    change:
+      type: add
+      elementId: application.applicationfunction.checkout-feed-subscription
+      layerName: application
+      after:
+        id: 8f0fca1c-b43d-4a2b-828d-61e3fda8e0e1
+        path: application.applicationfunction.checkout-feed-subscription
+        spec_node_id: application.applicationfunction
+        type: applicationfunction
+        layer_id: application
+        name: Checkout Feed Subscription
+        description: "In websocketClient: sends {action: subscribe, project, checkout}
+          for the checkout shown (on connect, after a reconnect, and on a
+          switch, with unsubscribe for the one left), and drops every plain
+          event stamped with another project or checkout before it reaches a
+          handler. Hands checkout.removed and server.stopping to checkoutStore."
+        metadata:
+          created_at: 2026-11-24T11:32:31.378Z
+          updated_at: 2026-11-24T11:32:31.378Z
+          version: 1
+      timestamp: 2026-11-24T11:32:31.393Z
+    rewritten: true
+  - sequence: 45
+    removedAt: 118
+    change:
+      type: add
+      elementId: application.applicationfunction.chat-frame-routing
+      layerName: application
+      after:
+        id: 9572e135-aad7-4168-97a8-8b10d276968a
+        path: application.applicationfunction.chat-frame-routing
+        spec_node_id: application.applicationfunction
+        type: applicationfunction
+        layer_id: application
+        name: Chat Frame Routing
+        description: "In chatService: sends project and checkout with chat.send,
+          chat.cancel and chat.status; ignores any chat notification whose
+          conversation_id or project/checkout is not the current conversation's;
+          starts a new conversation when the checkout changes (a conversation
+          belongs to one checkout); and marks the pending reply queued on
+          chat.turn.queued (position, the server's message) until
+          chat.turn.started."
+        metadata:
+          created_at: 2026-11-24T11:32:31.378Z
+          updated_at: 2026-11-24T11:32:31.378Z
+          version: 1
+      timestamp: 2026-11-24T11:32:31.393Z
+    rewritten: true
+  - sequence: 42
+    removedAt: 119
+    change:
+      type: add
+      elementId: navigation.navigationtransition.cli-deep-link-transition
+      layerName: navigation
+      after:
+        id: dbaccd23-631b-4928-bdfa-e1b3dc437f33
+        path: navigation.navigationtransition.cli-deep-link-transition
+        spec_node_id: navigation.navigationtransition
+        type: navigationtransition
+        layer_id: navigation
+        name: CLI Deep-Link Transition
+        description: "Reads a dr CLI viewer link: changesets/<id> opens the Changesets
+          view on that changeset (and with ?element=<id> selects its change to
+          that element); elements/<id> waits for the model, resolves the dotted
+          id (or UUID) and opens the Model view on that element's layer with it
+          selected; an id the model lacks shows the layer with a notice.
+          Replaces the history entry, so Back never returns to the raw link."
+        attributes:
+          from: /p/:project/c/:checkout/changesets/:id |
+            /p/:project/c/:checkout/elements/:id
+          to: /p/:project/c/:checkout/:section/:view
+          trigger: redirect
+        metadata:
+          created_at: 2026-11-24T11:32:31.378Z
+          updated_at: 2026-11-24T11:32:31.378Z
+          version: 1
+      timestamp: 2026-11-24T11:32:31.393Z
+    rewritten: true

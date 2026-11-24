@@ -12,13 +12,17 @@
  * tests that don't touch chat.
  */
 
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 
 import { mswServer, resetMswState } from './mswServer';
 import { useChatStore } from '@/apps/embedded/stores/chatStore';
 import { installDomStubs } from './domStubs';
+import { useCheckoutStore } from '@/apps/embedded/stores/checkoutStore';
+
+/** The checkout every test shows unless it sets another (the route's `/p/<project>/c/<checkout>`). */
+export const TEST_CHECKOUT = { project: 'test-project', checkout: 'main' } as const;
 
 // happy-dom gap stubs (ResizeObserver/IntersectionObserver/matchMedia/scrollIntoView).
 // No-ops when run under the node env (pure-function tests): the installer guards
@@ -27,6 +31,12 @@ installDomStubs();
 
 beforeAll(() => {
   mswServer.listen({ onUnhandledRequest: 'error' });
+});
+
+// Every project-data hook is scoped to the route's checkout: seed one, as the
+// router would, so components rendered without a router still load data.
+beforeEach(() => {
+  useCheckoutStore.setState({ ref: { ...TEST_CHECKOUT }, unavailable: null });
 });
 
 afterEach(() => {

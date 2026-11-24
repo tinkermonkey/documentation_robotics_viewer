@@ -13,6 +13,10 @@
 import { logError } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 import type { WebSocketMessage, EventHandler, WebSocketEventMap, WebSocketSendMessage } from '../types/websocket';
+import { sameCheckout, type CheckoutRef } from '../stores/checkoutStore';
+
+/** A server `{type: "error"}` frame, re-emitted under this name (never as the transport's 'error'). */
+export const SERVER_ERROR_EVENT = 'server.error';
 
 // WebSocket ready state constants (mirrors WebSocket.CONNECTING/OPEN/CLOSING/CLOSED)
 // Defined locally so they work in test environments where the global WebSocket may not be available
@@ -29,6 +33,12 @@ export interface WebSocketClientInterface {
   connect(): void;
   disconnect(): void;
   subscribe(topics: string[]): void;
+  /**
+   * The checkout this tab shows: subscribes the socket to its feed (and
+   * unsubscribes the one before), now if open and again after every reconnect.
+   * Plain events stamped with another project or checkout are dropped.
+   */
+  setCheckout(ref: CheckoutRef | null): void;
   send(message: WebSocketSendMessage): boolean;
   on<K extends keyof WebSocketEventMap>(event: K, handler: EventHandler<WebSocketEventMap[K]>): void;
   on(event: string, handler: EventHandler<unknown>): void;
@@ -55,6 +65,7 @@ export class WebSocketClient implements WebSocketClientInterface {
   private eventHandlers: Map<string, Set<EventHandler<unknown>>> = new Map();
   private isIntentionallyClosed: boolean = false;
   private subscribedTopics: string[] = [];
+  private checkout: CheckoutRef | null = null;
   private mode: 'websocket' | 'rest' | 'detecting' = 'detecting';
   private connectionTimeout: NodeJS.Timeout | null = null;
   private maxConnectionAttempts: number = 3; // Try connecting 3 times before falling back
@@ -69,8 +80,16 @@ export class WebSocketClient implements WebSocketClientInterface {
    * Set authentication token
    */
   setToken(token: string | null): void {
+    const changed = token !== this.token;
     this.token = token;
     console.log('[WebSocket] Token updated:', token ? 'present' : 'cleared');
+    // A server that refused the old token looks like one without a websocket
+    // (the detection falls back to REST). With a new token (a link from a
+    // restarted dr process), detect again on the next connect.
+    if (changed && this.mode === 'rest') {
+      this.mode = 'detecting';
+      this.reconnectAttempts = 0;
+    }
   }
 
   /**
@@ -265,6 +284,23 @@ export class WebSocketClient implements WebSocketClientInterface {
     }
   }
 
+  setCheckout(ref: CheckoutRef | null): void {
+    const previous = this.checkout;
+    if (ref ? sameCheckout(ref, previous) : previous === null) return;
+    this.checkout = ref ? { project: ref.project, checkout: ref.checkout } : null;
+    if (!this.ws || this.ws.readyState !== WS_OPEN) return; // handleOpen subscribes
+    if (previous) this.send({ action: 'unsubscribe', project: previous.project, checkout: previous.checkout });
+    if (this.checkout) this.send({ action: 'subscribe', ...this.checkout });
+  }
+
+  /** Whether a plain event belongs to the checkout shown (an unstamped one does). */
+  private isForThisCheckout(message: WebSocketMessage): boolean {
+    if (!this.checkout) return true;
+    const { project, checkout } = message as { project?: unknown; checkout?: unknown };
+    if (typeof project !== 'string' || typeof checkout !== 'string') return true;
+    return project === this.checkout.project && checkout === this.checkout.checkout;
+  }
+
   /**
    * Send a message to the server
    * @returns true if message was sent, false if connection is not open
@@ -393,6 +429,12 @@ export class WebSocketClient implements WebSocketClientInterface {
     this.reconnectAttempts = 0;
     this.reconnectDelay = 1000;
     this.startHeartbeat();
+
+    // The central process sends a checkout's events only to sockets subscribed
+    // to it, so subscribe before anything else (a reconnect starts with none).
+    if (this.checkout) {
+      this.send({ action: 'subscribe', ...this.checkout });
+    }
     this.emit('connect', {});
 
     // Resubscribe to topics if any
@@ -407,7 +449,18 @@ export class WebSocketClient implements WebSocketClientInterface {
   private handleMessage(event: MessageEvent): void {
     try {
       const message: WebSocketMessage = JSON.parse(event.data);
-      const messageType = message.type ?? 'message';
+      // The server's own `{type: "error"}` frame (e.g. a subscription to an
+      // unknown checkout) says a request failed, not that the connection did:
+      // it must not reach the transport's 'error' listeners, which mark the
+      // connection broken.
+      const messageType = message.type === 'error' ? SERVER_ERROR_EVENT : (message.type ?? 'message');
+      // A plain event stamped for another checkout (this socket was subscribed
+      // to it a moment ago): not this tab's. JSON-RPC frames have no `type`;
+      // the chat service matches those by conversation and checkout.
+      if (message.type && !this.isForThisCheckout(message)) {
+        console.log('[WebSocket] Ignored an event for another checkout:', messageType);
+        return;
+      }
       console.log('[WebSocket] Received:', messageType);
 
       // Emit event for this message type
@@ -652,6 +705,7 @@ if (typeof window !== 'undefined') {
     },
     disconnect: () => {},
     subscribe: () => {},
+    setCheckout: () => {},
     send: () => {
       // Explicitly fail sends in mock environment
       logError(

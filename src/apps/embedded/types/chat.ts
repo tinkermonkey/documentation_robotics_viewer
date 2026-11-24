@@ -197,6 +197,9 @@ export interface ChatSendParams {
   /** Ties sends into one conversation: the server resumes DrBot's session for
    *  a known id and starts a new one for a new id. */
   conversation_id?: string;
+  /** The checkout the conversation belongs to, on the dr CLI's central process (`dr serve`). */
+  project?: string;
+  checkout?: string;
   [key: string]: unknown;
 }
 
@@ -283,6 +286,8 @@ export interface ChatErrorParams {
 export interface ChatCancelParams {
   /** The conversation whose reply to stop. */
   conversation_id?: string;
+  project?: string;
+  checkout?: string;
   [key: string]: unknown;
 }
 

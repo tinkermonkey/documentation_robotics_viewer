@@ -55,8 +55,8 @@ import {
   plural,
 } from './reviewParts';
 import {
-  usePostapichangesetschangesetIdcommit,
-  usePostapichangesetschangesetIddiscard,
+  usePostapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit,
+  usePostapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard,
 } from '../../../core/services/generatedApiClient';
 import {
   changesetActionErrorMessage,
@@ -67,6 +67,7 @@ import {
   type ChangesetDetail,
 } from '../data/useChangesets';
 import { mutateWithBody, type ChangesetReviewState } from '../data/useChangesetReview';
+import { SCOPED_QUERY, scopedKey, useCheckoutRef } from '../data/checkoutScope';
 import { useLocalReviewStore } from '../stores/localReviewStore';
 import {
   conflictPartners,
@@ -420,8 +421,17 @@ function SummaryCard({
   onResult: (result: ChangesetActionResult, toast: string) => void;
 }) {
   const queryClient = useQueryClient();
-  const commit = usePostapichangesetschangesetIdcommit(detail.id);
-  const discard = usePostapichangesetschangesetIddiscard(detail.id);
+  const ref = useCheckoutRef();
+  const commit = usePostapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit(
+    ref?.project ?? '',
+    ref?.checkout ?? '',
+    detail.id,
+  );
+  const discard = usePostapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard(
+    ref?.project ?? '',
+    ref?.checkout ?? '',
+    detail.id,
+  );
   const [confirming, setConfirming] = useState<Confirming>(null);
   const [error, setError] = useState<string | null>(null);
   // Set once Apply or Discard succeeds. The refetch that turns this card into
@@ -484,7 +494,7 @@ function SummaryCard({
         const blockers = commitBlockers(err);
         if (blockers) {
           // The server sees links our copy didn't: refetch so they show.
-          queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', detail.id] });
+          queryClient.invalidateQueries({ queryKey: scopedKey(SCOPED_QUERY.changeset, ref, detail.id) });
           const lines = Object.entries(blockers).map(([seq, list]) => {
             const item = model.bySeq.get(Number(seq));
             const links = list

@@ -43,14 +43,22 @@ describe('useLiveModelUpdates', () => {
     expect(invalidate).not.toHaveBeenCalled();
 
     socket.simulateMessage({ type: 'model.updated', data: {}, timestamp: '2026-11-03T00:00:00Z' });
+    // Only this checkout's queries (the router's, here the test checkout).
     expect(invalidate.mock.calls.map(([f]) => f?.queryKey)).toEqual([
-      ['getapimodel'],
-      ['getapilayerslayerName'],
-      ['getapichangesets'],
-      ['getapichangesetschangesetId'],
+      ['getapiprojectsprojectcheckoutscheckoutmodel', 'test-project', 'main'],
+      ['getapiprojectsprojectcheckoutscheckoutlayerslayerName', 'test-project', 'main'],
+      ['getapiprojectsprojectcheckoutscheckoutchangesets', 'test-project', 'main'],
+      ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', 'test-project', 'main'],
       // A plan compared with what was built reads the model too.
-      ['changeset-verification'],
+      ['changeset-verification', 'test-project', 'main'],
     ]);
+
+    // An event stamped for another checkout of the project is not this tab's.
+    invalidate.mockClear();
+    socket.simulateMessage({ type: 'model.updated', project: 'test-project', checkout: 'feature-x', data: {} });
+    expect(invalidate).not.toHaveBeenCalled();
+    socket.simulateMessage({ type: 'model.updated', project: 'test-project', checkout: 'main', data: {} });
+    expect(invalidate).toHaveBeenCalled();
 
     invalidate.mockClear();
     unmount();

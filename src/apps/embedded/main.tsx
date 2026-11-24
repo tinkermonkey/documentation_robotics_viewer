@@ -6,6 +6,7 @@ import { installFetchInterceptor } from './utils/fetchInterceptor';
 import { createApiQueryClient } from '../../core/services/generatedApiClient';
 import { router } from './router';
 import { useAuthStore } from './stores/authStore';
+import { takeFragmentToken } from './routes/checkoutLinks';
 import '../../index.css';
 import '@tinkermonkey/heimdall-ui/css';
 import '@tinkermonkey/heimdall-ui/fonts';
@@ -15,25 +16,42 @@ import './ui/changeset-review.css';
 import './ui/topbar-search.css';
 import './ui/c4-diagram.css';
 
-// Handle token from magic link BEFORE router initializes
-// Magic link format: /?token=xyz#/model/graph
-const urlParams = new URLSearchParams(window.location.search);
-const token = urlParams.get('token');
-
-if (token) {
-  console.log('[main] Found token in URL query string, storing to localStorage');
+// Take a magic link's token BEFORE the router initializes. The dr CLI's
+// central process puts it in the fragment (/#/p/<project>/c/<checkout>/...?token=xyz);
+// an older dr visualize put it in the query string (/?token=xyz#/model/graph).
+// Either way it is stored for API and websocket calls and removed from the
+// address bar, so it never lands in history or a copied link.
+function storeToken(token: string) {
   localStorage.setItem('dr_auth_token', token);
-
-  // CRITICAL: Update authStore with new token to prevent race condition
-  // Without this, authStore keeps the old token cached in memory and WebSocket connects with stale token
+  // CRITICAL: update authStore too, or it keeps the old token cached in memory
+  // and the WebSocket connects with a stale one.
   useAuthStore.getState().setToken(token);
-  console.log('[main] Updated authStore with new token');
-
-  // Clean the URL by removing the ?token=xyz part, keeping just the hash
-  const cleanUrl = window.location.pathname + window.location.hash;
-  window.history.replaceState(null, '', cleanUrl);
-  console.log('[main] URL cleaned, removed token from query string');
 }
+{
+  const queryToken = new URLSearchParams(window.location.search).get('token');
+  const fragment = takeFragmentToken(window.location.hash);
+  const token = fragment.token ?? queryToken;
+  if (token) {
+    storeToken(token);
+    const search = new URLSearchParams(window.location.search);
+    search.delete('token');
+    const rest = search.toString();
+    window.history.replaceState(null, '', window.location.pathname + (rest ? `?${rest}` : '') + fragment.hash);
+  }
+}
+
+// A link opened in a tab that already shows the viewer changes only the hash:
+// the page doesn't reload, so take its token here too. Capture-phase listeners
+// on window run before the router's own, so no request goes out with the old
+// token. A new token reconnects the websocket (RootShell's effect depends on it).
+function takeTokenFromHashChange() {
+  const fragment = takeFragmentToken(window.location.hash);
+  if (!fragment.token) return;
+  storeToken(fragment.token);
+  window.history.replaceState(window.history.state, '', window.location.pathname + window.location.search + fragment.hash);
+}
+window.addEventListener('popstate', takeTokenFromHashChange, { capture: true });
+window.addEventListener('hashchange', takeTokenFromHashChange, { capture: true });
 
 // Install fetch interceptor to add Authorization header to all requests
 installFetchInterceptor();

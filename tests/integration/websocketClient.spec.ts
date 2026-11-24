@@ -217,3 +217,99 @@ describe('websocketClient — auth via Sec-WebSocket-Protocol', () => {
     expect(socket.protocols).toBeUndefined();
   });
 });
+
+describe('websocketClient — the checkout feed (dr serve)', () => {
+  const MAIN = { project: 'p', checkout: 'main' };
+  const WT = { project: 'p', checkout: 'wt' };
+  const feedFrames = (socket: MockWebSocket) =>
+    socket.sent.filter((f) => typeof f === 'object' && f !== null && 'action' in (f as object));
+
+  it('subscribes to the checkout shown on open, and moves the subscription on a switch', () => {
+    const client = new WebSocketClient('ws://localhost:8080/ws', null);
+    client.setCheckout(MAIN); // before the socket opens: sent on open
+    client.connect();
+    const socket = latestSocket()!;
+    socket.simulateOpen();
+    expect(feedFrames(socket)).toEqual([{ action: 'subscribe', project: 'p', checkout: 'main' }]);
+
+    client.setCheckout({ ...MAIN }); // the same checkout: nothing sent
+    client.setCheckout(WT);
+    expect(feedFrames(socket)).toEqual([
+      { action: 'subscribe', project: 'p', checkout: 'main' },
+      { action: 'unsubscribe', project: 'p', checkout: 'main' },
+      { action: 'subscribe', project: 'p', checkout: 'wt' },
+    ]);
+    client.disconnect();
+  });
+
+  it('subscribes again after a reconnect', () => {
+    vi.useFakeTimers();
+    const { client, socket } = connectOpenClient();
+    client.setCheckout(MAIN);
+    socket.simulateClose(1001, 'server stopping');
+    vi.advanceTimersByTime(2000);
+    const next = latestSocket()!;
+    expect(next).not.toBe(socket);
+    next.simulateOpen();
+    expect(feedFrames(next)).toEqual([{ action: 'subscribe', project: 'p', checkout: 'main' }]);
+    client.disconnect();
+  });
+
+  it('drops an event stamped for another checkout, and passes its own and unstamped ones', () => {
+    const { client, socket } = connectOpenClient();
+    client.setCheckout(MAIN);
+    const onModel = vi.fn();
+    const onRemoved = vi.fn();
+    client.on('model.updated', onModel);
+    client.on('checkout.removed', onRemoved);
+
+    socket.simulateMessage({ type: 'model.updated', project: 'p', checkout: 'wt' });
+    socket.simulateMessage({ type: 'checkout.removed', project: 'p', checkout: 'wt' });
+    expect(onModel).not.toHaveBeenCalled();
+    expect(onRemoved).not.toHaveBeenCalled();
+
+    socket.simulateMessage({ type: 'model.updated', project: 'p', checkout: 'main' });
+    socket.simulateMessage({ type: 'model.updated' });
+    socket.simulateMessage({ type: 'checkout.removed', project: 'p', checkout: 'main' });
+    expect(onModel).toHaveBeenCalledTimes(2);
+    expect(onRemoved).toHaveBeenCalledTimes(1);
+    client.disconnect();
+  });
+});
+
+describe('websocketClient — a server error frame is not a transport error', () => {
+  it("emits the server's {type: 'error'} as 'server.error', never 'error'", () => {
+    const { client, socket } = connectOpenClient();
+    const onTransportError = vi.fn();
+    const onServerError = vi.fn();
+    client.on('error', onTransportError);
+    client.on('server.error', onServerError);
+    socket.simulateMessage({ type: 'error', message: 'Unknown checkout of project p: nope', project: 'p', checkout: 'nope' });
+    expect(onTransportError).not.toHaveBeenCalled();
+    expect(onServerError).toHaveBeenCalledTimes(1);
+    expect(client.connectionState).toBe('connected');
+    client.disconnect();
+  });
+});
+
+describe('websocketClient — a new token after a REST fallback', () => {
+  it('tries the websocket again with the new token', () => {
+    vi.useFakeTimers();
+    const client = new WebSocketClient('ws://localhost:8080/ws', 'stale');
+    client.connect();
+    // Three refused handshakes: the client falls back to REST.
+    for (let i = 0; i < 3; i++) {
+      latestSocket()!.simulateClose(1006, 'refused');
+      vi.advanceTimersByTime(600);
+    }
+    expect(client.transportMode).toBe('rest');
+
+    client.setToken('fresh');
+    client.connect();
+    const socket = latestSocket()!;
+    expect(socket.protocols).toEqual(['token', 'fresh']);
+    socket.simulateOpen();
+    expect(client.transportMode).toBe('websocket');
+    client.disconnect();
+  });
+});

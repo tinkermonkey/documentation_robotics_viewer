@@ -103,7 +103,7 @@ function serve({ verification = true }: { verification?: boolean } = {}) {
     ...extra,
   });
   mswServer.use(
-    http.get('*/api/changesets', () =>
+    http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
       HttpResponse.json({
         version: '1',
         changesets: {
@@ -119,11 +119,11 @@ function serve({ verification = true }: { verification?: boolean } = {}) {
         },
       }),
     ),
-    http.get(`*/api/changesets/${PLAN}`, () => HttpResponse.json(detail(PLAN, 'probe-plan', 'plan', planChanges))),
-    http.get(`*/api/changesets/${BUILT}`, () =>
+    http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${PLAN}`, () => HttpResponse.json(detail(PLAN, 'probe-plan', 'plan', planChanges))),
+    http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${BUILT}`, () =>
       HttpResponse.json(detail(BUILT, 'probe-plan-as-built', 'verification', builtChanges, { verifies: PLAN })),
     ),
-    http.get(`*/api/changesets/${PLAN}/verification`, ({ request }) =>
+    http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${PLAN}/verification`, ({ request }) =>
       verification && new URL(request.url).searchParams.get('against') === BUILT
         ? HttpResponse.json(report)
         : new HttpResponse('404 Not Found', { status: 404 }),
@@ -210,7 +210,7 @@ describe('C4 plan comparison', () => {
     serve();
     // The record verifies another plan: it stays in the comparison's picker, never the bar's default.
     mswServer.use(
-      http.get('*/api/changesets', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
         HttpResponse.json({
           version: '1',
           changesets: {

@@ -1,7 +1,8 @@
 /**
  * Topbar — 54px dark shell header.
  *
- * Brand mark (amber gradient square + wordmark) · element / node-type search
+ * Brand mark (amber gradient square + wordmark) · project and checkout switcher
+ * (`CheckoutSwitcher`) · element / node-type search
  * (`TopbarSearch`, `/` or ⌘K) · spacer · light/dark canvas
  * SegmentedControl (bound to uiStore.canvasDark) · DrBot launcher (amber pulse
  * dot, bound to uiStore.chatOpen; the floating DrBot panel hangs under it and
@@ -13,6 +14,7 @@ import { SegmentedControl } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { DRBOT_LAUNCHER_TESTID } from './chatAnchor';
 import { TopbarSearch } from './TopbarSearch';
+import { CheckoutSwitcher } from './CheckoutPicker';
 import { useConnectionStore, type ConnectionState } from '../stores/connectionStore';
 
 const CONNECTION_META: Record<
@@ -101,6 +103,8 @@ export function Topbar() {
           </span>
         </div>
       </div>
+
+      <CheckoutSwitcher />
 
       <TopbarSearch />
 

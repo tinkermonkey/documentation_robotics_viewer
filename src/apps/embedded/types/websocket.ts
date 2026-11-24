@@ -40,7 +40,19 @@ export interface UnsubscribeMessage extends WebSocketMessage {
  * Includes both WebSocket protocol messages (with type) and JSON-RPC messages
  * Note: JSON-RPC messages must come before WebSocketMessage in union to prevent catch-all matching
  */
+/**
+ * A feed subscription on the dr CLI's central process (`dr serve`): the socket
+ * receives model, changeset and annotation events only for the checkouts it
+ * subscribed to, each stamped with its `project` and `checkout`.
+ */
+export interface FeedSubscriptionFrame {
+  action: 'subscribe' | 'unsubscribe';
+  project: string;
+  checkout: string;
+}
+
 export type WebSocketSendMessage =
+  | FeedSubscriptionFrame
   | { method: string; params?: unknown; jsonrpc?: string; id?: string | number }  // JsonRpcRequest
   | { method: string; params?: unknown; jsonrpc?: string }  // JsonRpcNotification
   | WebSocketMessage;  // Fallback for protocol messages with optional type field

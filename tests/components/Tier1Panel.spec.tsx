@@ -24,7 +24,7 @@ type State = keyof typeof tier1;
 function serve(state: State) {
   const requests: Request[] = [];
   mswServer.use(
-    http.get('*/api/tier1', ({ request }) => {
+    http.get('*/api/projects/:project/checkouts/:checkout/tier1', ({ request }) => {
       requests.push(request);
       return HttpResponse.json(tier1[state]);
     }),
@@ -151,29 +151,29 @@ describe('Tier1Panel', () => {
   ])('renders nothing on %s from a dr CLI without /api/tier1, after one fetch and no retry', async (_name, reply) => {
     let calls = 0;
     mswServer.use(
-      http.get('*/api/tier1', () => {
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => {
         calls++;
         return reply();
       }),
     );
     const { container, client } = renderWithProviders(<Tier1Panel />);
-    await waitFor(() => expect(client.getQueryState(['getapitier1'])?.status).toBe('error'), { timeout: 500 });
-    expect(client.getQueryState(['getapitier1'])?.fetchFailureCount).toBe(1);
+    await waitFor(() => expect(client.getQueryState(['getapiprojectsprojectcheckoutscheckouttier1', 'test-project', 'main'])?.status).toBe('error'), { timeout: 500 });
+    expect(client.getQueryState(['getapiprojectsprojectcheckoutscheckouttier1', 'test-project', 'main'])?.fetchFailureCount).toBe(1);
     expect(calls).toBe(1);
     expect(container).toBeEmptyDOMElement();
   });
 
   it('renders nothing for a JSON body that is not a Tier 1 status', async () => {
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ok: true })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ ok: true })));
     const { container, client } = renderWithProviders(<Tier1Panel />);
-    await waitFor(() => expect(client.getQueryState(['getapitier1'])?.status).toBe('success'));
+    await waitFor(() => expect(client.getQueryState(['getapiprojectsprojectcheckoutscheckouttier1', 'test-project', 'main'])?.status).toBe('success'));
     expect(container).toBeEmptyDOMElement();
   });
 
   it('retries a server error once before saying so', async () => {
     let calls = 0;
     mswServer.use(
-      http.get('*/api/tier1', () => {
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => {
         calls++;
         return HttpResponse.json({ error: 'ledger unreadable' }, { status: 500 });
       }),
@@ -181,13 +181,13 @@ describe('Tier1Panel', () => {
     const { client } = renderWithProviders(<Tier1Panel />);
     await waitFor(() => expect(calls).toBe(1));
     // Still pending: the retry is scheduled, not given up on.
-    expect(client.getQueryState(['getapitier1'])?.status).toBe('pending');
+    expect(client.getQueryState(['getapiprojectsprojectcheckoutscheckouttier1', 'test-project', 'main'])?.status).toBe('pending');
     await screen.findByTestId('tier1-error', {}, { timeout: 4000 });
     expect(calls).toBe(2);
   });
 
   it("says the status couldn't be read on a server error", async () => {
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ error: 'ledger unreadable' }, { status: 500 })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ error: 'ledger unreadable' }, { status: 500 })));
     renderWithProviders(<Tier1Panel />);
     expect(await screen.findByTestId('tier1-error', {}, { timeout: 4000 })).toHaveTextContent(
       "Tier 1 status couldn't be read: ledger unreadable",
@@ -238,7 +238,7 @@ describe('Tier1Panel — warming', () => {
 
   it('says the cards are still being built while cards is null', async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({ ...tier1.warming, warming: { ...tier1.warming.warming, cards: null, etaSeconds: undefined } }),
       ),
     );
@@ -250,7 +250,7 @@ describe('Tier1Panel — warming', () => {
   });
 
   it("gives the server's reason when the warming object is malformed", async () => {
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.warming, warming: { jobId: 3 } })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ ...tier1.warming, warming: { jobId: 3 } })));
     renderWithProviders(<Tier1Panel />);
     expect(await screen.findByTestId('tier1-reason')).toHaveTextContent('1,388 of 4,071 cards, about 8 min left');
     expect(screen.queryByTestId('tier1-warming')).not.toBeInTheDocument();
@@ -260,7 +260,7 @@ describe('Tier1Panel — warming', () => {
     vi.useFakeTimers({ shouldAdvanceTime: true });
     const bodies = [tier1.warming, { ...tier1.warming, warming: { ...tier1.warming.warming, cards: { done: 4000, total: 4071 } } }, tier1.on];
     let calls = 0;
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json(bodies[Math.min(calls++, bodies.length - 1)])));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json(bodies[Math.min(calls++, bodies.length - 1)])));
     renderWithProviders(<Tier1Panel />);
 
     expect(await screen.findByTestId('tier1-warming-cards')).toHaveTextContent('1,388 of 4,071 cards');
@@ -278,7 +278,7 @@ describe('Tier1Panel — warming', () => {
 describe('Tier1Panel — mode and routing', () => {
   it('says whether Tier 1 stages without the agent, and why', async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({ ...tier1.on, mode: 'stage', modeReason: 'Defaults verified on held-out labels; `"mode": "auto"` in tier1.json' }),
       ),
     );
@@ -292,12 +292,12 @@ describe('Tier1Panel — mode and routing', () => {
     // Read-only: the note names the command, the panel offers none.
     expect(within(screen.getByTestId('tier1-panel')).queryAllByRole('button')).toHaveLength(0);
 
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'suggest' })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'suggest' })));
     renderWithProviders(<Tier1Panel />);
     await waitFor(() => expect(screen.getAllByTestId('tier1-mode')).toHaveLength(2));
     expect(screen.getAllByTestId('tier1-mode')[1]).toHaveTextContent('Suggests only');
 
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'hide' })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ ...tier1.on, mode: 'hide' })));
     renderWithProviders(<Tier1Panel />);
     await waitFor(() => expect(screen.getAllByTestId('tier1-mode')).toHaveLength(3));
     expect(screen.getAllByTestId('tier1-mode')[2]).toHaveTextContent('Hides non-elements without the agent');
@@ -316,7 +316,7 @@ describe('Tier1Panel — mode and routing', () => {
     expect(screen.queryByTestId('tier1-mode')).not.toBeInTheDocument();
 
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({ ...tier1.openRouter, routing: { ...tier1.openRouter.routing, only: ['cloudflare', 'deepinfra/fp8'], zdr: true } }),
       ),
     );
@@ -339,7 +339,7 @@ describe('Tier1Panel — cap edge cases', () => {
   const base = tier1.on;
 
   it('says the cap is reached in its own words for a CLI that sends no reason when capped', async () => {
-    mswServer.use(http.get('*/api/tier1', () => HttpResponse.json({ ...tier1.capped, reason: undefined })));
+    mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json({ ...tier1.capped, reason: undefined })));
     renderWithProviders(<Tier1Panel />);
     expect(await screen.findByTestId('tier1-capped')).toHaveTextContent("This month's cap is reached");
     expect(screen.queryByTestId('tier1-reason')).not.toBeInTheDocument();
@@ -348,7 +348,7 @@ describe('Tier1Panel — cap edge cases', () => {
 
   it("shows the server's reason when capped, not its own words", async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({
           ...tier1.capped,
           reason: 'The $20.00 monthly cap is reached; it resets on 1 Dec 2026 (UTC). To raise it: `dr analyzer tier1 set monthly-cap <dollars>`.',
@@ -364,7 +364,7 @@ describe('Tier1Panel — cap edge cases', () => {
 
   it('says Tier 1 asks nothing at a $0 cap: no bar, no reset date, no red', async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({
           ...base,
           state: 'capped',
@@ -389,7 +389,7 @@ describe('Tier1Panel — cap edge cases', () => {
 
   it("uses the server's percentUsed for the bar and the fallback warning", async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({
           ...tier1.onNearCap,
           summary: 'Tier 1 is on.',
@@ -405,7 +405,7 @@ describe('Tier1Panel — cap edge cases', () => {
 
   it('rounds down like the CLI without percentUsed', async () => {
     mswServer.use(
-      http.get('*/api/tier1', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/tier1', () =>
         HttpResponse.json({
           ...tier1.onNearCap,
           summary: '',
@@ -420,7 +420,7 @@ describe('Tier1Panel — cap edge cases', () => {
 });
 
 describe('Tier1Panel — malformed bodies render, never crash', () => {
-  const serveBody = (body: unknown) => mswServer.use(http.get('*/api/tier1', () => HttpResponse.json(body as object)));
+  const serveBody = (body: unknown) => mswServer.use(http.get('*/api/projects/:project/checkouts/:checkout/tier1', () => HttpResponse.json(body as object)));
 
   it.each([
     ['no note or summary', { ...tier1.onNearCap, note: undefined, summary: undefined }],

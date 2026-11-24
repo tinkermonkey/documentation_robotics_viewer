@@ -1,0 +1,1779 @@
+- type: add
+  elementId: motivation.requirement.open-the-checkout-a-link-names
+  layerName: motivation
+  after:
+    id: 869a6b2b-efc7-4456-a407-71236fde940f
+    path: motivation.requirement.open-the-checkout-a-link-names
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Open the Checkout a Link Names
+    description: A viewer link from the dr CLI's central process (review_open,
+      project_status, dr visualize) of the form
+      /#/p/<project>/c/<checkout>/[changesets/<id>[?element=<id>] |
+      elements/<id>]?token=<token> opens that project's checkout, and the
+      changeset or element it names, never the process's default checkout.
+    attributes:
+      requirementType: functional
+      priority: critical
+    metadata:
+      created_at: 2026-11-24T11:32:08.549Z
+      updated_at: 2026-11-24T11:32:08.549Z
+      version: 1
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 0
+- type: add
+  elementId: motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: motivation
+  after:
+    id: 04024be1-6b1f-423c-afb7-b4e5025fe38a
+    path: motivation.requirement.keep-checkouts-apart-in-one-browser
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Keep Checkouts Apart in One Browser
+    description: "Two tabs on two checkouts of one project never cross: each tab's
+      data, websocket events and DrBot chat belong to the checkout it shows."
+    attributes:
+      requirementType: functional
+      priority: high
+    metadata:
+      created_at: 2026-11-24T11:32:08.563Z
+      updated_at: 2026-11-24T11:32:08.563Z
+      version: 1
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 1
+- type: add
+  elementId: navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    id: f93d2b68-1d01-43d0-9e9f-8263ebc60fcf
+    path: navigation.route.checkout-shell-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: Checkout Shell Route
+    description: "/#/p/:project/c/:checkout/:section/:view: the app shell for one
+      checkout of the central process, with the same search params as the
+      unscoped shell route had (?layer, ?node, ?edge, ?changeset, ?level,
+      ?scope, ?built, ?vp). Its params set the current checkout (checkoutStore)
+      that every API call, query key, websocket subscription and DrBot send is
+      scoped to. It also takes the CLI's link forms: changesets/<id> (with
+      ?element=) and elements/<id> are read as links and replaced with the shell
+      URL they open."
+    attributes:
+      type: protected
+    metadata:
+      created_at: 2026-11-24T11:32:08.563Z
+      updated_at: 2026-11-24T11:32:08.563Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CheckoutShellRoute
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 2
+- type: add
+  elementId: navigation.route.checkout-index-route
+  layerName: navigation
+  after:
+    id: df660b62-81bc-4d92-a75b-ce680da400e7
+    path: navigation.route.checkout-index-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: Checkout Index Route
+    description: "/#/p/:project/c/:checkout (with or without a trailing slash): the
+      CLI's checkout link; replaced with the checkout's Model view."
+    attributes:
+      type: redirect
+    metadata:
+      created_at: 2026-11-24T11:32:08.565Z
+      updated_at: 2026-11-24T11:32:08.565Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CheckoutIndexRoute
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 3
+- type: add
+  elementId: ux.view.checkout-picker-view
+  layerName: ux
+  after:
+    id: f96a33a2-793b-48f4-a682-9de83f2382d2
+    path: ux.view.checkout-picker-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Checkout Picker View
+    description: "The page a bare /#/ (and any old unscoped /#/:section/:view link)
+      opens: every project the central process serves, each with its checkouts
+      (main checkout first, then worktrees, with branch), from GET /api/projects
+      and GET /api/projects/{project}/checkouts. Choosing one opens it (an old
+      link's section, view and search carried over). A farm with exactly one
+      checkout opens it directly. An older dr CLI without /api/projects gets a
+      message saying the viewer needs dr serve."
+    attributes:
+      type: page
+    metadata:
+      created_at: 2026-11-24T11:32:08.566Z
+      updated_at: 2026-11-24T11:32:08.566Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutPickerPage
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 4
+- type: add
+  elementId: ux.subview.checkout-switcher
+  layerName: ux
+  after:
+    id: 40c9deb2-f6fc-44cb-9a7a-7a0829d6b9c9
+    path: ux.subview.checkout-switcher
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: Checkout Switcher
+    description: "In the topbar: the current project and checkout as two Heimdall
+      Selects, listing the farm's projects and the chosen project's checkouts;
+      switching opens the same view in the other checkout without a new link."
+    metadata:
+      created_at: 2026-11-24T11:32:08.569Z
+      updated_at: 2026-11-24T11:32:08.569Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutSwitcher
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 5
+- type: add
+  elementId: ux.errorconfig.checkout-unavailable-error
+  layerName: ux
+  after:
+    id: 1ddbe372-cd65-4db2-abdc-1966bee1bf77
+    path: ux.errorconfig.checkout-unavailable-error
+    spec_node_id: ux.errorconfig
+    type: errorconfig
+    layer_id: ux
+    name: Checkout Unavailable Error
+    description: "What the shell shows instead of the views when the route's
+      checkout can't be served: 404 (an unknown project or checkout, or one
+      whose folder is gone), a checkout.removed event, or server.stopping. Names
+      the project and checkout, says why, and offers the checkout picker."
+    metadata:
+      created_at: 2026-11-24T11:32:08.570Z
+      updated_at: 2026-11-24T11:32:08.570Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutUnavailablePage
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 6
+- type: add
+  elementId: application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    id: 0abc272c-bee9-4fe1-acd2-28c3e3705c43
+    path: application.applicationservice.checkout-scope
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Checkout Scope
+    description: "data/checkoutScope.ts: the current CheckoutRef ({project,
+      checkout}) from checkoutStore as a hook (useCheckoutRef), the scoped query
+      keys the data hooks share (the generated client's scoped operation ids,
+      then project and checkout), invalidation for one checkout, and whether an
+      API error means the checkout is unavailable (404 on a scoped route). Every
+      project-data hook (model, layers, tier1, changesets with
+      commit/discard/review/verification, annotations) calls the generated
+      client's /api/projects/{project}/checkouts/{checkout}/... operations
+      through it."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-24T11:32:08.571Z
+      updated_at: 2026-11-24T11:32:08.571Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/checkoutScope.ts
+          symbol: useCheckoutRef
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 7
+- type: add
+  elementId: application.applicationservice.use-projects
+  layerName: application
+  after:
+    id: 3f522d29-7f30-4b67-8a5d-123d52b9d94f
+    path: application.applicationservice.use-projects
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Use Projects
+    description: "data/useProjects.ts: React Query hooks over GET /api/projects and
+      GET /api/projects/{project}/checkouts (validated, unknown fields dropped)
+      for the checkout picker and switcher."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-24T11:32:08.572Z
+      updated_at: 2026-11-24T11:32:08.572Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useProjects.ts
+          symbol: useProjects
+  timestamp: 2026-11-24T12:01:32.118Z
+  sequenceNumber: 8
+- type: add
+  elementId: application.applicationfunction.checkout-store
+  layerName: application
+  after:
+    id: 2783f9a7-5ad3-4508-8a41-de6b27c1339e
+    path: application.applicationfunction.checkout-store
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Checkout Store
+    description: "stores/checkoutStore.ts: Zustand store holding the checkout the
+      route names and whether it is unavailable (and why). Not persisted: the
+      URL is the authority. Read outside React by the websocket client and the
+      chat service."
+    metadata:
+      created_at: 2026-11-24T11:32:08.572Z
+      updated_at: 2026-11-24T11:32:08.572Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/stores/checkoutStore.ts
+          symbol: useCheckoutStore
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 9
+- type: add
+  elementId: application.applicationevent.checkout-removed
+  layerName: application
+  after:
+    id: 6b7f419a-ab69-4b29-8201-1baf755b5cab
+    path: application.applicationevent.checkout-removed
+    spec_node_id: application.applicationevent
+    type: applicationevent
+    layer_id: application
+    name: Checkout Removed
+    description: "checkout.removed {project, checkout}: the central process found
+      the checkout gone; its subscribers' DrBot turns end. The shell shows the
+      Checkout Unavailable error for it."
+    attributes:
+      eventType: integration
+    metadata:
+      created_at: 2026-11-24T11:32:08.573Z
+      updated_at: 2026-11-24T11:32:08.573Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CHECKOUT_REMOVED_EVENT
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 10
+- type: add
+  elementId: application.applicationevent.server-stopping
+  layerName: application
+  after:
+    id: f7722a9a-b567-4268-bd39-a077c1a8449e
+    path: application.applicationevent.server-stopping
+    spec_node_id: application.applicationevent
+    type: applicationevent
+    layer_id: application
+    name: Server Stopping
+    description: "server.stopping {project, checkout}: the central process is
+      shutting down. The shell says so; the websocket client reconnects and
+      resubscribes when a process answers again."
+    attributes:
+      eventType: system
+    metadata:
+      created_at: 2026-11-24T11:32:08.573Z
+      updated_at: 2026-11-24T11:32:08.573Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: SERVER_STOPPING_EVENT
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 11
+- type: add
+  elementId: application.applicationevent.chat-turn-queued
+  layerName: application
+  after:
+    id: 099b7c0d-61ef-495d-a2a8-f22e670544a6
+    path: application.applicationevent.chat-turn-queued
+    spec_node_id: application.applicationevent
+    type: applicationevent
+    layer_id: application
+    name: Chat Turn Queued
+    description: "chat.turn.queued {conversation_id, project, checkout, position,
+      running, max_turns, message}: a DrBot send waits behind the process's
+      running-turn cap. The chat shows the queued state on the pending reply."
+    attributes:
+      eventType: integration
+    metadata:
+      created_at: 2026-11-24T11:32:08.573Z
+      updated_at: 2026-11-24T11:32:08.573Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/chatStore.ts
+          symbol: ChatTurnQueued
+  timestamp: 2026-11-24T12:01:32.118Z
+  sequenceNumber: 12
+- type: add
+  elementId: application.applicationevent.chat-turn-started
+  layerName: application
+  after:
+    id: 787d5750-1341-4122-8139-ff4a7eee02e6
+    path: application.applicationevent.chat-turn-started
+    spec_node_id: application.applicationevent
+    type: applicationevent
+    layer_id: application
+    name: Chat Turn Started
+    description: "chat.turn.started {conversation_id, project, checkout, waited_ms}:
+      a queued DrBot send starts. The chat clears the queued state."
+    attributes:
+      eventType: integration
+    metadata:
+      created_at: 2026-11-24T11:32:08.573Z
+      updated_at: 2026-11-24T11:32:08.573Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/chatService.ts
+          symbol: chat.turn.started
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 13
+- type: add
+  elementId: application.message.feed-subscription
+  layerName: application
+  after:
+    id: 25929ee7-5f83-4ab0-8f2d-7947ea693d09
+    path: application.message.feed-subscription
+    spec_node_id: application.message
+    type: message
+    layer_id: application
+    name: Feed Subscription
+    description: "{action: subscribe | unsubscribe, project, checkout}: the
+      websocket frame that adds or removes the socket's subscription to one
+      checkout's feed on the central process. The client sends subscribe for the
+      shown checkout on connect and on every switch (unsubscribe for the one
+      left) and again after a reconnect."
+    attributes:
+      messageType: command
+    metadata:
+      created_at: 2026-11-24T11:32:08.573Z
+      updated_at: 2026-11-24T11:32:08.573Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/types/websocket.ts
+          symbol: FeedSubscriptionFrame
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: motivation.requirement.open-the-checkout-a-link-names::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.open-the-checkout-a-link-names
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: motivation.requirement.keep-checkouts-apart-in-one-browser::realizes::motivation.goal.enable-real-time-collaboration
+  layerName: motivation
+  after:
+    source: motivation.requirement.keep-checkouts-apart-in-one-browser
+    target: motivation.goal.enable-real-time-collaboration
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: navigation.navigationgraph.embedded-app-navigation-graph::composes::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.navigationgraph.embedded-app-navigation-graph
+    target: navigation.route.checkout-shell-route
+    predicate: composes
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: navigation.navigationgraph.embedded-app-navigation-graph::composes::navigation.route.checkout-index-route
+  layerName: navigation
+  after:
+    source: navigation.navigationgraph.embedded-app-navigation-graph
+    target: navigation.route.checkout-index-route
+    predicate: composes
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::depends-on::application.applicationcomponent.app-shell
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: application.applicationcomponent.app-shell
+    predicate: depends-on
+    layer: navigation
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::maps-to::ux.view.model-view
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: ux.view.model-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::maps-to::ux.view.schema-view
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: ux.view.schema-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::maps-to::ux.view.changesets-view
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: ux.view.changesets-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::maps-to::ux.view.architecture-view
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: ux.view.architecture-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::uses::application.applicationservice.checkout-scope
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: application.applicationservice.checkout-scope
+    predicate: uses
+    layer: navigation
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::uses::ux.errorconfig.checkout-unavailable-error
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: ux.errorconfig.checkout-unavailable-error
+    predicate: uses
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::satisfies::motivation.requirement.open-the-checkout-a-link-names
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: motivation.requirement.open-the-checkout-a-link-names
+    predicate: satisfies
+    layer: navigation
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: navigation
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: navigation.route.checkout-index-route::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-index-route
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: navigation.route.checkout-index-route::satisfies::motivation.requirement.open-the-checkout-a-link-names
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-index-route
+    target: motivation.requirement.open-the-checkout-a-link-names
+    predicate: satisfies
+    layer: navigation
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: navigation.route.index-route::maps-to::ux.view.checkout-picker-view
+  layerName: navigation
+  after:
+    source: navigation.route.index-route
+    target: ux.view.checkout-picker-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: navigation.route.index-route::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.route.index-route
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.checkout-picker-view
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.checkout-picker-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: application.applicationservice.use-projects::serves::ux.view.checkout-picker-view
+  layerName: application
+  after:
+    source: application.applicationservice.use-projects
+    target: ux.view.checkout-picker-view
+    predicate: serves
+    layer: application
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: application.applicationservice.use-projects::serves::application.applicationcomponent.topbar
+  layerName: application
+  after:
+    source: application.applicationservice.use-projects
+    target: application.applicationcomponent.topbar
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: ux.view.checkout-picker-view::satisfies::motivation.requirement.open-the-checkout-a-link-names
+  layerName: ux
+  after:
+    source: ux.view.checkout-picker-view
+    target: motivation.requirement.open-the-checkout-a-link-names
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 35
+- type: relationship-add
+  elementId: application.applicationservice.checkout-scope::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: application
+  after:
+    source: application.applicationservice.checkout-scope
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 36
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-store::realizes::application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-store
+    target: application.applicationservice.checkout-scope
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationservice.web-socket-client::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: application
+  after:
+    source: application.applicationservice.web-socket-client
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationevent.checkout-removed::triggers::application.applicationfunction.checkout-store
+  layerName: application
+  after:
+    source: application.applicationevent.checkout-removed
+    target: application.applicationfunction.checkout-store
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationevent.server-stopping::triggers::application.applicationfunction.checkout-store
+  layerName: application
+  after:
+    source: application.applicationevent.server-stopping
+    target: application.applicationfunction.checkout-store
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationservice.chat-service::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: application
+  after:
+    source: application.applicationservice.chat-service
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:08.587Z
+  sequenceNumber: 41
+- type: add
+  elementId: navigation.navigationtransition.cli-deep-link-transition
+  layerName: navigation
+  after:
+    id: dbaccd23-631b-4928-bdfa-e1b3dc437f33
+    path: navigation.navigationtransition.cli-deep-link-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: CLI Deep-Link Transition
+    description: "Reads a dr CLI viewer link: changesets/<id> opens the Changesets
+      view on that changeset (and with ?element=<id> selects its change to that
+      element); elements/<id> waits for the model, resolves the dotted id (or
+      UUID) and opens the Model view on that element's layer with it selected;
+      an id the model lacks shows the layer with a notice. Replaces the history
+      entry, so Back never returns to the raw link."
+    attributes:
+      from: /p/:project/c/:checkout/changesets/:id |
+        /p/:project/c/:checkout/elements/:id
+      to: /p/:project/c/:checkout/:section/:view
+      trigger: redirect
+    metadata:
+      created_at: 2026-11-24T11:32:31.378Z
+      updated_at: 2026-11-24T11:32:31.378Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/routes/checkoutLinks.ts
+          symbol: readCliLink
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 42
+- type: add
+  elementId: data-model.objectschema.checkout-ref
+  layerName: data-model
+  after:
+    id: 8aeb5761-dc58-40cb-97ad-52f8dcd51bf5
+    path: data-model.objectschema.checkout-ref
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Checkout Ref
+    description: "{project, checkout}: names one checkout of the central process's
+      farm (the CLI's CheckoutRef). The route, the API paths, query keys, the
+      feed subscription and every DrBot frame carry it."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-24T11:32:31.378Z
+      updated_at: 2026-11-24T11:32:31.378Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/checkoutStore.ts
+          symbol: CheckoutRef
+  timestamp: 2026-11-24T12:01:32.118Z
+  sequenceNumber: 43
+- type: add
+  elementId: application.applicationfunction.checkout-feed-subscription
+  layerName: application
+  after:
+    id: 8f0fca1c-b43d-4a2b-828d-61e3fda8e0e1
+    path: application.applicationfunction.checkout-feed-subscription
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Checkout Feed Subscription
+    description: "In websocketClient: sends {action: subscribe, project, checkout}
+      for the checkout shown (on connect, after a reconnect, and on a switch,
+      with unsubscribe for the one left), and drops every plain event stamped
+      with another project or checkout before it reaches a handler. Hands
+      checkout.removed and server.stopping to checkoutStore."
+    metadata:
+      created_at: 2026-11-24T11:32:31.378Z
+      updated_at: 2026-11-24T11:32:31.378Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: WebSocketClient.setCheckout
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 44
+- type: add
+  elementId: application.applicationfunction.chat-frame-routing
+  layerName: application
+  after:
+    id: 9572e135-aad7-4168-97a8-8b10d276968a
+    path: application.applicationfunction.chat-frame-routing
+    spec_node_id: application.applicationfunction
+    type: applicationfunction
+    layer_id: application
+    name: Chat Frame Routing
+    description: "In chatService: sends project and checkout with chat.send,
+      chat.cancel and chat.status; ignores any chat notification whose
+      conversation_id or project/checkout is not the current conversation's;
+      starts a new conversation when the checkout changes (a conversation
+      belongs to one checkout); and marks the pending reply queued on
+      chat.turn.queued (position, the server's message) until
+      chat.turn.started."
+    metadata:
+      created_at: 2026-11-24T11:32:31.378Z
+      updated_at: 2026-11-24T11:32:31.378Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/chatService.ts
+          symbol: ChatService.isForThisConversation
+  timestamp: 2026-11-24T12:01:32.155Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::accesses::data-model.objectschema.checkout-ref
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: data-model.objectschema.checkout-ref
+    predicate: accesses
+    layer: navigation
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 46
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::flows-to::navigation.navigationtransition.cli-deep-link-transition
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: navigation.navigationtransition.cli-deep-link-transition
+    predicate: flows-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: navigation.navigationtransition.cli-deep-link-transition::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.navigationtransition.cli-deep-link-transition
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: ux.view.model-view::composes::ux.subview.checkout-switcher
+  layerName: ux
+  after:
+    source: ux.view.model-view
+    target: ux.subview.checkout-switcher
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: ux.view.schema-view::composes::ux.subview.checkout-switcher
+  layerName: ux
+  after:
+    source: ux.view.schema-view
+    target: ux.subview.checkout-switcher
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 50
+- type: relationship-add
+  elementId: ux.view.changesets-view::composes::ux.subview.checkout-switcher
+  layerName: ux
+  after:
+    source: ux.view.changesets-view
+    target: ux.subview.checkout-switcher
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 51
+- type: relationship-add
+  elementId: ux.view.architecture-view::composes::ux.subview.checkout-switcher
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: ux.subview.checkout-switcher
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 52
+- type: relationship-add
+  elementId: application.applicationservice.checkout-scope::accesses::data-model.objectschema.checkout-ref
+  layerName: application
+  after:
+    source: application.applicationservice.checkout-scope
+    target: data-model.objectschema.checkout-ref
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 53
+- type: relationship-add
+  elementId: application.applicationservice.use-model::depends-on::application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    source: application.applicationservice.use-model
+    target: application.applicationservice.checkout-scope
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 54
+- type: relationship-add
+  elementId: application.applicationservice.use-changesets::depends-on::application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    source: application.applicationservice.use-changesets
+    target: application.applicationservice.checkout-scope
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 55
+- type: relationship-add
+  elementId: application.applicationservice.generated-api-client::depends-on::application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    source: application.applicationservice.generated-api-client
+    target: application.applicationservice.checkout-scope
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-store::accesses::data-model.objectschema.checkout-ref
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-store
+    target: data-model.objectschema.checkout-ref
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-feed-subscription::realizes::application.applicationservice.web-socket-client
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-feed-subscription
+    target: application.applicationservice.web-socket-client
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-feed-subscription::triggers::application.message.feed-subscription
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-feed-subscription
+    target: application.message.feed-subscription
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-feed-subscription::accesses::data-model.objectschema.checkout-ref
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-feed-subscription
+    target: data-model.objectschema.checkout-ref
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-feed-subscription::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-feed-subscription
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: application.applicationevent.checkout-removed::triggers::application.applicationfunction.checkout-feed-subscription
+  layerName: application
+  after:
+    source: application.applicationevent.checkout-removed
+    target: application.applicationfunction.checkout-feed-subscription
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: application.applicationevent.server-stopping::triggers::application.applicationfunction.checkout-feed-subscription
+  layerName: application
+  after:
+    source: application.applicationevent.server-stopping
+    target: application.applicationfunction.checkout-feed-subscription
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: application.applicationfunction.chat-frame-routing::realizes::application.applicationservice.chat-service
+  layerName: application
+  after:
+    source: application.applicationfunction.chat-frame-routing
+    target: application.applicationservice.chat-service
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: application.applicationfunction.chat-frame-routing::accesses::data-model.objectschema.checkout-ref
+  layerName: application
+  after:
+    source: application.applicationfunction.chat-frame-routing
+    target: data-model.objectschema.checkout-ref
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 65
+- type: relationship-add
+  elementId: application.applicationfunction.chat-frame-routing::satisfies::motivation.requirement.keep-checkouts-apart-in-one-browser
+  layerName: application
+  after:
+    source: application.applicationfunction.chat-frame-routing
+    target: motivation.requirement.keep-checkouts-apart-in-one-browser
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 66
+- type: relationship-add
+  elementId: application.applicationevent.chat-turn-queued::triggers::application.applicationfunction.chat-frame-routing
+  layerName: application
+  after:
+    source: application.applicationevent.chat-turn-queued
+    target: application.applicationfunction.chat-frame-routing
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: application.applicationevent.chat-turn-started::triggers::application.applicationfunction.chat-frame-routing
+  layerName: application
+  after:
+    source: application.applicationevent.chat-turn-started
+    target: application.applicationfunction.chat-frame-routing
+    predicate: triggers
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:31.393Z
+  sequenceNumber: 68
+- type: update
+  elementId: navigation.route.index-route
+  layerName: navigation
+  before:
+    id: bd3c9cfa-aae2-4f1d-bffd-3d044955518e
+    path: navigation.route.index-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: Index Route
+    description: Landing route at path /#/; accepts optional ?token= search
+      parameter; renders AuthRoute component that extracts the magic link token
+      and redirects to the model view.
+    attributes: &a1
+      type: public
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: indexRoute
+    metadata: &a3
+      created_at: 2026-03-20T13:25:26.094Z
+      updated_at: 2026-03-20T13:25:26.094Z
+      version: 1
+  after:
+    id: bd3c9cfa-aae2-4f1d-bffd-3d044955518e
+    path: navigation.route.index-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: Index Route
+    description: "Landing route at /#/ (bare, no project): the dr CLI's central
+      process serves many projects and checkouts, so it renders the Checkout
+      Picker View. A token in the fragment (?token=) is stored and removed from
+      the address bar first. When the farm has exactly one checkout it opens
+      that checkout's Model view directly."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-24T11:32:40.519Z
+  sequenceNumber: 69
+- type: update
+  elementId: navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  before:
+    id: 68cfdda4-3413-4827-98c4-b44fec8346d2
+    path: navigation.route.app-shell-sectionview-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: App Shell Section/View Route
+    description: Parameterized route at /#/:section/:view (section = model | spec |
+      changesets | architecture; view is a per-section default, e.g. graph,
+      list, or diagram for architecture) that renders AppShell; a two-way effect
+      keeps uiStore.view and the URL hash in sync. The architecture section
+      carries ?level= (context | container | component), ?scope= (the dotted id
+      of the element whose parts are shown) and ?node= (the selected box).
+      Replaced the previous six separate per-section redirect + view routes
+      (model/spec/changesets redirect-route and view-route pairs) with a single
+      generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in
+      the June 2026 Heimdall UX rebuild; protected — requires a valid auth token
+      via authStore.
+    attributes:
+      type: protected
+    source_reference: &a4
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: appShellRoute
+    metadata: &a5
+      created_at: 2026-09-19T15:17:21.969Z
+      updated_at: 2026-09-19T15:17:21.969Z
+      version: 1
+  after:
+    id: 68cfdda4-3413-4827-98c4-b44fec8346d2
+    path: navigation.route.app-shell-sectionview-route
+    spec_node_id: navigation.route
+    type: route
+    layer_id: navigation
+    name: App Shell Section/View Route
+    description: "The old unscoped route /#/:section/:view (section = model | spec |
+      changesets | architecture). Since the viewer runs on the dr CLI's central
+      process (dr serve), whose project data is served only per checkout, it no
+      longer renders the shell: it opens the Checkout Picker View, which carries
+      the section, view and search over to the checkout chosen (or opens the
+      farm's only checkout directly)."
+    attributes:
+      type: redirect
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-11-24T11:32:40.555Z
+  sequenceNumber: 70
+- type: update
+  elementId: application.applicationservice.web-socket-client
+  layerName: application
+  before:
+    id: b7775f1a-2418-4c7a-84aa-997efd658a97
+    path: application.applicationservice.web-socket-client
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: WebSocket Client
+    description: Manages the persistent WebSocket connection to the DR CLI server;
+      handles reconnection, topic subscriptions, and JSON-RPC message dispatch
+    attributes: &a6
+      serviceType: event-driven
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: websocketClient
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: WebSocketClient
+    metadata: &a8
+      created_at: 2026-03-20T12:56:05.522Z
+      updated_at: 2026-03-20T12:56:05.522Z
+      version: 1
+  after:
+    id: b7775f1a-2418-4c7a-84aa-997efd658a97
+    path: application.applicationservice.web-socket-client
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: WebSocket Client
+    description: Manages the persistent WebSocket connection to the DR CLI's central
+      process (/ws); handles reconnection, the per-checkout feed subscription
+      (subscribe / unsubscribe frames, resent after a reconnect), filtering of
+      events stamped for another checkout, and JSON-RPC message dispatch
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-24T11:32:40.586Z
+  sequenceNumber: 71
+- type: update
+  elementId: application.applicationservice.chat-service
+  layerName: application
+  before:
+    id: a920ab1c-c481-46b6-bdb4-4050501adeac
+    path: application.applicationservice.chat-service
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Chat Service
+    description: Interfaces with the Claude AI API to provide architectural
+      assistant chat functionality; manages message streaming and tool
+      invocations
+    attributes: &a9
+      serviceType: asynchronous
+    source_reference: &a10
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/services/chatService.ts
+          symbol: chatService
+    metadata: &a11
+      created_at: 2026-03-20T12:56:04.291Z
+      updated_at: 2026-03-20T12:56:04.291Z
+      version: 1
+  after:
+    id: a920ab1c-c481-46b6-bdb4-4050501adeac
+    path: application.applicationservice.chat-service
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Chat Service
+    description: "DrBot chat over the central process's websocket: sends chat.send /
+      chat.cancel / chat.status with the current project and checkout, streams
+      the reply (text, tool calls, thinking, usage), matches every frame by
+      conversation id and checkout, and shows a turn queued behind the process's
+      cap (chat.turn.queued / chat.turn.started)"
+    attributes: *a9
+    source_reference: *a10
+    metadata: *a11
+  timestamp: 2026-11-24T11:32:40.628Z
+  sequenceNumber: 72
+- type: update
+  elementId: application.applicationservice.generated-api-client
+  layerName: application
+  before:
+    id: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+    path: application.applicationservice.generated-api-client
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Generated API Client
+    description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
+      provides typed methods for all DR CLI REST endpoints
+    attributes: &a12
+      serviceType: synchronous
+    source_reference: &a13
+      provenance: extracted
+      locations:
+        - file: src/core/services/generatedApiClient.ts
+          symbol: generatedApiClient
+    metadata: &a14
+      created_at: 2026-03-20T12:55:36.541Z
+      updated_at: 2026-03-20T12:55:36.542Z
+      version: 1
+  after:
+    id: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
+    path: application.applicationservice.generated-api-client
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Generated API Client
+    description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
+      provides typed methods for all DR CLI REST endpoints. Project data is
+      called only through its /api/projects/{project}/checkouts/{checkout}/...
+      operations, with the current checkout from Checkout Scope.
+    attributes: *a12
+    source_reference: *a13
+    metadata: *a14
+  timestamp: 2026-11-24T11:32:40.672Z
+  sequenceNumber: 73
+- type: update
+  elementId: application.applicationcomponent.topbar
+  layerName: application
+  before:
+    id: 07b53e9c-ba44-46ec-8204-6a3010dcfa6d
+    path: application.applicationcomponent.topbar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Topbar
+    description: "The shell's top bar: title, the element and node-type search box,
+      connection state, light/dark canvas toggle and the DrBot drawer toggle."
+    attributes: &a15
+      type: internal
+    source_reference: &a16
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/Topbar.tsx
+          symbol: Topbar
+    metadata: &a17
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 07b53e9c-ba44-46ec-8204-6a3010dcfa6d
+    path: application.applicationcomponent.topbar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Topbar
+    description: "The shell's top bar: title, the project and checkout switcher, the
+      element and node-type search box, connection state, light/dark canvas
+      toggle and the DrBot drawer toggle."
+    attributes: *a15
+    source_reference: *a16
+    metadata: *a17
+  timestamp: 2026-11-24T11:32:40.713Z
+  sequenceNumber: 74
+- type: relationship-add
+  elementId: ux.uxspec.architecture-exploration-spec::aggregates::ux.view.checkout-picker-view
+  layerName: ux
+  after:
+    source: ux.uxspec.architecture-exploration-spec
+    target: ux.view.checkout-picker-view
+    predicate: aggregates
+    layer: ux
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 75
+- type: relationship-add
+  elementId: application.applicationservice.checkout-scope::serves::application.applicationcomponent.app-shell
+  layerName: application
+  after:
+    source: application.applicationservice.checkout-scope
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 76
+- type: relationship-add
+  elementId: navigation.navigationtransition.tab-navigation-transition::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.navigationtransition.tab-navigation-transition
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 77
+- type: relationship-add
+  elementId: navigation.navigationtransition.layer-deep-link-transition::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.navigationtransition.layer-deep-link-transition
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 78
+- type: relationship-add
+  elementId: navigation.flowstep.post-auth-model-entry-step::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.flowstep.post-auth-model-entry-step
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 79
+- type: relationship-add
+  elementId: navigation.route.app-shell-sectionview-route::navigates-to::navigation.route.checkout-shell-route
+  layerName: navigation
+  after:
+    source: navigation.route.app-shell-sectionview-route
+    target: navigation.route.checkout-shell-route
+    predicate: navigates-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T11:32:52.344Z
+  sequenceNumber: 80
+- type: relationship-delete
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.model-view
+  layerName: navigation
+  before:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.model-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+  timestamp: 2026-11-24T11:33:04.648Z
+  sequenceNumber: 81
+- type: relationship-delete
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.schema-view
+  layerName: navigation
+  before:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.schema-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+  timestamp: 2026-11-24T11:33:04.947Z
+  sequenceNumber: 82
+- type: relationship-delete
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.changesets-view
+  layerName: navigation
+  before:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.changesets-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+  timestamp: 2026-11-24T11:33:05.227Z
+  sequenceNumber: 83
+- type: relationship-delete
+  elementId: navigation.route.app-shell-sectionview-route::maps-to::ux.view.architecture-view
+  layerName: navigation
+  before:
+    source: navigation.route.app-shell-sectionview-route
+    target: ux.view.architecture-view
+    predicate: maps-to
+    layer: navigation
+    targetLayer: ux
+  timestamp: 2026-11-24T11:33:05.476Z
+  sequenceNumber: 84
+- type: relationship-delete
+  elementId: navigation.route.app-shell-sectionview-route::depends-on::application.applicationcomponent.app-shell
+  layerName: navigation
+  before:
+    source: navigation.route.app-shell-sectionview-route
+    target: application.applicationcomponent.app-shell
+    predicate: depends-on
+    layer: navigation
+    targetLayer: application
+  timestamp: 2026-11-24T11:33:05.724Z
+  sequenceNumber: 85
+- type: relationship-delete
+  elementId: navigation.navigationtransition.tab-navigation-transition::navigates-to::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  before:
+    source: navigation.navigationtransition.tab-navigation-transition
+    target: navigation.route.app-shell-sectionview-route
+    predicate: navigates-to
+    layer: navigation
+  timestamp: 2026-11-24T11:33:05.978Z
+  sequenceNumber: 86
+- type: relationship-delete
+  elementId: navigation.navigationtransition.layer-deep-link-transition::navigates-to::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  before:
+    source: navigation.navigationtransition.layer-deep-link-transition
+    target: navigation.route.app-shell-sectionview-route
+    predicate: navigates-to
+    layer: navigation
+  timestamp: 2026-11-24T11:33:06.233Z
+  sequenceNumber: 87
+- type: relationship-delete
+  elementId: navigation.flowstep.post-auth-model-entry-step::navigates-to::navigation.route.app-shell-sectionview-route
+  layerName: navigation
+  before:
+    source: navigation.flowstep.post-auth-model-entry-step
+    target: navigation.route.app-shell-sectionview-route
+    predicate: navigates-to
+    layer: navigation
+  timestamp: 2026-11-24T11:33:06.489Z
+  sequenceNumber: 88
+- type: delete
+  elementId: ux.view.auth-view
+  layerName: ux
+  before:
+    id: d840fbc5-353c-4bae-8188-5f33bbaf2dd9
+    path: ux.view.auth-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Auth View
+    description: Landing view at route /#/; extracts the DR CLI bearer token from
+      the ?token= URL query parameter, persists it to localStorage, and
+      redirects to the model view.
+    attributes:
+      type: embedded
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T13:22:53.827Z
+      updated_at: 2026-03-20T13:22:53.827Z
+      version: 1
+  timestamp: 2026-11-24T12:01:16.792Z
+  sequenceNumber: 89
+- type: relationship-delete
+  elementId: ux.uxspec.authentication-spec::aggregates::ux.view.auth-view
+  layerName: ux
+  before:
+    source: ux.uxspec.authentication-spec
+    target: ux.view.auth-view
+    predicate: aggregates
+    layer: ux
+  timestamp: 2026-11-24T12:01:16.822Z
+  sequenceNumber: 90
+- type: delete
+  elementId: application.applicationprocess.auth-route
+  layerName: application
+  before:
+    id: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+    path: application.applicationprocess.auth-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Auth Route
+    description: TanStack Router route handling token-based authentication via magic
+      link; extracts token from URL query params
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T12:57:27.016Z
+      updated_at: 2026-03-20T12:57:27.016Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.134Z
+  sequenceNumber: 91
+- type: relationship-delete
+  elementId: application.applicationprocess.auth-route::depends-on::application.applicationfunction.auth-store
+  layerName: application
+  before:
+    source: application.applicationprocess.auth-route
+    target: application.applicationfunction.auth-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.156Z
+  sequenceNumber: 92
+- type: relationship-delete
+  elementId: navigation.navigationflow.authentication-to-model-flow::realizes::application.applicationprocess.auth-route
+  layerName: navigation
+  before:
+    source: navigation.navigationflow.authentication-to-model-flow
+    target: application.applicationprocess.auth-route
+    predicate: realizes
+    layer: navigation
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.179Z
+  sequenceNumber: 93
+- type: relationship-delete
+  elementId: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04::realizes::c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  layerName: application
+  before:
+    source: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+    target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-24T12:01:17.210Z
+  sequenceNumber: 94
+- type: delete
+  elementId: navigation.navigationtransition.auth-redirect-transition
+  layerName: navigation
+  before:
+    id: 6a0364fb-3985-40d8-8921-d1634df686f2
+    path: navigation.navigationtransition.auth-redirect-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Auth Redirect Transition
+    description: Programmatic redirect from the index route to the model graph view
+      after successful token extraction; triggered by the AuthRoute on token
+      validation success.
+    attributes:
+      from: index-route
+      to: model-view-route
+      trigger: redirect
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata:
+      created_at: 2026-03-20T13:26:35.262Z
+      updated_at: 2026-03-20T13:26:35.262Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.576Z
+  sequenceNumber: 95
+- type: relationship-delete
+  elementId: navigation.navigationguard.authentication-guard::protects::navigation.navigationtransition.auth-redirect-transition
+  layerName: navigation
+  before:
+    source: navigation.navigationguard.authentication-guard
+    target: navigation.navigationtransition.auth-redirect-transition
+    predicate: protects
+    layer: navigation
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.598Z
+  sequenceNumber: 96
+- type: delete
+  elementId: ux.statepattern.authentication-flow-pattern
+  layerName: ux
+  before:
+    id: f98c00c5-f24b-47e6-a51a-5c0f68127997
+    path: ux.statepattern.authentication-flow-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Authentication Flow Pattern
+    description: "Multi-step UX state machine for the token-based authentication
+      flow; states: unauthenticated → extracting-token → validating →
+      authenticated; handles invalid token rejection."
+    attributes:
+      category: authentication
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata:
+      created_at: 2026-03-20T13:25:10.821Z
+      updated_at: 2026-03-20T13:25:10.822Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.951Z
+  sequenceNumber: 97
+- type: relationship-delete
+  elementId: ux.statepattern.authentication-flow-pattern::specializes::ux.statepattern.data-loading-pattern
+  layerName: ux
+  before:
+    source: ux.statepattern.authentication-flow-pattern
+    target: ux.statepattern.data-loading-pattern
+    predicate: specializes
+    layer: ux
+  timestamp: 2026-11-24T12:01:17.974Z
+  sequenceNumber: 98
+- type: delete
+  elementId: ux.uxspec.authentication-spec
+  layerName: ux
+  before:
+    id: 9f80cdb4-4e5f-480f-b8e5-255ed97bf829
+    path: ux.uxspec.authentication-spec
+    spec_node_id: ux.uxspec
+    type: uxspec
+    layer_id: ux
+    name: Authentication Spec
+    description: UX specification for token-based authentication flow; extracts
+      bearer token from magic link URL query parameter and redirects to the
+      model view on success.
+    attributes:
+      experience: visual
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T13:22:49.389Z
+      updated_at: 2026-03-20T13:22:49.389Z
+      version: 1
+  timestamp: 2026-11-24T12:01:18.342Z
+  sequenceNumber: 99
+- type: relationship-delete
+  elementId: ux.uxspec.authentication-spec::satisfies::motivation.requirement.dr-cli-server-integration
+  layerName: ux
+  before:
+    source: ux.uxspec.authentication-spec
+    target: motivation.requirement.dr-cli-server-integration
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+  timestamp: 2026-11-24T12:01:18.364Z
+  sequenceNumber: 100
+- type: update
+  elementId: navigation.flowstep.token-extraction-step
+  layerName: navigation
+  before:
+    id: 5124a95d-6e9e-4d62-a725-f306ac7498f0
+    path: navigation.flowstep.token-extraction-step
+    spec_node_id: navigation.flowstep
+    type: flowstep
+    layer_id: navigation
+    name: Token Extraction Step
+    description: First step in the auth flow; renders on the index route, reads
+      ?token= from URL, stores token, then triggers programmatic redirect.
+    attributes: &a18
+      sequence: 1
+      route: index-route
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata: &a19
+      created_at: 2026-03-20T13:26:01.263Z
+      updated_at: 2026-03-20T13:26:01.263Z
+      version: 1
+  after:
+    id: 5124a95d-6e9e-4d62-a725-f306ac7498f0
+    path: navigation.flowstep.token-extraction-step
+    spec_node_id: navigation.flowstep
+    type: flowstep
+    layer_id: navigation
+    name: Token Extraction Step
+    description: "First step of the auth flow: before the router starts (and on
+      popstate / hashchange, for a link opened in a tab that already shows the
+      viewer), main.tsx takes the magic link's token from the fragment (the dr
+      CLI's /#/p/<project>/c/<checkout>/...?token=) or the query string, stores
+      it for API and websocket calls and removes it from the address bar."
+    attributes: *a18
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/main.tsx
+          symbol: takeTokenFromHashChange
+    metadata: *a19
+  timestamp: 2026-11-24T12:01:31.289Z
+  sequenceNumber: 101
+- type: update
+  elementId: navigation.navigationflow.authentication-to-model-flow
+  layerName: navigation
+  before:
+    id: 224c1c80-4e61-4450-b8b2-dfca369b0bf5
+    path: navigation.navigationflow.authentication-to-model-flow
+    spec_node_id: navigation.navigationflow
+    type: navigationflow
+    layer_id: navigation
+    name: Authentication to Model Flow
+    description: "Two-step navigation flow for first-time access: step 1 lands on
+      the index route to extract the magic link token; step 2 navigates
+      programmatically to the model graph view after token validation."
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata: &a20
+      created_at: 2026-03-20T13:25:56.005Z
+      updated_at: 2026-03-20T13:25:56.005Z
+      version: 1
+  after:
+    id: 224c1c80-4e61-4450-b8b2-dfca369b0bf5
+    path: navigation.navigationflow.authentication-to-model-flow
+    spec_node_id: navigation.navigationflow
+    type: navigationflow
+    layer_id: navigation
+    name: Authentication to Model Flow
+    description: "From a dr CLI link to the checkout it names: the token is taken
+      from the fragment (main.tsx), then the checkout route opens the Model
+      view, the changeset or the element the link names; a bare /#/ opens the
+      checkout picker."
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/main.tsx
+    metadata: *a20
+  timestamp: 2026-11-24T12:01:31.349Z
+  sequenceNumber: 102
