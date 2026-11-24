@@ -1,0 +1,1641 @@
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-dwell-once-a-zoom-has-been-still-for-c4-dwell-ms-not-20219c5b
+  layerName: testing
+  after:
+    id: 7227767b-1993-49b1-b6a9-ea1e58e8f0c3
+    path: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-dwell-once-a-zoom-has-been-still-for-c4-dwell-ms-not-20219c5b
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4Diagram — viewport history (#619) > reports a dwell once a zoom has been
+      still for C4_DWELL_MS, not before
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Diagram.spec.tsx
+          symbol: C4Diagram — viewport history (#619) > reports a dwell once a zoom has
+            been still for C4_DWELL_MS, not before
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 0
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-non-silent-set-viewport-as-imperative-and-its-mount-fit-75d88e00
+  layerName: testing
+  after:
+    id: 7ea1328e-80ea-41e7-b66a-a53d5c3ba6a8
+    path: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-non-silent-set-viewport-as-imperative-and-its-mount-fit-75d88e00
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4Diagram — viewport history (#619) > reports a non-silent setViewport as
+      imperative and its mount fit as a fit
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Diagram.spec.tsx
+          symbol: C4Diagram — viewport history (#619) > reports a non-silent setViewport
+            as imperative and its mount fit as a fit
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-restores-a-viewport-silently-the-world-point-lands-mid-container-b420770f
+  layerName: testing
+  after:
+    id: 4952dee9-5cba-4e40-b365-d5eac1347ffd
+    path: testing.testcasesketch.c4-diagram-viewport-history-619-restores-a-viewport-silently-the-world-point-lands-mid-container-b420770f
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "C4Diagram — viewport history (#619) > restores a viewport silently: the
+      world point lands mid-container, nothing is reported"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Diagram.spec.tsx
+          symbol: "C4Diagram — viewport history (#619) > restores a viewport silently: the
+            world point lands mid-container, nothing is reported"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 2
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-starts-at-initial-viewport-instead-of-the-fit
+  layerName: testing
+  after:
+    id: 57670dfa-772d-4586-ac82-57a218e3d624
+    path: testing.testcasesketch.c4-diagram-viewport-history-619-starts-at-initial-viewport-instead-of-the-fit
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4Diagram — viewport history (#619) > starts at initialViewport instead of
+      the fit
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Diagram.spec.tsx
+          symbol: C4Diagram — viewport history (#619) > starts at initialViewport instead
+            of the fit
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 3
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-treats-a-double-click-as-one-step-the-second-click-does-not-undo-2d1220e2
+  layerName: testing
+  after:
+    id: 4e8a1359-ca20-4e52-977c-6be0278a02a3
+    path: testing.testcasesketch.c4-diagram-viewport-history-619-treats-a-double-click-as-one-step-the-second-click-does-not-undo-2d1220e2
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "C4Diagram — viewport history (#619) > treats a double-click as one step:
+      the second click does not undo the first"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Diagram.spec.tsx
+          symbol: "C4Diagram — viewport history (#619) > treats a double-click as one
+            step: the second click does not undo the first"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 4
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.use-viewport-history-records-every-canvas-move-the-mount-fit-included-with-its-cause
+  layerName: testing
+  after:
+    id: 93cb2c0b-5975-40f6-a4e6-2fd88bda3f01
+    path: testing.testcasesketch.use-viewport-history-records-every-canvas-move-the-mount-fit-included-with-its-cause
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: useViewportHistory > records every canvas move, the mount fit included,
+      with its cause
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/useViewportHistory.spec.tsx
+          symbol: useViewportHistory > records every canvas move, the mount fit included,
+            with its cause
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 5
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.architecture-view-c4-diagrams-export-downloads-each-format-named-after-the-diagram-overlaid-with-e3a85da6
+  layerName: testing
+  after:
+    id: c039c8db-cdd4-4a27-8639-d5cccce0d6a3
+    path: testing.testcasesketch.architecture-view-c4-diagrams-export-downloads-each-format-named-after-the-diagram-overlaid-with-e3a85da6
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Architecture view — C4 diagrams > export > downloads each format named
+      after the diagram${overlaid ? ', with the overlay marks' : ''}"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+          symbol: "Architecture view — C4 diagrams > export > downloads each format named
+            after the diagram${overlaid ? ', with the overlay marks' : ''}"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 6
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.architecture-view-c4-diagrams-export-the-open-export-menu-passes-axe-wcag-2-1-aa-on-the-tone-canvas
+  layerName: testing
+  after:
+    id: 37fcdfd2-2d56-4f4f-a422-3e793ca57633
+    path: testing.testcasesketch.architecture-view-c4-diagrams-export-the-open-export-menu-passes-axe-wcag-2-1-aa-on-the-tone-canvas
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Architecture view — C4 diagrams > export > the open Export menu passes axe
+      (WCAG 2.1 AA) on the ${tone} canvas
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+          symbol: Architecture view — C4 diagrams > export > the open Export menu passes
+            axe (WCAG 2.1 AA) on the ${tone} canvas
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 7
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.architecture-view-c4-diagrams-plan-vs-as-built-changeset-built-draws-the-plan-with-each-box-marked-2b95f6b0
+  layerName: testing
+  after:
+    id: 15623fa9-98c9-49e3-9284-43a408a46993
+    path: testing.testcasesketch.architecture-view-c4-diagrams-plan-vs-as-built-changeset-built-draws-the-plan-with-each-box-marked-2b95f6b0
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Architecture view — C4 diagrams > plan vs as built: ?changeset= + ?built=
+      > draws the plan with each box marked by its verdict; Show the plan only
+      goes back to the overlay, and Back to the comparison"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+          symbol: "Architecture view — C4 diagrams > plan vs as built: ?changeset= +
+            ?built= > draws the plan with each box marked by its verdict; Show
+            the plan only goes back to the overlay, and Back to the comparison"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 8
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.architecture-view-c4-diagrams-plan-vs-as-built-changeset-built-the-compared-component-diagram-7d7d8a3a
+  layerName: testing
+  after:
+    id: 778f76ed-f2b6-4009-bf08-c9f10c522f49
+    path: testing.testcasesketch.architecture-view-c4-diagrams-plan-vs-as-built-changeset-built-the-compared-component-diagram-7d7d8a3a
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Architecture view — C4 diagrams > plan vs as built: ?changeset= + ?built=
+      > the compared Component diagram passes axe (WCAG 2.1 AA) on the ${tone}
+      canvas"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+          symbol: "Architecture view — C4 diagrams > plan vs as built: ?changeset= +
+            ?built= > the compared Component diagram passes axe (WCAG 2.1 AA) on
+            the ${tone} canvas"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 9
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-pushes-a-history-entry-619-a-source-link-opens-the-9912d25c
+  layerName: testing
+  after:
+    id: ba26d492-8446-4c4d-bb3a-f47f58aa8a74
+    path: testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-pushes-a-history-entry-619-a-source-link-opens-the-9912d25c
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Architecture view — C4 diagrams > selecting a box pushes a history entry
+      (#619); a source link opens the element in the Model view
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+          symbol: Architecture view — C4 diagrams > selecting a box pushes a history entry
+            (#619); a source link opens the element in the Model view
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 10
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.back-and-forward-replay-graph-moves-619-section-model-model-schema-each-node-clicked-is-a-step-f71a3612
+  layerName: testing
+  after:
+    id: 13ee3bd7-e6da-4fa4-8992-8fed12afc729
+    path: testing.testcasesketch.back-and-forward-replay-graph-moves-619-section-model-model-schema-each-node-clicked-is-a-step-f71a3612
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Back and Forward replay graph moves (#619) > ${section === 'model' ?
+      'Model' : 'Schema'}: each node clicked is a step; panning is not"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/history.spec.ts
+          symbol: "Back and Forward replay graph moves (#619) > ${section === 'model' ?
+            'Model' : 'Schema'}: each node clicked is a step; panning is not"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 11
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.back-and-forward-replay-graph-moves-619-architecture-each-box-selected-is-a-step-a-settled-zoom-b78fac95
+  layerName: testing
+  after:
+    id: 58ec5993-5698-4da4-a634-8a94fee55845
+    path: testing.testcasesketch.back-and-forward-replay-graph-moves-619-architecture-each-box-selected-is-a-step-a-settled-zoom-b78fac95
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Back and Forward replay graph moves (#619) > Architecture: each box
+      selected is a step; a settled zoom replaces and Back restores it"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/history.spec.ts
+          symbol: "Back and Forward replay graph moves (#619) > Architecture: each box
+            selected is a step; a settled zoom replaces and Back restores it"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 12
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.back-and-forward-replay-graph-moves-619-impact-each-focus-is-a-step-and-a-copied-url-reopens-it
+  layerName: testing
+  after:
+    id: caf98188-5948-49b6-bc20-dc8085f5cfe1
+    path: testing.testcasesketch.back-and-forward-replay-graph-moves-619-impact-each-focus-is-a-step-and-a-copied-url-reopens-it
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Back and Forward replay graph moves (#619) > Impact: each focus is a
+      step, and a copied URL reopens it"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/history.spec.ts
+          symbol: "Back and Forward replay graph moves (#619) > Impact: each focus is a
+            step, and a copied URL reopens it"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 13
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.back-and-forward-replay-graph-moves-619-model-by-type-lanes-opening-a-folded-lane-is-a-step
+  layerName: testing
+  after:
+    id: 4ecfc577-16b3-40fd-a7da-96adcfaa4602
+    path: testing.testcasesketch.back-and-forward-replay-graph-moves-619-model-by-type-lanes-opening-a-folded-lane-is-a-step
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "Back and Forward replay graph moves (#619) > Model by-type lanes: opening
+      a folded lane is a step"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/history.spec.ts
+          symbol: "Back and Forward replay graph moves (#619) > Model by-type lanes:
+            opening a folded lane is a step"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 14
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-pushes-its-own-entry-619
+  layerName: testing
+  after:
+    id: aa7ae7be-14af-4958-94ac-5fa3b800398c
+    path: testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-pushes-its-own-entry-619
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: URL routing — browser history for navigation > a plain graph-node click
+      pushes its own entry (#619)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/routing.spec.ts
+          symbol: URL routing — browser history for navigation > a plain graph-node click
+            pushes its own entry (#619)
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 15
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-replaces-vp-with-the-new-layouts-own-the-c9bc92b5
+  layerName: testing
+  after:
+    id: 8b56a046-774e-4e8f-a541-558e694ceecd
+    path: testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-replaces-vp-with-the-new-layouts-own-the-c9bc92b5
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: URL routing — graph viewport history > changing the layout replaces ?vp=
+      with the new layout's own (the coordinates belong to the old one)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/e2e/routing.spec.ts
+          symbol: URL routing — graph viewport history > changing the layout replaces ?vp=
+            with the new layout's own (the coordinates belong to the old one)
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 16
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-recentre-onto-the-node-the-entry-already-selects
+  layerName: testing
+  after:
+    id: 951b52b8-47e2-45ed-9597-c9889a588c5d
+    path: testing.testcasesketch.decide-history-step-coalesces-a-recentre-onto-the-node-the-entry-already-selects
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > coalesces a recentre onto the node the entry already
+      selects
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > coalesces a recentre onto the node the entry already
+            selects
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 17
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-recentre-that-follows-the-push-of-its-own-selection
+  layerName: testing
+  after:
+    id: 8507846e-9e23-48ae-8e04-09ceef2a30eb
+    path: testing.testcasesketch.decide-history-step-coalesces-a-recentre-that-follows-the-push-of-its-own-selection
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > coalesces a recentre that follows the push of its own
+      selection
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > coalesces a recentre that follows the push of its
+            own selection
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 18
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-repeat-of-the-last-push-within-a-double-click
+  layerName: testing
+  after:
+    id: 138861d6-8ab0-4875-a3e7-05cd6e17196e
+    path: testing.testcasesketch.decide-history-step-coalesces-a-repeat-of-the-last-push-within-a-double-click
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > coalesces a repeat of the last push within a
+      double-click
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > coalesces a repeat of the last push within a
+            double-click
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 19
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-does-not-coalesce-a-different-kind-of-move-on-the-same-target
+  layerName: testing
+  after:
+    id: 2ae0fdbd-085f-465b-a0b3-414235e85fb0
+    path: testing.testcasesketch.decide-history-step-does-not-coalesce-a-different-kind-of-move-on-the-same-target
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > does not coalesce a different kind of move on the same
+      target
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > does not coalesce a different kind of move on the
+            same target
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 20
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-s
+  layerName: testing
+  after:
+    id: 256c0307-e930-418b-ba45-00d86d711a15
+    path: testing.testcasesketch.decide-history-step-pushes-a-s
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > pushes a %s
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > pushes a %s
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 21
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-destination-change-whatever-the-move
+  layerName: testing
+  after:
+    id: 056fb3d7-a52b-4f08-91b7-0f1b37b0c1e6
+    path: testing.testcasesketch.decide-history-step-pushes-a-destination-change-whatever-the-move
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > pushes a destination change whatever the move
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > pushes a destination change whatever the move
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 22
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-recentre-onto-a-node-the-entry-does-not-select
+  layerName: testing
+  after:
+    id: 922215b1-685f-440d-aee3-13ac5e50d20e
+    path: testing.testcasesketch.decide-history-step-pushes-a-recentre-onto-a-node-the-entry-does-not-select
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > pushes a recentre onto a node the entry does not select
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > pushes a recentre onto a node the entry does not
+            select
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 23
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-pushes-each-of-several-selections-on-different-targets-however-quick
+  layerName: testing
+  after:
+    id: f3d59102-903f-4458-8cdd-c99c5a41f75c
+    path: testing.testcasesketch.decide-history-step-pushes-each-of-several-selections-on-different-targets-however-quick
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > pushes each of several selections on different
+      targets, however quick
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > pushes each of several selections on different
+            targets, however quick
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 24
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-pushes-the-same-move-again-once-the-double-click-window-has-passed
+  layerName: testing
+  after:
+    id: 5cf09b39-e1ed-4173-9176-a9b688d190d2
+    path: testing.testcasesketch.decide-history-step-pushes-the-same-move-again-once-the-double-click-window-has-passed
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > pushes the same move again once the double-click
+      window has passed
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > pushes the same move again once the double-click
+            window has passed
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 25
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-replaces-a-s-panning-alone-adds-no-entry
+  layerName: testing
+  after:
+    id: 288e5d11-30f3-4142-9945-bc45b7873342
+    path: testing.testcasesketch.decide-history-step-replaces-a-s-panning-alone-adds-no-entry
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "decideHistoryStep > replaces a %s: panning alone adds no entry"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: "decideHistoryStep > replaces a %s: panning alone adds no entry"
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 26
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.decide-history-step-replaces-a-change-with-no-move-a-restore-a-stale-selection-dropped
+  layerName: testing
+  after:
+    id: 2dacc9ee-c85b-4be3-be9d-d78d8f81c396
+    path: testing.testcasesketch.decide-history-step-replaces-a-change-with-no-move-a-restore-a-stale-selection-dropped
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: decideHistoryStep > replaces a change with no move (a restore, a stale
+      selection dropped)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep > replaces a change with no move (a restore, a stale
+            selection dropped)
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 27
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.live-canvas-key-changes-with-the-impact-focus-so-a-viewport-never-crosses-foci
+  layerName: testing
+  after:
+    id: 8b55b4e7-8109-429c-8b94-d14d12fce02d
+    path: testing.testcasesketch.live-canvas-key-changes-with-the-impact-focus-so-a-viewport-never-crosses-foci
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: liveCanvasKey > changes with the Impact focus, so a viewport never crosses
+      foci
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: liveCanvasKey > changes with the Impact focus, so a viewport never
+            crosses foci
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 28
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-c4-diagram-in-architecture-ignoring-a-scope-the-level-ignores
+  layerName: testing
+  after:
+    id: c115a9fa-a43c-4263-bc50-ad02c97f8a95
+    path: testing.testcasesketch.live-canvas-key-is-the-c4-diagram-in-architecture-ignoring-a-scope-the-level-ignores
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: liveCanvasKey > is the C4 diagram in Architecture, ignoring a scope the
+      level ignores
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: liveCanvasKey > is the C4 diagram in Architecture, ignoring a scope the
+            level ignores
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 29
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-graph-key-in-model-and-schema
+  layerName: testing
+  after:
+    id: b3e98f40-bc15-450b-8b5f-a66df1dbe39b
+    path: testing.testcasesketch.live-canvas-key-is-the-graph-key-in-model-and-schema
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: liveCanvasKey > is the graph key in Model and Schema
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: liveCanvasKey > is the graph key in Model and Schema
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 30
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-impact-lanes-on-the-impact-tab-none-on-review-or-the-inbox
+  layerName: testing
+  after:
+    id: bbec44b3-3ba1-4b56-bf88-03e557c64e66
+    path: testing.testcasesketch.live-canvas-key-is-the-impact-lanes-on-the-impact-tab-none-on-review-or-the-inbox
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: liveCanvasKey > is the Impact lanes on the Impact tab, none on Review or
+      the inbox
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: liveCanvasKey > is the Impact lanes on the Impact tab, none on Review or
+            the inbox
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 31
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.shell-params-reads-seq-as-a-whole-number-only-as-the-router-hands-it-over-number-or-quoted-string
+  layerName: testing
+  after:
+    id: c39d7945-35ef-47e1-8bd5-e430bcdbcfea
+    path: testing.testcasesketch.shell-params-reads-seq-as-a-whole-number-only-as-the-router-hands-it-over-number-or-quoted-string
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell params > reads ?seq= as a whole number only, as the router hands it
+      over (number) or quoted (string)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: shell params > reads ?seq= as a whole number only, as the router hands
+            it over (number) or quoted (string)
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 32
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.shell-params-round-trips-open-sorted-and-de-duplicated-empty-as-absent
+  layerName: testing
+  after:
+    id: ec5084a7-b7e6-4af3-9203-28b282366fa8
+    path: testing.testcasesketch.shell-params-round-trips-open-sorted-and-de-duplicated-empty-as-absent
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: shell params > round-trips ?open= sorted and de-duplicated, empty as absent
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: shell params > round-trips ?open= sorted and de-duplicated, empty as
+            absent
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 33
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.graph-moves-619-drops-opened-groups-with-the-layer-the-view-or-the-by-type-view
+  layerName: testing
+  after:
+    id: 0ee035bf-2bf0-4a45-9ac4-3cd894b4d155
+    path: testing.testcasesketch.graph-moves-619-drops-opened-groups-with-the-layer-the-view-or-the-by-type-view
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: graph moves (#619) > drops opened groups with the layer, the view or the
+      by-type view
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: graph moves (#619) > drops opened groups with the layer, the view or the
+            by-type view
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 34
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.graph-moves-619-records-a-move-with-each-deliberate-graph-action-in-the-same-write
+  layerName: testing
+  after:
+    id: 2f55bbd6-df13-404c-a5e0-21a7e032b7e5
+    path: testing.testcasesketch.graph-moves-619-records-a-move-with-each-deliberate-graph-action-in-the-same-write
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: graph moves (#619) > records a move with each deliberate graph action, in
+      the same write
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: graph moves (#619) > records a move with each deliberate graph action,
+            in the same write
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 35
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.graph-moves-619-records-no-move-on-restores
+  layerName: testing
+  after:
+    id: ff5b406b-7ba4-4f60-8fec-950ee4b4e741
+    path: testing.testcasesketch.graph-moves-619-records-no-move-on-restores
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: graph moves (#619) > records no move on restores
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: graph moves (#619) > records no move on restores
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 36
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.graph-moves-619-records-the-viewport-cause-as-a-dwell-recentre-or-fit
+  layerName: testing
+  after:
+    id: 9c138a17-149e-4604-9678-e88ab0cdc441
+    path: testing.testcasesketch.graph-moves-619-records-the-viewport-cause-as-a-dwell-recentre-or-fit
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: graph moves (#619) > records the viewport cause as a dwell, recentre or fit
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/uiStore.spec.ts
+          symbol: graph moves (#619) > records the viewport cause as a dwell, recentre or
+            fit
+    metadata:
+      created_at: 2026-11-24T15:37:21.475Z
+      updated_at: 2026-11-24T15:37:21.475Z
+      version: 1
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 37
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: application.applicationcomponent.c4-diagram::accesses::data-model.objectschema.plan-verification
+  layerName: application
+  after:
+    source: application.applicationcomponent.c4-diagram
+    target: data-model.objectschema.plan-verification
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 38
+  origin:
+    by: tier0
+    rule: edge:USAGE
+- type: relationship-add
+  elementId: application.applicationfunction.ui-store::realizes::application.applicationservice.use-edge-interaction
+  layerName: application
+  after:
+    source: application.applicationfunction.ui-store
+    target: application.applicationservice.use-edge-interaction
+    predicate: realizes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 39
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.graph-viewport-key::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.graph-viewport-key
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 40
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.graph-viewport-key::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.graph-viewport-key
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 41
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 42
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.use-viewport-history::serves::application.applicationcomponent.changeset-impact-view
+  layerName: application
+  after:
+    source: application.applicationservice.use-viewport-history
+    target: application.applicationcomponent.changeset-impact-view
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 43
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::flows-to::navigation.navigationtransition.layer-deep-link-transition
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: navigation.navigationtransition.layer-deep-link-transition
+    predicate: flows-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 44
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-dwell-once-a-zoom-has-been-still-for-c4-dwell-ms-not-20219c5b::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-dwell-once-a-zoom-has-been-still-for-c4-dwell-ms-not-20219c5b
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 45
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-non-silent-set-viewport-as-imperative-and-its-mount-fit-75d88e00::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-viewport-history-619-reports-a-non-silent-set-viewport-as-imperative-and-its-mount-fit-75d88e00
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 46
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-restores-a-viewport-silently-the-world-point-lands-mid-container-b420770f::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-viewport-history-619-restores-a-viewport-silently-the-world-point-lands-mid-container-b420770f
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 47
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-starts-at-initial-viewport-instead-of-the-fit::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-viewport-history-619-starts-at-initial-viewport-instead-of-the-fit
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 48
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-diagram-viewport-history-619-treats-a-double-click-as-one-step-the-second-click-does-not-undo-2d1220e2::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-diagram-viewport-history-619-treats-a-double-click-as-one-step-the-second-click-does-not-undo-2d1220e2
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 49
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.graph-moves-619-drops-opened-groups-with-the-layer-the-view-or-the-by-type-view::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.graph-moves-619-drops-opened-groups-with-the-layer-the-view-or-the-by-type-view
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 50
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.graph-moves-619-records-a-move-with-each-deliberate-graph-action-in-the-same-write::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.graph-moves-619-records-a-move-with-each-deliberate-graph-action-in-the-same-write
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 51
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.graph-moves-619-records-no-move-on-restores::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.graph-moves-619-records-no-move-on-restores
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 52
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.graph-moves-619-records-the-viewport-cause-as-a-dwell-recentre-or-fit::tests::application.applicationfunction.ui-store
+  layerName: testing
+  after:
+    source: testing.testcasesketch.graph-moves-619-records-the-viewport-cause-as-a-dwell-recentre-or-fit
+    target: application.applicationfunction.ui-store
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 53
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.live-canvas-key-changes-with-the-impact-focus-so-a-viewport-never-crosses-foci::tests::application.applicationservice.graph-viewport-key
+  layerName: testing
+  after:
+    source: testing.testcasesketch.live-canvas-key-changes-with-the-impact-focus-so-a-viewport-never-crosses-foci
+    target: application.applicationservice.graph-viewport-key
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 54
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-c4-diagram-in-architecture-ignoring-a-scope-the-level-ignores::tests::application.applicationservice.graph-viewport-key
+  layerName: testing
+  after:
+    source: testing.testcasesketch.live-canvas-key-is-the-c4-diagram-in-architecture-ignoring-a-scope-the-level-ignores
+    target: application.applicationservice.graph-viewport-key
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 55
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-graph-key-in-model-and-schema::tests::application.applicationservice.graph-viewport-key
+  layerName: testing
+  after:
+    source: testing.testcasesketch.live-canvas-key-is-the-graph-key-in-model-and-schema
+    target: application.applicationservice.graph-viewport-key
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 56
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.live-canvas-key-is-the-impact-lanes-on-the-impact-tab-none-on-review-or-the-inbox::tests::application.applicationservice.graph-viewport-key
+  layerName: testing
+  after:
+    source: testing.testcasesketch.live-canvas-key-is-the-impact-lanes-on-the-impact-tab-none-on-review-or-the-inbox
+    target: application.applicationservice.graph-viewport-key
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 57
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.use-viewport-history-records-every-canvas-move-the-mount-fit-included-with-its-cause::tests::application.applicationservice.use-viewport-history
+  layerName: testing
+  after:
+    source: testing.testcasesketch.use-viewport-history-records-every-canvas-move-the-mount-fit-included-with-its-cause
+    target: application.applicationservice.use-viewport-history
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T15:37:21.520Z
+  sequenceNumber: 58
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: application.applicationservice.decide-history-step
+  layerName: application
+  after:
+    id: 56636df6-7388-4625-a013-7b991d445db0
+    path: application.applicationservice.decide-history-step
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: decideHistoryStep
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/historyPolicy.ts
+          symbol: decideHistoryStep
+    metadata:
+      created_at: 2026-11-24T15:37:41.486Z
+      updated_at: 2026-11-24T15:37:41.486Z
+      version: 1
+  origin:
+    by: agent
+    rule: project:decide-card-1
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 59
+- type: add
+  elementId: data-model.objectschema.graph-move
+  layerName: data-model
+  after:
+    id: 1e478fbe-e217-4755-9f52-725f5f5ecc80
+    path: data-model.objectschema.graph-move
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: GraphMove
+    attributes:
+      type: object
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/historyPolicy.ts
+          symbol: GraphMove
+    metadata:
+      created_at: 2026-11-24T15:37:41.486Z
+      updated_at: 2026-11-24T15:37:41.486Z
+      version: 1
+  origin:
+    by: agent
+    rule: project:decide-card-0
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: application.applicationfunction.ui-store::accesses::data-model.objectschema.graph-move
+  layerName: application
+  after:
+    source: application.applicationfunction.ui-store
+    target: data-model.objectschema.graph-move
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: agent
+    rule: project:decide-card-0
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: application.applicationservice.decide-history-step::accesses::data-model.objectschema.graph-move
+  layerName: application
+  after:
+    source: application.applicationservice.decide-history-step
+    target: data-model.objectschema.graph-move
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: agent
+    rule: project:decide-card-1
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-recentre-onto-the-node-the-entry-already-selects::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-coalesces-a-recentre-onto-the-node-the-entry-already-selects
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-recentre-that-follows-the-push-of-its-own-selection::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-coalesces-a-recentre-that-follows-the-push-of-its-own-selection
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-coalesces-a-repeat-of-the-last-push-within-a-double-click::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-coalesces-a-repeat-of-the-last-push-within-a-double-click
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 65
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-does-not-coalesce-a-different-kind-of-move-on-the-same-target::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-does-not-coalesce-a-different-kind-of-move-on-the-same-target
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 66
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-destination-change-whatever-the-move::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-pushes-a-destination-change-whatever-the-move
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-recentre-onto-a-node-the-entry-does-not-select::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-pushes-a-recentre-onto-a-node-the-entry-does-not-select
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 68
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-pushes-a-s::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-pushes-a-s
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 69
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-pushes-each-of-several-selections-on-different-targets-however-quick::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-pushes-each-of-several-selections-on-different-targets-however-quick
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 70
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-pushes-the-same-move-again-once-the-double-click-window-has-passed::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-pushes-the-same-move-again-once-the-double-click-window-has-passed
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 71
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-replaces-a-change-with-no-move-a-restore-a-stale-selection-dropped::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-replaces-a-change-with-no-move-a-restore-a-stale-selection-dropped
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 72
+- type: relationship-add
+  elementId: testing.testcasesketch.decide-history-step-replaces-a-s-panning-alone-adds-no-entry::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.decide-history-step-replaces-a-s-panning-alone-adds-no-entry
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 73
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-params-reads-seq-as-a-whole-number-only-as-the-router-hands-it-over-number-or-quoted-string::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-params-reads-seq-as-a-whole-number-only-as-the-router-hands-it-over-number-or-quoted-string
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 74
+- type: relationship-add
+  elementId: testing.testcasesketch.shell-params-round-trips-open-sorted-and-de-duplicated-empty-as-absent::tests::application.applicationservice.decide-history-step
+  layerName: testing
+  after:
+    source: testing.testcasesketch.shell-params-round-trips-open-sorted-and-de-duplicated-empty-as-absent
+    target: application.applicationservice.decide-history-step
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+  timestamp: 2026-11-24T15:37:41.533Z
+  sequenceNumber: 75

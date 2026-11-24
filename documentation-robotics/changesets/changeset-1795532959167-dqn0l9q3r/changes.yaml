@@ -53,7 +53,12 @@
         decided_by: agent
         decided_at: 2026-11-24T15:10:00.119Z
         changeset: changeset-1795532959167-dqn0l9q3r
-  timestamp: 2026-11-24T15:10:00.126Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/routes/historyPolicy.ts
+          symbol: decideHistoryStep
+  timestamp: 2026-11-24T15:38:05.105Z
   sequenceNumber: 1
 - type: add
   elementId: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre
@@ -73,7 +78,12 @@
       created_at: 2026-11-24T15:09:41.810Z
       updated_at: 2026-11-24T15:09:41.810Z
       version: 1
-  timestamp: 2026-11-24T15:09:41.849Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/historyPolicy.spec.ts
+          symbol: decideHistoryStep
+  timestamp: 2026-11-24T15:38:05.105Z
   sequenceNumber: 2
 - type: add
   elementId: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
@@ -95,7 +105,12 @@
       created_at: 2026-11-24T15:09:41.819Z
       updated_at: 2026-11-24T15:09:41.819Z
       version: 1
-  timestamp: 2026-11-24T15:09:41.849Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/e2e/history.spec.ts
+          symbol: Back and Forward replay graph moves (#619)
+  timestamp: 2026-11-24T15:38:05.105Z
   sequenceNumber: 3
 - type: relationship-add
   elementId: application.applicationservice.history-policy::satisfies::motivation.requirement.back-and-forward-replay-graph-moves
@@ -258,7 +273,12 @@
       created_at: 2026-11-24T15:09:51.899Z
       updated_at: 2026-11-24T15:09:51.899Z
       version: 1
-  timestamp: 2026-11-24T15:09:51.923Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/historyPolicy.ts
+          symbol: GraphMove
+  timestamp: 2026-11-24T15:38:05.089Z
   sequenceNumber: 16
 - type: relationship-add
   elementId: application.applicationservice.history-policy::accesses::data-model.objectschema.graph-move
