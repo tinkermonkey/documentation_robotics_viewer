@@ -137,12 +137,15 @@ describe('diffC4: roll-up to the box a diagram shows', () => {
     expect(diff.rollUp.get(ref(n.app))?.sequences).toEqual([1, 2]);
     expect(diff.rollUp.get(ref(n.shell))?.sequences).toEqual([1, 2]);
     expect(diff.rollUp.has(ref(n.db))).toBe(false);
+    // By status, for the chip's legend colours: a box whose own parts changed isn't a status.
+    expect(diff.rollUp.get(ref(n.canvas))?.byStatus).toEqual({ elements: { added: 1 }, relationships: {} });
   });
 
   it('counts an arrow on the elements that hold both its ends', () => {
     const arrows = stage([addRelationship(n.lanes, 'uses', n.hive)]).diff;
     expect(arrows.rollUp.get(ref(n.canvas))).toMatchObject({ relationships: 1, sequences: [1] });
     expect(arrows.rollUp.get(ref(n.app))?.relationships).toBe(1);
+    expect(arrows.rollUp.get(ref(n.canvas))?.byStatus.relationships).toEqual({ added: 1 });
     expect(arrows.rollUp.has(ref(n.lanes))).toBe(false);
   });
 });

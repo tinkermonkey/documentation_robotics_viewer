@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   agents and skills written for React Flow, Flowbite and Storybook.
 
 ### Changed
+- **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
+  **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
+  that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an
+  applied changeset opens Closed to show its row. An empty group is hidden.
 - README and CLAUDE.md describe the actual stack, test suites and CI workflows; the `-build` and `-api-sync`
   project skills are rewritten for the current build. `js-yaml` (used by the API-client scripts) is declared, and
   the router imports `createHashHistory` from `@tanstack/react-router` rather than an undeclared package.

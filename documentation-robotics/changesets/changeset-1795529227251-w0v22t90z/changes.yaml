@@ -1,0 +1,378 @@
+- type: add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+  layerName: testing
+  after:
+    id: c249839f-5122-4f89-8268-b733be693a28
+    path: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree changeset groups > a selected closed changeset opens Closed and
+      reveals its row
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > a selected closed changeset opens Closed and
+            reveals its row
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 0
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+  layerName: testing
+  after:
+    id: 29e10d7a-dc5e-404f-abd3-7b7db01f4370
+    path: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree changeset groups > an empty group is hidden
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > an empty group is hidden
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-keeps-the-purpose-in-a-rows-accessible-name
+  layerName: testing
+  after:
+    id: 1b93a5e4-8981-4643-8e40-27d8b02f2eab
+    path: testing.testcasesketch.nav-tree-changeset-groups-keeps-the-purpose-in-a-rows-accessible-name
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree changeset groups > keeps the purpose in a row's accessible name
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > keeps the purpose in a row's accessible name
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 2
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+  layerName: testing
+  after:
+    id: 080c5e41-feb2-43c8-8959-00bfb3207e05
+    path: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree changeset groups > Open starts expanded and Closed collapsed, each
+      with its count
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > Open starts expanded and Closed collapsed,
+            each with its count
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 3
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-shows-the-empty-hint-and-no-groups-with-no-changesets-at-all
+  layerName: testing
+  after:
+    id: 25786351-9ec4-4bd3-90d0-3c0d30d5c211
+    path: testing.testcasesketch.nav-tree-changeset-groups-shows-the-empty-hint-and-no-groups-with-no-changesets-at-all
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree changeset groups > shows the empty hint, and no groups, with no
+      changesets at all
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > shows the empty hint, and no groups, with no
+            changesets at all
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 4
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+  layerName: testing
+  after:
+    id: 6e1fce59-a09f-4f6b-8adf-143cfd2f8ef7
+    path: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: changeset groups > puts staged changesets in Open and every other status
+      in Closed
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/navTreeGroups.spec.ts
+          symbol: changeset groups > puts staged changesets in Open and every other status
+            in Closed
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 5
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list
+  layerName: testing
+  after:
+    id: 714d474c-8729-4859-bebf-c3ae1f608a10
+    path: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: changeset groups > returns both groups, empty, for an empty list
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/navTreeGroups.spec.ts
+          symbol: changeset groups > returns both groups, empty, for an empty list
+    metadata:
+      created_at: 2026-11-24T14:07:07.209Z
+      updated_at: 2026-11-24T14:07:07.209Z
+      version: 1
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 6
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed::tests::application.applicationservice.nav-tree-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+    target: application.applicationservice.nav-tree-groups
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 7
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list::tests::application.applicationservice.nav-tree-groups
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list
+    target: application.applicationservice.nav-tree-groups
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 8
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 9
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 10
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-keeps-the-purpose-in-a-rows-accessible-name::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-changeset-groups-keeps-the-purpose-in-a-rows-accessible-name
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 11
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 12
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: relationship-add
+  elementId: testing.testcasesketch.nav-tree-changeset-groups-shows-the-empty-hint-and-no-groups-with-no-changesets-at-all::tests::application.applicationcomponent.nav-tree
+  layerName: testing
+  after:
+    source: testing.testcasesketch.nav-tree-changeset-groups-shows-the-empty-hint-and-no-groups-with-no-changesets-at-all
+    target: application.applicationcomponent.nav-tree
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:07:07.269Z
+  sequenceNumber: 13
+  origin:
+    by: tier0
+    rule: edge:TEST_FILE_NAME
+- type: add
+  elementId: application.applicationservice.group-changesets-by-state
+  layerName: application
+  after:
+    id: 7bec2e7e-509a-4df6-8e7e-d0e8c20b5466
+    path: application.applicationservice.group-changesets-by-state
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: groupChangesetsByState
+    description: Split the changeset list into Open then Closed. Both are returned,
+      empty or not.
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/navTreeGroups.ts
+          symbol: groupChangesetsByState
+    metadata:
+      created_at: 2026-11-24T14:07:14.872Z
+      updated_at: 2026-11-24T14:07:14.872Z
+      version: 1
+  timestamp: 2026-11-24T14:07:14.879Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationservice.group-changesets-by-state::depends-on::application.applicationservice.nav-tree-groups
+  layerName: application
+  after:
+    source: application.applicationservice.group-changesets-by-state
+    target: application.applicationservice.nav-tree-groups
+    predicate: depends-on
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:07:27.193Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.group-changesets-by-state::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.group-changesets-by-state
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:07:27.193Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed::tests::application.applicationservice.group-changesets-by-state
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+    target: application.applicationservice.group-changesets-by-state
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:07:27.193Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list::tests::application.applicationservice.group-changesets-by-state
+  layerName: testing
+  after:
+    source: testing.testcasesketch.changeset-groups-returns-both-groups-empty-for-an-empty-list
+    target: application.applicationservice.group-changesets-by-state
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:07:27.193Z
+  sequenceNumber: 18

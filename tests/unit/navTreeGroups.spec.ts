@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { groupByType, typeGroupKey } from '@/apps/embedded/data/navTreeGroups';
+import {
+  changesetGroupKey,
+  groupByType,
+  groupChangesetsByState,
+  typeGroupKey,
+} from '@/apps/embedded/data/navTreeGroups';
 import type { ModelNode } from '@/apps/embedded/data/useModel';
 import type { SpecLayerInfo } from '@/apps/embedded/data/useSpec';
 
@@ -50,5 +55,32 @@ describe('Nav Tree Groups', () => {
 
   it('keys a group by the spec node id of its type', () => {
     expect(typeGroupKey('data-model', 'objectschema')).toBe('data-model.objectschema');
+  });
+});
+
+describe('changeset groups', () => {
+  it('puts staged changesets in Open and every other status in Closed', () => {
+    const list = [
+      { id: 'a', status: 'staged' },
+      { id: 'b', status: 'committed' },
+      { id: 'c', status: 'staged' },
+      { id: 'd', status: 'discarded' },
+      { id: 'e', status: 'unknown' },
+    ];
+    const [open, closed] = groupChangesetsByState(list);
+    expect(open).toMatchObject({ key: 'open', label: 'Open' });
+    expect(closed).toMatchObject({ key: 'closed', label: 'Closed' });
+    // Each group keeps the list's order (the hook sorts it newest first).
+    expect(open.changesets.map((c) => c.id)).toEqual(['a', 'c']);
+    expect(closed.changesets.map((c) => c.id)).toEqual(['b', 'd', 'e']);
+    expect(changesetGroupKey('staged')).toBe('open');
+    expect(changesetGroupKey('committed')).toBe('closed');
+  });
+
+  it('returns both groups, empty, for an empty list', () => {
+    expect(groupChangesetsByState([]).map((g) => [g.key, g.changesets.length])).toEqual([
+      ['open', 0],
+      ['closed', 0],
+    ]);
   });
 });
