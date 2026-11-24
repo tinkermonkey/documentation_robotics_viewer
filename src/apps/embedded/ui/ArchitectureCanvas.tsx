@@ -42,6 +42,7 @@ import { C4ChangesetPicker } from './C4ChangesetPicker';
 import { C4ExportMenu } from './C4ExportMenu';
 import { C4ChangesetBar } from './C4ChangesetBar';
 import { OP_OUTLINE, type OverlayOp } from './opStyles';
+import { rollUpLabel } from './c4Marks';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { specTypeLabel, withCount } from '../data/typeLabel';
@@ -186,6 +187,8 @@ function C4ChangesSection({
     ].filter((g) => g.lines.length > 0);
   }, [id, view, overlay, detail, raw]);
 
+  const insideChip = rollUpLabel(overlay.diff.rollUp.get(id));
+
   const open = (seq: number) => {
     selectChangeset(detail.id);
     selectChange(seq);
@@ -194,6 +197,11 @@ function C4ChangesSection({
   return (
     <section aria-label="In this changeset" data-testid="c4-details-changes">
       <h3 className="c4-details__section">In this changeset</h3>
+      {insideChip && (
+        <p className="c4-details__muted" data-testid="c4-details-inside-note">
+          Its “{insideChip}” counts each change once, even one behind several boxes or arrows inside it.
+        </p>
+      )}
       {lines.length === 0 ? (
         <p className="c4-details__muted">No change in {detail.name} touches this box.</p>
       ) : (
@@ -615,7 +623,7 @@ export function ArchitectureCanvas() {
         }
       />
       <ScopeTrail view={view} onOpen={open} />
-      {comparing ? <C4PlanComparisonBar state={compareState} /> : <C4ChangesetBar state={overlayState} />}
+      {comparing ? <C4PlanComparisonBar state={compareState} /> : <C4ChangesetBar state={overlayState} scope={view.level !== 'context' && view.scope ? { id: view.scope.id, name: view.scope.name } : null} />}
 
       <div ref={bodyRef} style={{ flex: 1, position: 'relative', minHeight: 0 }} data-testid="c4-body">
         {isError ? (

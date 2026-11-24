@@ -1,0 +1,2311 @@
+- type: add
+  elementId: testing.testcasesketch.c4-changeset-overlay-applied-changeset-shown-reverted-opens-no-model-view-link-from-a-box-whose-c399f26f
+  layerName: testing
+  after:
+    id: 179d21e3-68ec-46dc-8188-dfd3d55fa6f7
+    path: testing.testcasesketch.c4-changeset-overlay-applied-changeset-shown-reverted-opens-no-model-view-link-from-a-box-whose-c399f26f
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4 changeset overlay (applied changeset, shown reverted) > opens no Model
+      view link from a box whose model element the changeset deleted
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Overlay.spec.tsx
+          symbol: C4 changeset overlay (applied changeset, shown reverted) > opens no
+            Model view link from a box whose model element the changeset deleted
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 0
+- type: add
+  elementId: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-how-many-changes-are-inside-the-drawn-scope-the-number-65a1841e
+  layerName: testing
+  after:
+    id: 3c13dec1-5b69-45c1-9014-8d3c827bfd2f
+    path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-how-many-changes-are-inside-the-drawn-scope-the-number-65a1841e
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4 changeset overlay (staged changeset) > says how many changes are inside
+      the drawn scope, the number its chip showed one level up (#629)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Overlay.spec.tsx
+          symbol: C4 changeset overlay (staged changeset) > says how many changes are
+            inside the drawn scope, the number its chip showed one level up
+            (#629)
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 1
+- type: add
+  elementId: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-in-the-drawer-that-a-boxs-roll-up-counts-each-change-b4d602cf
+  layerName: testing
+  after:
+    id: b582afe6-43a3-4aa0-8c62-1f2258b22a87
+    path: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-in-the-drawer-that-a-boxs-roll-up-counts-each-change-b4d602cf
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4 changeset overlay (staged changeset) > says in the drawer that a box's
+      roll-up counts each change once (#629)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/C4Overlay.spec.tsx
+          symbol: C4 changeset overlay (staged changeset) > says in the drawer that a
+            box's roll-up counts each change once (#629)
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 2
+- type: add
+  elementId: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412
+  layerName: testing
+  after:
+    id: 8246fbf5-9179-4e29-8d13-8e54f4114a0d
+    path: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "unionC4View: a Component diagram past the outside cap > leaves the same
+      outsiders off both sides, so a change in rank marks no unchanged arrow"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Diff.spec.ts
+          symbol: "unionC4View: a Component diagram past the outside cap > leaves the same
+            outsiders off both sides, so a change in rank marks no unchanged
+            arrow"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 3
+- type: add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe
+  layerName: testing
+  after:
+    id: 7ff1f942-f632-4b33-aa8b-d10eb6a0b0fd
+    path: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: C4-PlantUML > keeps identifiers valid and unique, and quotes
+      safe"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: C4-PlantUML > keeps identifiers valid and unique, and quotes
+            safe"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 4
+- type: add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d
+  layerName: testing
+  after:
+    id: 6e52df45-d2b3-4aa8-be2e-978db6b45ab2
+    path: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: C4-PlantUML > puts a component diagram inside its container,
+      and writes marks as tags with a legend"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: C4-PlantUML > puts a component diagram inside its container,
+            and writes marks as tags with a legend"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 5
+- type: add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca
+  layerName: testing
+  after:
+    id: df5d92e8-1eda-4ddc-8561-39751ab55554
+    path: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: C4-PlantUML > puts a container diagram inside the system
+      boundary, with a data store and an arrow per relationship"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: C4-PlantUML > puts a container diagram inside the system
+            boundary, with a data store and an arrow per relationship"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e
+  layerName: testing
+  after:
+    id: 817b258e-7a71-4e9c-bfbd-8e955b55fe24
+    path: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: C4-PlantUML > writes a context diagram with the level include,
+      each element by kind and no boundary"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: C4-PlantUML > writes a context diagram with the level
+            include, each element by kind and no boundary"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-draws-a-png-at-2x-or-smaller-when-that-canvas-would-be-too-large-for-a-e88df82f
+  layerName: testing
+  after:
+    id: c08eae32-5f43-4e88-a67b-55e1646e7784
+    path: testing.testcasesketch.c4-export-names-and-colours-draws-a-png-at-2x-or-smaller-when-that-canvas-would-be-too-large-for-a-e88df82f
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: names and colours > draws a PNG at 2x, or smaller when that
+      canvas would be too large for a browser"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: names and colours > draws a PNG at 2x, or smaller when that
+            canvas would be too large for a browser"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 8
+- type: add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram
+  layerName: testing
+  after:
+    id: e7b5e2a6-d898-44a9-a84b-fce70cc11965
+    path: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: names and colours > names a file after the diagram"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: names and colours > names a file after the diagram"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 9
+- type: add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-reads-heimdalls-token-values-as-hex
+  layerName: testing
+  after:
+    id: c61b85c2-8459-41a7-ac74-a98dacb0661f
+    path: testing.testcasesketch.c4-export-names-and-colours-reads-heimdalls-token-values-as-hex
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: names and colours > reads Heimdall's token values as hex"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: names and colours > reads Heimdall's token values as hex"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 10
+- type: add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-gives-a-component-view-whose-scope-has-no-container-the-unassigned-one
+  layerName: testing
+  after:
+    id: 651f5d34-6375-46e5-95db-5ad8c36ad65f
+    path: testing.testcasesketch.c4-export-structurizr-dsl-gives-a-component-view-whose-scope-has-no-container-the-unassigned-one
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: Structurizr DSL > gives a component view whose scope has no
+      container the Unassigned one"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: Structurizr DSL > gives a component view whose scope has no
+            container the Unassigned one"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 11
+- type: add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires
+  layerName: testing
+  after:
+    id: b6fc4112-6cc2-4fd5-b548-a7f89b39d57d
+    path: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: Structurizr DSL > keeps sibling names unique, as Structurizr
+      requires"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: Structurizr DSL > keeps sibling names unique, as Structurizr
+            requires"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 12
+- type: add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f
+  layerName: testing
+  after:
+    id: 47d17a63-f643-4ab3-aa03-a965d69a969f
+    path: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: Structurizr DSL > nests a component view inside its container,
+      and writes marks as tags with styles"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: Structurizr DSL > nests a component view inside its
+            container, and writes marks as tags with styles"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 13
+- type: add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements
+  layerName: testing
+  after:
+    id: 94ed6413-795e-402c-a70d-b13d304e6231
+    path: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: Structurizr DSL > writes a container view of the system
+      including exactly the drawn elements"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: Structurizr DSL > writes a container view of the system
+            including exactly the drawn elements"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 14
+- type: add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7
+  layerName: testing
+  after:
+    id: a37dec93-0b2a-4366-8581-3b351a3d1d54
+    path: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: Structurizr DSL > writes a system context view with people and
+      external systems outside the system"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: Structurizr DSL > writes a system context view with people
+            and external systems outside the system"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 15
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow
+  layerName: testing
+  after:
+    id: fc04789c-a7d9-42bb-9854-7561644c13f0
+    path: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > draws a mark as an outline, a chip with its glyph and
+      words, and a dashed coloured arrow"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > draws a mark as an outline, a chip with its glyph and
+            words, and a dashed coloured arrow"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 16
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee
+  layerName: testing
+  after:
+    id: 163a44bc-aba1-42b4-9258-b8261a035b3c
+    path: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > draws an overlay's change counts as the screen does: on
+      the chip, and at the end of the arrow label (#629)"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > draws an overlay's change counts as the screen does: on
+            the chip, and at the end of the arrow label (#629)"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 17
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more
+  layerName: testing
+  after:
+    id: 13a67b7f-6309-448b-ae8e-ae98fa34f179
+    path: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > draws the boundary, a card per element and an arrow per
+      relationship, nothing more"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > draws the boundary, a card per element and an arrow per
+            relationship, nothing more"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 18
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws
+  layerName: testing
+  after:
+    id: fa5daa43-6c3d-45df-8c5d-151ae98cf2e3
+    path: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > escapes the text it draws"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > escapes the text it draws"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 19
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram
+  layerName: testing
+  after:
+    id: 0e2a53b2-459f-4ba3-9510-ea7d4e649cdb
+    path: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > has no boundary on a context diagram"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > has no boundary on a context diagram"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 20
+- type: add
+  elementId: testing.testcasesketch.c4-export-svg-wraps-a-long-name-at-words-and-ends-what-is-left-over-with-an-ellipsis
+  layerName: testing
+  after:
+    id: dac4f7e9-17ae-46df-b4b9-3066f6997763
+    path: testing.testcasesketch.c4-export-svg-wraps-a-long-name-at-words-and-ends-what-is-left-over-with-an-ellipsis
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Export: SVG > wraps a long name at words and ends what is left over
+      with an ellipsis"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+          symbol: "c4Export: SVG > wraps a long name at words and ends what is left over
+            with an ellipsis"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 21
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-a-comparison-marks-a-card-with-its-verdict-and-wins-over-an-overlay
+  layerName: testing
+  after:
+    id: 5e50acc1-5fb8-4a3b-9e03-2e00a9cf9362
+    path: testing.testcasesketch.c4-diagram-marks-a-comparison-marks-a-card-with-its-verdict-and-wins-over-an-overlay
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: a comparison > marks a card with its verdict, and wins
+      over an overlay"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: a comparison > marks a card with its verdict, and wins
+            over an overlay"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 22
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-an-overlay-gives-an-arrow-its-op-colour-and-for-an-export-the-dash-the-canvas-d055955e
+  layerName: testing
+  after:
+    id: c79cc346-550d-4dbe-8b5d-f418bb6fae8b
+    path: testing.testcasesketch.c4-diagram-marks-an-overlay-gives-an-arrow-its-op-colour-and-for-an-export-the-dash-the-canvas-d055955e
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: an overlay > gives an arrow its op colour and, for an
+      export, the dash the canvas draws it with"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: an overlay > gives an arrow its op colour and, for an
+            export, the dash the canvas draws it with"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 23
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-an-overlay-marks-a-card-with-its-op-outline-glyph-and-words-and-a-box-whose-parts-954d6db6
+  layerName: testing
+  after:
+    id: 29dcd069-bac9-4904-b938-7c259244b69f
+    path: testing.testcasesketch.c4-diagram-marks-an-overlay-marks-a-card-with-its-op-outline-glyph-and-words-and-a-box-whose-parts-954d6db6
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: an overlay > marks a card with its op outline, glyph and
+      words, and a box whose parts changed with its roll-up only"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: an overlay > marks a card with its op outline, glyph
+            and words, and a box whose parts changed with its roll-up only"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 24
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-as-c4-export-marks-carries-the-same-status-glyph-and-words-with-each-colour-77f111b4
+  layerName: testing
+  after:
+    id: 868e80f1-e390-46e9-8050-5ef1affc9d7a
+    path: testing.testcasesketch.c4-diagram-marks-as-c4-export-marks-carries-the-same-status-glyph-and-words-with-each-colour-77f111b4
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: as C4 Export Marks > carries the same status, glyph and
+      words, with each colour resolved"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: as C4 Export Marks > carries the same status, glyph and
+            words, with each colour resolved"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 25
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-as-c4-export-marks-takes-a-comparisons-verdicts-and-roll-ups-never-the-overlays
+  layerName: testing
+  after:
+    id: c4459d73-b6ad-4882-bf1a-3dd44079bafd
+    path: testing.testcasesketch.c4-diagram-marks-as-c4-export-marks-takes-a-comparisons-verdicts-and-roll-ups-never-the-overlays
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: as C4 Export Marks > takes a comparison's verdicts and
+      roll-ups, never the overlay's"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: as C4 Export Marks > takes a comparison's verdicts and
+            roll-ups, never the overlay's"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 26
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-change-counts-629-exports-the-same-chip-and-count
+  layerName: testing
+  after:
+    id: 5e179c8d-ab0b-4da7-a360-a3144f7ff432
+    path: testing.testcasesketch.c4-diagram-marks-change-counts-629-exports-the-same-chip-and-count
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: change counts (#629) > exports the same chip and count"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: change counts (#629) > exports the same chip and count"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 27
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-change-counts-629-never-counts-on-a-comparison-mark
+  layerName: testing
+  after:
+    id: 0decfe3f-1273-4828-bcae-8b57ba83d79e
+    path: testing.testcasesketch.c4-diagram-marks-change-counts-629-never-counts-on-a-comparison-mark
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: change counts (#629) > never counts on a comparison mark"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: change counts (#629) > never counts on a comparison
+            mark"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 28
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-change-counts-629-puts-the-count-on-a-boxs-chip-and-in-its-words-and-leaves-it-off-602629c2
+  layerName: testing
+  after:
+    id: ed3e3992-3646-49b0-b3c9-00daa38180e3
+    path: testing.testcasesketch.c4-diagram-marks-change-counts-629-puts-the-count-on-a-boxs-chip-and-in-its-words-and-leaves-it-off-602629c2
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: change counts (#629) > puts the count on a box's chip and
+      in its words, and leaves it off at one"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: change counts (#629) > puts the count on a box's chip
+            and in its words, and leaves it off at one"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 29
+- type: add
+  elementId: testing.testcasesketch.c4-diagram-marks-change-counts-629-puts-the-count-on-an-arrow-past-one-in-its-words-and-as-the-c45f920d
+  layerName: testing
+  after:
+    id: 4c999b5a-b367-4485-87b5-38520bfa95e9
+    path: testing.testcasesketch.c4-diagram-marks-change-counts-629-puts-the-count-on-an-arrow-past-one-in-its-words-and-as-the-c45f920d
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4DiagramMarks: change counts (#629) > puts the count on an arrow past
+      one, in its words and as the label's tail"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4DiagramMarks.spec.ts
+          symbol: "c4DiagramMarks: change counts (#629) > puts the count on an arrow past
+            one, in its words and as the label's tail"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 30
+- type: add
+  elementId: testing.testcasesketch.c4-layout-a-marked-arrow-label-cuts-the-glyph-and-labels-never-the-count
+  layerName: testing
+  after:
+    id: a92b982b-7684-46f5-9a6b-8d4325990047
+    path: testing.testcasesketch.c4-layout-a-marked-arrow-label-cuts-the-glyph-and-labels-never-the-count
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Layout: a marked arrow label > cuts the glyph and labels, never the
+      count"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Layout: a marked arrow label > cuts the glyph and labels, never the
+            count"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 31
+- type: add
+  elementId: testing.testcasesketch.c4-layout-a-marked-arrow-label-widens-the-label-background-to-fit-the-drawn-text-never-narrower-81a94b87
+  layerName: testing
+  after:
+    id: 6338e578-2f47-4ae4-8fe0-cc1a035d4f7d
+    path: testing.testcasesketch.c4-layout-a-marked-arrow-label-widens-the-label-background-to-fit-the-drawn-text-never-narrower-81a94b87
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Layout: a marked arrow label > widens the label background to fit the
+      drawn text, never narrower than laid out"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Layout: a marked arrow label > widens the label background to fit the
+            drawn text, never narrower than laid out"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 32
+- type: add
+  elementId: testing.testcasesketch.c4-marks-change-counts-counts-an-arrows-changes-past-one
+  layerName: testing
+  after:
+    id: a705dd65-2ff1-42eb-9b2e-e6b6c90e048e
+    path: testing.testcasesketch.c4-marks-change-counts-counts-an-arrows-changes-past-one
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Marks: change counts > counts an arrow's changes past one"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Marks: change counts > counts an arrow's changes past one"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 33
+- type: add
+  elementId: testing.testcasesketch.c4-marks-change-counts-counts-past-one-and-says-nothing-at-one-or-none
+  layerName: testing
+  after:
+    id: cda713c2-bb0b-4b8a-95df-45fdb283ddf4
+    path: testing.testcasesketch.c4-marks-change-counts-counts-past-one-and-says-nothing-at-one-or-none
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Marks: change counts > counts past one, and says nothing at one or none"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Marks: change counts > counts past one, and says nothing at one or
+            none"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 34
+- type: add
+  elementId: testing.testcasesketch.c4-marks-change-counts-puts-the-count-in-the-words-for-accessible-names-after-a-comma-before-the-6a161b66
+  layerName: testing
+  after:
+    id: 7802b0da-b57d-49cc-adaa-844b1e97895a
+    path: testing.testcasesketch.c4-marks-change-counts-puts-the-count-in-the-words-for-accessible-names-after-a-comma-before-the-6a161b66
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Marks: change counts > puts the count in the words for accessible
+      names, after a comma, before the roll-up"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Marks: change counts > puts the count in the words for accessible
+            names, after a comma, before the roll-up"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 35
+- type: add
+  elementId: testing.testcasesketch.c4-marks-change-counts-puts-the-count-on-a-boxs-chip-after-a-middle-dot-as-the-roll-up-words-it
+  layerName: testing
+  after:
+    id: 551e7c09-394b-4c92-9d3c-c1a2ac4cb78c
+    path: testing.testcasesketch.c4-marks-change-counts-puts-the-count-on-a-boxs-chip-after-a-middle-dot-as-the-roll-up-words-it
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Marks: change counts > puts the count on a box's chip after a middle
+      dot, as the roll-up words it"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Marks: change counts > puts the count on a box's chip after a middle
+            dot, as the roll-up words it"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 36
+- type: add
+  elementId: testing.testcasesketch.c4-marks-change-counts-states-a-scopes-total-as-its-chip-did-one-level-up
+  layerName: testing
+  after:
+    id: 2c6b5906-3f92-42c6-a4af-f8036893d481
+    path: testing.testcasesketch.c4-marks-change-counts-states-a-scopes-total-as-its-chip-did-one-level-up
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "c4Marks: change counts > states a scope's total as its chip did one level
+      up"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/c4Marks.spec.ts
+          symbol: "c4Marks: change counts > states a scope's total as its chip did one
+            level up"
+    metadata:
+      created_at: 2026-11-24T14:08:43.388Z
+      updated_at: 2026-11-24T14:08:43.388Z
+      version: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: application.applicationcomponent.c4-diagram::accesses::data-model.objectschema.plan-verification
+  layerName: application
+  after:
+    source: application.applicationcomponent.c4-diagram
+    target: data-model.objectschema.plan-verification
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:USAGE
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 38
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::accesses::data-model.objectschema.c4-model
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: data-model.objectschema.c4-model
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:USAGE
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.c4-changeset-diff::depends-on::application.applicationservice.c4-view-scoping
+  layerName: application
+  after:
+    source: application.applicationservice.c4-changeset-diff
+    target: application.applicationservice.c4-view-scoping
+    predicate: depends-on
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 40
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::accesses::data-model.objectschema.c4-model
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: data-model.objectschema.c4-model
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:USAGE
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 41
+- type: relationship-add
+  elementId: application.applicationservice.use-c4model::accesses::data-model.objectschema.c4-diff
+  layerName: application
+  after:
+    source: application.applicationservice.use-c4model
+    target: data-model.objectschema.c4-diff
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:USAGE
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 42
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-how-many-changes-are-inside-the-drawn-scope-the-number-65a1841e::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-how-many-changes-are-inside-the-drawn-scope-the-number-65a1841e
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 43
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-in-the-drawer-that-a-boxs-roll-up-counts-each-change-b4d602cf::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-changeset-overlay-staged-changeset-says-in-the-drawer-that-a-boxs-roll-up-counts-each-change-b4d602cf
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 44
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 45
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 46
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-keeps-identifiers-valid-and-unique-and-quotes-safe
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 47
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 48
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-component-diagram-inside-its-container-and-writes-marks-as-tags-with-09987d4d
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 49
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 50
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-puts-a-container-diagram-inside-the-system-boundary-with-a-data-store-and-an-f56309ca
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 51
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 52
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-c4-plant-uml-writes-a-context-diagram-with-the-level-include-each-element-by-kind-and-no-9800b42e
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 53
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-draws-a-png-at-2x-or-smaller-when-that-canvas-would-be-too-large-for-a-e88df82f::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-names-and-colours-draws-a-png-at-2x-or-smaller-when-that-canvas-would-be-too-large-for-a-e88df82f
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 54
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 55
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-names-and-colours-names-a-file-after-the-diagram
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 56
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-names-and-colours-reads-heimdalls-token-values-as-hex::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-names-and-colours-reads-heimdalls-token-values-as-hex
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 57
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-gives-a-component-view-whose-scope-has-no-container-the-unassigned-one::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-gives-a-component-view-whose-scope-has-no-container-the-unassigned-one
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 58
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 59
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-keeps-sibling-names-unique-as-structurizr-requires
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 60
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 61
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-nests-a-component-view-inside-its-container-and-writes-marks-as-tags-with-6f7fb30f
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 62
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 63
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-container-view-of-the-system-including-exactly-the-drawn-elements
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 64
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 65
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-structurizr-dsl-writes-a-system-context-view-with-people-and-external-systems-outside-the-333082e7
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 66
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 67
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-a-mark-as-an-outline-a-chip-with-its-glyph-and-words-and-a-dashed-coloured-arrow
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 68
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 69
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-an-overlays-change-counts-as-the-screen-does-on-the-chip-and-at-the-end-of-the-b74031ee
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 70
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 71
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-draws-the-boundary-a-card-per-element-and-an-arrow-per-relationship-nothing-more
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 72
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 73
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 74
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-escapes-the-text-it-draws
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 75
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 76
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram::tests::application.applicationservice.c4-view-scoping
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-has-no-boundary-on-a-context-diagram
+    target: application.applicationservice.c4-view-scoping
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 77
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-svg-wraps-a-long-name-at-words-and-ends-what-is-left-over-with-an-ellipsis::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-svg-wraps-a-long-name-at-words-and-ends-what-is-left-over-with-an-ellipsis
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 78
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-layout-a-marked-arrow-label-cuts-the-glyph-and-labels-never-the-count::tests::application.applicationservice.c4-diagram-layout
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-layout-a-marked-arrow-label-cuts-the-glyph-and-labels-never-the-count
+    target: application.applicationservice.c4-diagram-layout
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 79
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-layout-a-marked-arrow-label-widens-the-label-background-to-fit-the-drawn-text-never-narrower-81a94b87::tests::application.applicationservice.c4-diagram-layout
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-layout-a-marked-arrow-label-widens-the-label-background-to-fit-the-drawn-text-never-narrower-81a94b87
+    target: application.applicationservice.c4-diagram-layout
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 80
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 81
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-changes-no-diagram-shows-counts-a-change-to-an-element-no-rule-places
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 82
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 83
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-changes-no-diagram-shows-passes-on-what-the-overlay-could-not-place-or-netted-out
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 84
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 85
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-added-with-the-parent-whose-parts-changed
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 86
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 87
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-changed-its-own-element-or-one-folded-onto-it
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 88
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 89
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-matches-a-renamed-element-by-its-uuid-changed-not-removed-and-added
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 90
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 91
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-moved-its-parent-changed-and-both-parents-parts-changed
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 92
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 93
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-element-statuses-removed-and-the-arrows-at-it
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 94
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-nothing-changed-is-empty-between-two-builds-of-one-model-matched-by-sources-not-identity
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 95
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 96
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-nothing-changed-is-empty-for-an-empty-changeset
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 97
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 98
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-added-with-the-change-behind-it
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 99
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 100
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-relabelled-a-new-label-on-an-existing-arrow
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 101
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 102
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-relationship-statuses-relinked-same-label-another-model-link-behind-it
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 103
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 104
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-roll-up-to-the-box-a-diagram-shows-counts-an-arrow-on-the-elements-that-hold-both-its-ends
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 105
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 106
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-cannot-bring-back-links-an-applied-delete-took-without-a-815f0d56
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 107
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 108
+- type: relationship-add
+  elementId: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.diff-c4-staged-and-applied-read-the-same-gives-one-diff-for-a-changeset-applied-forward-or-reverted-dfa2fb04
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 109
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 110
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-draws-a-removed-element-back-in-under-its-base-parent-with-its-arrows
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 111
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 112
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-is-the-after-model-itself-when-nothing-was-removed
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 113
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-is-the-plain-view-for-an-unchanged-model::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-is-the-plain-view-for-an-unchanged-model
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 114
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 115
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-marks-a-lifted-arrow-relinked-when-only-the-links-behind-it-change
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 116
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 117
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 118
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412::tests::application.applicationservice.c4-changeset-diff
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412
+    target: application.applicationservice.c4-changeset-diff
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 119
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412::tests::application.applicationservice.c4-model-transform
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412
+    target: application.applicationservice.c4-model-transform
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 120
+- type: relationship-add
+  elementId: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412::tests::application.applicationservice.changeset-model-overlay
+  layerName: testing
+  after:
+    source: testing.testcasesketch.union-c4-view-a-component-diagram-past-the-outside-cap-leaves-the-same-outsiders-off-both-sides-so-17362412
+    target: application.applicationservice.changeset-model-overlay
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T14:08:43.429Z
+  sequenceNumber: 121

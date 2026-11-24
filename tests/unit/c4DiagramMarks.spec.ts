@@ -44,6 +44,46 @@ const comparison: C4DiagramComparison = {
 
 const colorOf = (token: string) => `color(${token})`;
 
+describe('c4DiagramMarks: change counts (#629)', () => {
+  const counted: C4DiagramOverlay = {
+    ...overlay,
+    elements: new Map([
+      ['a', diff('a', 'changed', { sequences: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] })],
+      ['c', diff('c', 'moved', { previousParentId: 'old', sequences: [20, 21, 22, 23] })],
+      ['b', diff('b', 'added', { sequences: [30] })],
+    ]),
+    relationships: new Map<string, C4ViewRelationshipDiff>([
+      ['a>b', { status: 'added', baseLabels: [], sequences: [40, 41, 42, 43] }],
+      ['b>c', { status: 'removed', baseLabels: ['reads'], sequences: [50] }],
+    ]),
+  };
+
+  it("puts the count on a box's chip and in its words, and leaves it off at one", () => {
+    expect(cardMark({ overlay: counted }, 'a').mark).toMatchObject({ chip: 'changed', count: '12 changes' });
+    expect(cardMark({ overlay: counted }, 'a').words).toEqual(['changed, 12 changes']);
+    expect(cardMark({ overlay: counted }, 'c').mark).toMatchObject({ chip: 'moved from Old Home', count: '4 changes' });
+    expect(cardMark({ overlay: counted }, 'c').words).toEqual(['moved from Old Home, 4 changes']);
+    expect(cardMark({ overlay: counted }, 'b').mark).toMatchObject({ chip: 'added', count: '' });
+    expect(cardMark({ overlay: counted }, 'b').words).toEqual(['added']);
+  });
+
+  it("puts the count on an arrow past one, in its words and as the label's tail", () => {
+    expect(edgeMark({ overlay: counted }, 'a>b')).toMatchObject({ words: ['added, 4 changes'], count: '4 changes' });
+    expect(edgeMark({ overlay: counted }, 'b>c')).toMatchObject({ words: ['removed'], count: '' });
+  });
+
+  it('exports the same chip and count', () => {
+    const marks = toExportMarks(view, { overlay: counted }, colorOf);
+    expect(marks.elements.get('a')).toMatchObject({ chip: 'changed', count: '12 changes', words: ['changed, 12 changes'] });
+    expect(marks.relationships.get('a>b')).toMatchObject({ count: '4 changes' });
+  });
+
+  it('never counts on a comparison mark', () => {
+    expect(cardMark({ overlay: counted, comparison }, 'a').mark).toMatchObject({ count: '' });
+    expect(edgeMark({ overlay: counted, comparison }, 'a>b')).toMatchObject({ count: '' });
+  });
+});
+
 describe('c4DiagramMarks: an overlay', () => {
   it('marks a card with its op outline, glyph and words, and a box whose parts changed with its roll-up only', () => {
     const a = cardMark({ overlay }, 'a');
@@ -86,6 +126,8 @@ describe('c4DiagramMarks: as C4 Export Marks', () => {
       status: 'added',
       glyph: '+',
       words: ['added'],
+      chip: 'added',
+      count: '',
       legend: 'added',
       color: 'color(--status-emerald)',
       lineStyle: 'solid',

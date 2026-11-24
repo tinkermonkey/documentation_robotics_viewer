@@ -325,12 +325,19 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   `useC4Overlay(changesetId)` (in `useC4Model.ts`, takes the id so `data/` never reads the store) caches it per
   model payload, spec and changeset payload; the layout query key adds the changeset id + revision. `C4Diagram`'s
   `overlay` prop: a ring in the op's `ui/opStyles.ts` outline (colour AND line style) clear of the selection
-  outline, a text chip with a glyph (`ui/c4Marks.ts`: + added, − removed, → moved from X, ~ changed), a "N
-  changes inside" chip (`rollUpLabel`: the changeset's changes below the box), ghosts (`c4-card--ghost`: faded,
-  dotted, never drillable), arrows stroked in the op colour with their own dash pattern and a glyph on the label;
-  the status is in every card's accessible name and in the hidden arrow list. `ui/C4ChangesetBar.tsx` under the
-  breadcrumb: name, purpose, "staged, shown applied" / "applied, shown reverted", `DriftBadge`, tally, legend,
-  what the diagrams leave out, Review in Changesets, Clear. The drawer's "In this changeset" lists the changes
+  outline, a text chip with a glyph (`ui/c4Marks.ts`: + added, − removed, → moved from X, ~ changed) and, past
+  one, the changes behind it (#629: `changeCountLabel` of `sequences.length`, "~ changed · 12 changes", in the
+  accessible name as "changed, 12 changes"), a "N changes inside" chip (`rollUpLabel`: the changeset's changes
+  below the box, each once), ghosts (`c4-card--ghost`: faded, dotted, never drillable), arrows stroked in the op
+  colour with their own dash pattern, a glyph on the label and, past one, its count at the end
+  (`c4Layout.ts`'s `c4MarkedEdgeLabel` cuts the labels, never the count, and `c4EdgeLabelWidth` widens the
+  label's background; the export uses both); the status (with its count) is in every card's accessible name and
+  in the hidden arrow list. A link change can count on its arrow and on both end boxes, so children's counts
+  don't sum to the parent's chip: `ui/C4ChangesetBar.tsx` (`scope` prop) states the drawn scope's total instead
+  ("81 changes inside Web App, each counted once", `scopeChangesLabel`, the same number as the chip followed),
+  and the drawer says the chip counts each change once. The bar under the
+  breadcrumb: name, purpose, "staged, shown applied" / "applied, shown reverted", `DriftBadge`, tally, scope
+  total, legend, what the diagrams leave out, Review in Changesets, Clear. The drawer's "In this changeset" lists the changes
   behind the box (this box / inside it / its arrows), each `#seq` opening it in the Changesets review
   (`selectChangeset` + `selectChange`); a staged changeset's new box lists its model elements without links. A
   selection the drawn diagram doesn't hold is dropped once the overlay has loaded. DrBot's context names the
