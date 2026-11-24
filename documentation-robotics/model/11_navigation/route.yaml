@@ -5,9 +5,11 @@ navigation.route.index-route:
   type: route
   layer_id: navigation
   name: Index Route
-  description: Landing route at path /#/; accepts optional ?token= search
-    parameter; renders AuthRoute component that extracts the magic link token
-    and redirects to the model view.
+  description: "Landing route at /#/ (bare, no project): the dr CLI's central
+    process serves many projects and checkouts, so it renders the Checkout
+    Picker View. A token in the fragment (?token=) is stored and removed from
+    the address bar first. When the farm has exactly one checkout it opens that
+    checkout's Model view directly."
   attributes:
     type: public
   source_reference:
@@ -26,19 +28,14 @@ navigation.route.app-shell-sectionview-route:
   type: route
   layer_id: navigation
   name: App Shell Section/View Route
-  description: Parameterized route at /#/:section/:view (section = model | spec |
-    changesets | architecture; view is a per-section default, e.g. graph, list,
-    or diagram for architecture) that renders AppShell; a two-way effect keeps
-    uiStore.view and the URL hash in sync. The architecture section carries
-    ?level= (context | container | component), ?scope= (the dotted id of the
-    element whose parts are shown) and ?node= (the selected box). Replaced the
-    previous six separate per-section redirect + view routes
-    (model/spec/changesets redirect-route and view-route pairs) with a single
-    generic TanStack route plus in-app SECTION_TO_VIEW/VIEW_TO_SECTION maps in
-    the June 2026 Heimdall UX rebuild; protected — requires a valid auth token
-    via authStore.
+  description: "The old unscoped route /#/:section/:view (section = model | spec |
+    changesets | architecture). Since the viewer runs on the dr CLI's central
+    process (dr serve), whose project data is served only per checkout, it no
+    longer renders the shell: it opens the Checkout Picker View, which carries
+    the section, view and search over to the checkout chosen (or opens the
+    farm's only checkout directly)."
   attributes:
-    type: protected
+    type: redirect
   source_reference:
     provenance: extracted
     locations:
@@ -47,4 +44,49 @@ navigation.route.app-shell-sectionview-route:
   metadata:
     created_at: 2026-09-19T15:17:21.969Z
     updated_at: 2026-09-19T15:17:21.969Z
+    version: 1
+navigation.route.checkout-shell-route:
+  id: f93d2b68-1d01-43d0-9e9f-8263ebc60fcf
+  path: navigation.route.checkout-shell-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Checkout Shell Route
+  description: "/#/p/:project/c/:checkout/:section/:view: the app shell for one
+    checkout of the central process, with the same search params as the unscoped
+    shell route had (?layer, ?node, ?edge, ?changeset, ?level, ?scope, ?built,
+    ?vp). Its params set the current checkout (checkoutStore) that every API
+    call, query key, websocket subscription and DrBot send is scoped to. It also
+    takes the CLI's link forms: changesets/<id> (with ?element=) and
+    elements/<id> are read as links and replaced with the shell URL they open."
+  attributes:
+    type: protected
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: CheckoutShellRoute
+  metadata:
+    created_at: 2026-11-24T11:32:08.563Z
+    updated_at: 2026-11-24T11:32:08.563Z
+    version: 1
+navigation.route.checkout-index-route:
+  id: df660b62-81bc-4d92-a75b-ce680da400e7
+  path: navigation.route.checkout-index-route
+  spec_node_id: navigation.route
+  type: route
+  layer_id: navigation
+  name: Checkout Index Route
+  description: "/#/p/:project/c/:checkout (with or without a trailing slash): the
+    CLI's checkout link; replaced with the checkout's Model view."
+  attributes:
+    type: redirect
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: CheckoutIndexRoute
+  metadata:
+    created_at: 2026-11-24T11:32:08.565Z
+    updated_at: 2026-11-24T11:32:08.565Z
     version: 1

@@ -17,9 +17,9 @@ User interface components, screens, and user experience elements.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 25    |
-| Intra-Layer Relationships | 23    |
-| Inter-Layer Relationships | 69    |
-| Inbound Relationships     | 22    |
+| Intra-Layer Relationships | 26    |
+| Inter-Layer Relationships | 73    |
+| Inbound Relationships     | 26    |
 | Outbound Relationships    | 47    |
 
 **Cross-Layer References**:
@@ -32,7 +32,7 @@ User interface components, screens, and user experience elements.
 ```mermaid
 flowchart LR
   subgraph ux
-    ux_statepattern_authentication_flow_pattern["Authentication Flow Pattern"]
+    ux_errorconfig_checkout_unavailable_error["Checkout Unavailable Error"]
     ux_statepattern_data_loading_pattern["Data Loading Pattern"]
     ux_subview_c4_changeset_bar["C4 Changeset Bar"]
     ux_subview_c4_diagram["C4 Diagram"]
@@ -42,43 +42,46 @@ flowchart LR
     ux_subview_changeset_impact_tab["Changeset Impact Tab"]
     ux_subview_changeset_inbox["Changeset Inbox"]
     ux_subview_changeset_review_list["Changeset Review List"]
+    ux_subview_checkout_switcher["Checkout Switcher"]
     ux_subview_hive_by_type["Hive by Type"]
     ux_subview_lanes_by_type["Lanes by Type"]
     ux_subview_page_view["Page View"]
     ux_subview_tier1_panel["Tier1 Panel"]
     ux_uxapplication_embedded_architecture_viewer["Embedded Architecture Viewer"]
     ux_uxspec_architecture_exploration_spec["Architecture Exploration Spec"]
-    ux_uxspec_authentication_spec["Authentication Spec"]
     ux_view_architecture_view["Architecture View"]
-    ux_view_auth_view["Auth View"]
     ux_view_changesets_view["Changesets View"]
+    ux_view_checkout_picker_view["Checkout Picker View"]
     ux_view_dr_bot_chat_drawer["DrBot Chat Drawer"]
     ux_view_inspector_drawer["Inspector Drawer"]
     ux_view_model_view["Model View"]
     ux_view_schema_view["Schema View"]
     ux_view_topbar_search["Topbar Search"]
-    ux_statepattern_authentication_flow_pattern -->|specializes| ux_statepattern_data_loading_pattern
     ux_uxapplication_embedded_architecture_viewer -->|aggregates| ux_uxspec_architecture_exploration_spec
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_architecture_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_changesets_view
+    ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_checkout_picker_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_dr_bot_chat_drawer
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_inspector_drawer
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_model_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_schema_view
     ux_uxspec_architecture_exploration_spec -->|aggregates| ux_view_topbar_search
-    ux_uxspec_authentication_spec -->|aggregates| ux_view_auth_view
     ux_view_architecture_view -->|composes| ux_subview_c4_changeset_bar
     ux_view_architecture_view -->|composes| ux_subview_c4_diagram
     ux_view_architecture_view -->|composes| ux_subview_c4_export_menu
     ux_view_architecture_view -->|composes| ux_subview_c4_plan_comparison_bar
+    ux_view_architecture_view -->|composes| ux_subview_checkout_switcher
     ux_view_changesets_view -->|composes| ux_subview_change_inspector_panel
     ux_view_changesets_view -->|composes| ux_subview_changeset_impact_tab
     ux_view_changesets_view -->|composes| ux_subview_changeset_inbox
     ux_view_changesets_view -->|composes| ux_subview_changeset_review_list
+    ux_view_changesets_view -->|composes| ux_subview_checkout_switcher
     ux_view_changesets_view -->|composes| ux_subview_tier1_panel
+    ux_view_model_view -->|composes| ux_subview_checkout_switcher
     ux_view_model_view -->|composes| ux_subview_hive_by_type
     ux_view_model_view -->|composes| ux_subview_lanes_by_type
     ux_view_model_view -->|composes| ux_subview_page_view
+    ux_view_schema_view -->|composes| ux_subview_checkout_switcher
     ux_view_schema_view -->|composes| ux_subview_page_view
   end
 ```
@@ -116,10 +119,14 @@ flowchart TB
 | Relationship ID                                 | Source Node                                                                                                                         | Dest Node                                                       | Dest Layer   | Predicate    | Cardinality  | Strength |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------ | ------------ | ------------ | -------- |
 | `application.applicationservice.serves.ux.view` | `application.applicationservice.c4-view-scoping`                                                                                    | `ux.view.architecture-view`                                     | `ux`         | `serves`     | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`              | `navigation.route.app-shell-sectionview-route`                                                                                      | `ux.view.architecture-view`                                     | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`              | `navigation.route.app-shell-sectionview-route`                                                                                      | `ux.view.changesets-view`                                       | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`              | `navigation.route.app-shell-sectionview-route`                                                                                      | `ux.view.model-view`                                            | `ux`         | `maps-to`    | many-to-many | medium   |
-| `navigation.route.maps-to.ux.view`              | `navigation.route.app-shell-sectionview-route`                                                                                      | `ux.view.schema-view`                                           | `ux`         | `maps-to`    | many-to-many | medium   |
+| `application.applicationservice.serves.ux.view` | `application.applicationservice.use-projects`                                                                                       | `ux.view.checkout-picker-view`                                  | `ux`         | `serves`     | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.app-shell-sectionview-route`                                                                                      | `ux.view.checkout-picker-view`                                  | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.checkout-shell-route`                                                                                             | `ux.view.architecture-view`                                     | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.checkout-shell-route`                                                                                             | `ux.view.changesets-view`                                       | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.checkout-shell-route`                                                                                             | `ux.view.model-view`                                            | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.checkout-shell-route`                                                                                             | `ux.view.schema-view`                                           | `ux`         | `maps-to`    | many-to-many | medium   |
+| `navigation.route.uses.ux.errorconfig`          | `navigation.route.checkout-shell-route`                                                                                             | `ux.errorconfig.checkout-unavailable-error`                     | `ux`         | `uses`       | many-to-many | medium   |
+| `navigation.route.maps-to.ux.view`              | `navigation.route.index-route`                                                                                                      | `ux.view.checkout-picker-view`                                  | `ux`         | `maps-to`    | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739` | `ux.view.topbar-search`                                         | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`    | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                   | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
@@ -138,7 +145,6 @@ flowchart TB
 | `testing.testcasesketch.tests.ux.subview`       | `testing.testcasesketch.page-view-shows-the-description-above-the-facts-as-markdown-and-leaves-it-out-of-the-facts-grid`            | `ux.subview.page-view`                                          | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`            | `ux.view.topbar-search`                                         | `ux`         | `tests`      | many-to-many | medium   |
 | `ux.uxspec.satisfies.motivation.requirement`    | `ux.uxspec.architecture-exploration-spec`                                                                                           | `motivation.requirement.viewer-covers-every-spec-layer`         | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`    | `ux.uxspec.authentication-spec`                                                                                                     | `motivation.requirement.dr-cli-server-integration`              | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.depends-on.technology.systemsoftware`  | `ux.view.architecture-view`                                                                                                         | `technology.systemsoftware.elk`                                 | `technology` | `depends-on` | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-architecture-diagrams`                      | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-changeset-overlay`                          | `product`    | `realizes`   | many-to-many | medium   |
@@ -163,6 +169,7 @@ flowchart TB
 | `ux.view.satisfies.motivation.requirement`      | `ux.view.changesets-view`                                                                                                           | `motivation.requirement.wcag-21-aa-compliance`                  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`          | `ux.view.changesets-view`                                                                                                           | `business.businessrole.architecture-reviewer`                   | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`              | `ux.view.changesets-view`                                                                                                           | `motivation.goal.enable-real-time-collaboration`                | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`      | `ux.view.checkout-picker-view`                                                                                                      | `motivation.requirement.open-the-checkout-a-link-names`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.dr-bot-chat-drawer`                                                                                                        | `product.feature.dr-bot-chat-drawer`                            | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.serves.business.businessrole`          | `ux.view.dr-bot-chat-drawer`                                                                                                        | `business.businessrole.model-author`                            | `business`   | `serves`     | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.inspector-drawer`                                                                                                          | `product.feature.cross-layer-follow`                            | `product`    | `realizes`   | many-to-many | medium   |
@@ -187,25 +194,19 @@ flowchart TB
 
 ## Element Reference
 
-### Authentication Flow Pattern {#authentication-flow-pattern}
+### Checkout Unavailable Error {#checkout-unavailable-error}
 
-**ID**: `ux.statepattern.authentication-flow-pattern`
+**ID**: `ux.errorconfig.checkout-unavailable-error`
 
-**Type**: `statepattern`
+**Type**: `errorconfig`
 
-Multi-step UX state machine for the token-based authentication flow; states: unauthenticated → extracting-token → validating → authenticated; handles invalid token rejection.
-
-#### Attributes
-
-| Name     | Value          |
-| -------- | -------------- |
-| category | authentication |
+What the shell shows instead of the views when the route's checkout can't be served: 404 (an unknown project or checkout, or one whose folder is gone), a checkout.removed event, or server.stopping. Names the project and checkout, says why, and offers the checkout picker.
 
 #### Relationships
 
-| Type        | Related Element                        | Predicate     | Direction |
-| ----------- | -------------------------------------- | ------------- | --------- |
-| intra-layer | `ux.statepattern.data-loading-pattern` | `specializes` | outbound  |
+| Type        | Related Element                         | Predicate | Direction |
+| ----------- | --------------------------------------- | --------- | --------- |
+| inter-layer | `navigation.route.checkout-shell-route` | `uses`    | inbound   |
 
 ### Data Loading Pattern {#data-loading-pattern}
 
@@ -220,12 +221,6 @@ Standard data-loading state pattern used across all views; states: idle → load
 | Name     | Value        |
 | -------- | ------------ |
 | category | data-loading |
-
-#### Relationships
-
-| Type        | Related Element                               | Predicate     | Direction |
-| ----------- | --------------------------------------------- | ------------- | --------- |
-| intra-layer | `ux.statepattern.authentication-flow-pattern` | `specializes` | inbound   |
 
 ### C4 Changeset Bar {#c4-changeset-bar}
 
@@ -365,6 +360,23 @@ The Changesets view's Review tab: labelled columns, change chips, decision pills
 | ----------- | ------------------------- | ---------- | --------- |
 | intra-layer | `ux.view.changesets-view` | `composes` | inbound   |
 
+### Checkout Switcher {#checkout-switcher}
+
+**ID**: `ux.subview.checkout-switcher`
+
+**Type**: `subview`
+
+In the topbar: the current project and checkout as two Heimdall Selects, listing the farm's projects and the chosen project's checkouts; switching opens the same view in the other checkout without a new link.
+
+#### Relationships
+
+| Type        | Related Element             | Predicate  | Direction |
+| ----------- | --------------------------- | ---------- | --------- |
+| intra-layer | `ux.view.architecture-view` | `composes` | inbound   |
+| intra-layer | `ux.view.changesets-view`   | `composes` | inbound   |
+| intra-layer | `ux.view.model-view`        | `composes` | inbound   |
+| intra-layer | `ux.view.schema-view`       | `composes` | inbound   |
+
 ### Hive by Type {#hive-by-type}
 
 **ID**: `ux.subview.hive-by-type`
@@ -473,32 +485,12 @@ The viewer's main experience: browse the model and the spec layer by layer as gr
 | intra-layer | `ux.uxapplication.embedded-architecture-viewer`         | `aggregates` | inbound   |
 | intra-layer | `ux.view.architecture-view`                             | `aggregates` | outbound  |
 | intra-layer | `ux.view.changesets-view`                               | `aggregates` | outbound  |
+| intra-layer | `ux.view.checkout-picker-view`                          | `aggregates` | outbound  |
 | intra-layer | `ux.view.dr-bot-chat-drawer`                            | `aggregates` | outbound  |
 | intra-layer | `ux.view.inspector-drawer`                              | `aggregates` | outbound  |
 | intra-layer | `ux.view.model-view`                                    | `aggregates` | outbound  |
 | intra-layer | `ux.view.schema-view`                                   | `aggregates` | outbound  |
 | intra-layer | `ux.view.topbar-search`                                 | `aggregates` | outbound  |
-
-### Authentication Spec {#authentication-spec}
-
-**ID**: `ux.uxspec.authentication-spec`
-
-**Type**: `uxspec`
-
-UX specification for token-based authentication flow; extracts bearer token from magic link URL query parameter and redirects to the model view on success.
-
-#### Attributes
-
-| Name       | Value  |
-| ---------- | ------ |
-| experience | visual |
-
-#### Relationships
-
-| Type        | Related Element                                    | Predicate    | Direction |
-| ----------- | -------------------------------------------------- | ------------ | --------- |
-| inter-layer | `motivation.requirement.dr-cli-server-integration` | `satisfies`  | outbound  |
-| intra-layer | `ux.view.auth-view`                                | `aggregates` | outbound  |
 
 ### Architecture View {#architecture-view}
 
@@ -521,7 +513,7 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 | Type        | Related Element                                                                                                                    | Predicate    | Direction |
 | ----------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `application.applicationservice.c4-view-scoping`                                                                                   | `serves`     | inbound   |
-| inter-layer | `navigation.route.app-shell-sectionview-route`                                                                                     | `maps-to`    | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                                                                                            | `maps-to`    | inbound   |
 | inter-layer | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`   | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                  | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                  | `tests`      | inbound   |
@@ -549,26 +541,7 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 | intra-layer | `ux.subview.c4-diagram`                                                                                                            | `composes`   | outbound  |
 | intra-layer | `ux.subview.c4-export-menu`                                                                                                        | `composes`   | outbound  |
 | intra-layer | `ux.subview.c4-plan-comparison-bar`                                                                                                | `composes`   | outbound  |
-
-### Auth View {#auth-view}
-
-**ID**: `ux.view.auth-view`
-
-**Type**: `view`
-
-Landing view at route /#/; extracts the DR CLI bearer token from the ?token= URL query parameter, persists it to localStorage, and redirects to the model view.
-
-#### Attributes
-
-| Name | Value    |
-| ---- | -------- |
-| type | embedded |
-
-#### Relationships
-
-| Type        | Related Element                 | Predicate    | Direction |
-| ----------- | ------------------------------- | ------------ | --------- |
-| intra-layer | `ux.uxspec.authentication-spec` | `aggregates` | inbound   |
+| intra-layer | `ux.subview.checkout-switcher`                                                                                                     | `composes`   | outbound  |
 
 ### Changesets View {#changesets-view}
 
@@ -590,7 +563,7 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 
 | Type        | Related Element                                              | Predicate    | Direction |
 | ----------- | ------------------------------------------------------------ | ------------ | --------- |
-| inter-layer | `navigation.route.app-shell-sectionview-route`               | `maps-to`    | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                      | `maps-to`    | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                      | `depends-on` | outbound  |
 | inter-layer | `product.feature.changeset-inbox`                            | `realizes`   | outbound  |
 | inter-layer | `product.feature.per-change-review`                          | `realizes`   | outbound  |
@@ -606,7 +579,32 @@ One changeset: its change list (Changes) or its reach outside itself (Impact), w
 | intra-layer | `ux.subview.changeset-impact-tab`                            | `composes`   | outbound  |
 | intra-layer | `ux.subview.changeset-inbox`                                 | `composes`   | outbound  |
 | intra-layer | `ux.subview.changeset-review-list`                           | `composes`   | outbound  |
+| intra-layer | `ux.subview.checkout-switcher`                               | `composes`   | outbound  |
 | intra-layer | `ux.subview.tier1-panel`                                     | `composes`   | outbound  |
+
+### Checkout Picker View {#checkout-picker-view}
+
+**ID**: `ux.view.checkout-picker-view`
+
+**Type**: `view`
+
+The page a bare /#/ (and any old unscoped /#/:section/:view link) opens: every project the central process serves, each with its checkouts (main checkout first, then worktrees, with branch), from GET /api/projects and GET /api/projects/\{project\}/checkouts. Choosing one opens it (an old link's section, view and search carried over). A farm with exactly one checkout opens it directly. An older dr CLI without /api/projects gets a message saying the viewer needs dr serve.
+
+#### Attributes
+
+| Name | Value |
+| ---- | ----- |
+| type | page  |
+
+#### Relationships
+
+| Type        | Related Element                                         | Predicate    | Direction |
+| ----------- | ------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-projects`           | `serves`     | inbound   |
+| inter-layer | `navigation.route.app-shell-sectionview-route`          | `maps-to`    | inbound   |
+| inter-layer | `navigation.route.index-route`                          | `maps-to`    | inbound   |
+| inter-layer | `motivation.requirement.open-the-checkout-a-link-names` | `satisfies`  | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`               | `aggregates` | inbound   |
 
 ### DrBot Chat Drawer {#drbot-chat-drawer}
 
@@ -676,7 +674,7 @@ A layer of the model as a graph of its elements (with inter-layer neighbours), o
 
 | Type        | Related Element                                                                                | Predicate    | Direction |
 | ----------- | ---------------------------------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `navigation.route.app-shell-sectionview-route`                                                 | `maps-to`    | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                                                        | `maps-to`    | inbound   |
 | inter-layer | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists` | `tests`      | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                                                        | `depends-on` | outbound  |
 | inter-layer | `product.feature.model-graph-view`                                                             | `realizes`   | outbound  |
@@ -686,6 +684,7 @@ A layer of the model as a graph of its elements (with inter-layer neighbours), o
 | inter-layer | `business.businessrole.architecture-reviewer`                                                  | `serves`     | outbound  |
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                    | `supports`   | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec`                                                      | `aggregates` | inbound   |
+| intra-layer | `ux.subview.checkout-switcher`                                                                 | `composes`   | outbound  |
 | intra-layer | `ux.subview.hive-by-type`                                                                      | `composes`   | outbound  |
 | intra-layer | `ux.subview.lanes-by-type`                                                                     | `composes`   | outbound  |
 | intra-layer | `ux.subview.page-view`                                                                         | `composes`   | outbound  |
@@ -710,11 +709,12 @@ A layer of the spec as a graph of its node types and relationship schemas, or in
 
 | Type        | Related Element                                | Predicate    | Direction |
 | ----------- | ---------------------------------------------- | ------------ | --------- |
-| inter-layer | `navigation.route.app-shell-sectionview-route` | `maps-to`    | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`        | `maps-to`    | inbound   |
 | inter-layer | `product.feature.schema-graph-view`            | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.architecture-model`   | `references` | outbound  |
 | inter-layer | `motivation.requirement.wcag-21-aa-compliance` | `satisfies`  | outbound  |
 | intra-layer | `ux.uxspec.architecture-exploration-spec`      | `aggregates` | inbound   |
+| intra-layer | `ux.subview.checkout-switcher`                 | `composes`   | outbound  |
 | intra-layer | `ux.subview.page-view`                         | `composes`   | outbound  |
 
 ### Topbar Search {#topbar-search}
@@ -748,4 +748,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0

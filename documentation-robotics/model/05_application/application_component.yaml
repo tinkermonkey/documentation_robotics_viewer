@@ -537,8 +537,9 @@ application.applicationcomponent.topbar:
   type: applicationcomponent
   layer_id: application
   name: Topbar
-  description: "The shell's top bar: title, the element and node-type search box,
-    connection state, light/dark canvas toggle and the DrBot drawer toggle."
+  description: "The shell's top bar: title, the project and checkout switcher, the
+    element and node-type search box, connection state, light/dark canvas toggle
+    and the DrBot drawer toggle."
   attributes:
     type: internal
   source_reference:

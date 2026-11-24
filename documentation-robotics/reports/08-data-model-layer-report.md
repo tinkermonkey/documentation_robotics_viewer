@@ -16,15 +16,15 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 37    |
+| Elements                  | 38    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 60    |
-| Inbound Relationships     | 44    |
+| Inter-Layer Relationships | 65    |
+| Inbound Relationships     | 49    |
 | Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [Application](./05-application-layer-report.md), [Testing](./13-testing-layer-report.md)
+- **Upstream layers**: [Application](./05-application-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Testing](./13-testing-layer-report.md)
 - **Downstream layers**: [Business](./02-business-layer-report.md), [Motivation](./01-motivation-layer-report.md), [Security](./04-security-layer-report.md)
 
 ## Intra-Layer Relationships
@@ -46,6 +46,7 @@ Data entities, relationships, and data structure definitions.
 | `data-model.objectschema.changeset-summary`       | `objectschema`     | 0             |
 | `data-model.objectschema.chat-conversation`       | `objectschema`     | 1             |
 | `data-model.objectschema.chat-message`            | `objectschema`     | 2             |
+| `data-model.objectschema.checkout-ref`            | `objectschema`     | 0             |
 | `data-model.objectschema.commit-body`             | `objectschema`     | 0             |
 | `data-model.objectschema.delete-blocker`          | `objectschema`     | 0             |
 | `data-model.objectschema.extracted-reference`     | `objectschema`     | 0             |
@@ -93,6 +94,7 @@ flowchart TB
   data_model --> business
   data_model --> motivation
   data_model --> security
+  navigation --> data_model
   testing --> data_model
   class data_model current
 ```
@@ -125,8 +127,11 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.drift-notice`                                                           | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`                                                           | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.tier1-panel`                                                            | `data-model.objectschema.tier1status`             | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-frame-routing`                                                      | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-feed-subscription`                                              | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-store`                                                          | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                        | `data-model.objectschema.c4-diff`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                        | `data-model.objectschema.c4-export-mark`          | `data-model` | `accesses`   | many-to-many | medium   |
@@ -140,6 +145,7 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-impact-analysis`                                                | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.checkout-scope`                                                           | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.plan-verification`                                                        | `data-model.objectschema.plan-verification`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
@@ -159,6 +165,7 @@ flowchart TB
 | `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.annotation-id`                                                               | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
 | `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.changeset-id`                                                                | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
 | `data-model.schemadefinition.satisfies.motivation.constraint`                          | `data-model.schemadefinition.element-id`                                                                  | `motivation.constraint.type-script-strict-mode`   | `motivation` | `satisfies`  | many-to-many | medium   |
+| `navigation.route.accesses.data-model.objectschema`                                    | `navigation.route.checkout-shell-route`                                                                   | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `testing.testcasesketch.tests.data-model.objectschema`                                 | `testing.testcasesketch.to-tier1status-keeps-a-well-formed-warming-object-and-drops-a-malformed-one`      | `data-model.objectschema.tier1status`             | `data-model` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.data-model.objectschema`                                 | `testing.testcasesketch.to-tier1status-keeps-mode-only-as-suggest-or-stage-and-routings-string-upstreams` | `data-model.objectschema.tier1status`             | `data-model` | `tests`      | many-to-many | medium   |
 
@@ -452,6 +459,30 @@ Multi-part chat conversation message; contains a role (user/assistant/system), o
 | inter-layer | `application.applicationfunction.chat-store`      | `accesses`    | inbound   |
 | intra-layer | `data-model.objectschema.chat-conversation`       | `specializes` | inbound   |
 | intra-layer | `data-model.objectschema.tool-invocation-content` | `specializes` | inbound   |
+
+### Checkout Ref {#checkout-ref}
+
+**ID**: `data-model.objectschema.checkout-ref`
+
+**Type**: `objectschema`
+
+\{project, checkout\}: names one checkout of the central process's farm (the CLI's CheckoutRef). The route, the API paths, query keys, the feed subscription and every DrBot frame carry it.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationfunction.chat-frame-routing`         | `accesses` | inbound   |
+| inter-layer | `application.applicationfunction.checkout-feed-subscription` | `accesses` | inbound   |
+| inter-layer | `application.applicationfunction.checkout-store`             | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.checkout-scope`              | `accesses` | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                      | `accesses` | inbound   |
 
 ### CommitBody {#commitbody}
 
@@ -956,4 +987,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0

@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 169   |
-| Inbound Relationships     | 162   |
+| Inter-Layer Relationships | 168   |
+| Inbound Relationships     | 161   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -103,7 +103,6 @@ flowchart TB
 | `35295e18-08a8-4ca0-ada3-40a017cb4318-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `35295e18-08a8-4ca0-ada3-40a017cb4318`                                                                                                                   | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies`  | unknown      | unknown  |
 | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                                                                                                                   | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                       | `motivation` | `realizes`   | unknown      | unknown  |
 | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`  | `582fd707-9e0d-4a98-9b47-b3cda7b26c3d`                                                                                                                   | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                       | `business`   | `realizes`   | unknown      | unknown  |
-| `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04-realizes-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`  | `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04`                                                                                                                   | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                                                                                                                   | `e748118c-b989-43fe-b0d2-9121e931fcd2`                       | `motivation` | `satisfies`  | unknown      | unknown  |
 | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`  | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                                                                                                                   | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-accesses-ea84399d-45dc-4fef-a5a1-759c9b5b5870`  | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                                                   | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                       | `business`   | `accesses`   | unknown      | unknown  |
@@ -632,4 +631,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0

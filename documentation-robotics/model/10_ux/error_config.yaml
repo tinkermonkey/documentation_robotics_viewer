@@ -1,0 +1,20 @@
+ux.errorconfig.checkout-unavailable-error:
+  id: 1ddbe372-cd65-4db2-abdc-1966bee1bf77
+  path: ux.errorconfig.checkout-unavailable-error
+  spec_node_id: ux.errorconfig
+  type: errorconfig
+  layer_id: ux
+  name: Checkout Unavailable Error
+  description: "What the shell shows instead of the views when the route's
+    checkout can't be served: 404 (an unknown project or checkout, or one whose
+    folder is gone), a checkout.removed event, or server.stopping. Names the
+    project and checkout, says why, and offers the checkout picker."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/CheckoutPicker.tsx
+        symbol: CheckoutUnavailablePage
+  metadata:
+    created_at: 2026-11-24T11:32:08.570Z
+    updated_at: 2026-11-24T11:32:08.570Z
+    version: 1
