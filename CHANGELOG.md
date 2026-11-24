@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.16.0] - 2026-11-24
+
 The viewer now runs on the dr CLI's central process (`dr serve`), which serves every project and every git
 checkout (main checkout and worktrees) of your farm from one port. Every page belongs to one checkout, the links
 `dr visualize`, `review_open` and `project_status` give open the checkout they name, and two tabs on two checkouts
@@ -14,6 +16,10 @@ of one project never share data, live updates or DrBot chat (#623, documentation
 whose central process serves the project- and checkout-scoped routes.
 
 ### Added
+- **C4 diagram export** (#621): the Architecture view's **Export** menu saves the diagram on screen as SVG, PNG
+  (2x), Structurizr DSL or C4-PlantUML, named for its level and scope (for example `container-software-system.svg`).
+  A changeset overlay or a plan comparison exports with it: the same rings and chips in SVG and PNG, tags and a
+  legend in PlantUML and Structurizr.
 - **Checkout routes** (#623): `/#/p/<project>/c/<checkout>/<section>/<view>` for every page. The CLI's link forms
   open what they name: `/#/p/<project>/c/<checkout>/` (the Model view), `.../changesets/<id>` (that changeset in
   the Changesets view), `.../changesets/<id>?element=<id>` (its change to that element selected) and
