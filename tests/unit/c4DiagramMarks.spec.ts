@@ -47,6 +47,8 @@ describe('c4DiagramMarks: an overlay', () => {
     const a = cardMark({ overlay }, 'a');
     expect(a.mark).toMatchObject({ status: 'added', glyph: '+', token: '--status-emerald', lineStyle: 'solid', lineWidth: 2 });
     expect(cardMark({ overlay }, 'c').words).toEqual(['moved from Old Home']);
+    // The legend is the status's own words, not this box's.
+    expect(cardMark({ overlay }, 'c').mark?.legend).toBe('moved');
     const parent = cardMark({ overlay }, 'parent');
     expect(parent.mark).toMatchObject({ status: 'parts-changed', outline: null, token: null });
     expect(parent.inside).toBe('2 changes inside');
@@ -77,6 +79,7 @@ describe('c4DiagramMarks: as C4 Export Marks', () => {
       status: 'added',
       glyph: '+',
       words: ['added'],
+      legend: 'added',
       color: 'color(--status-emerald)',
       lineStyle: 'solid',
       lineWidth: 2,

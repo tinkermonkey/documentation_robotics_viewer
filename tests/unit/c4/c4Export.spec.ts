@@ -11,6 +11,7 @@ import { buildC4View, type C4View } from '@/apps/embedded/data/c4/c4Views';
 import { C4_CARD, type C4Layout } from '@/apps/embedded/data/c4/c4Layout';
 import {
   exportFileName,
+  pngScale,
   LIGHT_PALETTE,
   tokenToHex,
   toPlantUml,
@@ -55,12 +56,13 @@ const missing: C4ExportMark = {
   status: 'v-missing',
   glyph: '∅',
   words: ['planned, not built'],
+  legend: 'planned, not built',
   color: '#f43f5e',
   lineStyle: 'dotted',
   lineWidth: 2,
   dash: '2 4',
 };
-const added: C4ExportMark = { status: 'added', glyph: '+', words: ['added'], color: '#10b981', lineStyle: 'solid', lineWidth: 2, dash: null };
+const added: C4ExportMark = { status: 'added', glyph: '+', words: ['added'], legend: 'added', color: '#10b981', lineStyle: 'solid', lineWidth: 2, dash: null };
 
 function marksOn(view: C4View): C4ExportMarks {
   const first = view.elements.find((e) => e.inScope)!;
@@ -128,6 +130,8 @@ describe('c4Export: SVG', () => {
     expect(wrap('one two three four five', 9, 2)).toEqual(['one two', 'three…']);
     expect(wrap('short', 9, 2)).toEqual(['short']);
     expect(wrap('Supercalifragilistic', 8, 1)).toEqual(['Superca…']);
+    // A cut word on the last line, with more left over: one ellipsis, not two.
+    expect(wrap('Supercalifragilistic more', 8, 1)).toEqual(['Superca…']);
   });
 });
 
@@ -223,6 +227,31 @@ describe('c4Export: Structurizr DSL', () => {
     expect(dsl.startsWith('// v-missing: ∅ planned, not built')).toBe(true);
     expect(balanced(dsl)).toBe(true);
   });
+
+  it('keeps sibling names unique, as Structurizr requires', () => {
+    const scope = c4.elementOf.get(n.app.id)!;
+    const base = buildC4View(c4, 'component', scope);
+    const inside = base.elements.filter((e) => e.inScope && e.element.kind === 'component');
+    expect(inside.length).toBeGreaterThan(1);
+    const name = inside[0].element.name;
+    const view: C4View = {
+      ...base,
+      elements: base.elements.map((e) => (e.id === inside[1].id ? { ...e, element: { ...e.element, name } } : e)),
+    };
+    const dsl = toStructurizr(view, c4);
+    expect(dsl.match(new RegExp(`= component "${name}" `, 'g'))).toHaveLength(1);
+    expect(dsl).toContain(`= component "${name} (2)" `);
+  });
+
+  it('gives a component view whose scope has no container the Unassigned one', () => {
+    const system = { id: C4_SYSTEM_ID, kind: 'system', name: 'Software system', parentId: null } as never;
+    const lone = { id: 'lone', kind: 'component', name: 'Lone', parentId: C4_SYSTEM_ID } as never;
+    const model = { byId: new Map([[C4_SYSTEM_ID, system], ['lone', lone]]) } as never;
+    const view = { level: 'component', scope: lone, elements: [], relationships: [], trail: [system, lone] } as unknown as C4View;
+    const dsl = toStructurizr(view, model);
+    expect(dsl).toMatch(/^ {6}unassigned = container "Unassigned"/m);
+    expect(dsl).toMatch(/^ {4}component unassigned /m);
+  });
 });
 
 describe('c4Export: names and colours', () => {
@@ -230,6 +259,16 @@ describe('c4Export: names and colours', () => {
     expect(exportFileName(buildC4View(c4, 'context', null), 'svg')).toBe('context-system.svg');
     expect(exportFileName(buildC4View(c4, 'container', C4_SYSTEM_ID), 'structurizr')).toBe('container-software-system.dsl');
     expect(exportFileName(buildC4View(c4, 'component', c4.elementOf.get(n.app.id)!), 'plantuml')).toBe('component-viewer.puml');
+    // Accents drop, rather than splitting the word.
+    expect(exportFileName({ level: 'container', scope: { name: 'Résumé service' } } as never, 'svg')).toBe('container-resume-service.svg');
+  });
+
+  it('draws a PNG at 2x, or smaller when that canvas would be too large for a browser', () => {
+    expect(pngScale(1200, 800, 2)).toBe(2);
+    const scale = pngScale(4000, 3000, 2);
+    expect(scale).toBeLessThan(2);
+    expect(4000 * scale * 3000 * scale).toBeLessThanOrEqual(16_000_000);
+    expect(pngScale(20_000, 400, 2) * 20_000).toBeLessThanOrEqual(16_384);
   });
 
   it("reads Heimdall's token values as hex", () => {

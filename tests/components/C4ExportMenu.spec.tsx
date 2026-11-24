@@ -120,7 +120,7 @@ describe('C4 export menu', () => {
     expect(downloads[0].blob.type).toBe('image/svg+xml');
     const svg = await downloads[0].blob.text();
     expect(svg.match(/data-c4="card"/g)).toHaveLength(containers.elements.length);
-    expect(screen.getByTestId('c4-export-status')).toHaveTextContent('Downloaded container-software-system.svg');
+    await waitFor(() => expect(screen.getByTestId('c4-export-status')).toHaveTextContent('Downloaded container-software-system.svg'));
     // The menu closes after a choice.
     expect(screen.queryByRole('menu')).toBeNull();
   });

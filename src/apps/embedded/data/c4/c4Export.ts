@@ -32,8 +32,10 @@ export interface C4ExportMark {
   /** An overlay status (`added`) or a verdict (`v-missing`): the tag in the text formats. */
   status: string;
   glyph: string;
-  /** The words, the first the chip's ("planned, not built"). */
+  /** The words, the first the chip's ("moved from Old Home"). */
   words: string[];
+  /** The status's own words, the same for every box or arrow it marks ("moved"): a legend's. */
+  legend: string;
   /** A CSS colour (`#rrggbb` or `rgb(…)`), null for no outline. */
   color: string | null;
   /** A card's outline style, null for none. */
@@ -145,6 +147,8 @@ function slug(text: string): string {
     text
       .toLowerCase()
       .normalize('NFKD')
+      // Drop the accents NFKD split off, so "Résumé" reads "resume", not "re-sume".
+      .replace(/[\u0300-\u036f]/g, '')
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/^-+|-+$/g, '')
       .slice(0, 60) || 'diagram'
@@ -192,7 +196,11 @@ export function wrap(text: string, chars: number, lines: number): string[] {
     out.push(line);
     i = words.length;
   }
-  if (i < words.length && out.length > 0) out[out.length - 1] = `${cut(out[out.length - 1], chars - 1)}…`;
+  if (i < words.length && out.length > 0) {
+    // One ellipsis: drop the one `cut` may already have put on the last line.
+    const last = out[out.length - 1].replace(/…$/, '');
+    out[out.length - 1] = `${last.slice(0, chars - 1).trimEnd()}…`;
+  }
   return out;
 }
 
@@ -376,11 +384,23 @@ function svgCard(
   return parts.join('');
 }
 
+/** The largest canvas every browser draws: Safari's area limit, and a side well inside Chrome's and Firefox's. */
+const MAX_CANVAS_PIXELS = 16_000_000;
+const MAX_CANVAS_SIDE = 16_384;
+
+/** The scale a `width` × `height` PNG is drawn at: `scale`, or less when that canvas would be too large to draw. */
+export function pngScale(width: number, height: number, scale = 2): number {
+  const fit = Math.min(scale, Math.sqrt(MAX_CANVAS_PIXELS / (width * height)), MAX_CANVAS_SIDE / width, MAX_CANVAS_SIDE / height);
+  return Math.max(0.1, Math.floor(fit * 100) / 100);
+}
+
 /**
- * The SVG as a PNG at `scale` (2: sharp on a high-density screen). Browser
+ * The SVG as a PNG at `scale` (2: sharp on a high-density screen), lowered by
+ * `pngScale` when the canvas would be too large for the browser. Browser
  * only: it draws the SVG into a canvas.
  */
-export async function toPng(svg: string, width: number, height: number, scale = 2): Promise<Blob> {
+export async function toPng(svg: string, width: number, height: number, requested = 2): Promise<Blob> {
+  const scale = pngScale(width, height, requested);
   const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
   try {
     const image = new Image();
@@ -496,7 +516,7 @@ export function toPlantUml(view: C4View, marks: C4ExportMarks = NO_MARKS): strin
     const line = mark.lineStyle ? PLANTUML_LINE[mark.lineStyle] : undefined;
     if (line) args.push(`$borderStyle=${line}`);
     if (mark.lineWidth > 1) args.push(`$borderThickness=${quoted(String(mark.lineWidth))}`);
-    args.push(`$legendText=${quoted(`${mark.glyph} ${mark.words[0] ?? mark.status}`.trim())}`);
+    args.push(`$legendText=${quoted(`${mark.glyph} ${mark.legend}`.trim())}`);
     lines.push(`AddElementTag(${args.join(', ')})`);
   }
   for (const mark of relMarks) {
@@ -504,7 +524,7 @@ export function toPlantUml(view: C4View, marks: C4ExportMarks = NO_MARKS): strin
     const hex = hexOf(mark.color);
     if (hex) args.push(`$lineColor=${quoted(hex)}`, `$textColor=${quoted(hex)}`);
     if (mark.dash) args.push(`$lineStyle=${/^[12] /.test(mark.dash) ? 'DottedLine()' : 'DashedLine()'}`);
-    args.push(`$legendText=${quoted(`${mark.glyph} ${mark.words[0] ?? mark.status}`.trim())}`);
+    args.push(`$legendText=${quoted(`${mark.glyph} ${mark.legend}`.trim())}`);
     lines.push(`AddRelTag(${args.join(', ')})`);
   }
   if (elementMarks.length + relMarks.length > 0) lines.push('');
@@ -558,8 +578,9 @@ const STRUCTURIZR_BORDER: Partial<Record<C4LineStyle, string>> = { dashed: 'dash
  * component inside its nearest container, every container inside the system.
  */
 export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks = NO_MARKS): string {
-  const drawn = new Set(view.elements.map((e) => e.id));
-  const byId = (id: string) => model.byId.get(id) ?? view.elements.find((e) => e.id === id)?.element;
+  const drawn = new Map(view.elements.map((e) => [e.id, e.element]));
+  // A drawn element as drawn, else from the model (the system, a component's container).
+  const byId = (id: string) => drawn.get(id) ?? model.byId.get(id);
 
   // Who goes where: the system, its containers, their components; people and external systems at the top.
   const system = byId(C4_SYSTEM_ID) ?? view.trail.find((e) => e.kind === 'system');
@@ -576,8 +597,10 @@ export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks
       ? view.scope.id
       : containerOf(view.scope.id)
     : null;
-  if (subject) addContainer(subject);
   const UNASSIGNED = '__unassigned__';
+  // A component view needs a container: one whose scope has none gets the Unassigned one.
+  const viewContainer = view.level === 'component' ? (subject ?? UNASSIGNED) : null;
+  if (viewContainer) addContainer(viewContainer);
   for (const item of view.elements) {
     const { kind } = item.element;
     if (kind === 'person' || kind === 'external-system') topLevel.push(item.id);
@@ -595,8 +618,19 @@ export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks
     const mark = marks.elements.get(id);
     return mark ? quoted(mark.status) : '';
   };
-  const declare = (keyword: string, id: string, element: C4Element | undefined, withTech: boolean) => {
-    const args = [quoted(element?.name ?? 'Unassigned'), quoted(element?.description)];
+  // Structurizr wants names unique among siblings: people and software systems, a system's containers, a container's components.
+  const namesIn = new Map<string, Set<string>>();
+  const uniqueName = (parent: string, name: string) => {
+    let names = namesIn.get(parent);
+    if (!names) namesIn.set(parent, (names = new Set()));
+    let unique = name;
+    for (let n = 2; names.has(unique.toLowerCase()); n++) unique = `${name} (${n})`;
+    names.add(unique.toLowerCase());
+    return unique;
+  };
+  const TOP = '__top__';
+  const declare = (keyword: string, id: string, element: C4Element | undefined, withTech: boolean, parent: string) => {
+    const args = [quoted(uniqueName(parent, element?.name ?? 'Unassigned')), quoted(element?.description)];
     if (withTech) args.push(quoted(element?.technology));
     const tags = tagsOf(id);
     if (tags) args.push(tags);
@@ -606,24 +640,24 @@ export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks
   const lines: string[] = [`workspace ${quoted(system?.name ?? 'Software system')} ${quoted(exportTitle(view))} {`, '', '  model {'];
   for (const id of topLevel) {
     const element = byId(id)!;
-    if (element.kind === 'person') lines.push(`    ${declare('person', id, element, false)}`);
+    if (element.kind === 'person') lines.push(`    ${declare('person', id, element, false, TOP)}`);
     else {
-      const args = [quoted(element.name), quoted(element.description)];
+      const args = [quoted(uniqueName(TOP, element.name)), quoted(element.description)];
       const tag = marks.elements.get(id)?.status;
       args.push(quoted(['External', ...(tag ? [tag] : [])].join(',')));
       lines.push(`    ${ids.get(id)} = softwareSystem ${args.join(' ')}`);
     }
   }
-  lines.push(`    ${declare('softwareSystem', systemId, system, false)} {`);
+  lines.push(`    ${declare('softwareSystem', systemId, system, false, TOP)} {`);
   for (const [containerId, components] of containers) {
     const element = containerId === UNASSIGNED ? undefined : byId(containerId);
-    const head = `      ${declare('container', containerId, element, true)}`;
+    const head = `      ${declare('container', containerId, element, true, systemId)}`;
     if (components.size === 0) {
       lines.push(head);
       continue;
     }
     lines.push(`${head} {`);
-    for (const id of components) lines.push(`        ${declare('component', id, byId(id), true)}`);
+    for (const id of components) lines.push(`        ${declare('component', id, byId(id), true, containerId)}`);
     lines.push('      }');
   }
   lines.push('    }');
@@ -643,7 +677,7 @@ export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks
   const subjectOf: Record<C4View['level'], string> = {
     context: `systemContext ${ids.get(systemId)}`,
     container: `container ${ids.get(systemId)}`,
-    component: `component ${subject ? ids.get(subject) : ids.get(UNASSIGNED) ?? ids.get(systemId)}`,
+    component: `component ${ids.get(viewContainer ?? UNASSIGNED)}`,
   };
   lines.push(
     `    ${subjectOf[view.level]} ${key} ${quoted(exportTitle(view))} {`,
@@ -673,7 +707,7 @@ export function toStructurizr(view: C4View, model: C4Model, marks: C4ExportMarks
 
   // A legend of the marks for a reader of the source (Structurizr shows tags in its own key).
   if (elementMarks.length + relMarks.length > 0) {
-    const legend = [...elementMarks, ...relMarks].map((m) => `// ${m.status}: ${`${m.glyph} ${m.words[0] ?? ''}`.trim()}`);
+    const legend = [...elementMarks, ...relMarks].map((m) => `// ${m.status}: ${`${m.glyph} ${m.legend}`.trim()}`);
     return [...legend, '', ...lines].join('\n');
   }
   return lines.join('\n');

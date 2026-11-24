@@ -47,6 +47,8 @@ export interface ResolvedMark {
   glyph: string;
   /** The words: the first is the chip's. */
   words: string[];
+  /** The status's own words, the same wherever it marks (an export's legend). */
+  legend: string;
   /** Outline / stroke token, null for none. */
   token: string | null;
   /** Card outline (`border` shorthand), null for none. */
@@ -93,6 +95,7 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
       status: `v-${arrow.verdict}`,
       glyph: v.glyph,
       words: [v.label],
+      legend: v.label,
       token: v.token,
       outline: null,
       lineStyle: null,
@@ -109,6 +112,7 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
     status: change.status,
     glyph: mark.glyph,
     words: [relationshipStatusWords(change)],
+    legend: mark.label,
     token: mark.op ? OP_OUTLINE[mark.op].token : null,
     outline: null,
     lineStyle: null,
@@ -138,6 +142,7 @@ export function cardMark(
         status: `v-${e.verdict}`,
         glyph: v.glyph,
         words: [label],
+        legend: v.label,
         token: v.token,
         outline: verdictOutlineCss(e.verdict),
         lineStyle: v.token ? v.style : null,
@@ -162,6 +167,7 @@ export function cardMark(
         status: change.status,
         glyph: m?.glyph ?? '',
         words,
+        legend: m?.label ?? change.status,
         token: outline?.token ?? null,
         outline: m?.op ? opOutlineCss(m.op) : null,
         lineStyle: outline?.style ?? null,
@@ -188,6 +194,7 @@ export function toExportMarks(
     status: mark.status,
     glyph: mark.glyph,
     words: words.length > 0 ? words : mark.words,
+    legend: mark.legend,
     color: mark.token ? colorOf(mark.token) : null,
     lineStyle: mark.lineStyle,
     lineWidth: mark.lineWidth,

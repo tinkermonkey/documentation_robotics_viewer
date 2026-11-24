@@ -17,6 +17,7 @@ import {
   EXPORT_TOKENS,
   LIGHT_PALETTE,
   exportFileName,
+  pngScale,
   svgSize,
   toPlantUml,
   toPng,
@@ -80,16 +81,22 @@ export function C4ExportMenu({ view, layout, model, marks }: C4ExportMenuProps) 
     if (!layout || busy) return;
     const name = exportFileName(view, format);
     setBusy(true);
+    // Clear the status first, so the same message after a repeat export is announced again.
+    setStatus('');
+    let message: string;
     try {
       const palette = readExportPalette();
       const exportMarks = toExportMarks(view, marks, (token) => palette[token] ?? LIGHT_PALETTE[token] ?? '#000000');
       const type = FORMATS.find((f) => f.id === format)!.type;
       let blob: Blob;
+      let note = '';
       if (format === 'svg' || format === 'png') {
         const svg = toSvg(view, layout, exportMarks, palette);
         if (format === 'svg') blob = new Blob([svg], { type });
         else {
           const { width, height } = svgSize(layout);
+          const scale = pngScale(width, height, 2);
+          if (scale < 2) note = ` at ${scale}x (too large for 2x)`;
           blob = await toPng(svg, width, height, 2);
         }
       } else {
@@ -97,12 +104,14 @@ export function C4ExportMenu({ view, layout, model, marks }: C4ExportMenuProps) 
         blob = new Blob([text], { type: `${type};charset=utf-8` });
       }
       downloadBlob(blob, name);
-      setStatus(`Downloaded ${name}`);
+      message = `Downloaded ${name}${note}`;
     } catch (error) {
-      setStatus(`Couldn't export ${name}: ${error instanceof Error ? error.message : String(error)}`);
+      message = `Couldn't export ${name}: ${error instanceof Error ? error.message : String(error)}`;
     } finally {
       setBusy(false);
     }
+    // A moment after the clear, so a screen reader hears the new message.
+    window.setTimeout(() => setStatus(message), 100);
   };
 
   const actions: RowMenuAction[] = FORMATS.map((f) => ({
