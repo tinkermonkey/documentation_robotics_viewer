@@ -62,11 +62,13 @@ application.applicationcomponent.nav-tree:
     as the C4 model nests them; a row opens that diagram scope. Model, Schema
     and Changesets each have the spec's layers (in the order the spec gives). A
     Model layer opens onto its node types (count, A–Z, collapsed), each holding
-    its elements (A–Z); a Schema layer lists its node types; Changesets lists
-    the changesets. Opening a type group is local tree state and pushes no
-    history. Reveals the current selection, opening its type group and scrolling
-    it into view after any navigation, including a deep link whose element rows
-    only appear once the model or changesets load."
+    its elements (A–Z); a Schema layer lists its node types; Changesets groups
+    the changesets under Open (staged, expanded) and Closed (applied /
+    discarded, collapsed), each with its count, an empty group hidden. Opening a
+    type group or a changeset group is local tree state and pushes no history.
+    Reveals the current selection, opening its type group or changeset group and
+    scrolling it into view after any navigation, including a deep link whose
+    element rows only appear once the model or changesets load."
   attributes:
     type: internal
   source_reference:
@@ -262,7 +264,11 @@ application.applicationcomponent.changeset-review-panel:
     Apply); a refused commit of a verification record is explained inline. When
     the server reports drift that blocks a commit, the summary card warns before
     Apply (which stays enabled) and the Apply confirm dialog says the drift
-    refusal is the expected outcome; the 409 after confirm is the result."
+    refusal is the expected outcome; the 409 after confirm is the result. While
+    Apply commits, the card's decided bar gives way to the Commit Progress Bar
+    (applied of total and phase from the server's changeset.commit.progress, or
+    indeterminate on a dr CLI that sends none) and Apply, Keep and Discard stay
+    shut until the commit answers; a refusal shows inline below it."
   attributes:
     type: internal
   source_reference:
@@ -561,7 +567,9 @@ application.applicationcomponent.status-bar:
   description: "The shell's bottom status bar (Heimdall Statusbar): connection,
     model and selection status. Its right side reads cli {version}, the version
     GET /health reports as cliVersion, or — when the server doesn't send one
-    (never /health's API version)."
+    (never /health's API version). While a changeset commit started outside this
+    tab (the CLI, MCP or DrBot) reports changeset.commit.progress, it shows a
+    compact progress item for it."
   attributes:
     type: internal
   source_reference:
@@ -927,11 +935,21 @@ application.applicationcomponent.c4-diagram:
     data store get their own shape); right-angle edges with a label of the
     predicates and a count. An overlay's op marks or a comparison's verdict
     marks come from one shared resolution (`ui/c4DiagramMarks.ts`: outline,
-    glyph, words, colour token, dash per card and arrow), which the export also
-    uses, so an exported diagram carries the same marks. Colours from canvas
-    tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow
-    keys between cards, Enter drills into a card that has parts, Escape clears
-    the selection; the arrows, with their status, are also listed as text."
+    glyph, words, chip text, change count, colour token, dash per card and
+    arrow), which the export also uses, so an exported diagram carries the same
+    marks. An overlay's status chip and arrow label carry the number of
+    changeset changes behind them past one (\"~ changed · 12 changes\", \"+ uses
+    · 4 changes\"), also in the card's accessible name, the arrow's tooltip and
+    the hidden arrow list. Colours from canvas tokens, so it flips with the dark
+    canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills
+    into a card that has parts, Escape clears the selection; the arrows, with
+    their status, are also listed as text. It reports its viewport like
+    GraphCanvas: onViewportDwell after a user pan/zoom settles (onUserGesture
+    end + dwell), onViewportNavigate for its fits; it takes initialViewport and
+    a viewportRef whose setViewport(vp, { silent }) restores without a report,
+    so useViewportHistory records it into ?vp= for the Architecture view. A
+    double-click's second click is ignored, so select + open is one history step
+    plus the drill."
   attributes:
     type: internal
   source_reference:
@@ -942,4 +960,53 @@ application.applicationcomponent.c4-diagram:
   metadata:
     created_at: 2026-11-20T15:40:02.900Z
     updated_at: 2026-11-20T15:40:02.900Z
+    version: 1
+application.applicationcomponent.commit-progress-bar:
+  id: 4b0e6403-d132-476c-9c9c-3d0dde10b143
+  path: application.applicationcomponent.commit-progress-bar
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Commit Progress Bar
+  description: 'ui/CommitProgressBar.tsx: a Heimdall ProgressBar for a commit in
+    flight. Determinate ("Applying 340 of 1,200 changes · saving",
+    role=progressbar with aria-valuenow/max) once the server reports progress;
+    indeterminate ("Applying 1,200 changes…", an animated fill, no valuenow,
+    still when reduced motion is asked) before the first report or on an older
+    dr CLI. A visually hidden polite live region announces at intervals. Used by
+    the changeset review summary card while Apply runs, and in compact form by
+    the status bar for a commit the CLI or DrBot started.'
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/CommitProgressBar.tsx
+        symbol: CommitProgressBar
+  metadata:
+    created_at: 2026-11-24T14:08:44.683Z
+    updated_at: 2026-11-24T14:08:44.683Z
+    version: 1
+application.applicationcomponent.load-status:
+  id: 719eb223-dc6a-41a1-b0c3-4440335c4800
+  path: application.applicationcomponent.load-status
+  spec_node_id: application.applicationcomponent
+  type: applicationcomponent
+  layer_id: application
+  name: Load Status
+  description: "`ui/LoadStatus.tsx`: the one line a region shows while its first
+    read is pending (\"Loading…\", a polite role=\"status\" live region whose
+    text is set after mount so it is announced) or after it failed (the read's
+    error, role=\"alert\"). Used by the nav tree, the canvas and its page view
+    in place of their empty hints."
+  attributes:
+    type: internal
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/LoadStatus.tsx
+        symbol: LoadStatus
+  metadata:
+    created_at: 2026-11-24T16:03:06.863Z
+    updated_at: 2026-11-24T16:03:06.863Z
     version: 1

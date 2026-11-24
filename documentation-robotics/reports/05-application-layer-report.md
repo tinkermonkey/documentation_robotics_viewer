@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 108   |
-| Intra-Layer Relationships | 353   |
-| Inter-Layer Relationships | 1226  |
-| Inbound Relationships     | 1087  |
-| Outbound Relationships    | 139   |
+| Elements                  | 114   |
+| Intra-Layer Relationships | 373   |
+| Inter-Layer Relationships | 1244  |
+| Inbound Relationships     | 1091  |
+| Outbound Relationships    | 153   |
 
 **Cross-Layer References**:
 
@@ -37,26 +37,28 @@ Application components, services, and interactions.
 | `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 24            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 5             |
 | `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 23            |
-| `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 4             |
+| `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 5             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 15            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 9             |
 | `application.applicationcomponent.change-neighbourhood`          | `applicationcomponent` | 9             |
 | `application.applicationcomponent.changeset-canvas`              | `applicationcomponent` | 10            |
-| `application.applicationcomponent.changeset-impact-view`         | `applicationcomponent` | 9             |
+| `application.applicationcomponent.changeset-impact-view`         | `applicationcomponent` | 10            |
 | `application.applicationcomponent.changeset-inbox`               | `applicationcomponent` | 11            |
 | `application.applicationcomponent.changeset-inspector`           | `applicationcomponent` | 13            |
-| `application.applicationcomponent.changeset-review-panel`        | `applicationcomponent` | 16            |
+| `application.applicationcomponent.changeset-review-panel`        | `applicationcomponent` | 18            |
 | `application.applicationcomponent.chat-drawer`                   | `applicationcomponent` | 7             |
 | `application.applicationcomponent.chat-panel`                    | `applicationcomponent` | 6             |
+| `application.applicationcomponent.commit-progress-bar`           | `applicationcomponent` | 3             |
 | `application.applicationcomponent.drift-notice`                  | `applicationcomponent` | 7             |
 | `application.applicationcomponent.edge-inspector`                | `applicationcomponent` | 7             |
 | `application.applicationcomponent.error-boundary`                | `applicationcomponent` | 4             |
-| `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 18            |
+| `application.applicationcomponent.graph-canvas`                  | `applicationcomponent` | 20            |
 | `application.applicationcomponent.inspector-drawer`              | `applicationcomponent` | 17            |
-| `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 7             |
+| `application.applicationcomponent.left-rail`                     | `applicationcomponent` | 9             |
+| `application.applicationcomponent.load-status`                   | `applicationcomponent` | 5             |
 | `application.applicationcomponent.markdown-text`                 | `applicationcomponent` | 8             |
 | `application.applicationcomponent.model-card-node`               | `applicationcomponent` | 3             |
-| `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 13            |
+| `application.applicationcomponent.nav-tree`                      | `applicationcomponent` | 16            |
 | `application.applicationcomponent.neighborhood-graph-view`       | `applicationcomponent` | 5             |
 | `application.applicationcomponent.node-type-badge`               | `applicationcomponent` | 7             |
 | `application.applicationcomponent.node-type-tooltip`             | `applicationcomponent` | 3             |
@@ -66,12 +68,12 @@ Application components, services, and interactions.
 | `application.applicationcomponent.relationships-with-tooltips`   | `applicationcomponent` | 4             |
 | `application.applicationcomponent.review-parts`                  | `applicationcomponent` | 10            |
 | `application.applicationcomponent.rich-tooltip`                  | `applicationcomponent` | 3             |
-| `application.applicationcomponent.status-bar`                    | `applicationcomponent` | 5             |
+| `application.applicationcomponent.status-bar`                    | `applicationcomponent` | 9             |
 | `application.applicationcomponent.tier1-panel`                   | `applicationcomponent` | 4             |
 | `application.applicationcomponent.topbar`                        | `applicationcomponent` | 7             |
 | `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 7             |
 | `application.applicationcomponent.type-hive-view`                | `applicationcomponent` | 6             |
-| `application.applicationcomponent.type-lanes-view`               | `applicationcomponent` | 7             |
+| `application.applicationcomponent.type-lanes-view`               | `applicationcomponent` | 8             |
 | `application.applicationevent.chat-turn-queued`                  | `applicationevent`     | 1             |
 | `application.applicationevent.chat-turn-started`                 | `applicationevent`     | 1             |
 | `application.applicationevent.checkout-removed`                  | `applicationevent`     | 2             |
@@ -105,16 +107,20 @@ Application components, services, and interactions.
 | `application.applicationservice.chat-panel-layout`               | `applicationservice`   | 2             |
 | `application.applicationservice.chat-service`                    | `applicationservice`   | 5             |
 | `application.applicationservice.chat-validation`                 | `applicationservice`   | 1             |
-| `application.applicationservice.checkout-scope`                  | `applicationservice`   | 5             |
+| `application.applicationservice.checkout-scope`                  | `applicationservice`   | 6             |
+| `application.applicationservice.commit-progress`                 | `applicationservice`   | 4             |
 | `application.applicationservice.error-tracker`                   | `applicationservice`   | 4             |
 | `application.applicationservice.exception-classifier`            | `applicationservice`   | 2             |
 | `application.applicationservice.generated-api-client`            | `applicationservice`   | 15            |
 | `application.applicationservice.graph-viewport-key`              | `applicationservice`   | 2             |
+| `application.applicationservice.history-policy`                  | `applicationservice`   | 0             |
 | `application.applicationservice.json-rpc-handler`                | `applicationservice`   | 4             |
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 24            |
 | `application.applicationservice.layered-reach`                   | `applicationservice`   | 4             |
+| `application.applicationservice.load-state`                      | `applicationservice`   | 6             |
 | `application.applicationservice.markdown-excerpt`                | `applicationservice`   | 1             |
 | `application.applicationservice.model-graph-transform`           | `applicationservice`   | 16            |
+| `application.applicationservice.nav-tree-changeset-groups`       | `applicationservice`   | 1             |
 | `application.applicationservice.nav-tree-groups`                 | `applicationservice`   | 3             |
 | `application.applicationservice.neighborhood-graph`              | `applicationservice`   | 5             |
 | `application.applicationservice.node-type-label`                 | `applicationservice`   | 19            |
@@ -130,7 +136,7 @@ Application components, services, and interactions.
 | `application.applicationservice.use-c4model`                     | `applicationservice`   | 9             |
 | `application.applicationservice.use-changeset-review`            | `applicationservice`   | 9             |
 | `application.applicationservice.use-changesets`                  | `applicationservice`   | 12            |
-| `application.applicationservice.use-cli-version`                 | `applicationservice`   | 3             |
+| `application.applicationservice.use-cli-version`                 | `applicationservice`   | 4             |
 | `application.applicationservice.use-edge-interaction`            | `applicationservice`   | 1             |
 | `application.applicationservice.use-hover-dwell`                 | `applicationservice`   | 1             |
 | `application.applicationservice.use-model`                       | `applicationservice`   | 17            |
@@ -138,7 +144,7 @@ Application components, services, and interactions.
 | `application.applicationservice.use-spec`                        | `applicationservice`   | 22            |
 | `application.applicationservice.use-tier1`                       | `applicationservice`   | 4             |
 | `application.applicationservice.use-type-name`                   | `applicationservice`   | 6             |
-| `application.applicationservice.use-viewport-history`            | `applicationservice`   | 3             |
+| `application.applicationservice.use-viewport-history`            | `applicationservice`   | 6             |
 | `application.applicationservice.web-socket-client`               | `applicationservice`   | 6             |
 | `application.message.feed-subscription`                          | `message`              | 1             |
 
@@ -225,6 +231,7 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                                                                | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                                                                | `data-model.objectschema.commit-body`                               | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                                                                | `data-model.objectschema.review-decision`                           | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.commit-progress-bar`                                                                                                   | `data-model.objectschema.commit-progress`                           | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.drift-notice`                                                                                                          | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`                                                                                                          | `data-model.objectschema.change-origin`                             | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.tier1-panel`                                                                                                           | `data-model.objectschema.tier1status`                               | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -237,6 +244,7 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-store`                                                                                                         | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                                                                     | `data-model.objectschema.review-decision`                           | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.local-review-store`                                                                                                     | `data-store.collection.local-review-verdicts`                       | `data-store`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.ui-store`                                                                                                               | `data-model.objectschema.graph-move`                                | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.ui-store`                                                                                                               | `data-store.collection.ui-preferences`                              | `data-store`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                                                                       | `data-model.objectschema.c4-diff`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-changeset-diff`                                                                                                       | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
@@ -246,6 +254,7 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-diagram-export`                                                                                                       | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-export`                                                                                                       | `product.feature.c4-diagram-export`                                 | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-export`                                                                                                       | `product.feature.c4-overlay-change-counts`                          | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.c4-diagram-export`                                                                                                       | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-layout`                                                                                                       | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
@@ -288,7 +297,15 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-validation`                                                                                                         | `business.businessservice.ai-assisted-architecture-chat`            | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.checkout-scope`                                                                                                          | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.checkout-scope`                                                                                                          | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.commit-progress`                                                                                                         | `data-model.objectschema.commit-progress`                           | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.commit-progress`                                                                                                         | `product.feature.per-change-review`                                 | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.commit-progress`                                                                                                         | `motivation.requirement.apply-shows-commit-progress`                | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.generated-api-client`                                                                                                    | `business.businessprocess.changeset-review-flow`                    | `business`    | `serves`     | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.history-policy`                                                                                                          | `data-model.objectschema.graph-move`                                | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.history-policy`                                                                                                          | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.history-policy`                                                                                                          | `product.feature.changeset-impact-tab`                              | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.history-policy`                                                                                                          | `product.feature.model-graph-view`                                  | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.history-policy`                                                                                                          | `motivation.requirement.back-and-forward-replay-graph-moves`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.json-rpc-handler`                                                                                                        | `business.businessprocess.real-time-model-synchronization`          | `business`    | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.layer-domain-palette`                                                                                                    | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.layer-domain-palette`                                                                                                    | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation`  | `satisfies`  | many-to-many | medium   |
@@ -296,6 +313,7 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.markdown-excerpt`                                                                                                        | `business.businessservice.changeset-review`                         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.model-graph-transform`                                                                                                   | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.model-graph-transform`                                                                                                   | `product.softwarecapability.model-visualization`                    | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.nav-tree-changeset-groups`                                                                                               | `product.feature.nav-tree-changeset-groups`                         | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.nav-tree-groups`                                                                                                         | `product.feature.nav-tree-type-groups`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.node-type-label`                                                                                                         | `business.businessservice.schema-exploration`                       | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.node-type-label`                                                                                                         | `product.feature.model-view-by-type`                                | `product`     | `realizes`   | many-to-many | medium   |
@@ -335,6 +353,8 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-mode-and-routing`                            | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-spend-panel`                                 | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-warming-progress`                            | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-viewport-history`                                                                                                    | `data-model.objectschema.graph-move`                                | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.use-viewport-history`                                                                                                    | `motivation.requirement.back-and-forward-replay-graph-moves`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.web-socket-client`                                                                                                       | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.web-socket-client`                                                                                                       | `business.businessprocess.real-time-model-synchronization`          | `business`    | `serves`     | many-to-many | medium   |
 | `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                                                                                   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                              | `application` | `references` | unknown      | unknown  |
@@ -345,6 +365,7 @@ flowchart TB
 | `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                                                                                                                   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.checkout-shell-route`                                                                                                                  | `application.applicationcomponent.app-shell`                        | `application` | `depends-on` | many-to-many | medium   |
 | `navigation.route.uses.application.applicationservice`                                 | `navigation.route.checkout-shell-route`                                                                                                                  | `application.applicationservice.checkout-scope`                     | `application` | `uses`       | many-to-many | medium   |
+| `navigation.route.uses.application.applicationservice`                                 | `navigation.route.checkout-shell-route`                                                                                                                  | `application.applicationservice.history-policy`                     | `application` | `uses`       | many-to-many | medium   |
 | `technology.node.serves.application.applicationcomponent`                              | `technology.node.vite-dev-server`                                                                                                                        | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.elk`                                                                                                                          | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
@@ -361,8 +382,8 @@ flowchart TB
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.type-hive-view`                   | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.type-lanes-view`                  | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tailwind-css-v4`                                                                                                              | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.tan-stack-react-query`                                                                                                        | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.technologyservice.serves.application.applicationservice`                   | `technology.technologyservice.web-socket-model-service`                                                                                                  | `application.applicationservice.commit-progress`                    | `application` | `serves`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060`                         | `application.applicationcomponent.app-shell`                        | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-topbar-search-open-topbar-search-with-results-open-tone-canvas-zero-e9283739`                      | `application.applicationcomponent.topbar-search`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`                         | `application.applicationcomponent.app-shell`                        | `application` | `tests`      | many-to-many | medium   |
@@ -578,6 +599,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli`                                                                             | `application.applicationservice.changeset-drift`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift`                                                                   | `application.applicationservice.changeset-drift`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one`                                                   | `application.applicationservice.changeset-drift`                    | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed`                                                | `application.applicationservice.nav-tree-changeset-groups`          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-impact-focus-finds-no-origin-for-an-element-the-model-and-the-changeset-lack`                                          | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-impact-focus-reaches-from-the-focused-element-only-and-still-marks-every-change`                                       | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.changeset-impact-focus-records-which-changes-touch-each-element`                                                                 | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
@@ -764,6 +786,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-select-9ffca8bf`                        | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-1a7a2152`                        | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-e5ecd4a2`                        | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre`                                         | `application.applicationservice.history-policy`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-counts-each-facet-over-the-whole-impact`                                                 | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-drops-a-hidden-op-layer-or-type-with-its-links`                                          | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-finds-elements-by-name-changed-ones-first`                                               | `application.applicationservice.changeset-impact-analysis`          | `application` | `tests`      | many-to-many | medium   |
@@ -915,6 +938,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `application.applicationcomponent.graph-canvas`                     | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                                            | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                                                  | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`                                         | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`                            | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                                           | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`                               | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
@@ -1461,7 +1485,6 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | inter-layer | `navigation.route.checkout-shell-route`                                                                                          | `depends-on`  | inbound   |
 | inter-layer | `technology.node.vite-dev-server`                                                                                                | `serves`      | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                                                                                          | `serves`      | inbound   |
-| inter-layer | `technology.systemsoftware.tailwind-css-v4`                                                                                      | `serves`      | inbound   |
 | inter-layer | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-page-view-mode-view-name-view-page-mode-tone-canvas-zero-serious-80c4c060` | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26` | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.shell-connection-dot-reports-connected`                                                                  | `tests`       | inbound   |
@@ -1594,7 +1617,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 
 **Type**: `applicationcomponent`
 
-ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. An overlay's op marks or a comparison's verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`: outline, glyph, words, colour token, dash per card and arrow), which the export also uses, so an exported diagram carries the same marks. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts, Escape clears the selection; the arrows, with their status, are also listed as text.
+ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. An overlay's op marks or a comparison's verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`: outline, glyph, words, chip text, change count, colour token, dash per card and arrow), which the export also uses, so an exported diagram carries the same marks. An overlay's status chip and arrow label carry the number of changeset changes behind them past one ("~ changed · 12 changes", "+ uses · 4 changes"), also in the card's accessible name, the arrow's tooltip and the hidden arrow list. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts, Escape clears the selection; the arrows, with their status, are also listed as text. It reports its viewport like GraphCanvas: onViewportDwell after a user pan/zoom settles (onUserGesture end + dwell), onViewportNavigate for its fits; it takes initialViewport and a viewportRef whose setViewport(vp, \{ silent \}) restores without a report, so useViewportHistory records it into ?vp= for the Architecture view. A double-click's second click is ignored, so select + open is one history step plus the drill.
 
 #### Attributes
 
@@ -1621,6 +1644,7 @@ ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's us
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                               | `uses`     | inbound   |
 | intra-layer | `application.applicationservice.c4-diagram-layout`                                                                                   | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.c4-diagram-layout`                                                                                   | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.use-viewport-history`                                                                                | `serves`   | inbound   |
 
 ### Change Inspector {#change-inspector}
 
@@ -1783,6 +1807,7 @@ The Impact tab: changed elements as reach origins, drawn as heimdall-ui layer la
 | intra-layer | `application.applicationservice.node-type-label`           | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                  | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-type-name`             | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.use-viewport-history`      | `serves`   | inbound   |
 
 ### Changeset Inbox {#changeset-inbox}
 
@@ -1921,7 +1946,7 @@ The Changesets view's right pane: status, the drift badge and base-drift section
 
 **Type**: `applicationcomponent`
 
-A changeset's Review tab: the summary card, the Show / Group by / Decided by controls and the per-change rows. Columns are labelled (#, Change, Element or link, What it says, Your decision); a change chip carries a glyph (+ element, + link, ~ update, − delete) and the decision is an outlined pill in its own column; a link row is a chain \[source\] —predicate→ \[target\] with a dashed end for an element this changeset adds. The summary card's Apply is enabled with changes still undecided (it reads "Apply N, M undecided as kept" and says so under the card); it waits only on an undecided blocked delete, an ask or a drop conflict, and Keep the other N stays for recording verdicts. Apply and Discard are offered only when the server's actions allow them (a verification record gets Discard, never Apply); a refused commit of a verification record is explained inline. When the server reports drift that blocks a commit, the summary card warns before Apply (which stays enabled) and the Apply confirm dialog says the drift refusal is the expected outcome; the 409 after confirm is the result.
+A changeset's Review tab: the summary card, the Show / Group by / Decided by controls and the per-change rows. Columns are labelled (#, Change, Element or link, What it says, Your decision); a change chip carries a glyph (+ element, + link, ~ update, − delete) and the decision is an outlined pill in its own column; a link row is a chain \[source\] —predicate→ \[target\] with a dashed end for an element this changeset adds. The summary card's Apply is enabled with changes still undecided (it reads "Apply N, M undecided as kept" and says so under the card); it waits only on an undecided blocked delete, an ask or a drop conflict, and Keep the other N stays for recording verdicts. Apply and Discard are offered only when the server's actions allow them (a verification record gets Discard, never Apply); a refused commit of a verification record is explained inline. When the server reports drift that blocks a commit, the summary card warns before Apply (which stays enabled) and the Apply confirm dialog says the drift refusal is the expected outcome; the 409 after confirm is the result. While Apply commits, the card's decided bar gives way to the Commit Progress Bar (applied of total and phase from the server's changeset.commit.progress, or indeterminate on a dr CLI that sends none) and Apply, Keep and Discard stay shut until the commit answers; a refusal shows inline below it.
 
 #### Attributes
 
@@ -1952,6 +1977,7 @@ A changeset's Review tab: the summary card, the Show / Group by / Decided by con
 | intra-layer | `application.applicationcomponent.apply-review`                                                                                                          | `composes` | outbound  |
 | intra-layer | `application.applicationservice.changeset-review-model`                                                                                                  | `realizes` | outbound  |
 | intra-layer | `application.applicationcomponent.apply-review`                                                                                                          | `uses`     | outbound  |
+| intra-layer | `application.applicationcomponent.commit-progress-bar`                                                                                                   | `uses`     | outbound  |
 | intra-layer | `application.applicationcomponent.drift-notice`                                                                                                          | `uses`     | outbound  |
 | intra-layer | `application.applicationcomponent.review-parts`                                                                                                          | `uses`     | outbound  |
 | intra-layer | `application.applicationservice.change-origin-helpers`                                                                                                   | `serves`   | inbound   |
@@ -1959,6 +1985,7 @@ A changeset's Review tab: the summary card, the Show / Group by / Decided by con
 | intra-layer | `application.applicationservice.changeset-op-rows`                                                                                                       | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.changeset-purpose`                                                                                                       | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.changeset-review-model`                                                                                                  | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.commit-progress`                                                                                                         | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                                                    | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                                    | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.node-type-label`                                                                                                         | `serves`   | inbound   |
@@ -2032,6 +2059,29 @@ The DrBot drawer: Heimdall ChatContainer with streamed text, tool and thinking b
 | intra-layer | `application.applicationservice.chat-adapter`                                                                                        | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.chat-context-builder`                                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.chat-service`                                                                                        | `serves`   | inbound   |
+
+### Commit Progress Bar {#commit-progress-bar}
+
+**ID**: `application.applicationcomponent.commit-progress-bar`
+
+**Type**: `applicationcomponent`
+
+ui/CommitProgressBar.tsx: a Heimdall ProgressBar for a commit in flight. Determinate ("Applying 340 of 1,200 changes · saving", role=progressbar with aria-valuenow/max) once the server reports progress; indeterminate ("Applying 1,200 changes…", an animated fill, no valuenow, still when reduced motion is asked) before the first report or on an older dr CLI. A visually hidden polite live region announces at intervals. Used by the changeset review summary card while Apply runs, and in compact form by the status bar for a commit the CLI or DrBot started.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `data-model.objectschema.commit-progress`                 | `accesses` | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-review-panel` | `uses`     | inbound   |
+| intra-layer | `application.applicationcomponent.status-bar`             | `uses`     | inbound   |
+| intra-layer | `application.applicationservice.commit-progress`          | `serves`   | inbound   |
 
 ### Drift Notice {#drift-notice}
 
@@ -2202,8 +2252,10 @@ The primary graph-view component for the Model and Schema views; mounts Heimdall
 | intra-layer | `application.applicationcomponent.type-lanes-view`                                                                                    | `composes` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `realizes` | outbound  |
 | intra-layer | `application.applicationservice.relationship-derivation`                                                                              | `realizes` | outbound  |
+| intra-layer | `application.applicationcomponent.load-status`                                                                                        | `uses`     | outbound  |
 | intra-layer | `application.applicationservice.chat-anchor`                                                                                          | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.load-state`                                                                                           | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.spec-graph-transform`                                                                                 | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.structural-predicate-classifier`                                                                      | `serves`   | inbound   |
@@ -2298,10 +2350,36 @@ The shell's left navigation column: the view switch (Model, Schema, Changesets) 
 | intra-layer | `application.applicationcomponent.app-shell`                                                              | `composes` | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                              | `uses`     | inbound   |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                               | `composes` | outbound  |
+| intra-layer | `application.applicationcomponent.load-status`                                                            | `uses`     | outbound  |
 | intra-layer | `application.applicationcomponent.nav-tree`                                                               | `uses`     | outbound  |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                     | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.load-state`                                                               | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                                 | `serves`   | inbound   |
+
+### Load Status {#load-status}
+
+**ID**: `application.applicationcomponent.load-status`
+
+**Type**: `applicationcomponent`
+
+`ui/LoadStatus.tsx`: the one line a region shows while its first read is pending ("Loading…", a polite role="status" live region whose text is set after mount so it is announced) or after it failed (the read's error, role="alert"). Used by the nav tree, the canvas and its page view in place of their empty hints.
+
+#### Attributes
+
+| Name | Value    |
+| ---- | -------- |
+| type | internal |
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate | Direction |
+| ----------- | ----------------------------------------------- | --------- | --------- |
+| intra-layer | `application.applicationcomponent.graph-canvas` | `uses`    | inbound   |
+| intra-layer | `application.applicationcomponent.left-rail`    | `uses`    | inbound   |
+| intra-layer | `application.applicationcomponent.nav-tree`     | `uses`    | inbound   |
+| intra-layer | `application.applicationcomponent.status-bar`   | `uses`    | inbound   |
+| intra-layer | `application.applicationservice.load-state`     | `serves`  | inbound   |
 
 ### Markdown Text {#markdown-text}
 
@@ -2383,7 +2461,7 @@ Card presentation of a model element on the graph canvas (the default Display), 
 
 **Type**: `applicationcomponent`
 
-Sidebar navigation: an accordion of Architecture / Model / Schema / Changesets sections. Architecture lists the C4 levels (Context, Containers) and, under Containers, each container with its components nested as the C4 model nests them; a row opens that diagram scope. Model, Schema and Changesets each have the spec's layers (in the order the spec gives). A Model layer opens onto its node types (count, A–Z, collapsed), each holding its elements (A–Z); a Schema layer lists its node types; Changesets lists the changesets. Opening a type group is local tree state and pushes no history. Reveals the current selection, opening its type group and scrolling it into view after any navigation, including a deep link whose element rows only appear once the model or changesets load.
+Sidebar navigation: an accordion of Architecture / Model / Schema / Changesets sections. Architecture lists the C4 levels (Context, Containers) and, under Containers, each container with its components nested as the C4 model nests them; a row opens that diagram scope. Model, Schema and Changesets each have the spec's layers (in the order the spec gives). A Model layer opens onto its node types (count, A–Z, collapsed), each holding its elements (A–Z); a Schema layer lists its node types; Changesets groups the changesets under Open (staged, expanded) and Closed (applied / discarded, collapsed), each with its count, an empty group hidden. Opening a type group or a changeset group is local tree state and pushes no history. Reveals the current selection, opening its type group or changeset group and scrolling it into view after any navigation, including a deep link whose element rows only appear once the model or changesets load.
 
 #### Attributes
 
@@ -2398,6 +2476,7 @@ Sidebar navigation: an accordion of Architecture / Model / Schema / Changesets s
 | inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                    | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                         | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                               | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`                      | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`         | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                        | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`            | `tests`       | inbound   |
@@ -2420,9 +2499,12 @@ Sidebar navigation: an accordion of Architecture / Model / Schema / Changesets s
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                          | `composes`    | inbound   |
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                          | `uses`        | inbound   |
 | intra-layer | `application.applicationfunction.ui-store`                                                                                            | `assigned-to` | outbound  |
+| intra-layer | `application.applicationcomponent.load-status`                                                                                        | `uses`        | outbound  |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.changeset-purpose`                                                                                    | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                                 | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.load-state`                                                                                           | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.nav-tree-changeset-groups`                                                                            | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.nav-tree-groups`                                                                                      | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.node-type-label`                                                                                      | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.use-c4model`                                                                                          | `serves`      | inbound   |
@@ -2736,7 +2818,7 @@ The viewer's own positioned tooltip card (TooltipCard): tries all four sides, tr
 
 **Type**: `applicationcomponent`
 
-The shell's bottom status bar (Heimdall Statusbar): connection, model and selection status. Its right side reads cli \{version\}, the version GET /health reports as cliVersion, or — when the server doesn't send one (never /health's API version).
+The shell's bottom status bar (Heimdall Statusbar): connection, model and selection status. Its right side reads cli \{version\}, the version GET /health reports as cliVersion, or — when the server doesn't send one (never /health's API version). While a changeset commit started outside this tab (the CLI, MCP or DrBot) reports changeset.commit.progress, it shows a compact progress item for it.
 
 #### Attributes
 
@@ -2753,7 +2835,11 @@ The shell's bottom status bar (Heimdall Statusbar): connection, model and select
 | inter-layer | `testing.testcasesketch.shell-statusbar-shows-the-rel-count-and-the-cli-version-the-rail-the-spec-version` | `tests`    | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                               | `composes` | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                               | `uses`     | inbound   |
+| intra-layer | `application.applicationcomponent.commit-progress-bar`                                                     | `uses`     | outbound  |
+| intra-layer | `application.applicationcomponent.load-status`                                                             | `uses`     | outbound  |
+| intra-layer | `application.applicationservice.commit-progress`                                                           | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                      | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.load-state`                                                                | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-cli-version`                                                           | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                 | `serves`   | inbound   |
 
@@ -2920,6 +3006,7 @@ GraphCanvas layout="layer-lanes" over useLayeredGraph with the type bands layeri
 | intra-layer | `application.applicationservice.model-graph-transform`                                         | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.type-bands`                                                    | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                      | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.use-viewport-history`                                          | `serves`   | inbound   |
 
 ### Chat Turn Queued {#chat-turn-queued}
 
@@ -3131,6 +3218,7 @@ Zustand store for UI state: view (Model, Schema, Changesets or Architecture), la
 
 | Type        | Related Element                                                                                                                                        | Predicate     | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------- |
+| inter-layer | `data-model.objectschema.graph-move`                                                                                                                   | `accesses`    | outbound  |
 | inter-layer | `data-store.collection.ui-preferences`                                                                                                                 | `accesses`    | outbound  |
 | inter-layer | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                           | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                 | `tests`       | inbound   |
@@ -3304,6 +3392,7 @@ The WebSocket interface for subscribing to real-time model/changeset/annotation 
 | inter-layer | `data-model.objectschema.c4-view`                                                         | `accesses`   | outbound  |
 | inter-layer | `business.businessservice.architecture-model-visualization`                               | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-diagram-export`                                                       | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-overlay-change-counts`                                                | `realizes`   | outbound  |
 | inter-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`                               | `satisfies`  | outbound  |
 | inter-layer | `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`      | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks` | `tests`      | inbound   |
@@ -4045,9 +4134,37 @@ data/checkoutScope.ts: the current CheckoutRef (\{project, checkout\}) from chec
 | inter-layer | `navigation.route.checkout-shell-route`                      | `uses`       | inbound   |
 | intra-layer | `application.applicationfunction.checkout-store`             | `realizes`   | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                 | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.commit-progress`             | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`        | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.use-changesets`              | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.use-model`                   | `depends-on` | inbound   |
+
+### Commit Progress {#commit-progress}
+
+**ID**: `application.applicationservice.commit-progress`
+
+**Type**: `applicationservice`
+
+data/commitProgress.ts: toCommitProgress validates a changeset.commit.progress frame; commitProgressReducer keeps the latest progress per changeset (never moving applied backwards within a phase); useCommitProgress(changesetId) listens on the websocket for the route's checkout and returns that changeset's progress, or null when none has arrived (an older dr CLI); useAnyCommitProgress returns the progress of any commit in the checkout for the status bar. progressAnnouncement picks when the polite live region speaks (start, each quarter, phase change, finish).
+
+#### Attributes
+
+| Name        | Value        |
+| ----------- | ------------ |
+| serviceType | event-driven |
+
+#### Relationships
+
+| Type        | Related Element                                           | Predicate    | Direction |
+| ----------- | --------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.commit-progress`                 | `accesses`   | outbound  |
+| inter-layer | `product.feature.per-change-review`                       | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.apply-shows-commit-progress`      | `satisfies`  | outbound  |
+| inter-layer | `technology.technologyservice.web-socket-model-service`   | `serves`     | inbound   |
+| intra-layer | `application.applicationservice.checkout-scope`           | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-review-panel` | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.commit-progress-bar`    | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.status-bar`             | `serves`     | outbound  |
 
 ### Error Tracker {#error-tracker}
 
@@ -4078,7 +4195,7 @@ Captures and categorizes runtime errors with context for display in the UI and s
 
 **Type**: `applicationservice`
 
-Classifies runtime exceptions into categories for structured error reporting and Storybook story error filtering
+Classifies a runtime error by its message and type into a category, severity, expected-failure-or-bug flag, transience and recovery strategy (retry or not), for the error tracker's structured error log
 
 #### Attributes
 
@@ -4147,7 +4264,7 @@ Auto-generated TypeScript HTTP client from the OpenAPI spec; provides typed meth
 
 **Type**: `applicationservice`
 
-The GraphCanvas key and its scope tag, and the ?vp= format and parse, so a saved viewport only applies to the layout it was taken on.
+The GraphCanvas key and its scope tag, the ?vp= format and parsing, and liveCanvasKey: the key of whichever canvas the view shows (Model/Schema graph, the Impact lanes, the C4 diagram), so ?vp= applies only to the canvas it was recorded on.
 
 #### Attributes
 
@@ -4170,6 +4287,32 @@ The GraphCanvas key and its scope tag, and the ?vp= format and parse, so a saved
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                       | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.type-lanes-view`                                                                      | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.use-viewport-history`                                                                   | `depends-on` | inbound   |
+
+### History Policy {#history-policy}
+
+**ID**: `application.applicationservice.history-policy`
+
+**Type**: `applicationservice`
+
+routes/historyPolicy.ts: pure decideHistoryStep(\{ destination, move, entrySelection, lastPush \}) → push \| replace \| coalesce. Destination changes and deliberate graph moves (select, focus, expand, a recentre onto something the entry doesn't select) push; dwells and fits replace; a recentre onto the entry's own selection, or a repeat of the last pushed move on the same target within COALESCE_MS (a double-click), coalesces into the current entry.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                                                  | Predicate   | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `data-model.objectschema.graph-move`                                                                             | `accesses`  | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                                       | `realizes`  | outbound  |
+| inter-layer | `product.feature.changeset-impact-tab`                                                                           | `realizes`  | outbound  |
+| inter-layer | `product.feature.model-graph-view`                                                                               | `realizes`  | outbound  |
+| inter-layer | `motivation.requirement.back-and-forward-replay-graph-moves`                                                     | `satisfies` | outbound  |
+| inter-layer | `navigation.route.checkout-shell-route`                                                                          | `uses`      | inbound   |
+| inter-layer | `testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre` | `tests`     | inbound   |
 
 ### JSON-RPC Handler {#json-rpc-handler}
 
@@ -4298,6 +4441,31 @@ Whole-model heimdall-ui layered index and the inspector's followed-across-layers
 | intra-layer | `application.applicationcomponent.change-neighbourhood`                                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.inspector-drawer`                                                                                   | `serves`     | outbound  |
 
+### Load State {#load-state}
+
+**ID**: `application.applicationservice.load-state`
+
+**Type**: `applicationservice`
+
+`data/loadState.ts`: one read's first-load state as loading / error / ready, from a React Query result (`loadStateOf`), and several reads combined (`combineLoadStates`: error wins, then loading). Data in hand always reads as ready, so a background refetch (model.updated, window focus) or a failed refetch never takes a view back to Loading or to an error over data it still shows.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate    | Direction |
+| ----------- | ------------------------------------------------ | ------------ | --------- |
+| intra-layer | `application.applicationcomponent.graph-canvas`  | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.left-rail`     | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.load-status`   | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.nav-tree`      | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.status-bar`    | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.use-cli-version` | `depends-on` | inbound   |
+
 ### Markdown Excerpt {#markdown-excerpt}
 
 **ID**: `application.applicationservice.markdown-excerpt`
@@ -4423,6 +4591,28 @@ Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas vi
 | intra-layer | `application.applicationcomponent.type-lanes-view`                                                                                   | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.page-data-builder`                                                                                   | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.use-model`                                                                                           | `depends-on` | inbound   |
+
+### Nav Tree Changeset Groups {#nav-tree-changeset-groups}
+
+**ID**: `application.applicationservice.nav-tree-changeset-groups`
+
+**Type**: `applicationservice`
+
+Pure transform for the nav tree: the changeset list split into Open (status staged) and Closed (every other status: applied, discarded or unknown, as the inbox's History reads it), each keeping the list's order (newest first), plus the group key holding a given changeset, so the tree can open it.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                                           | Predicate  | Direction |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ---------- | --------- |
+| inter-layer | `product.feature.nav-tree-changeset-groups`                                                               | `realizes` | outbound  |
+| inter-layer | `testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed` | `tests`    | inbound   |
+| intra-layer | `application.applicationcomponent.nav-tree`                                                               | `serves`   | outbound  |
 
 ### Nav Tree Groups {#nav-tree-groups}
 
@@ -5017,7 +5207,7 @@ React Query hooks over GET /api/changesets and /api/changesets/:id (with each ch
 
 **Type**: `applicationservice`
 
-React Query hook over GET /health: the dr CLI version serving the viewer when /health sends one as cliVersion, else undefined so the status bar shows —. Never /health's version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec manifest) and cliVersionOf live beside it in data/serverVersions.ts.
+React Query hook over GET /health: `\{ version, state \}`, the dr CLI version serving the viewer when /health sends one as cliVersion (else undefined, so the status bar shows —) and the read's load state, so the status bar says `cli …` until /health answers (#636). Never /health's version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec manifest) and cliVersionOf live beside it in data/serverVersions.ts.
 
 #### Attributes
 
@@ -5031,6 +5221,7 @@ React Query hook over GET /health: the dr CLI version serving the viewer when /h
 | ----------- | ------------------------------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `testing.testcasesketch.server-versions-never-takes-healths-api-version-for-the-clis` | `tests`      | inbound   |
 | intra-layer | `application.applicationservice.generated-api-client`                                 | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.load-state`                                           | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.status-bar`                                         | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.use-spec`                                             | `depends-on` | inbound   |
 
@@ -5263,13 +5454,18 @@ Records the graph viewport on dwell and navigate, and restores it from ?vp= (rel
 
 | Type        | Related Element                                                                                                                 | Predicate    | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.graph-move`                                                                                            | `accesses`   | outbound  |
+| inter-layer | `motivation.requirement.back-and-forward-replay-graph-moves`                                                                    | `satisfies`  | outbound  |
 | inter-layer | `testing.testcasesketch.use-viewport-history-applies-a-viewport-set-from-outside-silently-once`                                 | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.use-viewport-history-ignores-a-viewport-scoped-to-another-canvas-and-offers-a-matching-one-as-e3fb6443` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.use-viewport-history-records-a-dwell-rounded-and-scoped-to-the-canvas-without-applying-it-back`         | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.use-viewport-history-records-canvas-moves-except-the-mount-fit`                                         | `tests`      | inbound   |
 | intra-layer | `application.applicationfunction.ui-store`                                                                                      | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.graph-viewport-key`                                                                             | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.c4-diagram`                                                                                   | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.changeset-impact-view`                                                                        | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.graph-canvas`                                                                                 | `serves`     | outbound  |
+| intra-layer | `application.applicationcomponent.type-lanes-view`                                                                              | `serves`     | outbound  |
 
 ### WebSocket Client {#websocket-client}
 
@@ -5332,4 +5528,4 @@ Manages the persistent WebSocket connection to the DR CLI's central process (/ws
 
 ---
 
-Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:48:38.495Z | Model Version: 0.1.0

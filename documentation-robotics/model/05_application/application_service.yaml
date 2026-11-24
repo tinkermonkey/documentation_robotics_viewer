@@ -27,15 +27,16 @@ application.applicationservice.exception-classifier:
   type: applicationservice
   layer_id: application
   name: Exception Classifier
-  description: Classifies runtime exceptions into categories for structured error
-    reporting and Storybook story error filtering
+  description: Classifies a runtime error by its message and type into a category,
+    severity, expected-failure-or-bug flag, transience and recovery strategy
+    (retry or not), for the error tracker's structured error log
   attributes:
     serviceType: synchronous
   source_reference:
     provenance: extracted
     locations:
       - file: src/core/services/exceptionClassifier.ts
-        symbol: exceptionClassifier
+        symbol: classifyException
   metadata:
     created_at: 2026-03-20T12:56:00.213Z
     updated_at: 2026-03-20T12:56:00.213Z
@@ -644,8 +645,10 @@ application.applicationservice.graph-viewport-key:
   type: applicationservice
   layer_id: application
   name: Graph Viewport Key
-  description: The GraphCanvas key and its scope tag, and the ?vp= format and
-    parse, so a saved viewport only applies to the layout it was taken on.
+  description: "The GraphCanvas key and its scope tag, the ?vp= format and
+    parsing, and liveCanvasKey: the key of whichever canvas the view shows
+    (Model/Schema graph, the Impact lanes, the C4 diagram), so ?vp= applies only
+    to the canvas it was recorded on."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -703,11 +706,12 @@ application.applicationservice.use-cli-version:
   type: applicationservice
   layer_id: application
   name: useCliVersion
-  description: "React Query hook over GET /health: the dr CLI version serving the
-    viewer when /health sends one as cliVersion, else undefined so the status
-    bar shows —. Never /health's version, which is the API's own (0.1.0). Pure
-    helpers specVersionOf (spec manifest) and cliVersionOf live beside it in
-    data/serverVersions.ts."
+  description: "React Query hook over GET /health: `{ version, state }`, the dr
+    CLI version serving the viewer when /health sends one as cliVersion (else
+    undefined, so the status bar shows —) and the read's load state, so the
+    status bar says `cli …` until /health answers (#636). Never /health's
+    version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec
+    manifest) and cliVersionOf live beside it in data/serverVersions.ts."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1328,4 +1332,111 @@ application.applicationservice.use-projects:
   metadata:
     created_at: 2026-11-24T11:32:08.572Z
     updated_at: 2026-11-24T11:32:08.572Z
+    version: 1
+application.applicationservice.nav-tree-changeset-groups:
+  id: 355e176e-368d-4154-a960-62fe2f0f9e45
+  path: application.applicationservice.nav-tree-changeset-groups
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Nav Tree Changeset Groups
+  description: "Pure transform for the nav tree: the changeset list split into
+    Open (status staged) and Closed (every other status: applied, discarded or
+    unknown, as the inbox's History reads it), each keeping the list's order
+    (newest first), plus the group key holding a given changeset, so the tree
+    can open it."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/navTreeGroups.ts
+        symbol: groupChangesetsByState
+  metadata:
+    created_at: 2026-11-24T14:01:50.630Z
+    updated_at: 2026-11-24T14:01:50.630Z
+    version: 1
+application.applicationservice.commit-progress:
+  id: b72dfce1-2724-41dd-b882-1ebcdebd558e
+  path: application.applicationservice.commit-progress
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Commit Progress
+  description: "data/commitProgress.ts: toCommitProgress validates a
+    changeset.commit.progress frame; commitProgressReducer keeps the latest
+    progress per changeset (never moving applied backwards within a phase);
+    useCommitProgress(changesetId) listens on the websocket for the route's
+    checkout and returns that changeset's progress, or null when none has
+    arrived (an older dr CLI); useAnyCommitProgress returns the progress of any
+    commit in the checkout for the status bar. progressAnnouncement picks when
+    the polite live region speaks (start, each quarter, phase change, finish)."
+  attributes:
+    serviceType: event-driven
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/commitProgress.ts
+        symbol: src.apps.embedded.data.commitProgress
+  metadata:
+    created_at: 2026-11-24T14:08:44.682Z
+    updated_at: 2026-11-24T14:08:44.682Z
+    version: 1
+application.applicationservice.history-policy:
+  id: c3ba2339-2c39-45c0-bc60-b2fe14fe7536
+  path: application.applicationservice.history-policy
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: History Policy
+  description: "routes/historyPolicy.ts: pure decideHistoryStep({ destination,
+    move, entrySelection, lastPush }) → push | replace | coalesce. Destination
+    changes and deliberate graph moves (select, focus, expand, a recentre onto
+    something the entry doesn't select) push; dwells and fits replace; a
+    recentre onto the entry's own selection, or a repeat of the last pushed move
+    on the same target within COALESCE_MS (a double-click), coalesces into the
+    current entry."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/routes/historyPolicy.ts
+        symbol: decideHistoryStep
+  accepted_gaps:
+    - direction: outgoing
+      predicate: serves
+      other_spec_node_id: application.applicationcomponent
+      reason: A pure function only the router (navigation.route.checkout-shell-route
+        uses it) calls; no component consumes it.
+      decided_by: agent
+      decided_at: 2026-11-24T15:10:00.119Z
+      changeset: changeset-1795532959167-dqn0l9q3r
+  metadata:
+    created_at: 2026-11-24T15:09:41.796Z
+    updated_at: 2026-11-24T15:09:41.796Z
+    version: 1
+application.applicationservice.load-state:
+  id: 5042a0a3-04e5-4227-80fe-fd81dbc094ca
+  path: application.applicationservice.load-state
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Load State
+  description: "`data/loadState.ts`: one read's first-load state as loading /
+    error / ready, from a React Query result (`loadStateOf`), and several reads
+    combined (`combineLoadStates`: error wins, then loading). Data in hand
+    always reads as ready, so a background refetch (model.updated, window focus)
+    or a failed refetch never takes a view back to Loading or to an error over
+    data it still shows."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/loadState.ts
+        symbol: LoadState
+  metadata:
+    created_at: 2026-11-24T16:03:11.559Z
+    updated_at: 2026-11-24T16:03:11.559Z
     version: 1

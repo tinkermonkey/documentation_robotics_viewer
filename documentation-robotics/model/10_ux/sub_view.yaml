@@ -187,7 +187,9 @@ ux.subview.c4-changeset-bar:
   name: C4 Changeset Bar
   description: "The Architecture view's changeset overlay bar under the
     breadcrumb: a changeset picker (staged first, then applied), its name and
-    purpose, a drift badge when commit is blocked, a tally, the legend and
+    purpose, a drift badge when commit is blocked, a tally, the number of
+    changes in the drawn scope (\"37 changes in Web App, each counted once\",
+    matching the \"N changes inside\" chip that led there), the legend and
     Clear."
   source_reference:
     provenance: manual

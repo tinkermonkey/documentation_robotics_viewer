@@ -20102,3 +20102,138 @@ testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes
     created_at: 2026-11-23T23:18:18.912Z
     updated_at: 2026-11-23T23:18:18.912Z
     version: 1
+testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed:
+  id: ace3ec19-7655-44f2-8358-e3b37d1db7e7
+  path: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: changeset groups > puts staged changesets in Open and every other status
+    in Closed
+  description: "A list mixing staged, committed, discarded and unknown statuses:
+    staged ones go to Open, the rest to Closed, each in the list's order; an
+    empty list gives two empty groups."
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/unit/navTreeGroups.spec.ts
+        symbol: changeset groups > puts staged changesets in Open and every other status
+          in Closed
+  metadata:
+    created_at: 2026-11-24T14:01:50.632Z
+    updated_at: 2026-11-24T14:01:50.632Z
+    version: 1
+testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count:
+  id: 0a783c91-0717-45d2-a188-d8ca9ef03bcd
+  path: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree changeset groups > Open starts expanded and Closed collapsed, each
+    with its count
+  description: With staged and applied changesets, the Changesets section shows
+    Open (aria-expanded true, its rows shown) and Closed (aria-expanded false,
+    rows hidden), each with its count badge and an accessible name like "Open, 1
+    changeset"; toggling Closed touches no navigation state or history.
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree changeset groups > Open starts expanded and Closed collapsed,
+          each with its count
+  metadata:
+    created_at: 2026-11-24T14:01:50.635Z
+    updated_at: 2026-11-24T14:01:50.635Z
+    version: 1
+testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row:
+  id: 8674b57e-ec6d-4065-b003-ee7b752c7a4b
+  path: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree changeset groups > a selected closed changeset opens Closed and
+    reveals its row
+  description: Selecting an applied changeset from elsewhere (a deep link) opens
+    the Closed group and marks its row active.
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree changeset groups > a selected closed changeset opens Closed and
+          reveals its row
+  metadata:
+    created_at: 2026-11-24T14:01:50.635Z
+    updated_at: 2026-11-24T14:01:50.635Z
+    version: 1
+testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden:
+  id: e83794b4-79d7-4eef-a79d-9d342ccc2813
+  path: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: NavTree changeset groups > an empty group is hidden
+  description: "Only committed changesets: no Open group, Closed is shown; no
+    changesets at all: the no-changesets hint and no groups."
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: tests/components/NavTree.spec.tsx
+        symbol: NavTree changeset groups > an empty group is hidden
+  metadata:
+    created_at: 2026-11-24T14:01:50.635Z
+    updated_at: 2026-11-24T14:01:50.635Z
+    version: 1
+testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre:
+  id: 8b47d10b-b196-4d28-a88a-b4ca4153d24f
+  path: testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: History policy pushes moves, replaces dwells and coalesces a selection
+    with its recentre
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/historyPolicy.spec.ts
+        symbol: decideHistoryStep
+  metadata:
+    created_at: 2026-11-24T15:09:41.810Z
+    updated_at: 2026-11-24T15:09:41.810Z
+    version: 1
+testing.testcasesketch.back-steps-through-graph-moves-in-each-view:
+  id: 3a219f0b-8188-443c-a312-dfb421e3e846
+  path: testing.testcasesketch.back-steps-through-graph-moves-in-each-view
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Back steps through graph moves in each view
+  description: "E2E: click through nodes / a focus / a lane expand / a C4 box,
+    then Back restores each previous state and Forward redoes it, in Model,
+    Schema, Impact, by-type lanes and Architecture."
+  attributes:
+    status: draft
+    implementationFormat: automated
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/e2e/history.spec.ts
+        symbol: Back and Forward replay graph moves (#619)
+  metadata:
+    created_at: 2026-11-24T15:09:41.819Z
+    updated_at: 2026-11-24T15:09:41.819Z
+    version: 1

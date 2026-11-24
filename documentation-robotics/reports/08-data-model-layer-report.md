@@ -16,10 +16,10 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 38    |
+| Elements                  | 40    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 65    |
-| Inbound Relationships     | 49    |
+| Inter-Layer Relationships | 70    |
+| Inbound Relationships     | 54    |
 | Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
@@ -48,8 +48,10 @@ Data entities, relationships, and data structure definitions.
 | `data-model.objectschema.chat-message`            | `objectschema`     | 2             |
 | `data-model.objectschema.checkout-ref`            | `objectschema`     | 0             |
 | `data-model.objectschema.commit-body`             | `objectschema`     | 0             |
+| `data-model.objectschema.commit-progress`         | `objectschema`     | 0             |
 | `data-model.objectschema.delete-blocker`          | `objectschema`     | 0             |
 | `data-model.objectschema.extracted-reference`     | `objectschema`     | 0             |
+| `data-model.objectschema.graph-move`              | `objectschema`     | 0             |
 | `data-model.objectschema.json-rpc-request`        | `objectschema`     | 1             |
 | `data-model.objectschema.layer`                   | `objectschema`     | 1             |
 | `data-model.objectschema.meta-model`              | `objectschema`     | 1             |
@@ -124,6 +126,7 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.changeset-review-panel`                                                 | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.commit-progress-bar`                                                    | `data-model.objectschema.commit-progress`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.drift-notice`                                                           | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`                                                           | `data-model.objectschema.change-origin`           | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.tier1-panel`                                                            | `data-model.objectschema.tier1status`             | `data-model` | `accesses`   | many-to-many | medium   |
@@ -133,6 +136,7 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-feed-subscription`                                              | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-store`                                                          | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.ui-store`                                                                | `data-model.objectschema.graph-move`              | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                        | `data-model.objectschema.c4-diff`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                        | `data-model.objectschema.c4-export-mark`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
@@ -146,12 +150,15 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.commit-body`             | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.changeset-review-model`                                                   | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.checkout-scope`                                                           | `data-model.objectschema.checkout-ref`            | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.commit-progress`                                                          | `data-model.objectschema.commit-progress`         | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.history-policy`                                                           | `data-model.objectschema.graph-move`              | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.plan-verification`                                                        | `data-model.objectschema.plan-verification`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-c4model`                                                              | `data-model.objectschema.changeset-detail`        | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-action-result` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-viewport-history`                                                     | `data-model.objectschema.graph-move`              | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-export-mark`                                                                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-model`                                                                        | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
@@ -237,7 +244,7 @@ The result of `diffC4`: per C4 element a status and the change sequence numbers 
 
 **Type**: `objectschema`
 
-What a mark on a drawn box or arrow becomes in an export: its status key (an overlay op or a plan verdict), glyph, words, colour and line style. Built by the UI from the same resolution `C4Diagram` draws with, so an export says what the screen says.
+What a mark on a drawn box or arrow becomes in an export: its status key (an overlay op or a plan verdict), glyph, words, the chip text and change count drawn on screen, colour and line style. Built by the UI from the same resolution `C4Diagram` draws with, so an export says what the screen says.
 
 #### Attributes
 
@@ -505,6 +512,27 @@ POST /api/changesets/:id/commit's optional body, the reviewed Apply: drop (the s
 | inter-layer | `application.applicationcomponent.changeset-review-panel` | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.changeset-review-model`   | `accesses` | inbound   |
 
+### Commit Progress {#commit-progress}
+
+**ID**: `data-model.objectschema.commit-progress`
+
+**Type**: `objectschema`
+
+The dr CLI's changeset.commit.progress WebSocket event (documentation_robotics#1361), a plain \{type\} frame stamped with project and checkout: changesetId, applied, total (the changes that will land), optional phase (validating, applying, saving, reloading or another the server names) and layer. Validated before it reaches React: a frame missing a string changesetId or non-negative integer applied/total is dropped, applied is clamped to total, an unknown phase is kept as text, a non-string layer is dropped.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.commit-progress-bar` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.commit-progress`       | `accesses` | inbound   |
+
 ### DeleteBlocker {#deleteblocker}
 
 **ID**: `data-model.objectschema.delete-blocker`
@@ -544,6 +572,28 @@ Raw reference metadata captured during YAML parsing before cross-layer resolutio
 | Type        | Related Element                              | Predicate  | Direction |
 | ----------- | -------------------------------------------- | ---------- | --------- |
 | inter-layer | `business.businessobject.architecture-model` | `realizes` | outbound  |
+
+### Graph Move {#graph-move}
+
+**ID**: `data-model.objectschema.graph-move`
+
+**Type**: `objectschema`
+
+uiStore.graphMove: \{ seq, kind: select \| focus \| expand \| recentre \| dwell \| fit, target, at \}. Written by the UI actions that make a deliberate graph move, in the same store write as the state they change; restore actions (router, back/forward) write none.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate  | Direction |
+| ----------- | ----------------------------------------------------- | ---------- | --------- |
+| inter-layer | `application.applicationfunction.ui-store`            | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.history-policy`       | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.use-viewport-history` | `accesses` | inbound   |
 
 ### JsonRpcRequest {#jsonrpcrequest}
 
@@ -987,4 +1037,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0

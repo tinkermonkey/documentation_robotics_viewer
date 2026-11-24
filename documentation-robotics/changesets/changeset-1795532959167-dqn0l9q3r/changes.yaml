@@ -454,3 +454,65 @@
     metadata: *a9
   timestamp: 2026-11-24T15:09:52.540Z
   sequenceNumber: 22
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "The C4 diagram renderer (usePanZoom world of HTML cards over an
+      SVG of boundary and arrows). Reports its viewport like GraphCanvas:
+      onViewportDwell after a user pan/zoom settles (onUserGesture end + dwell),
+      onViewportNavigate for its fits; takes initialViewport and a viewportRef
+      whose setViewport(vp, { silent }) restores without a report, so
+      useViewportHistory records it into ?vp= for the Architecture view."
+    attributes: &a10
+      type: internal
+    source_reference: &a11
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a12
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. An overlay's op marks or a comparison's
+      verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`:
+      outline, glyph, words, chip text, change count, colour token, dash per
+      card and arrow), which the export also uses, so an exported diagram
+      carries the same marks. An overlay's status chip and arrow label carry the
+      number of changeset changes behind them past one (\"~ changed · 12
+      changes\", \"+ uses · 4 changes\"), also in the card's accessible name,
+      the arrow's tooltip and the hidden arrow list. Colours from canvas tokens,
+      so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys
+      between cards, Enter drills into a card that has parts, Escape clears the
+      selection; the arrows, with their status, are also listed as text. It
+      reports its viewport like GraphCanvas: onViewportDwell after a user
+      pan/zoom settles (onUserGesture end + dwell), onViewportNavigate for its
+      fits; it takes initialViewport and a viewportRef whose setViewport(vp, {
+      silent }) restores without a report, so useViewportHistory records it into
+      ?vp= for the Architecture view. A double-click's second click is ignored,
+      so select + open is one history step plus the drill."
+    attributes: *a10
+    source_reference: *a11
+    metadata: *a12
+  timestamp: 2026-11-24T18:44:11.730Z
+  sequenceNumber: 28

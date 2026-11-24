@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 1028  |
+| Elements                  | 1034  |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 1201  |
+| Inter-Layer Relationships | 1209  |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 1201  |
+| Outbound Relationships    | 1209  |
 
 **Cross-Layer References**:
 
@@ -82,6 +82,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid`                                      | `testcasesketch`      | 0             |
+| `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`                                                                                     | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `testcasesketch`      | 0             |
 | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332`                        | `testcasesketch`      | 0             |
@@ -249,6 +250,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli`                                                                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift`                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one`                                                   | `testcasesketch`      | 0             |
+| `testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed`                                                | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-impact-focus-finds-no-origin-for-an-element-the-model-and-the-changeset-lack`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-impact-focus-reaches-from-the-focused-element-only-and-still-marks-every-change`                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.changeset-impact-focus-records-which-changes-touch-each-element`                                                                 | `testcasesketch`      | 0             |
@@ -435,6 +437,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-select-9ffca8bf`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-1a7a2152`                        | `testcasesketch`      | 0             |
 | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-e5ecd4a2`                        | `testcasesketch`      | 0             |
+| `testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre`                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-counts-each-facet-over-the-whole-impact`                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-drops-a-hidden-op-layer-or-type-with-its-links`                                          | `testcasesketch`      | 0             |
 | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-finds-elements-by-name-changed-ones-first`                                               | `testcasesketch`      | 0             |
@@ -587,6 +590,9 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                                                  | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row`                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden`                                                                              | `testcasesketch`      | 0             |
+| `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                                           | `testcasesketch`      | 0             |
 | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`                               | `testcasesketch`      | 0             |
@@ -1162,6 +1168,8 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-is-a-navigation-that-keeps-cfbb68d8`                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-show-c4-overlay-with-the-changeset-already-fe65933a`                    | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.architecture-view-the-overlaid-changeset-c4-changeset-id-starts-with-no-changeset-overlaid`                                      | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`                                                                                     | `motivation.requirement.back-and-forward-replay-graph-moves`       | `motivation`  | `satisfies` | many-to-many | high     |
+| `testing.testcasesketch.tests.navigation.route`                                       | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`                                                                                     | `navigation.route.checkout-shell-route`                            | `navigation`  | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-a-schema-node-type-and-a-relationship`                                                              | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-describes-the-selected-changeset-in-the-changesets-view`                                                      | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.build-chat-context-in-the-architecture-view-names-the-changeset-laid-over-the-diagram-how-it-is-0bfed332`                        | `application.applicationservice.chat-context-builder`              | `application` | `tests`     | many-to-many | medium   |
@@ -1354,6 +1362,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-drift-reads-no-drift-from-an-older-dr-cli`                                                                             | `application.applicationservice.changeset-drift`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-drift-reads-the-summary-and-drops-a-malformed-drift`                                                                   | `application.applicationservice.changeset-drift`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-drift-tells-a-blocking-drift-from-a-quiet-note-and-an-unchecked-one`                                                   | `application.applicationservice.changeset-drift`                   | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed`                                                | `application.applicationservice.nav-tree-changeset-groups`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-impact-focus-finds-no-origin-for-an-element-the-model-and-the-changeset-lack`                                          | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-impact-focus-reaches-from-the-focused-element-only-and-still-marks-every-change`                                       | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.changeset-impact-focus-records-which-changes-touch-each-element`                                                                 | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
@@ -1553,6 +1562,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-select-9ffca8bf`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-1a7a2152`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                        | `testing.testcasesketch.highlighted-edge-id-transient-cross-view-highlight-clears-on-the-next-explicit-selection-toggle-e5ecd4a2`                        | `application.applicationfunction.ui-store`                         | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre`                                         | `application.applicationservice.history-policy`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-counts-each-facet-over-the-whole-impact`                                                 | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-drops-a-hidden-op-layer-or-type-with-its-links`                                          | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.impact-filters-search-and-grouped-lanes-finds-elements-by-name-changed-ones-first`                                               | `application.applicationservice.changeset-impact-analysis`         | `application` | `tests`     | many-to-many | medium   |
@@ -1708,6 +1718,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.model-view-settings-flyout-stays-open-on-a-slow-move-from-the-gear-to-the-panel-before-and-after-91e8f948`                       | `application.applicationcomponent.graph-canvas`                    | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-architecture-section-counts-the-diagrams-on-the-section-row`                                                            | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-architecture-section-lists-the-c4-diagrams-and-opens-one-from-its-row`                                                  | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row`                                          | `product.feature.nav-tree-changeset-groups`                        | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden`                                                                              | `product.feature.nav-tree-changeset-groups`                        | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`                                         | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`                                         | `product.feature.nav-tree-changeset-groups`                        | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-changeset-leaf-selects-it-and-switches-to-the-6d6cf0ee`                            | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-layer-row-sets-layer-id-selects-no-node`                                           | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.nav-tree-clicks-drive-the-ui-store-clicking-a-leaf-under-a-different-layer-switches-to-that-layer`                               | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
@@ -3193,6 +3207,28 @@ Planned E2E test, tests/e2e/architecture.spec.ts: ?changeset= + ?built= draws th
 | Type        | Related Element                            | Predicate | Direction |
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
+
+### Back steps through graph moves in each view {#back-steps-through-graph-moves-in-each-view}
+
+**ID**: `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`
+
+**Type**: `testcasesketch`
+
+E2E: click through nodes / a focus / a lane expand / a C4 box, then Back restores each previous state and Forward redoes it, in Model, Schema, Impact, by-type lanes and Architecture.
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `motivation.requirement.back-and-forward-replay-graph-moves` | `satisfies` | outbound  |
+| inter-layer | `navigation.route.checkout-shell-route`                      | `tests`     | outbound  |
 
 ### buildChatContext &gt; describes a Schema node type and a relationship {#buildchatcontext-describes-a-schema-node-type-and-a-relationship}
 
@@ -6232,6 +6268,27 @@ Planned component test, tests/components/C4PlanCompare.spec.tsx: never colour al
 | Type        | Related Element                                  | Predicate | Direction |
 | ----------- | ------------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationservice.changeset-drift` | `tests`   | outbound  |
+
+### changeset groups &gt; puts staged changesets in Open and every other status in Closed {#changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed}
+
+**ID**: `testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed`
+
+**Type**: `testcasesketch`
+
+A list mixing staged, committed, discarded and unknown statuses: staged ones go to Open, the rest to Closed, each in the list's order; an empty list gives two empty groups.
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                            | Predicate | Direction |
+| ----------- | ---------------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.nav-tree-changeset-groups` | `tests`   | outbound  |
 
 ### changesetImpact — focus &gt; finds no origin for an element the model and the changeset lack {#changesetimpact-focus-finds-no-origin-for-an-element-the-model-and-the-changeset-lack}
 
@@ -9611,6 +9668,25 @@ Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts: an unplanned test folds 
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `application.applicationfunction.ui-store` | `tests`   | outbound  |
 
+### History policy pushes moves, replaces dwells and coalesces a selection with its recentre {#history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre}
+
+**ID**: `testing.testcasesketch.history-policy-pushes-moves-replaces-dwells-and-coalesces-a-selection-with-its-recentre`
+
+**Type**: `testcasesketch`
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate | Direction |
+| ----------- | ----------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.history-policy` | `tests`   | outbound  |
+
 ### impact filters, search and grouped lanes &gt; counts each facet over the whole impact {#impact-filters-search-and-grouped-lanes-counts-each-facet-over-the-whole-impact}
 
 **ID**: `testing.testcasesketch.impact-filters-search-and-grouped-lanes-counts-each-facet-over-the-whole-impact`
@@ -12319,6 +12395,70 @@ Planned unit test, tests/unit/c4/c4PlanCompare.spec.ts: an unplanned test folds 
 | Type        | Related Element                             | Predicate | Direction |
 | ----------- | ------------------------------------------- | --------- | --------- |
 | inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+
+### NavTree changeset groups &gt; a selected closed changeset opens Closed and reveals its row {#navtree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row}
+
+**ID**: `testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row`
+
+**Type**: `testcasesketch`
+
+Selecting an applied changeset from elsewhere (a deep link) opens the Closed group and marks its row active.
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `product.feature.nav-tree-changeset-groups` | `tests`   | outbound  |
+
+### NavTree changeset groups &gt; an empty group is hidden {#navtree-changeset-groups-an-empty-group-is-hidden}
+
+**ID**: `testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden`
+
+**Type**: `testcasesketch`
+
+Only committed changesets: no Open group, Closed is shown; no changesets at all: the no-changesets hint and no groups.
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `product.feature.nav-tree-changeset-groups` | `tests`   | outbound  |
+
+### NavTree changeset groups &gt; Open starts expanded and Closed collapsed, each with its count {#navtree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count}
+
+**ID**: `testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count`
+
+**Type**: `testcasesketch`
+
+With staged and applied changesets, the Changesets section shows Open (aria-expanded true, its rows shown) and Closed (aria-expanded false, rows hidden), each with its count badge and an accessible name like "Open, 1 changeset"; toggling Closed touches no navigation state or history.
+
+#### Attributes
+
+| Name                 | Value     |
+| -------------------- | --------- |
+| implementationFormat | automated |
+| status               | draft     |
+
+#### Relationships
+
+| Type        | Related Element                             | Predicate | Direction |
+| ----------- | ------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationcomponent.nav-tree` | `tests`   | outbound  |
+| inter-layer | `product.feature.nav-tree-changeset-groups` | `tests`   | outbound  |
 
 ### NavTree — clicks drive the uiStore &gt; clicking a changeset leaf selects it and switches to the changesets view {#navtree-clicks-drive-the-uistore-clicking-a-changeset-leaf-selects-it-and-switches-to-the-changesets-view}
 
@@ -21011,4 +21151,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0

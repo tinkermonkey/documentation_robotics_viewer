@@ -18,9 +18,9 @@ Application routing, navigation flows, and page structures.
 | ------------------------- | ----- |
 | Elements                  | 12    |
 | Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 36    |
-| Inbound Relationships     | 21    |
-| Outbound Relationships    | 15    |
+| Inter-Layer Relationships | 38    |
+| Inbound Relationships     | 22    |
+| Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
 
@@ -106,10 +106,12 @@ flowchart TB
 | `navigation.route.satisfies.motivation.requirement`            | `navigation.route.checkout-shell-route`                                                                                               | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `navigation.route.satisfies.motivation.requirement`            | `navigation.route.checkout-shell-route`                                                                                               | `motivation.requirement.open-the-checkout-a-link-names`      | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `navigation.route.uses.application.applicationservice`         | `navigation.route.checkout-shell-route`                                                                                               | `application.applicationservice.checkout-scope`              | `application` | `uses`       | many-to-many | medium   |
+| `navigation.route.uses.application.applicationservice`         | `navigation.route.checkout-shell-route`                                                                                               | `application.applicationservice.history-policy`              | `application` | `uses`       | many-to-many | medium   |
 | `navigation.route.uses.ux.errorconfig`                         | `navigation.route.checkout-shell-route`                                                                                               | `ux.errorconfig.checkout-unavailable-error`                  | `ux`          | `uses`       | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                             | `navigation.route.index-route`                                                                                                        | `ux.view.checkout-picker-view`                               | `ux`          | `maps-to`    | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                     | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`    | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`                                                                  | `navigation.route.checkout-shell-route`                      | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
@@ -385,27 +387,29 @@ The old unscoped route /#/:section/:view (section = model \| spec \| changesets 
 
 #### Relationships
 
-| Type        | Related Element                                              | Predicate      | Direction |
-| ----------- | ------------------------------------------------------------ | -------------- | --------- |
-| inter-layer | `data-model.objectschema.checkout-ref`                       | `accesses`     | outbound  |
-| inter-layer | `application.applicationcomponent.app-shell`                 | `depends-on`   | outbound  |
-| inter-layer | `ux.view.architecture-view`                                  | `maps-to`      | outbound  |
-| inter-layer | `ux.view.changesets-view`                                    | `maps-to`      | outbound  |
-| inter-layer | `ux.view.model-view`                                         | `maps-to`      | outbound  |
-| inter-layer | `ux.view.schema-view`                                        | `maps-to`      | outbound  |
-| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `satisfies`    | outbound  |
-| inter-layer | `motivation.requirement.open-the-checkout-a-link-names`      | `satisfies`    | outbound  |
-| inter-layer | `application.applicationservice.checkout-scope`              | `uses`         | outbound  |
-| inter-layer | `ux.errorconfig.checkout-unavailable-error`                  | `uses`         | outbound  |
-| intra-layer | `navigation.flowstep.post-auth-model-entry-step`             | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`   | `composes`     | inbound   |
-| intra-layer | `navigation.navigationtransition.cli-deep-link-transition`   | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationtransition.layer-deep-link-transition` | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationtransition.tab-navigation-transition`  | `navigates-to` | inbound   |
-| intra-layer | `navigation.route.app-shell-sectionview-route`               | `navigates-to` | inbound   |
-| intra-layer | `navigation.route.checkout-index-route`                      | `navigates-to` | inbound   |
-| intra-layer | `navigation.navigationtransition.cli-deep-link-transition`   | `flows-to`     | outbound  |
-| intra-layer | `navigation.route.index-route`                               | `navigates-to` | inbound   |
+| Type        | Related Element                                                      | Predicate      | Direction |
+| ----------- | -------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `data-model.objectschema.checkout-ref`                               | `accesses`     | outbound  |
+| inter-layer | `application.applicationcomponent.app-shell`                         | `depends-on`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                                          | `maps-to`      | outbound  |
+| inter-layer | `ux.view.changesets-view`                                            | `maps-to`      | outbound  |
+| inter-layer | `ux.view.model-view`                                                 | `maps-to`      | outbound  |
+| inter-layer | `ux.view.schema-view`                                                | `maps-to`      | outbound  |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser`         | `satisfies`    | outbound  |
+| inter-layer | `motivation.requirement.open-the-checkout-a-link-names`              | `satisfies`    | outbound  |
+| inter-layer | `application.applicationservice.checkout-scope`                      | `uses`         | outbound  |
+| inter-layer | `application.applicationservice.history-policy`                      | `uses`         | outbound  |
+| inter-layer | `ux.errorconfig.checkout-unavailable-error`                          | `uses`         | outbound  |
+| inter-layer | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view` | `tests`        | inbound   |
+| intra-layer | `navigation.flowstep.post-auth-model-entry-step`                     | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`           | `composes`     | inbound   |
+| intra-layer | `navigation.navigationtransition.cli-deep-link-transition`           | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationtransition.layer-deep-link-transition`         | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationtransition.tab-navigation-transition`          | `navigates-to` | inbound   |
+| intra-layer | `navigation.route.app-shell-sectionview-route`                       | `navigates-to` | inbound   |
+| intra-layer | `navigation.route.checkout-index-route`                              | `navigates-to` | inbound   |
+| intra-layer | `navigation.navigationtransition.cli-deep-link-transition`           | `flows-to`     | outbound  |
+| intra-layer | `navigation.route.index-route`                                       | `navigates-to` | inbound   |
 
 ### Index Route {#index-route}
 
@@ -432,4 +436,4 @@ Landing route at /#/ (bare, no project): the dr CLI's central process serves man
 
 ---
 
-Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0

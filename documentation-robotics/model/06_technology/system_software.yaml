@@ -119,26 +119,6 @@ technology.systemsoftware.tan-stack-router:
     created_at: 2026-03-20T12:37:23.514Z
     updated_at: 2026-03-24T09:10:00.000Z
     version: 2
-technology.systemsoftware.tailwind-css-v4:
-  id: b26ad8f3-48c2-4707-84bf-163868337b58
-  path: technology.systemsoftware.tailwind-css-v4
-  spec_node_id: technology.systemsoftware
-  type: systemsoftware
-  layer_id: technology
-  name: Tailwind CSS v4
-  description: Utility-first CSS framework v4 with PostCSS pipeline; all styling
-    via utility classes, dark mode variants required on all components
-  attributes:
-    softwareType: middleware
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: package.json
-        symbol: dependencies.tailwindcss
-  metadata:
-    created_at: 2026-03-20T12:37:23.765Z
-    updated_at: 2026-03-24T09:10:00.000Z
-    version: 2
 technology.systemsoftware.playwright:
   id: 72551121-e5cb-4e72-a417-e83537c03445
   path: technology.systemsoftware.playwright
@@ -169,11 +149,13 @@ technology.systemsoftware.heimdall-ui:
   type: systemsoftware
   layer_id: technology
   name: Heimdall UI
-  description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned
-    from a git commit; provides the app shell components (PageHeader,
-    GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile, etc.)
-    and the real force-directed GraphCanvas layout engine that replaced the old
-    React Flow + custom layout-engine stack in the June 2026 UX rebuild"
+  description: "@tinkermonkey/heimdall-ui — the Heimdall design system, pinned to
+    an exact npm version (0.14.0); provides the app shell components
+    (PageHeader, GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff,
+    StatTile, etc.), the GraphCanvas layouts with their viewport events
+    (onViewportDwell / onViewportNavigate, silent setViewport) and usePanZoom
+    (onUserGesture), which replaced the old React Flow + custom layout-engine
+    stack in the June 2026 UX rebuild"
   attributes:
     softwareType: middleware
   source_reference:

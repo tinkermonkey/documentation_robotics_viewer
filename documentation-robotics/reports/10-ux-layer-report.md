@@ -18,9 +18,9 @@ User interface components, screens, and user experience elements.
 | ------------------------- | ----- |
 | Elements                  | 25    |
 | Intra-Layer Relationships | 26    |
-| Inter-Layer Relationships | 73    |
+| Inter-Layer Relationships | 74    |
 | Inbound Relationships     | 26    |
-| Outbound Relationships    | 47    |
+| Outbound Relationships    | 48    |
 
 **Cross-Layer References**:
 
@@ -149,6 +149,7 @@ flowchart TB
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-architecture-diagrams`                      | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-changeset-overlay`                          | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-diagram-export`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-overlay-change-counts`                      | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`              | `ux.view.architecture-view`                                                                                                         | `product.feature.c4-plan-vs-as-built`                           | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.references.business.businessobject`    | `ux.view.architecture-view`                                                                                                         | `business.businessobject.architecture-model`                    | `business`   | `references` | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`      | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.architecture-reads-as-c4-diagrams`      | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -214,7 +215,7 @@ What the shell shows instead of the views when the route's checkout can't be ser
 
 **Type**: `statepattern`
 
-Standard data-loading state pattern used across all views; states: idle → loading → loaded/error; with optional retry action on error state.
+Standard data-loading state pattern used across all views; states: idle → loading → loaded/error; with optional retry action on error state. Only the FIRST load counts as loading (#636): while a read has no data and hasn't failed, a region says "Loading…" (role="status") and shows no counts; data with zero items shows the empty hint; a failed first read shows the error, never "empty". A background refetch keeps the data shown (no flash back to Loading). Implemented by `data/loadState.ts` and `ui/LoadStatus.tsx`.
 
 #### Attributes
 
@@ -228,7 +229,7 @@ Standard data-loading state pattern used across all views; states: idle → load
 
 **Type**: `subview`
 
-The Architecture view's changeset overlay bar under the breadcrumb: a changeset picker (staged first, then applied), its name and purpose, a drift badge when commit is blocked, a tally, the legend and Clear.
+The Architecture view's changeset overlay bar under the breadcrumb: a changeset picker (staged first, then applied), its name and purpose, a drift badge when commit is blocked, a tally, the number of changes in the drawn scope ("37 changes in Web App, each counted once", matching the "N changes inside" chip that led there), the legend and Clear.
 
 #### Relationships
 
@@ -526,6 +527,7 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                         | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-changeset-overlay`                                                                                             | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-diagram-export`                                                                                                | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-overlay-change-counts`                                                                                         | `realizes`   | outbound  |
 | inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                              | `realizes`   | outbound  |
 | inter-layer | `business.businessobject.architecture-model`                                                                                       | `references` | outbound  |
 | inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                         | `satisfies`  | outbound  |
@@ -748,4 +750,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:48:38.495Z | Model Version: 0.1.0
