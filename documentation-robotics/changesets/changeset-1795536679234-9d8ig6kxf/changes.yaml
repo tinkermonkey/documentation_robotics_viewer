@@ -1,0 +1,513 @@
+- type: add
+  elementId: testing.testcasesketch.canvas-first-load-says-the-model-could-not-be-loaded-when-its-first-read-fails
+  layerName: testing
+  after:
+    id: 1a4883b9-10db-4d67-ab5c-6e241efff9e5
+    path: testing.testcasesketch.canvas-first-load-says-the-model-could-not-be-loaded-when-its-first-read-fails
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Canvas — first load > says the model could not be loaded when its first
+      read fails
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: Canvas — first load > says the model could not be loaded when its first
+            read fails
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 0
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.canvas-first-load-shows-loading-and-no-element-count-until-the-model-answers
+  layerName: testing
+  after:
+    id: 142c123f-302c-438d-b11f-2eed09c461a7
+    path: testing.testcasesketch.canvas-first-load-shows-loading-and-no-element-count-until-the-model-answers
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Canvas — first load > shows Loading… and no element count until the model
+      answers
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: Canvas — first load > shows Loading… and no element count until the
+            model answers
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 1
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.canvas-first-load-shows-loading-in-page-mode-instead-of-a-page-built-from-nothing
+  layerName: testing
+  after:
+    id: 1d3dabe8-c0a2-40f3-8d95-f9c7d5cc88f2
+    path: testing.testcasesketch.canvas-first-load-shows-loading-in-page-mode-instead-of-a-page-built-from-nothing
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Canvas — first load > shows Loading… in page mode instead of a page built
+      from nothing
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: Canvas — first load > shows Loading… in page mode instead of a page
+            built from nothing
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 2
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.left-rail-and-status-bar-first-load-keeps-for-a-health-that-sends-no-cli-version-once-it-has-bff08bac
+  layerName: testing
+  after:
+    id: da74f7c0-2f4f-4596-b6ab-6a582e83224d
+    path: testing.testcasesketch.left-rail-and-status-bar-first-load-keeps-for-a-health-that-sends-no-cli-version-once-it-has-bff08bac
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: LeftRail and StatusBar — first load > keeps "—" for a /health that sends
+      no cliVersion once it has answered
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: LeftRail and StatusBar — first load > keeps "—" for a /health that sends
+            no cliVersion once it has answered
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 3
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.left-rail-and-status-bar-first-load-say-until-api-spec-api-model-and-health-answer-then-the-real-9b7042f4
+  layerName: testing
+  after:
+    id: 53a5d42b-18e8-49f3-a3b5-e55463913137
+    path: testing.testcasesketch.left-rail-and-status-bar-first-load-say-until-api-spec-api-model-and-health-answer-then-the-real-9b7042f4
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: LeftRail and StatusBar — first load > say … until /api/spec, /api/model
+      and /health answer, then the real versions and counts
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: LeftRail and StatusBar — first load > say … until /api/spec, /api/model
+            and /health answer, then the real versions and counts
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 4
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.load-state-combines-reads-an-error-wins-then-loading
+  layerName: testing
+  after:
+    id: 2b6104b1-1d94-42e9-ab96-bd1cbc43ee9d
+    path: testing.testcasesketch.load-state-combines-reads-an-error-wins-then-loading
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: "loadState > combines reads: an error wins, then loading"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: "loadState > combines reads: an error wins, then loading"
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 5
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.load-state-reads-data-in-hand-as-ready-even-while-refetching-or-after-a-failed-refetch
+  layerName: testing
+  after:
+    id: 79551cd8-9362-448f-ac6e-b94e3b634619
+    path: testing.testcasesketch.load-state-reads-data-in-hand-as-ready-even-while-refetching-or-after-a-failed-refetch
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: loadState > reads data in hand as ready, even while refetching or after a
+      failed refetch
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: loadState > reads data in hand as ready, even while refetching or after
+            a failed refetch
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 6
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-first-load-keeps-its-counts-through-a-background-refetch-no-flash-back-to-loading
+  layerName: testing
+  after:
+    id: 164aeaa4-c8b8-4ae7-9d0d-4313851951a8
+    path: testing.testcasesketch.nav-tree-first-load-keeps-its-counts-through-a-background-refetch-no-flash-back-to-loading
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree — first load > keeps its counts through a background refetch (no
+      flash back to Loading…)
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: NavTree — first load > keeps its counts through a background refetch (no
+            flash back to Loading…)
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 7
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-first-load-says-loading-under-an-open-model-layer-until-the-model-answers
+  layerName: testing
+  after:
+    id: 7b48a20f-312e-4815-9fd8-9c54d6a42f30
+    path: testing.testcasesketch.nav-tree-first-load-says-loading-under-an-open-model-layer-until-the-model-answers
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree — first load > says Loading… under an open Model layer until the
+      model answers
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: NavTree — first load > says Loading… under an open Model layer until the
+            model answers
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 8
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-first-load-says-loading-with-no-counts-until-the-reads-answer-then-shows-the-real-counts
+  layerName: testing
+  after:
+    id: 5e4c5856-a0f0-4b46-a3e6-3015dd48574c
+    path: testing.testcasesketch.nav-tree-first-load-says-loading-with-no-counts-until-the-reads-answer-then-shows-the-real-counts
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree — first load > says Loading… with no counts until the reads
+      answer, then shows the real counts
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: NavTree — first load > says Loading… with no counts until the reads
+            answer, then shows the real counts
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 9
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: testing.testcasesketch.nav-tree-first-load-shows-a-failed-first-changesets-read-as-an-error-never-no-changesets
+  layerName: testing
+  after:
+    id: be1f108c-ebce-43b5-9f3a-208a17f3cd0a
+    path: testing.testcasesketch.nav-tree-first-load-shows-a-failed-first-changesets-read-as-an-error-never-no-changesets
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: NavTree — first load > shows a failed first changesets read as an error,
+      never "no changesets"
+    attributes:
+      status: automated
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/FirstLoad.spec.tsx
+          symbol: NavTree — first load > shows a failed first changesets read as an error,
+            never "no changesets"
+    metadata:
+      created_at: 2026-11-24T16:11:19.167Z
+      updated_at: 2026-11-24T16:11:19.167Z
+      version: 1
+  timestamp: 2026-11-24T16:11:19.276Z
+  sequenceNumber: 10
+  origin:
+    by: tier0
+    rule: js_test_case_call
+- type: add
+  elementId: application.applicationservice.load-state
+  layerName: application
+  after:
+    id: 9616dc6f-b3c3-43db-9061-73714fcc41cc
+    path: application.applicationservice.load-state
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: LoadState
+    description: "src/apps/embedded/data/loadState.ts: one read's first-load state
+      (loading / error / ready) from a React Query result, and several
+      combined."
+    attributes:
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/loadState.ts
+          symbol: LoadState
+    metadata:
+      created_at: 2026-11-24T16:11:45.867Z
+      updated_at: 2026-11-24T16:11:45.867Z
+      version: 1
+  timestamp: 2026-11-24T16:11:45.948Z
+  sequenceNumber: 11
+- type: add
+  elementId: application.applicationcomponent.load-status
+  layerName: application
+  after:
+    id: ec02e79f-1b72-4aa1-9cb4-79e02155f58b
+    path: application.applicationcomponent.load-status
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: LoadStatus
+    description: "src/apps/embedded/ui/LoadStatus.tsx: the status line shown while a
+      read loads or after it failed."
+    attributes:
+      type: internal
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/LoadStatus.tsx
+          symbol: LoadStatus
+    metadata:
+      created_at: 2026-11-24T16:11:45.868Z
+      updated_at: 2026-11-24T16:11:45.868Z
+      version: 1
+  timestamp: 2026-11-24T16:11:45.948Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationcomponent.left-rail::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.left-rail
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: application.applicationcomponent.nav-tree::composes::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.nav-tree
+    target: application.applicationcomponent.load-status
+    predicate: composes
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationcomponent.nav-tree::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.nav-tree
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationcomponent.status-bar::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.status-bar
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.left-rail
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.left-rail
+    predicate: serves
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.load-status
+    predicate: serves
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:IMPORTS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 19
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.status-bar
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.status-bar
+    predicate: serves
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationservice.use-cli-version::depends-on::application.applicationservice.load-state
+  layerName: application
+  after:
+    source: application.applicationservice.use-cli-version
+    target: application.applicationservice.load-state
+    predicate: depends-on
+    layer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: edge:CALLS
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: testing.testcasesketch.load-state-combines-reads-an-error-wins-then-loading::tests::application.applicationservice.load-state
+  layerName: testing
+  after:
+    source: testing.testcasesketch.load-state-combines-reads-an-error-wins-then-loading
+    target: application.applicationservice.load-state
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: testing.testcasesketch.load-state-reads-data-in-hand-as-ready-even-while-refetching-or-after-a-failed-refetch::tests::application.applicationservice.load-state
+  layerName: testing
+  after:
+    source: testing.testcasesketch.load-state-reads-data-in-hand-as-ready-even-while-refetching-or-after-a-failed-refetch
+    target: application.applicationservice.load-state
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  origin:
+    by: tier0
+    rule: js_test_case_call
+  timestamp: 2026-11-24T16:12:08.153Z
+  sequenceNumber: 23

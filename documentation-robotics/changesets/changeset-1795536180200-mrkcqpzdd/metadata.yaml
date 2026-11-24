@@ -1,0 +1,80 @@
+id: changeset-1795536180200-mrkcqpzdd
+name: first-load-loading-states
+description: "#636: while a read is pending for the first time, the shell says
+  \"Loading…\" instead of presenting empty results as facts. A shared load state
+  (`data/loadState.ts`: loading / error / ready from a React Query result; data
+  present always reads as ready, so a background refetch never flashes back) and
+  one `ui/LoadStatus.tsx` status line (role=\"status\") drive the nav tree (no
+  Changesets / layer / Architecture counts, \"Loading…\" in place of \"no
+  changesets\"), the canvas (no \"0 elements\" header, \"Loading…\" instead of
+  \"no elements in this layer\" and in page mode), the rail footer (`SPEC …`, no
+  `0 layers · 0 rels`) and the status bar (`cli …` until /health answers; \"—\"
+  still means the server sent none). A failed first read shows an error, never
+  \"empty\". Done when component tests cover pending → \"Loading…\" with no 0,
+  resolved → real counts, an error, and a refetch that doesn't flash."
+created: 2026-11-24T16:03:00.211Z
+modified: 2026-11-24T16:12:33.973Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 12
+  modifications: 2
+  deletions: 0
+lastSequence: 15
+unstaged:
+  - sequence: 0
+    removedAt: 14
+    change:
+      type: add
+      elementId: application.applicationcomponent.load-status
+      layerName: application
+      after:
+        id: 719eb223-dc6a-41a1-b0c3-4440335c4800
+        path: application.applicationcomponent.load-status
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Load Status
+        description: "`ui/LoadStatus.tsx`: the one line a region shows while its first
+          read is pending (\"Loading…\", a polite role=\"status\" live region
+          whose text is set after mount so it is announced) or after it failed
+          (the read's error, role=\"alert\"). Used by the nav tree, the canvas
+          and its page view in place of their empty hints."
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-24T16:03:06.863Z
+          updated_at: 2026-11-24T16:03:06.863Z
+          version: 1
+      timestamp: 2026-11-24T16:03:06.878Z
+    rewritten: true
+  - sequence: 3
+    removedAt: 15
+    change:
+      type: add
+      elementId: application.applicationservice.load-state
+      layerName: application
+      after:
+        id: 5042a0a3-04e5-4227-80fe-fd81dbc094ca
+        path: application.applicationservice.load-state
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Load State
+        description: "`data/loadState.ts`: one read's first-load state as loading /
+          error / ready, from a React Query result (`loadStateOf`), and several
+          reads combined (`combineLoadStates`: error wins, then loading). Data
+          in hand always reads as ready, so a background refetch (model.updated,
+          window focus) or a failed refetch never takes a view back to Loading
+          or to an error over data it still shows."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-24T16:03:11.559Z
+          updated_at: 2026-11-24T16:03:11.559Z
+          version: 1
+      timestamp: 2026-11-24T16:03:11.581Z
+    rewritten: true

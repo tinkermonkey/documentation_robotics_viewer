@@ -16,6 +16,11 @@
  * and component that has parts, nested as the C4 model nests them
  * (`data/c4/c4Views.ts`'s `c4NavRows`); a row opens that diagram.
  *
+ * First load (#636): until a read has answered, the rows it counts show no
+ * count and an open section or layer says "Loading…" (`LoadStatus`) where it
+ * would otherwise say it is empty; a failed first read says so instead. The
+ * tree is `aria-busy` meanwhile. A refetch keeps the counts it has.
+ *
  * Type groups (`data/navTreeGroups.ts`) start collapsed. Their open state is
  * local to the tree, not in `uiStore` or the URL, so opening one pushes no
  * history. The group holding the selected element opens whenever the
@@ -44,6 +49,8 @@ import { specTypeLabel } from '../data/typeLabel';
 import { useC4Model } from '../data/c4/useC4Model';
 import { c4NavRows, defaultComponentScope, resolveScope } from '../data/c4/c4Views';
 import { C4_SYSTEM_ID } from '../data/c4/c4Model';
+import { combineLoadStates, loadStateOf, type LoadState } from '../data/loadState';
+import { LoadStatus, busyProps } from './LoadStatus';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets' | 'architecture'>;
 /** The sections that list the spec's layers. */
@@ -55,6 +62,19 @@ const SECTIONS: { id: SectionId; label: string; icon: IconName }[] = [
   { id: 'spec', label: 'Schema', icon: 'schema' },
   { id: 'changesets', label: 'Changesets', icon: 'clock' },
 ];
+
+/** The subtle line under a section or layer: an empty hint, Loading…, or a failed read. */
+const hintStyle: React.CSSProperties = {
+  padding: '8px 10px 8px 34px',
+  fontFamily: "'JetBrains Mono',monospace",
+  fontSize: 11,
+  color: 'rgb(var(--shell-fg-4))',
+};
+
+/** The reads the Architecture rows are built from: the model and the spec's catalog. */
+function useArchitectureLoadState(): LoadState {
+  return combineLoadStates(loadStateOf(useModel()), loadStateOf(useSpec()));
+}
 
 /** Chevron disclosure indicator (absolutely positioned at the row's right). */
 function Chevron({ open }: { open: boolean }) {
@@ -81,13 +101,24 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
   const expandedSections = useUiStore((s) => s.expandedSections);
   const toggleSection = useUiStore((s) => s.toggleSection);
 
-  const { derived: changesets } = useChangesets();
+  const changesetsQuery = useChangesets();
+  const changesetsState = loadStateOf(changesetsQuery);
+  const architectureState = useArchitectureLoadState();
   const { model: c4 } = useC4Model();
   const open = expandedSections.has(section.id);
   // Architecture counts its diagrams: Context, Containers, and one per element with parts.
   const diagrams = useMemo(() => 2 + c4NavRows(c4).length, [c4]);
+  // No count until the read behind it has answered (#636).
   const count =
-    section.id === 'changesets' ? changesets.list.length : section.id === 'architecture' ? diagrams : 12;
+    section.id === 'changesets'
+      ? changesetsState === 'ready'
+        ? changesetsQuery.derived.list.length
+        : undefined
+      : section.id === 'architecture'
+        ? architectureState === 'ready'
+          ? diagrams
+          : undefined
+        : 12;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -155,8 +186,12 @@ function LayerRow({
   const navigateToElement = useUiStore((s) => s.navigateToElement);
   const navigateToSpecNode = useUiStore((s) => s.navigateToSpecNode);
 
-  const { derived: model } = useModel();
-  const { derived: spec } = useSpec();
+  const modelQuery = useModel();
+  const specQuery = useSpec();
+  const model = modelQuery.derived;
+  const spec = specQuery.derived;
+  // Schema counts come from the spec, Model counts from the model.
+  const state = loadStateOf(sectionId === 'spec' ? specQuery : modelQuery);
 
   const key = `${sectionId}:${slug}`;
   const open = expandedLayers.has(key);
@@ -167,9 +202,11 @@ function LayerRow({
   const specInfo = spec.byLayer[slug];
   const modelNodes = model.nodesByLayer[slug];
   const count =
-    sectionId === 'spec'
-      ? specInfo?.typeCount ?? 0
-      : modelNodes?.length ?? 0;
+    state !== 'ready'
+      ? undefined
+      : sectionId === 'spec'
+        ? specInfo?.typeCount ?? 0
+        : modelNodes?.length ?? 0;
 
   // Model: the layer's elements under their node type, A–Z (#592).
   const typeGroups = useMemo(
@@ -192,6 +229,13 @@ function LayerRow({
         />
         <Chevron open={open} />
       </div>
+      {open && (
+        <LoadStatus
+          state={state}
+          error={sectionId === 'spec' ? 'could not load the spec' : 'could not load the model'}
+          style={hintStyle}
+        />
+      )}
       {/* Schema leaves: node-type names (`typeLabel`'s full singular: the
           Schema view names a type in full). The leaf id is the spec_node_id
           (`<slug>.<shortname>`) so selecting it matches the graph node id the
@@ -262,22 +306,23 @@ function ChangesetRows({ groups: groupState }: { groups: ChangesetGroupState }) 
   const view = useUiStore((s) => s.view);
   const changesetId = useUiStore((s) => s.changesetId);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
-  const { derived } = useChangesets();
+  const query = useChangesets();
+  const { derived } = query;
+  const state = loadStateOf(query);
   const groups = useMemo(() => groupChangesetsByState(derived.list), [derived.list]);
 
-  if (derived.list.length === 0) {
+  if (state !== 'ready') {
     return (
-      <div
-        style={{
-          padding: '8px 10px 8px 34px',
-          fontFamily: "'JetBrains Mono',monospace",
-          fontSize: 11,
-          color: 'rgb(var(--shell-fg-4))',
-        }}
-      >
-        no changesets
-      </div>
+      <LoadStatus
+        state={state}
+        error="could not load changesets"
+        style={hintStyle}
+        data-testid="nav-changesets-status"
+      />
     );
+  }
+  if (derived.list.length === 0) {
+    return <div style={hintStyle}>no changesets</div>;
   }
 
   return (
@@ -339,6 +384,7 @@ function ArchitectureRows() {
   const c4Scope = useUiStore((s) => s.c4Scope);
   const showC4 = useUiStore((s) => s.showC4);
   const { model: c4 } = useC4Model();
+  const state = useArchitectureLoadState();
   const rows = useMemo(() => c4NavRows(c4), [c4]);
   const active = view === 'architecture';
   // The scope actually drawn (a missing or unknown `?scope=` falls back to the default container).
@@ -358,7 +404,7 @@ function ArchitectureRows() {
       <div style={{ position: 'relative' }}>
         <NavItem
           label="Containers"
-          count={c4.childrenOf.get(C4_SYSTEM_ID)?.length ?? 0}
+          count={state === 'ready' ? (c4.childrenOf.get(C4_SYSTEM_ID)?.length ?? 0) : undefined}
           active={active && c4Level === 'container'}
           depth={1}
           onClick={() => showC4('container')}
@@ -384,17 +430,9 @@ function ArchitectureRows() {
           </div>
         );
       })}
-      {rows.length === 0 && defaultComponentScope(c4) === null && (
-        <div
-          style={{
-            padding: '8px 10px 8px 34px',
-            fontFamily: "'JetBrains Mono',monospace",
-            fontSize: 11,
-            color: 'rgb(var(--shell-fg-4))',
-          }}
-        >
-          no components
-        </div>
+      <LoadStatus state={state} error="could not load the model" style={hintStyle} />
+      {state === 'ready' && rows.length === 0 && defaultComponentScope(c4) === null && (
+        <div style={hintStyle}>no components</div>
       )}
     </>
   );
@@ -411,9 +449,17 @@ export function NavTree() {
   const treeRef = useRef<HTMLDivElement>(null);
   // The leaf rows render from these, so a cold deep link (store set before the
   // data arrives) reveals the selected leaf once they load, not just its layer.
-  const { derived: model } = useModel();
+  const modelQuery = useModel();
+  const specQuery = useSpec();
+  const changesetsQuery = useChangesets();
+  const model = modelQuery.derived;
   const modelNodes = model.nodes.length;
-  const changesetList = useChangesets().derived.list;
+  const changesetList = changesetsQuery.derived.list;
+  const treeState = combineLoadStates(
+    loadStateOf(modelQuery),
+    loadStateOf(specQuery),
+    loadStateOf(changesetsQuery),
+  );
   const changesetCount = changesetList.length;
 
   // Model type groups (#592): collapsed until opened. Local state on purpose —
@@ -492,6 +538,7 @@ export function NavTree() {
       className="drv-scroll drv-noscroll"
       style={{ flex: 1, overflowY: 'auto', padding: '8px' }}
       data-testid="nav-tree"
+      {...busyProps(treeState)}
     >
       {SECTIONS.map((section) => {
         const open = expandedSections.has(section.id);

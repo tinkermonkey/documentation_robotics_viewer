@@ -1,9 +1,12 @@
 /**
  * StatusBar — 28px mono shell footer.
  *
- * Left:  `{n} {layer} elements` · `{rels} refs indexed · 0 unresolved`
+ * Left:  `{n} {layer} elements` · `{rels} refs indexed · 0 unresolved`; while
+ *        the model's first read is pending, `loading model…` and no counts, and
+ *        `model unavailable` if it failed (#636).
  * Right: `cli {version} · refs ok` — the dr CLI version `/health` reports as
- *        `cliVersion`, or "—" when it sends none (never the API's own `version`).
+ *        `cliVersion`, `…` until `/health` answers, or "—" when it sends none
+ *        (or can't be read; never the API's own `version`).
  *        Before it, while a changeset commit this tab didn't start (the CLI, MCP
  *        or DrBot) reports progress, a compact CommitProgressBar (#628).
  *
@@ -16,6 +19,8 @@ import { useUiStore } from './uiStore';
 import { layerLabel } from './domain';
 import { useModel } from '../data/useModel';
 import { useCliVersion } from '../data/serverVersions';
+import { loadStateOf } from '../data/loadState';
+import { busyProps } from './LoadStatus';
 import { useOutsideCommitProgress } from '../data/commitProgress';
 import { CommitProgressBar } from './CommitProgressBar';
 
@@ -32,8 +37,11 @@ const dotStyle: React.CSSProperties = {
 
 export function StatusBar() {
   const layerId = useUiStore((s) => s.layerId);
-  const { derived: model } = useModel();
-  const cliVersion = useCliVersion() ?? '—';
+  const modelQuery = useModel();
+  const model = modelQuery.derived;
+  const modelState = loadStateOf(modelQuery);
+  const cli = useCliVersion();
+  const cliVersion = cli.state === 'loading' ? '…' : (cli.version ?? '—');
   const outsideCommit = useOutsideCommitProgress();
 
   const layerCount = layerId ? model.countsByLayer[layerId] ?? 0 : 0;
@@ -47,14 +55,22 @@ export function StatusBar() {
       style={{ height: 28 }}
       data-testid="status-bar"
       left={
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-          <span style={monoStyle} data-testid="status-elements">
-            {elementsLabel}
-          </span>
-          <span style={dotStyle}>·</span>
-          <span style={monoStyle}>
-            {model.relCount} refs indexed · 0 unresolved
-          </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }} {...busyProps(modelState)}>
+          {modelState === 'ready' ? (
+            <>
+              <span style={monoStyle} data-testid="status-elements">
+                {elementsLabel}
+              </span>
+              <span style={dotStyle}>·</span>
+              <span style={monoStyle}>
+                {model.relCount} refs indexed · 0 unresolved
+              </span>
+            </>
+          ) : (
+            <span style={monoStyle} data-testid="status-elements">
+              {modelState === 'loading' ? 'loading model…' : 'model unavailable'}
+            </span>
+          )}
         </div>
       }
       right={
@@ -68,7 +84,7 @@ export function StatusBar() {
               data-testid="status-commit-progress"
             />
           )}
-          <span style={dotStyle} data-testid="status-cli-version">
+          <span style={dotStyle} data-testid="status-cli-version" {...busyProps(cli.state)}>
             cli {cliVersion} · refs ok
           </span>
         </div>

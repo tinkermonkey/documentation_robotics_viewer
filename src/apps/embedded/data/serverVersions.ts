@@ -11,10 +11,12 @@
  *   from before that change sends none, so the footer shows "—" rather than a
  *   made-up version.
  *
- * Both return undefined when the server sends nothing usable.
+ * Both return undefined when the server sends nothing usable; until `/health`
+ * answers, `useCliVersion`'s `state` says the CLI version is still loading (#636).
  */
 
 import { useGethealth } from '../../../core/services/generatedApiClient';
+import { loadStateOf, type LoadState } from './loadState';
 
 function asVersion(value: unknown): string | undefined {
   return typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined;
@@ -39,8 +41,12 @@ export function cliVersionOf(health: unknown): string | undefined {
   return asVersion((health as { cliVersion?: unknown } | null | undefined)?.cliVersion);
 }
 
-/** The version of the dr CLI serving the viewer, when `/health` says. */
-export function useCliVersion(): string | undefined {
+/**
+ * The version of the dr CLI serving the viewer, when `/health` says, and the
+ * read's load state: `version` undefined while `state` is `loading` means "not
+ * answered yet" (`cli …`); once ready it means "the server sent none" (`cli —`).
+ */
+export function useCliVersion(): { version: string | undefined; state: LoadState } {
   const query = useGethealth();
-  return cliVersionOf(query.data);
+  return { version: cliVersionOf(query.data), state: loadStateOf(query) };
 }

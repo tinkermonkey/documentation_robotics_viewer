@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   agents and skills written for React Flow, Flowbite and Storybook.
 
 ### Fixed
+- **The first load says "Loading…" instead of showing an empty model** (#636): until the model, spec, changesets
+  and `/health` answer, the nav rail shows no counts and says "Loading…" where it would say "no changesets", the
+  canvas header shows no "0 elements" and its body says "Loading…" instead of "no elements in this layer" (in page
+  view too), the rail footer reads `SPEC …` instead of `0 layers · 0 rels`, and the status bar reads `cli …` and
+  "loading model…". A read that fails says so rather than looking empty, and "—" still means the server sent no
+  version. A refresh in the background (another tool changing the model, coming back to the tab) keeps what's on
+  screen. The loading lines are announced politely, and the regions they fill are marked busy.
 - **The E2E suite runs again** against the dr CLI's central process. Since #623 it booted `dr visualize --no-auth`,
   which can't serve the checkout routes, so every test stopped at the checkout picker. `scripts/e2e-server.sh` now
   starts `dr serve` in a scratch farm (one project, `viewer`, a clone of the repo's committed model, checkout

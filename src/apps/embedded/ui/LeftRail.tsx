@@ -3,21 +3,31 @@
  *
  * Footer shows `SPEC {version}` (the spec manifest's specVersion via useSpec,
  * "—" when the server sends none) and `{L} layers · {N} rels`
- * (L from /api/spec's layers, N from /api/model links length).
+ * (L from /api/spec's layers, N from /api/model links length). Until both
+ * reads have answered it shows `SPEC …` and `…` in place of the counts, and
+ * "—" for what failed: never `0 layers · 0 rels` as if it were a fact (#636).
  */
 
 import { NavTree } from './NavTree';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { LAYER_ORDER } from './domain';
+import { combineLoadStates, loadStateOf } from '../data/loadState';
+import { busyProps } from './LoadStatus';
 
 export function LeftRail() {
-  const { derived: model } = useModel();
-  const { derived: spec } = useSpec();
+  const modelQuery = useModel();
+  const specQuery = useSpec();
+  const model = modelQuery.derived;
+  const spec = specQuery.derived;
+  const specState = loadStateOf(specQuery);
+  const countsState = combineLoadStates(specState, loadStateOf(modelQuery));
 
   const relCount = model.relCount;
-  const specVersion = spec.version || '—';
+  const specVersion = specState === 'loading' ? '…' : spec.version || '—';
   const layerCount = Object.keys(spec.byLayer).length || LAYER_ORDER.length;
+  const counts =
+    countsState === 'ready' ? `${layerCount} layers · ${relCount} rels` : countsState === 'loading' ? '…' : '—';
 
   return (
     <div
@@ -78,6 +88,7 @@ export function LeftRail() {
           gap: 3,
         }}
         data-testid="rail-footer"
+        {...busyProps(countsState)}
       >
         <span
           style={{
@@ -96,8 +107,9 @@ export function LeftRail() {
             fontSize: 10,
             color: 'rgb(var(--shell-fg-4))',
           }}
+          data-testid="rail-counts"
         >
-          {layerCount} layers · {relCount} rels
+          {counts}
         </span>
       </div>
     </div>

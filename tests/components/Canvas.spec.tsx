@@ -244,8 +244,9 @@ describe('Canvas — graph/page mode toggle', () => {
     // (mirrors a spec-node page whose selectedId hasn't resolved yet).
     useUiStore.setState({ focus: 'node', selectedId: null });
 
-    expect(await screen.findByTestId('canvas-empty')).toHaveTextContent(
-      'select a node to view its page',
+    // Loading… first (#636), then the hint once the model and spec answer.
+    await waitFor(() =>
+      expect(screen.getByTestId('canvas-empty')).toHaveTextContent('select a node to view its page'),
     );
   });
 });

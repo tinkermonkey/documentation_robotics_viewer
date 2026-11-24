@@ -1,0 +1,254 @@
+- type: add
+  elementId: application.applicationcomponent.load-status
+  layerName: application
+  after:
+    id: 719eb223-dc6a-41a1-b0c3-4440335c4800
+    path: application.applicationcomponent.load-status
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Load Status
+    description: "`ui/LoadStatus.tsx`: the one line a region shows while its first
+      read is pending (\"Loading…\", a polite role=\"status\" live region whose
+      text is set after mount so it is announced) or after it failed (the read's
+      error, role=\"alert\"). Used by the nav tree, the canvas and its page view
+      in place of their empty hints."
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-24T16:03:06.863Z
+      updated_at: 2026-11-24T16:03:06.863Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/LoadStatus.tsx
+          symbol: LoadStatus
+  timestamp: 2026-11-24T16:12:33.968Z
+  sequenceNumber: 0
+- type: relationship-add
+  elementId: application.applicationcomponent.nav-tree::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.nav-tree
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:06.878Z
+  sequenceNumber: 1
+- type: relationship-add
+  elementId: application.applicationcomponent.graph-canvas::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.graph-canvas
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:06.878Z
+  sequenceNumber: 2
+- type: add
+  elementId: application.applicationservice.load-state
+  layerName: application
+  after:
+    id: 5042a0a3-04e5-4227-80fe-fd81dbc094ca
+    path: application.applicationservice.load-state
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Load State
+    description: "`data/loadState.ts`: one read's first-load state as loading /
+      error / ready, from a React Query result (`loadStateOf`), and several
+      reads combined (`combineLoadStates`: error wins, then loading). Data in
+      hand always reads as ready, so a background refetch (model.updated, window
+      focus) or a failed refetch never takes a view back to Loading or to an
+      error over data it still shows."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-24T16:03:11.559Z
+      updated_at: 2026-11-24T16:03:11.559Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/loadState.ts
+          symbol: LoadState
+  timestamp: 2026-11-24T16:12:33.968Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.load-status
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:11.581Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.nav-tree
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.nav-tree
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:11.581Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.graph-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.graph-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:11.581Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.left-rail
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.left-rail
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:11.581Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: application.applicationservice.load-state::serves::application.applicationcomponent.status-bar
+  layerName: application
+  after:
+    source: application.applicationservice.load-state
+    target: application.applicationcomponent.status-bar
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:11.581Z
+  sequenceNumber: 8
+- type: update
+  elementId: ux.statepattern.data-loading-pattern
+  layerName: ux
+  before:
+    id: 3bbe4a82-91ae-4c4e-bf95-1d26d1dfaf3d
+    path: ux.statepattern.data-loading-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Data Loading Pattern
+    description: "Standard data-loading state pattern used across all views; states:
+      idle → loading → loaded/error; with optional retry action on error state."
+    attributes: &a1
+      category: data-loading
+    source_reference: &a2
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/data/useModel.ts
+          symbol: useModel
+    metadata: &a3
+      created_at: 2026-03-20T13:25:14.685Z
+      updated_at: 2026-03-20T13:25:14.685Z
+      version: 1
+  after:
+    id: 3bbe4a82-91ae-4c4e-bf95-1d26d1dfaf3d
+    path: ux.statepattern.data-loading-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Data Loading Pattern
+    description: "Standard data-loading state pattern used across all views; states:
+      idle → loading → loaded/error; with optional retry action on error state.
+      Only the FIRST load counts as loading (#636): while a read has no data and
+      hasn't failed, a region says \"Loading…\" (role=\"status\") and shows no
+      counts; data with zero items shows the empty hint; a failed first read
+      shows the error, never \"empty\". A background refetch keeps the data
+      shown (no flash back to Loading). Implemented by `data/loadState.ts` and
+      `ui/LoadStatus.tsx`."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-24T16:03:16.681Z
+  sequenceNumber: 9
+- type: update
+  elementId: application.applicationservice.use-cli-version
+  layerName: application
+  before:
+    id: dee6f57a-624a-4375-8ff2-5f156c5bc374
+    path: application.applicationservice.use-cli-version
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useCliVersion
+    description: "React Query hook over GET /health: the dr CLI version serving the
+      viewer when /health sends one as cliVersion, else undefined so the status
+      bar shows —. Never /health's version, which is the API's own (0.1.0). Pure
+      helpers specVersionOf (spec manifest) and cliVersionOf live beside it in
+      data/serverVersions.ts."
+    attributes: &a4
+      serviceType: synchronous
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/serverVersions.ts
+          symbol: useCliVersion
+    metadata: &a6
+      created_at: 2026-11-18T19:23:31.214Z
+      updated_at: 2026-11-18T19:23:31.214Z
+      version: 1
+  after:
+    id: dee6f57a-624a-4375-8ff2-5f156c5bc374
+    path: application.applicationservice.use-cli-version
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: useCliVersion
+    description: "React Query hook over GET /health: `{ version, state }`, the dr
+      CLI version serving the viewer when /health sends one as cliVersion (else
+      undefined, so the status bar shows —) and the read's load state, so the
+      status bar says `cli …` until /health answers (#636). Never /health's
+      version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec
+      manifest) and cliVersionOf live beside it in data/serverVersions.ts."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-24T16:03:20.835Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationservice.use-cli-version::depends-on::application.applicationservice.load-state
+  layerName: application
+  after:
+    source: application.applicationservice.use-cli-version
+    target: application.applicationservice.load-state
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:03:21.178Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: application.applicationcomponent.left-rail::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.left-rail
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:12:31.981Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationcomponent.status-bar::uses::application.applicationcomponent.load-status
+  layerName: application
+  after:
+    source: application.applicationcomponent.status-bar
+    target: application.applicationcomponent.load-status
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T16:12:31.981Z
+  sequenceNumber: 13

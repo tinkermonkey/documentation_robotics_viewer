@@ -60,6 +60,7 @@ src/
 │   │   ├── c4DiagramMarks.ts C4ExportMenu.tsx  # one mark resolution (diagram + export); the Export menu
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
+│   │   ├── LoadStatus.tsx     # the Loading… / failed-read line that replaces an empty hint on first load (#636)
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
 │   │   ├── markdownExcerpt.ts # pure: a card's one-paragraph excerpt of markdown, as inline tokens (inbox, #588)
 │   │   ├── AnnotationsSection.tsx                 # Inspector annotations (Model elements)
@@ -84,6 +85,7 @@ src/
 │   │   │                      # c4Export.ts (SVG / PNG / Structurizr DSL / C4-PlantUML of the drawn view)
 │   │   ├── planVerification.ts usePlanVerification.ts  # the dr CLI's plan-vs-as-built report (validated) + pairing
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
+│   │   ├── loadState.ts       # pure: a read's first-load state (loading / error / ready; data in hand = ready)
 │   │   ├── commitProgress.ts  # changeset.commit.progress guard + merge + wording; useCommitProgress / useOutsideCommitProgress
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
@@ -658,6 +660,17 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   status bar's `cli` is `/health`'s `cliVersion` (`useCliVersion`). The top-level `version` of `/health` and
   `/api/spec` is the API's own hardcoded "0.1.0" — never show it; show "—" when a version is missing.
   The API spec requires `cliVersion` since 2026-11-19; an older dr CLI sends none, so the status bar reads `cli —` there.
+- **First load says Loading…** (#636) — a read that hasn't answered yet is never shown as an empty fact.
+  `data/loadState.ts`'s `loadStateOf(query)` reads a React Query result as `loading` (no data, no error) /
+  `error` (no data, failed) / `ready` (data in hand, even mid-refetch or after a failed refetch, so a
+  `model.updated` or focus refetch never flashes back); `combineLoadStates` merges several (error wins, then
+  loading). `ui/LoadStatus.tsx` is the one line that replaces an empty hint (`role="status"`, text set after
+  mount so it's announced; `role="alert"` on error) and `busyProps(state)` puts `aria-busy` on the region.
+  Used by NavTree (no Changesets / Architecture / layer counts until their read is ready, Loading… in place
+  of "no changesets" / "no components" and under an open layer), Canvas (graph: its view's read; page: model +
+  spec; header meta `…`), LeftRail (`SPEC …`, `…` for the counts, "—" for a failed read) and StatusBar
+  (`loading model…`, `cli …` until `/health` answers: `useCliVersion` returns `{ version, state }`). "—" still
+  means "the server sent none". A new region that shows counts or an empty hint should go through these.
 - **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: the
   type label's short plural, its count in NavItem's badge like the layer rows, A–Z, a single-element type still grouped; the
   accessible name says "Components, 37 elements"), each holding its elements (A–Z); Schema leaves are the full
@@ -758,7 +771,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~1190 tests)
+npm test            # Vitest: unit + integration + component (~1200 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -799,7 +812,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~1190 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~1200 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
