@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import { ProgressBar } from '@tinkermonkey/heimdall-ui';
 import { layerLabel } from './domain';
 import {
+  changes,
   commitProgressAnnouncement,
   commitProgressLabel,
   commitProgressPercent,
@@ -82,18 +83,26 @@ export function CommitProgressBar({
   );
 }
 
-/** What the live region says: set only when `commitProgressAnnouncement` says to speak. */
+/**
+ * What the live region says: set only when `commitProgressAnnouncement` says
+ * to speak. The region mounts empty and gets its first text in an effect: many
+ * screen readers skip text that is already there when a live region appears.
+ */
 function useAnnouncement(progress: CommitProgress | null, expected: number, stopped: boolean): string {
-  const [text, setText] = useState(() => (progress ? '' : `Applying ${formatCount(expected)} changes`));
+  const [text, setText] = useState('');
   const last = useRef<CommitProgress | null>(null);
   useEffect(() => {
-    if (stopped || !progress) return;
+    if (stopped) return;
+    if (!progress) {
+      if (!last.current) setText(`Applying ${changes(expected)}`);
+      return;
+    }
     const said = commitProgressAnnouncement(last.current, progress);
     if (said) {
       last.current = progress;
       setText(said);
     }
-  }, [progress, stopped]);
+  }, [progress, expected, stopped]);
   return text;
 }
 

@@ -27,7 +27,7 @@
  * changeset, so a discard here hands back to the canvas (`onGone`).
  */
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Button,
   Chip,
@@ -452,6 +452,16 @@ function SummaryCard({
   const commitProgress = useCommitProgress(detail.id, commit.isPending);
   // This card shows its own commit: the status bar leaves it out.
   useEffect(() => (commit.isPending ? markOwnCommit(detail.id) : undefined), [commit.isPending, detail.id]);
+  // A refused commit's "Stopped at…" bar describes the decisions it was sent
+  // with: once one changes, it goes (the refusal text stays until the next try).
+  const decisionKey = model.items.map((i) => `${i.seq}:${model.stateOf(i.seq)}`).join(',');
+  const lastDecisionKey = useRef(decisionKey);
+  const resetCommit = commit.reset;
+  useEffect(() => {
+    if (lastDecisionKey.current === decisionKey) return;
+    lastDecisionKey.current = decisionKey;
+    resetCommit();
+  }, [decisionKey, resetCommit]);
   // The moves the server allows (a verification record: Discard only).
   const canApply = canDo(detail, 'commit');
   const canDiscard = canDo(detail, 'discard');
@@ -466,6 +476,11 @@ function SummaryCard({
   const pct = counts.total ? Math.round((counts.decided / counts.total) * 100) : 100;
   const kindCounts = countKinds(model.items);
   const lands = model.apply.landing.length;
+  // The commit bar's count before the server reports: the server's own measure
+  // (what it writes, folded add-then-delete pairs included), so "Applying 30
+  // changes…" doesn't become "3 of 32" on the first frame. Apply's label keeps
+  // `lands`: the pairs cancel out, so nothing of theirs is in the model after.
+  const commitExpected = lands + 2 * model.pairs.length;
   // Apply waits only on what must be decided; other undecided changes land as kept.
   const why = model.canApply
     ? undefined
@@ -618,7 +633,7 @@ function SummaryCard({
         )}
       </div>
       {applying ? (
-        <CommitProgressBar progress={commitProgress} expected={lands} />
+        <CommitProgressBar progress={commitProgress} expected={commitExpected} />
       ) : (
         <>
           <ProgressBar
@@ -633,7 +648,7 @@ function SummaryCard({
           />
           {/* A refused commit that had reported progress: where it stopped, above the refusal. */}
           {commit.isError && commitProgress && (
-            <CommitProgressBar progress={commitProgress} expected={lands} stopped />
+            <CommitProgressBar progress={commitProgress} expected={commitExpected} stopped />
           )}
         </>
       )}

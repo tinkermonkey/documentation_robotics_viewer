@@ -1259,8 +1259,10 @@ describe('review — progress while Apply commits', () => {
     // No progress yet (or an older dr CLI): working, with no value.
     const bar = await screen.findByTestId('commit-progress');
     expect(bar).toHaveAttribute('data-state', 'indeterminate');
-    expect(bar).toHaveTextContent('Applying 30 changes…');
+    // The server's measure: the 30 that land plus the 4 add-then-delete pairs it also writes.
+    expect(bar).toHaveTextContent('Applying 38 changes…');
     expect(within(bar).getByRole('progressbar')).not.toHaveAttribute('aria-valuenow');
+    expect(screen.getByTestId('commit-progress-announcement')).toHaveTextContent('Applying 38 changes');
     expect(apply).toBeDisabled();
     expect(apply).toHaveTextContent('Applying…');
     expect(screen.getByTestId('changeset-discard-button')).toBeDisabled();
@@ -1313,5 +1315,25 @@ describe('review — progress while Apply commits', () => {
     // The decided bar is back, and Apply opens again.
     expect(screen.getByRole('progressbar', { name: /decided/ })).toBeInTheDocument();
     await waitFor(() => expect(screen.getByTestId('changeset-apply-button')).toBeEnabled());
+  });
+
+  it('drops the stopped bar once a decision changes after a refusal', async () => {
+    const commit = gate();
+    const server = serve({
+      commitGate: commit.promise,
+      commitError: { status: 422, body: { error: 'Validation failed' } },
+    });
+    renderReview();
+    await pressApply();
+    await screen.findByTestId('commit-progress');
+    progress(4, 30, { phase: 'validating' });
+    commit.open();
+    await screen.findByTestId('changeset-action-error');
+    expect(screen.getByTestId('commit-progress')).toHaveAttribute('data-state', 'stopped');
+
+    const user = userEvent.setup();
+    await user.click(screen.getByTestId('review-keep-rest'));
+    await waitFor(() => expect(server.puts.length).toBeGreaterThan(0));
+    await waitFor(() => expect(screen.queryByTestId('commit-progress')).not.toBeInTheDocument());
   });
 });

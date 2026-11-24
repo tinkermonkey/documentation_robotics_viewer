@@ -10,7 +10,8 @@ import { act } from '@testing-library/react';
 
 import {
   OUTSIDE_PROGRESS_DONE_MS,
-  OUTSIDE_PROGRESS_STALE_MS,
+  OUTSIDE_PROGRESS_FAILED_MS,
+  OUTSIDE_PROGRESS_SAFETY_MS,
   markOwnCommit,
   useCommitProgress,
   useOutsideCommitProgress,
@@ -81,7 +82,7 @@ describe('useCommitProgress', () => {
 });
 
 describe('useOutsideCommitProgress', () => {
-  it("shows a commit this tab didn't start until it goes quiet", () => {
+  it("shows a commit this tab didn't start until it ends, through silent phases", () => {
     vi.useFakeTimers();
     const { result, unmount } = renderHookWithClient(() => useOutsideCommitProgress());
     const forget = markOwnCommit('mine');
@@ -89,23 +90,33 @@ describe('useOutsideCommitProgress', () => {
     expect(result.current).toBeNull();
     forget();
 
-    send('from-cli', 3, 10, { phase: 'saving' });
-    expect(result.current).toEqual({ changesetId: 'from-cli', applied: 3, total: 10, phase: 'saving' });
-    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_STALE_MS - 1));
-    send('from-cli', 4, 10, { phase: 'saving' });
-    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_STALE_MS - 1));
-    expect(result.current?.applied).toBe(4);
+    send('from-cli', 3, 10, { phase: 'applying' });
+    expect(result.current).toEqual({ changesetId: 'from-cli', applied: 3, total: 10, phase: 'applying' });
+    // Saving a large model can be silent for a long while: it stays.
+    send('from-cli', 10, 10, { phase: 'saving' });
+    act(() => vi.advanceTimersByTime(30_000));
+    expect(result.current?.phase).toBe('saving');
+    // Done: it goes shortly after.
+    send('from-cli', 10, 10, { phase: 'done' });
+    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_DONE_MS - 1));
+    expect(result.current?.phase).toBe('done');
     act(() => vi.advanceTimersByTime(1));
     expect(result.current).toBeNull();
 
-    // A finished commit goes sooner; a failed one stays marked until it goes quiet.
-    send('from-drbot', 10, 10, { phase: 'done' });
-    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_DONE_MS));
-    expect(result.current).toBeNull();
+    // Failed: shown stopped for a while, then gone.
     send('from-drbot', 2, 10, { phase: 'validating', failed: true });
     expect(result.current?.failed).toBe(true);
-    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_DONE_MS));
+    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_FAILED_MS - 1));
     expect(result.current?.failed).toBe(true);
+    act(() => vi.advanceTimersByTime(1));
+    expect(result.current).toBeNull();
+
+    // A commit whose last frame never comes: the safety cap.
+    send('lost', 1, 10, { phase: 'applying' });
+    act(() => vi.advanceTimersByTime(OUTSIDE_PROGRESS_SAFETY_MS - 1));
+    expect(result.current?.changesetId).toBe('lost');
+    act(() => vi.advanceTimersByTime(1));
+    expect(result.current).toBeNull();
     unmount();
   });
 });

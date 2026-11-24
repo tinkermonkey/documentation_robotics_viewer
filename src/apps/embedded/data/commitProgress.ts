@@ -34,10 +34,16 @@ import { isForCheckout, useCheckoutRef } from './checkoutScope';
 
 export const COMMIT_PROGRESS_EVENT = 'changeset.commit.progress';
 
-/** How long the status bar keeps an outside commit's progress after its last frame. */
-export const OUTSIDE_PROGRESS_STALE_MS = 5000;
+/**
+ * The status bar keeps an outside commit's progress until it ends (`done` or
+ * `failed`): validating, saving or reloading a large model can be silent for
+ * a while. This only caps a commit whose last frame never came.
+ */
+export const OUTSIDE_PROGRESS_SAFETY_MS = 60_000;
 /** How long it keeps one that finished (`phase: done`). */
 export const OUTSIDE_PROGRESS_DONE_MS = 1500;
+/** How long it keeps one that failed, shown as stopped. */
+export const OUTSIDE_PROGRESS_FAILED_MS = 5000;
 
 /** The phase a successful commit ends with. */
 export const DONE_PHASE = 'done';
@@ -46,7 +52,11 @@ export interface CommitProgress {
   changesetId: string;
   /** Changes written so far, never more than `total`. */
   applied: number;
-  /** The changes that will land (after drops, plus links deleted with their elements). */
+  /**
+   * The staged changes the commit applies, after a reviewed commit's drops
+   * (folded add-then-delete pairs included). Links deleted with an element
+   * count inside that delete's step, not on their own.
+   */
   total: number;
   /** e.g. validating, applying, saving, reloading: as the server words it. */
   phase?: string;
@@ -111,7 +121,8 @@ export function formatCount(n: number): string {
   return n.toLocaleString('en-US');
 }
 
-function changes(n: number): string {
+/** "1 change", "1,200 changes". */
+export function changes(n: number): string {
   return `${formatCount(n)} change${n === 1 ? '' : 's'}`;
 }
 
@@ -218,10 +229,11 @@ export function useCommitProgress(changesetId: string, listening: boolean): Comm
 }
 
 /**
- * The latest progress of a commit this tab didn't start (the CLI, MCP or
- * DrBot), for the status bar; null once no frame has come for
- * `OUTSIDE_PROGRESS_STALE_MS` (`OUTSIDE_PROGRESS_DONE_MS` after `done`). A
- * failed one stays, marked `failed`, until then.
+ * The latest progress of a commit this tab didn't start (the MCP server's
+ * changeset_commit, DrBot), for the status bar. It stays until the commit
+ * ends: `OUTSIDE_PROGRESS_DONE_MS` after `done`, `OUTSIDE_PROGRESS_FAILED_MS`
+ * after `failed` (shown as stopped), and in any case
+ * `OUTSIDE_PROGRESS_SAFETY_MS` after the last frame.
  */
 export function useOutsideCommitProgress(): CommitProgress | null {
   const [progress, setProgress] = useState<CommitProgress | null>(null);
@@ -231,8 +243,12 @@ export function useOutsideCommitProgress(): CommitProgress | null {
     if (ownCommits.has(next.changesetId)) return;
     setProgress((prev) => mergeCommitProgress(prev, next));
     clearTimeout(timer.current);
-    const finished = next.phase === DONE_PHASE && !next.failed;
-    timer.current = setTimeout(() => setProgress(null), finished ? OUTSIDE_PROGRESS_DONE_MS : OUTSIDE_PROGRESS_STALE_MS);
+    const wait = next.failed
+      ? OUTSIDE_PROGRESS_FAILED_MS
+      : next.phase === DONE_PHASE
+        ? OUTSIDE_PROGRESS_DONE_MS
+        : OUTSIDE_PROGRESS_SAFETY_MS;
+    timer.current = setTimeout(() => setProgress(null), wait);
   });
   return progress;
 }

@@ -492,12 +492,15 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   counts, `applied` clamped to `total`, text phase/layer, `failed` only as `true`; anything else dropped) and
   `mergeCommitProgress` (other changesets ignored, never backwards within a phase). Determinate: "Applying 340
   of 1,200 changes · saving" + layer, `role="progressbar"` with `aria-valuenow`/`-max`. Before the first frame or
-  on an older dr CLI: indeterminate, "Applying N changes…", a sliding fill (still under reduced motion), no
-  `aria-valuenow`. A polite `role="status"` region speaks at the first frame, each phase and each quarter
-  (`commitProgressAnnouncement`). A refusal after progress keeps the bar frozen in rose ("Stopped at 4 of 30 ·
-  validating") above the inline error. The `StatusBar` shows a compact bar for a commit this tab didn't start
-  (the CLI's MCP `changeset_commit`, DrBot): `useOutsideCommitProgress` skips ids `markOwnCommit` registered and
-  clears 5s after the last frame (1.5s after `done`). A separate `dr changeset commit` process sends nothing.
+  on an older dr CLI: indeterminate, "Applying N changes…" (N in the server's measure: what lands plus the folded
+  add-then-delete pairs, so the first frame's total matches), a sliding fill (still under reduced motion), no
+  `aria-valuenow`. A polite `role="status"` region (mounted empty, text set in an effect) speaks at the start,
+  each phase and each quarter (`commitProgressAnnouncement`). A refusal after progress keeps the bar frozen in rose
+  ("Stopped at 4 of 30 · validating") above the inline error until a decision changes (`commit.reset()`). The
+  `StatusBar` shows a compact bar for a commit this tab didn't start (the CLI's MCP `changeset_commit`, DrBot):
+  `useOutsideCommitProgress` skips ids `markOwnCommit` registered and keeps it until `done` (then 1.5 s) or
+  `failed` (shown stopped, 5 s), with a 60 s cap after the last frame. A separate `dr changeset commit` process
+  sends nothing.
   Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
   `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
   `onError` (revert only that PUT's verdicts on the CURRENT cached detail — never a stale snapshot, which would
