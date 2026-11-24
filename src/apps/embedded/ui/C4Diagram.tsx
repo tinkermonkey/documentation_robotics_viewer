@@ -33,53 +33,13 @@ import { Icon, usePanZoom, type IconName } from '@tinkermonkey/heimdall-ui';
 import type { C4Kind } from '../data/c4/c4Model';
 import type { C4View, C4ViewElement } from '../data/c4/c4Views';
 import { C4_CARD, c4EdgeLabel, type C4Layout } from '../data/c4/c4Layout';
-import type { C4ElementDiff, C4RollUp, C4ViewRelationshipDiff } from '../data/c4/c4Diff';
-import { OP_OUTLINE, OVERLAY_OPS, opOutlineCss } from './opStyles';
-import type { PlanVerdict } from '../data/planVerification';
-import type { C4ElementVerdict, VerdictCounts } from '../data/c4/c4PlanCompare';
-import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss, verdictRollUpChip, verdictRollUpLabel } from './verdictStyles';
+import { OP_OUTLINE, OVERLAY_OPS } from './opStyles';
+import { VERDICT_STYLES } from './verdictStyles';
 import { PLAN_VERDICTS } from '../data/planVerification';
-import {
-  ELEMENT_MARKS,
-  RELATIONSHIP_MARKS,
-  elementStatusWords,
-  relationshipStatusWords,
-  rollUpLabel,
-} from './c4Marks';
+import { cardMark as resolveCardMark, edgeMark as resolveEdgeMark, isGhost as isGhostIn } from './c4DiagramMarks';
+import type { C4DiagramComparison, C4DiagramOverlay } from './c4DiagramMarks';
 
-/** What a changeset does to the drawn diagram (view ids are union ids, see `c4Diff.ts`). */
-export interface C4DiagramOverlay {
-  elements: ReadonlyMap<string, C4ElementDiff>;
-  rollUp: ReadonlyMap<string, C4RollUp>;
-  relationships: ReadonlyMap<string, C4ViewRelationshipDiff>;
-  /** The name of a union id that may not be on this diagram (a moved box's former parent). */
-  nameOf: (id: string) => string | undefined;
-}
-
-/** A plan compared with what was built, on the drawn diagram (view ids are the drawn model's). */
-export interface C4DiagramComparison {
-  elements: ReadonlyMap<string, C4ElementVerdict>;
-  /** View arrow id → the worst verdict behind it. */
-  arrows: ReadonlyMap<string, { verdict: PlanVerdict }>;
-  rollUp: ReadonlyMap<string, VerdictCounts>;
-}
-
-/** One mark on a card or an arrow, from an overlay or a comparison. */
-interface ResolvedMark {
-  /** `data-status` and the class suffix. */
-  status: string;
-  glyph: string;
-  /** The words: the first is the chip's. */
-  words: string[];
-  /** Outline / stroke token, null for none. */
-  token: string | null;
-  /** Card outline (`border` shorthand), null for none. */
-  outline: string | null;
-  /** Arrow marker id, null for the plain one. */
-  marker: string | null;
-  /** Arrow dash pattern set inline (a comparison); an overlay's comes from its class. */
-  dash: string | null;
-}
+export type { C4DiagramComparison, C4DiagramOverlay } from './c4DiagramMarks';
 
 export interface C4DiagramProps {
   view: C4View;
@@ -237,8 +197,8 @@ export function C4Diagram({
     if (selectedId) onSelect(null);
   };
 
-  /** A removed box is drawn back as a ghost: it can be selected, never opened. */
-  const isGhost = (id: string) => overlay?.elements.get(id)?.status === 'removed';
+  const marks = { overlay, comparison };
+  const isGhost = (id: string) => isGhostIn(marks, id);
   const canDrill = (item: C4ViewElement) => item.drillable && !isGhost(item.id);
 
   const onCardKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, item: C4ViewElement) => {
@@ -268,64 +228,8 @@ export function C4Diagram({
   const nameOf = useMemo(() => new Map(view.elements.map((e) => [e.id, e.element.name])), [view.elements]);
   const relationshipOf = useMemo(() => new Map(view.relationships.map((r) => [r.id, r])), [view.relationships]);
 
-  const edgeMark = (relId: string): ResolvedMark | null => {
-    if (comparison) {
-      const arrow = comparison.arrows.get(relId);
-      if (!arrow) return null;
-      const v = VERDICT_STYLES[arrow.verdict];
-      return {
-        status: `v-${arrow.verdict}`,
-        glyph: v.glyph,
-        words: [v.label],
-        token: v.token,
-        outline: null,
-        marker: v.token ? `c4-arrow-v-${arrow.verdict}` : null,
-        dash: v.dash,
-      };
-    }
-    const change = overlay?.relationships.get(relId);
-    if (!change) return null;
-    const mark = RELATIONSHIP_MARKS[change.status];
-    return {
-      status: change.status,
-      glyph: mark.glyph,
-      words: [relationshipStatusWords(change)],
-      token: mark.op ? OP_OUTLINE[mark.op].token : null,
-      outline: null,
-      marker: mark.op ? `c4-arrow-${mark.op}` : null,
-      dash: null,
-    };
-  };
-
-  /** A card's mark, its status words and its roll-up chip. */
-  const cardMark = (id: string): { mark: ResolvedMark | null; words: string[]; inside: string } => {
-    if (comparison) {
-      const e = comparison.elements.get(id);
-      const counts = comparison.rollUp.get(id);
-      const words: string[] = [];
-      let mark: ResolvedMark | null = null;
-      if (e) {
-        const v = VERDICT_STYLES[e.verdict];
-        const label = elementVerdictLabel(e);
-        words.push(label);
-        mark = { status: `v-${e.verdict}`, glyph: v.glyph, words: [label], token: v.token, outline: verdictOutlineCss(e.verdict), marker: null, dash: null };
-      }
-      const rollUp = verdictRollUpLabel(counts);
-      if (rollUp) words.push(rollUp);
-      return { mark, words, inside: verdictRollUpChip(counts) };
-    }
-    const change = overlay?.elements.get(id);
-    const rollUp = overlay?.rollUp.get(id);
-    const words = overlay ? elementStatusWords(change, rollUp, overlay.nameOf) : [];
-    const m = change ? ELEMENT_MARKS[change.status] : null;
-    const mark: ResolvedMark | null =
-      change && m?.op
-        ? { status: change.status, glyph: m.glyph, words, token: OP_OUTLINE[m.op].token, outline: opOutlineCss(m.op), marker: null, dash: null }
-        : change
-          ? { status: change.status, glyph: '', words, token: null, outline: null, marker: null, dash: null }
-          : null;
-    return { mark, words, inside: rollUpLabel(rollUp) };
-  };
+  const edgeMark = (relId: string) => resolveEdgeMark(marks, relId);
+  const cardMark = (id: string) => resolveCardMark(marks, id);
   const touchesSelection = (sourceId: string, targetId: string) =>
     !!selectedId && (sourceId === selectedId || targetId === selectedId);
 

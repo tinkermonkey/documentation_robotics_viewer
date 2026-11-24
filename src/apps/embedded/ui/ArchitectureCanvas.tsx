@@ -39,6 +39,7 @@ import { C4Diagram, C4_KIND_LABELS, type C4DiagramComparison, type C4DiagramOver
 import { C4PlanComparisonBar } from './C4PlanComparisonBar';
 import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss } from './verdictStyles';
 import { C4ChangesetPicker } from './C4ChangesetPicker';
+import { C4ExportMenu } from './C4ExportMenu';
 import { C4ChangesetBar } from './C4ChangesetBar';
 import { OP_OUTLINE, type OverlayOp } from './opStyles';
 import { useModel } from '../data/useModel';
@@ -533,6 +534,11 @@ export function ArchitectureCanvas() {
     [overlay, diffView],
   );
 
+  const exportMarks = useMemo(
+    () => ({ overlay: diagramOverlay, comparison: diagramComparison }),
+    [diagramOverlay, diagramComparison],
+  );
+
   const bodyRef = useRef<HTMLDivElement>(null);
   useChatAnchor(bodyRef);
 
@@ -599,6 +605,12 @@ export function ArchitectureCanvas() {
               data-testid="c4-level-control"
             />
             <C4ChangesetPicker />
+            <C4ExportMenu
+              view={view}
+              layout={!isLoading && !isError && !empty && !layoutError ? (layout ?? null) : null}
+              model={drawn}
+              marks={exportMarks}
+            />
           </div>
         }
       />

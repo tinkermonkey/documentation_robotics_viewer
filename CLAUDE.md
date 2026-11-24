@@ -53,6 +53,7 @@ src/
 │   │   ├── C4ChangesetPicker.tsx C4ChangesetBar.tsx c4Marks.ts opStyles.ts  # changeset overlay: picker, bar, mark words,
 │   │   │                                          # op outlines shared with the Impact tab
 │   │   ├── C4PlanComparisonBar.tsx verdictStyles.ts  # plan vs as built: the pair's bar + verdict marks
+│   │   ├── c4DiagramMarks.ts C4ExportMenu.tsx  # one mark resolution (diagram + export); the Export menu
 │   │   ├── ChatDrawer.tsx ChatPanel.tsx chatAdapter.ts   # DrBot live chat (floating panel / Dock)
 │   │   ├── chatPanelLayout.ts chatAnchor.ts  # DrBot panel placement rule + the view area it anchors to
 │   │   ├── MarkdownText.tsx   # untrusted model prose as markdown (Heimdall ChatMarkdownContent): node pages, changeset descriptions
@@ -74,7 +75,8 @@ src/
 │   │   │                      # c4Model.ts (elements, containment, folds, relationships), c4Views.ts (one diagram per level + scope),
 │   │   │                      # c4Layout.ts (ELK adapter, lazy), c4Level.ts, useC4Model.ts (shared hook, useC4Overlay,
 │   │   │                      # layout query), c4Diff.ts (a changeset's C4 diff + union view),
-│   │   │                      # c4PlanCompare.ts (a plan verification's verdicts lifted onto C4 boxes/arrows)
+│   │   │                      # c4PlanCompare.ts (a plan verification's verdicts lifted onto C4 boxes/arrows),
+│   │   │                      # c4Export.ts (SVG / PNG / Structurizr DSL / C4-PlantUML of the drawn view)
 │   │   ├── planVerification.ts usePlanVerification.ts  # the dr CLI's plan-vs-as-built report (validated) + pairing
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
 │   │   └── changesets.ts      # changeset op-row + diff helpers
@@ -276,8 +278,7 @@ For local dev use `dr visualize --no-auth`.
   router pushes) and `selectC4` (replaces). URL: `?level=` / `?scope=` / `?node=`; in this section `node` is a C4
   element id, and the router returns early so it never reaches the Model selection. DrBot's context names the
   diagram and the selected box's model elements. Known model gaps it exposes: no ownership (which system an
-  element belongs to) and no container membership in the spec. Not built yet: Deployment and Dynamic diagrams,
-  export.
+  element belongs to) and no container membership in the spec. Not built yet: Deployment and Dynamic diagrams.
   **Changeset overlay** (slice 2): `?changeset=` ⇄ `uiStore.c4ChangesetId` (not persisted; separate from the
   Changesets view's `changesetId`), set by the header's `C4ChangesetPicker` (staged, then applied; testid
   `c4-changeset-picker`), `showC4Overlay` (a navigation; keeps level, scope, selection) or the Changesets view's
@@ -322,6 +323,19 @@ For local dev use `dr visualize --no-auth`.
   with what was built" (a plan with a verification record of its own; other as-built changesets only through the
   bar's picker, never as a default) and the Changesets view's "Compare on the diagrams" (a
   plan with a record, or the record). The route runs `changeset_verify` on each read: a second or more.
+  **Export** (slice 4): the header's `C4ExportMenu` (Heimdall `RowMenu`, items disabled until the diagram is laid
+  out, a polite status line after each download) saves the diagram ON SCREEN as `<level>-<scope>.<ext>`
+  (`exportFileName`: `container-software-system.svg`). `data/c4/c4Export.ts`: `toSvg` draws a standalone SVG from the
+  view + layout (not a DOM capture; colours as hex from the live canvas tokens via `readExportPalette`, so a dark
+  canvas exports dark; fonts named inline), `toPng` rasterises it through a canvas at 2x (browser only), `toPlantUml`
+  writes C4-PlantUML (level's stdlib include, macro per kind, `*_Boundary` for the scope, `Rel` per arrow) and
+  `toStructurizr(view, c4Model, marks)` a workspace nested as Structurizr requires (components in their nearest
+  container via `c4Ancestors`, containers in the system) with ONE view of the level's kind that `include`s exactly
+  the drawn ids. Identifiers are `[A-Za-z_]\w*`, unique per file; quotes become single quotes. Marks: `C4Diagram` and
+  the export share `ui/c4DiagramMarks.ts` (`cardMark` / `edgeMark` / `isGhost`; `toExportMarks` resolves each token
+  to a colour): drawn as rings and chips in the SVG, `$tags` + `AddElementTag` / `AddRelTag` with a legend in
+  PlantUML, tags + `styles` (and `//` legend lines at the top) in Structurizr. An overlay arrow's dash lives in
+  `c4-diagram.css` on screen and in `OVERLAY_EDGE_DASH` for the export: change both together.
 - **Node page descriptions** (#593) — `PageView` shows the record's own `description` in a "Description"
   section above the stats and facts, as markdown via `ui/MarkdownText.tsx` (Heimdall `ChatMarkdownContent`:
   react-markdown, no raw HTML, `javascript:` links stripped; `.drv-markdown` sets it as 14px `--canvas-fg-2` page
