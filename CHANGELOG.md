@@ -31,6 +31,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   chip. SVG and PNG exports draw the same chips and labels.
 
 ### Changed
+- **API spec synced with the dr CLI** (`docs/api-spec.yaml`). Upstream now documents only the project- and
+  checkout-scoped routes the viewer already calls; the unscoped `/api/model`, `/api/annotations`, `/api/changesets`
+  and similar routes are gone from the spec, so the regenerated client drops their methods. No behaviour change.
 - **heimdall-ui 0.12.0 → 0.14.0.** Edge labels on the graphs no longer print over each other or over cards (a
   label with no clear spot shows when its edge or an end is hovered or selected), and large orthogonal graphs route
   edges between nodes. The package is now one module per source file, so the bundle keeps only what the viewer

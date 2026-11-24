@@ -36,7 +36,7 @@ import type { paths } from '../../../core/types/api-client';
 // ─── Wire types ───────────────────────────────────────────────────────────────
 
 type WireDetail =
-  paths['/api/changesets/:changesetId']['get']['responses'][200]['content']['application/json'];
+  paths['/api/projects/:project/checkouts/:checkout/changesets/:changesetId']['get']['responses'][200]['content']['application/json'];
 
 /** What a changeset is for (the generated OpenAPI enum). */
 export type ChangesetPurpose = WireDetail['purpose'];

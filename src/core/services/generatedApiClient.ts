@@ -117,28 +117,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapimodel(): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/model`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/model', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async getapiprojectsprojectcheckoutscheckoutmodel(project: string, checkout: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/model`;
@@ -156,28 +134,6 @@ export class ApiClient {
 
     if (!response.ok) {
       throw new ApiError('GET /api/projects/:project/checkouts/:checkout/model', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async getapilayerslayerName(layerName: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/layers/${encodeURIComponent(layerName)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/layers/:layerName', response.status, await response.text());
     }
 
     return response.json();
@@ -293,61 +249,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapiannotations(query?: { elementId?: string, author?: string, tags?: string, resolved?: string }): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations`;
-    
-    const queryString = new URLSearchParams();
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          queryString.append(key, value);
-        }
-      });
-    }
-    const url = queryString.toString()
-      ? `${baseUrl}${pathStr}?${queryString.toString()}`
-      : `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/annotations', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async postapiannotations(body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'POST',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('POST /api/annotations', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async getapiprojectsprojectcheckoutscheckoutannotations(project: string, checkout: string, query?: { elementId?: string, author?: string, tags?: string, resolved?: string }): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/annotations`;
@@ -400,97 +301,6 @@ export class ApiClient {
       throw new ApiError('POST /api/projects/:project/checkouts/:checkout/annotations', response.status, await response.text());
     }
 
-    return response.json();
-  }
-
-  async getapiannotationsannotationId(annotationId: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/annotations/:annotationId', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async putapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'PUT',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('PUT /api/annotations/:annotationId', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async patchapiannotationsannotationId(annotationId: string, body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'PATCH',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('PATCH /api/annotations/:annotationId', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async deleteapiannotationsannotationId(annotationId: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'DELETE',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('DELETE /api/annotations/:annotationId', response.status, await response.text());
-    }
-
-    if (response.status === 204) {
-      return undefined;
-    }
     return response.json();
   }
 
@@ -585,50 +395,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapiannotationsannotationIdreplies(annotationId: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}/replies`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/annotations/:annotationId/replies', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async postapiannotationsannotationIdreplies(annotationId: string, body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/annotations/${encodeURIComponent(annotationId)}/replies`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'POST',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('POST /api/annotations/:annotationId/replies', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async getapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies(project: string, checkout: string, annotationId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/annotations/${encodeURIComponent(annotationId)}/replies`;
@@ -673,28 +439,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapichangesets(): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/changesets', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async getapiprojectsprojectcheckoutscheckoutchangesets(project: string, checkout: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/changesets`;
@@ -712,39 +456,6 @@ export class ApiClient {
 
     if (!response.ok) {
       throw new ApiError('GET /api/projects/:project/checkouts/:checkout/changesets', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async getapichangesetschangesetId(changesetId: string, query?: { driftLimit?: string, driftOffset?: string }): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}`;
-    
-    const queryString = new URLSearchParams();
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          queryString.append(key, value);
-        }
-      });
-    }
-    const url = queryString.toString()
-      ? `${baseUrl}${pathStr}?${queryString.toString()}`
-      : `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/changesets/:changesetId', response.status, await response.text());
     }
 
     return response.json();
@@ -783,39 +494,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async getapichangesetschangesetIdverification(changesetId: string, query?: { against?: string }): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/verification`;
-    
-    const queryString = new URLSearchParams();
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          queryString.append(key, value);
-        }
-      });
-    }
-    const url = queryString.toString()
-      ? `${baseUrl}${pathStr}?${queryString.toString()}`
-      : `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/changesets/:changesetId/verification', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async getapiprojectsprojectcheckoutscheckoutchangesetschangesetIdverification(project: string, checkout: string, changesetId: string, query?: { against?: string }): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/changesets/${encodeURIComponent(changesetId)}/verification`;
@@ -849,28 +527,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async putapichangesetschangesetIdreview(changesetId: string, body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/review`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'PUT',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('PUT /api/changesets/:changesetId/review', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview(project: string, checkout: string, changesetId: string, body?: unknown): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/changesets/${encodeURIComponent(changesetId)}/review`;
@@ -888,28 +544,6 @@ export class ApiClient {
 
     if (!response.ok) {
       throw new ApiError('PUT /api/projects/:project/checkouts/:checkout/changesets/:changesetId/review', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async postapichangesetschangesetIdcommit(changesetId: string, body?: unknown): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/commit`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'POST',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    if (body) options.body = JSON.stringify(body);
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('POST /api/changesets/:changesetId/commit', response.status, await response.text());
     }
 
     return response.json();
@@ -937,28 +571,6 @@ export class ApiClient {
     return response.json();
   }
 
-  async postapichangesetschangesetIddiscard(changesetId: string): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/changesets/${encodeURIComponent(changesetId)}/discard`;
-    const url = `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'POST',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('POST /api/changesets/:changesetId/discard', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
   async postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard(project: string, checkout: string, changesetId: string): Promise<unknown> {
     const baseUrl = this.getBaseUrl();
     const pathStr = `/api/projects/${encodeURIComponent(project)}/checkouts/${encodeURIComponent(checkout)}/changesets/${encodeURIComponent(changesetId)}/discard`;
@@ -976,39 +588,6 @@ export class ApiClient {
 
     if (!response.ok) {
       throw new ApiError('POST /api/projects/:project/checkouts/:checkout/changesets/:changesetId/discard', response.status, await response.text());
-    }
-
-    return response.json();
-  }
-
-  async getapitier1(query?: { analyzer?: string }): Promise<unknown> {
-    const baseUrl = this.getBaseUrl();
-    const pathStr = `/api/tier1`;
-    
-    const queryString = new URLSearchParams();
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== undefined && value !== null) {
-          queryString.append(key, value);
-        }
-      });
-    }
-    const url = queryString.toString()
-      ? `${baseUrl}${pathStr}?${queryString.toString()}`
-      : `${baseUrl}${pathStr}`;
-
-    const options: RequestInit = {
-      method: 'GET',
-      headers: this.getHeaders(),
-      credentials: 'include'
-    };
-
-    
-
-    const response = await fetch(url, options);
-
-    if (!response.ok) {
-      throw new ApiError('GET /api/tier1', response.status, await response.text());
     }
 
     return response.json();
@@ -1042,6 +621,141 @@ export class ApiClient {
 
     if (!response.ok) {
       throw new ApiError('GET /api/projects/:project/checkouts/:checkout/tier1', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async getws(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/ws`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('GET /ws', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async postmcp(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/mcp`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'POST',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('POST /mcp', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async getmcp(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/mcp`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('GET /mcp', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async deletemcp(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/mcp`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'DELETE',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('DELETE /mcp', response.status, await response.text());
+    }
+
+    if (response.status === 204) {
+      return undefined;
+    }
+    return response.json();
+  }
+
+  async getapispecyaml(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api-spec.yaml`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('GET /api-spec.yaml', response.status, await response.text());
+    }
+
+    return response.json();
+  }
+
+  async getapidocs(): Promise<unknown> {
+    const baseUrl = this.getBaseUrl();
+    const pathStr = `/api-docs`;
+    const url = `${baseUrl}${pathStr}`;
+
+    const options: RequestInit = {
+      method: 'GET',
+      headers: this.getHeaders(),
+      credentials: 'include'
+    };
+
+    
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      throw new ApiError('GET /api-docs', response.status, await response.text());
     }
 
     return response.json();
@@ -1091,18 +805,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapimodel
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapimodel(options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapimodel'],
-      queryFn: () => apiClient.getapimodel(),
-      ...(options || {})
-    });
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckoutmodel
    * Auto-manages caching and invalidation
    */
@@ -1110,18 +812,6 @@ const apiClient = getApiClient();
     return useQuery({
       queryKey: ['getapiprojectsprojectcheckoutscheckoutmodel', project, checkout],
       queryFn: () => apiClient.getapiprojectsprojectcheckoutscheckoutmodel(project, checkout),
-      ...options
-    });
-  }
-
-  /**
-   * React Query hook for getapilayerslayerName
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapilayerslayerName(layerName: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapilayerslayerName', layerName],
-      queryFn: () => apiClient.getapilayerslayerName(layerName),
       ...options
     });
   }
@@ -1187,33 +877,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapiannotations
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapiannotations(options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapiannotations'],
-      queryFn: () => apiClient.getapiannotations(),
-      ...(options || {})
-    });
-  }
-
-  /**
-   * React Query mutation hook for postapiannotations
-   */
-  export function usePostapiannotations(options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.postapiannotations(data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckoutannotations
    * Auto-manages caching and invalidation
    */
@@ -1235,66 +898,6 @@ const apiClient = getApiClient();
       mutationFn: (data: unknown) => apiClient.postapiprojectsprojectcheckoutscheckoutannotations(project, checkout, data),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutannotations', project, checkout] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
-   * React Query hook for getapiannotationsannotationId
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapiannotationsannotationId(annotationId: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapiannotationsannotationId', annotationId],
-      queryFn: () => apiClient.getapiannotationsannotationId(annotationId),
-      ...options
-    });
-  }
-
-  /**
-   * React Query mutation hook for putapiannotationsannotationId
-   */
-  export function usePutapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.putapiannotationsannotationId(annotationId, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
-        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
-   * React Query mutation hook for patchapiannotationsannotationId
-   */
-  export function usePatchapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.patchapiannotationsannotationId(annotationId, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
-        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
-   * React Query mutation hook for deleteapiannotationsannotationId
-   */
-  export function useDeleteapiannotationsannotationId(annotationId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: () => apiClient.deleteapiannotationsannotationId(annotationId),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationId', annotationId] });
-        queryClient.invalidateQueries({ queryKey: ['getapiannotations'] });
       },
       ...options
     } as any);
@@ -1361,33 +964,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapiannotationsannotationIdreplies
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapiannotationsannotationIdreplies(annotationId: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapiannotationsannotationIdreplies', annotationId],
-      queryFn: () => apiClient.getapiannotationsannotationIdreplies(annotationId),
-      ...options
-    });
-  }
-
-  /**
-   * React Query mutation hook for postapiannotationsannotationIdreplies
-   */
-  export function usePostapiannotationsannotationIdreplies(annotationId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.postapiannotationsannotationIdreplies(annotationId, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapiannotationsannotationIdreplies', annotationId] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies
    * Auto-manages caching and invalidation
    */
@@ -1415,18 +991,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapichangesets
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapichangesets(options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapichangesets'],
-      queryFn: () => apiClient.getapichangesets(),
-      ...(options || {})
-    });
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckoutchangesets
    * Auto-manages caching and invalidation
    */
@@ -1434,18 +998,6 @@ const apiClient = getApiClient();
     return useQuery({
       queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesets', project, checkout],
       queryFn: () => apiClient.getapiprojectsprojectcheckoutscheckoutchangesets(project, checkout),
-      ...options
-    });
-  }
-
-  /**
-   * React Query hook for getapichangesetschangesetId
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapichangesetschangesetId(changesetId: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapichangesetschangesetId', changesetId],
-      queryFn: () => apiClient.getapichangesetschangesetId(changesetId),
       ...options
     });
   }
@@ -1463,18 +1015,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapichangesetschangesetIdverification
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapichangesetschangesetIdverification(changesetId: string, options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapichangesetschangesetIdverification', changesetId],
-      queryFn: () => apiClient.getapichangesetschangesetIdverification(changesetId),
-      ...options
-    });
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckoutchangesetschangesetIdverification
    * Auto-manages caching and invalidation
    */
@@ -1484,22 +1024,6 @@ const apiClient = getApiClient();
       queryFn: () => apiClient.getapiprojectsprojectcheckoutscheckoutchangesetschangesetIdverification(project, checkout, changesetId),
       ...options
     });
-  }
-
-  /**
-   * React Query mutation hook for putapichangesetschangesetIdreview
-   */
-  export function usePutapichangesetschangesetIdreview(changesetId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.putapichangesetschangesetIdreview(changesetId, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
-      },
-      ...options
-    } as any);
   }
 
   /**
@@ -1513,24 +1037,6 @@ const apiClient = getApiClient();
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesets', project, checkout] });
         queryClient.invalidateQueries({ queryKey: ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', project, checkout, changesetId] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
-   * React Query mutation hook for postapichangesetschangesetIdcommit
-   */
-  export function usePostapichangesetschangesetIdcommit(changesetId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: (data: unknown) => apiClient.postapichangesetschangesetIdcommit(changesetId, data),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
-        queryClient.invalidateQueries({ queryKey: ['getapimodel'] });
-        queryClient.invalidateQueries({ queryKey: ['getapilayerslayerName'] });
       },
       ...options
     } as any);
@@ -1555,22 +1061,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query mutation hook for postapichangesetschangesetIddiscard
-   */
-  export function usePostapichangesetschangesetIddiscard(changesetId: string, options?: MutationOptions) {
-    const queryClient = useQueryClient();
-
-    return useMutation({
-      mutationFn: () => apiClient.postapichangesetschangesetIddiscard(changesetId),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-        queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId', changesetId] });
-      },
-      ...options
-    } as any);
-  }
-
-  /**
    * React Query mutation hook for postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard
    */
   export function usePostapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard(project: string, checkout: string, changesetId: string, options?: MutationOptions) {
@@ -1587,18 +1077,6 @@ const apiClient = getApiClient();
   }
 
   /**
-   * React Query hook for getapitier1
-   * Auto-manages caching and invalidation
-   */
-  export function useGetapitier1(options?: QueryOptions) {
-    return useQuery({
-      queryKey: ['getapitier1'],
-      queryFn: () => apiClient.getapitier1(),
-      ...(options || {})
-    });
-  }
-
-  /**
    * React Query hook for getapiprojectsprojectcheckoutscheckouttier1
    * Auto-manages caching and invalidation
    */
@@ -1607,6 +1085,86 @@ const apiClient = getApiClient();
       queryKey: ['getapiprojectsprojectcheckoutscheckouttier1', project, checkout],
       queryFn: () => apiClient.getapiprojectsprojectcheckoutscheckouttier1(project, checkout),
       ...options
+    });
+  }
+
+  /**
+   * React Query hook for getws
+   * Auto-manages caching and invalidation
+   */
+  export function useGetws(options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getws'],
+      queryFn: () => apiClient.getws(),
+      ...(options || {})
+    });
+  }
+
+  /**
+   * React Query mutation hook for postmcp
+   */
+  export function usePostmcp(options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.postmcp(),
+      onSuccess: () => {
+        console.warn('[WARNING] Unmapped cache invalidation for postmcp. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['postmcp'] });
+      },
+      ...options
+    } as any);
+  }
+
+  /**
+   * React Query hook for getmcp
+   * Auto-manages caching and invalidation
+   */
+  export function useGetmcp(options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getmcp'],
+      queryFn: () => apiClient.getmcp(),
+      ...(options || {})
+    });
+  }
+
+  /**
+   * React Query mutation hook for deletemcp
+   */
+  export function useDeletemcp(options?: MutationOptions) {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+      mutationFn: () => apiClient.deletemcp(),
+      onSuccess: () => {
+        console.warn('[WARNING] Unmapped cache invalidation for deletemcp. Add to getInvalidationQueries().');
+        queryClient.invalidateQueries({ queryKey: ['deletemcp'] });
+      },
+      ...options
+    } as any);
+  }
+
+  /**
+   * React Query hook for getapispecyaml
+   * Auto-manages caching and invalidation
+   */
+  export function useGetapispecyaml(options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getapispecyaml'],
+      queryFn: () => apiClient.getapispecyaml(),
+      ...(options || {})
+    });
+  }
+
+  /**
+   * React Query hook for getapidocs
+   * Auto-manages caching and invalidation
+   */
+  export function useGetapidocs(options?: QueryOptions) {
+    return useQuery({
+      queryKey: ['getapidocs'],
+      queryFn: () => apiClient.getapidocs(),
+      ...(options || {})
     });
   }
 
