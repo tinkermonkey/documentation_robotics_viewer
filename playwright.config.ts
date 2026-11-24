@@ -59,5 +59,8 @@ export default defineConfig({
     timeout: 180_000,
     stdout: 'pipe',
     stderr: 'pipe',
+    // SIGTERM (not Playwright's default SIGKILL) so scripts/e2e-server.sh's trap stops dr serve and removes
+    // its scratch farm and token.
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
   },
 });

@@ -9,12 +9,14 @@
  */
 
 import { type Page, type Locator, type APIRequestContext, expect } from '@playwright/test';
-import { scopedApi } from './server';
+import { e2eServer, scopedApi } from './server';
 
 /** The dedicated E2E base URL (mirrors playwright.config.ts). */
 export const BASE_URL = `http://localhost:${process.env.E2E_PORT ?? 8099}`;
 
-/** Every page of the SPA belongs to a checkout: the scratch farm's only one. */
+/** Every page of the SPA belongs to a checkout: the scratch farm's only one. A constant, not read from
+ *  e2eServer(), because specs read ROUTES while Playwright collects tests, before the server runs;
+ *  fixtures.ts checks it against the server. */
 export const CHECKOUT = '#/p/viewer/c/main';
 
 /** Hash routes of the SPA. */
@@ -108,7 +110,7 @@ export async function nodeTypeCount(request: APIRequestContext, layerId: string)
  * unavailable or the probe times out, so the chat spec can skip cleanly.
  */
 export async function chatSdkAvailable(page: Page): Promise<boolean> {
-  return page.evaluate((base: string) => {
+  return page.evaluate(({ base, project, checkout }) => {
     return new Promise<boolean>((resolve) => {
       try {
         const wsUrl = base.replace(/^http/, 'ws') + '/ws';
@@ -128,7 +130,7 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
               jsonrpc: '2.0',
               id: 99,
               method: 'chat.status',
-              params: { project: 'viewer', checkout: 'main' },
+              params: { project, checkout },
             }),
           );
         };
@@ -151,7 +153,7 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
         resolve(false);
       }
     });
-  }, BASE_URL);
+  }, { base: BASE_URL, project: e2eServer().project, checkout: e2eServer().checkout });
 }
 
 /**

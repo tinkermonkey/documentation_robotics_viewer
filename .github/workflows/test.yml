@@ -101,10 +101,14 @@ jobs:
           npm i -g documentation-robotics || \
           echo "dr CLI install failed (likely a private package) — skipping E2E"
           dr --version || true
-          if dr serve --help >/dev/null 2>&1; then
+          # An older CLI answers `serve --help` with its root help and exit 0: look for the subcommand's usage.
+          if dr serve --help 2>&1 | grep -q 'Usage: dr serve'; then
             echo "dr_available=true" >> "$GITHUB_OUTPUT"
           else
-            echo "::warning::The installed dr CLI has no 'dr serve' (needs documentation_robotics#1279): skipping E2E"
+            msg="The installed dr CLI ($(dr --version 2>/dev/null | grep -m1 'CLI Version' | tr -s ' ' || echo 'not installed')) has no 'dr serve' (needs documentation_robotics#1279): E2E skipped."
+            echo "::warning::$msg"
+            echo "### E2E skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "$msg" >> "$GITHUB_STEP_SUMMARY"
             echo "dr_available=false" >> "$GITHUB_OUTPUT"
           fi
 

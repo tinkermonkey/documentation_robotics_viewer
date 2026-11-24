@@ -23,7 +23,8 @@ WORK="${TMPDIR:-/tmp}"
 WORK="${WORK%/}/dr-viewer-e2e-$PORT"
 INFO="$ROOT/tests/e2e/.server.json"
 
-if ! $DR serve --help >/dev/null 2>&1; then
+# An older CLI answers `serve --help` with its root help and exit 0, so look for the subcommand's own usage.
+if ! $DR serve --help 2>&1 | grep -q 'Usage: dr serve'; then
   echo "e2e-server: '$DR' has no 'dr serve' (needs a dr CLI with documentation_robotics#1279). Set DR_CLI." >&2
   exit 1
 fi
@@ -43,12 +44,15 @@ projects:
     model: $WORK/repo/documentation-robotics/model
 EOF
 
+# HOME stays the user's: DrBot runs Claude Code, which needs its login there (chat.spec.ts).
 export DR_FARM_PATH="$WORK/farm" DR_STATE_DIR="$WORK/state" XDG_CONFIG_HOME="$WORK/config" DR_VIEWER_PROCESS_SCAN=off
 
 cd "$WORK/repo"
 $DR serve --foreground --port "$PORT" --viewer-path "$BUNDLE" &
 SERVER=$!
-trap 'kill "$SERVER" 2>/dev/null; wait "$SERVER" 2>/dev/null; rm -f "$INFO"' EXIT INT TERM
+# Playwright stops the webServer with SIGTERM (gracefulShutdown in playwright.config.ts): stop dr serve and
+# remove the clone, the state dir (it holds the token) and the info file.
+trap 'kill "$SERVER" 2>/dev/null; wait "$SERVER" 2>/dev/null; rm -rf "$WORK" "$INFO"' EXIT INT TERM
 
 for _ in $(seq 1 60); do
   curl -sf "http://localhost:$PORT/health" >/dev/null && break

@@ -12,9 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which can't serve the checkout routes, so every test stopped at the checkout picker. `scripts/e2e-server.sh` now
   starts `dr serve` in a scratch farm (one project, `viewer`, a clone of the repo's committed model, checkout
   `main`) and writes its token for the specs (`tests/e2e/fixtures.ts`); routes and API calls are checkout-scoped.
-  It needs a dr CLI with `dr serve` (`DR_CLI` points it at one built from source); the CI job skips with a warning
-  until one is published. Three assertions stale since #605 and the viewport-restore checks (now within a few
-  pixels, as `?vp=` keeps 4 decimals) are fixed too. 85 of 85 pass locally.
+  It needs a dr CLI with `dr serve` (`DR_CLI` points it at one built from source); until one is published the CI
+  job skips with a warning that also goes in the job summary. When the suite ends, the script removes the scratch
+  farm and its token. Three assertions stale since #605 and the viewport-restore checks (now within a few pixels,
+  as `?vp=` keeps 4 decimals) are fixed too. 85 of 85 pass locally.
 
 ### Changed
 - **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
