@@ -15,7 +15,7 @@ import { Button } from '@tinkermonkey/heimdall-ui';
 import { useUiStore } from './uiStore';
 import { DriftBadge } from './DriftNotice';
 import { OP_OUTLINE, opOutlineCss, type OverlayOp } from './opStyles';
-import { ELEMENT_MARKS, RELATIONSHIP_MARKS } from './c4Marks';
+import { ELEMENT_MARKS, RELATIONSHIP_MARKS, scopeChangesLabel } from './c4Marks';
 import { purposeLabel } from '../data/changesetPurpose';
 import { useChangesets, isChangesetGone } from '../data/useChangesets';
 import { asBuiltChoices } from '../data/planVerification';
@@ -44,7 +44,12 @@ export function tallyParts(diff: C4Diff): { boxes: string[]; arrows: string[] } 
   };
 }
 
-export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
+/**
+ * `scope`: the drawn diagram's scope (a union id and its name; none on the
+ * Context diagram). The bar says how many changes are inside it, the number
+ * its "N changes inside" chip showed one level up.
+ */
+export function C4ChangesetBar({ state, scope = null }: { state: C4OverlayState; scope?: { id: string; name: string } | null }) {
   const showC4Overlay = useUiStore((s) => s.showC4Overlay);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
   const { derived } = useChangesets();
@@ -87,6 +92,7 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
   } else {
     const { diff, mode } = overlay;
     const { boxes, arrows } = tallyParts(diff);
+    const scopeTotal = scope ? scopeChangesLabel(scope.name, diff.rollUp.get(scope.id)) : '';
     const leftOut = [
       diff.unshown.length > 0 && `${count(diff.unshown.length, 'change')} not on any diagram`,
       diff.unresolved.length > 0 && `${count(diff.unresolved.length, 'change')} not in the model`,
@@ -104,6 +110,11 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
             </>
           )}
         </ul>
+        {scopeTotal && (
+          <p className="c4-bar__note" data-testid="c4-bar-scope-total">
+            {scopeTotal}, each counted once: a change behind several boxes or arrows here shows on each of them
+          </p>
+        )}
         <ul className="c4-bar__legend" aria-label="Legend" data-testid="c4-bar-legend">
           {LEGEND.map(({ op, text }) => (
             <li key={op}>
@@ -112,7 +123,7 @@ export function C4ChangesetBar({ state }: { state: C4OverlayState }) {
               {text}
             </li>
           ))}
-          <li>“N changes inside”: in a box&apos;s parts</li>
+          <li>“N changes inside”: in a box&apos;s parts, each change counted once</li>
         </ul>
         {leftOut.length > 0 && (
           <ul className="c4-bar__left-out" aria-label="Changes the diagrams leave out" data-testid="c4-bar-left-out">

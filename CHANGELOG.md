@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Change counts on the C4 changeset overlay** (#629): a box's status chip says how many of the changeset's
+  changes are behind it ("~ changed · 12 changes", "+ added · 8 changes"; no count when there is one), and so does
+  a marked arrow's label ("+ uses · 4 changes"), its tooltip and its row in the list of arrows for assistive
+  technology. The changeset bar says how many changes are inside the diagram's scope, each counted once ("81
+  changes inside Web App"), the same number as the "N changes inside" chip you followed to get there, since a
+  change to a link counts on its arrow and on both of its boxes. The details drawer says the same of a box's
+  chip. SVG and PNG exports draw the same chips and labels.
+
 ### Changed
 - **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
   **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones

@@ -78,6 +78,8 @@ const changes = [
   deleteElement(nodeOf(doomed.element.sources[0].id), 1),
   updateElement(nodeOf(edited.element.sources[0].id), { description: 'Now with a changeset overlay.' }, 2),
   addElement('application.applicationcomponent', 'Overlay Probe', {}, 3),
+  // A second change to the same box: its chip counts both (#629).
+  updateElement(nodeOf(edited.element.sources[0].id), { description: 'Now with a changeset overlay, twice.' }, 4),
 ];
 const { model: afterModel, trace } = overlayModel(model, changes, 'apply');
 const diff = diffC4(base, buildC4Model(afterModel), trace);
@@ -99,7 +101,7 @@ function serveChangeset() {
     http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
       HttpResponse.json({
         version: '1',
-        changesets: { [CS_ID]: { name: 'overlay-probe', status: 'staged', created: detail.created, changes_count: 3, purpose: 'plan' } },
+        changesets: { [CS_ID]: { name: 'overlay-probe', status: 'staged', created: detail.created, changes_count: 4, purpose: 'plan' } },
       }),
     ),
     http.get(`*/api/projects/:project/checkouts/:checkout/changesets/${CS_ID}`, () => HttpResponse.json(detail)),
@@ -132,9 +134,14 @@ describe('C4 changeset overlay (staged changeset)', () => {
 
     const changed = card(edited.id)!;
     expect(within(changed).getByTestId('c4-card-mark')).toBeInTheDocument();
-    expect(within(changed).getByTestId('c4-card-status')).toHaveTextContent('~ changed');
+    // Two changes are behind it: the chip and the accessible name count them (#629).
+    expect(diff.elements.get(edited.id)?.sequences).toEqual([2, 4]);
+    expect(within(changed).getByTestId('c4-card-status')).toHaveTextContent('~ changed · 2 changes');
+    expect(within(changed).getByTestId('c4-card-status').querySelector('.c4-card__status-count')).toHaveTextContent('· 2 changes');
     // The status is in the accessible name, not only drawn.
-    expect(within(changed).getByRole('button', { name: new RegExp(`^${edited.element.name}, .*, changed`) })).toBeInTheDocument();
+    expect(
+      within(changed).getByRole('button', { name: new RegExp(`^${edited.element.name}, .*, changed, 2 changes`) }),
+    ).toBeInTheDocument();
 
     const holder = card(parent.id)!;
     const inside = diff.rollUp.get(parent.id)!.sequences.length;
@@ -208,11 +215,26 @@ describe('C4 changeset overlay (staged changeset)', () => {
     await waitFor(() => expect(useUiStore.getState().c4SelectedId).toBeNull());
   });
 
+  it('says how many changes are inside the drawn scope, the number its chip showed one level up (#629)', async () => {
+    const inside = diff.rollUp.get(parent.id)!.sequences.length;
+    await renderOverlay('component', parent.id);
+    expect(await screen.findByTestId('c4-bar-scope-total')).toHaveTextContent(
+      `${inside} ${inside === 1 ? 'change' : 'changes'} inside ${parent.element.name}, each counted once`,
+    );
+  });
+
+  it("says in the drawer that a box's roll-up counts each change once (#629)", async () => {
+    await renderOverlay('container');
+    act(() => useUiStore.getState().selectC4(parent.id));
+    const details = await screen.findByTestId('c4-details');
+    await waitFor(() => expect(within(details).getByTestId('c4-details-inside-note')).toHaveTextContent('counts each change once'));
+  });
+
   it('lists the arrows with their status for assistive technology', async () => {
     await renderOverlay('component', parent.id);
     await waitFor(() => expect(card(doomed.id)).toBeInTheDocument());
     const list = screen.getByTestId('c4-relationship-list');
-    const removedArrows = [...list.querySelectorAll('li')].filter((li) => li.textContent?.endsWith('— removed'));
+    const removedArrows = [...list.querySelectorAll('li')].filter((li) => /— removed(, \d+ changes)?$/.test(li.textContent ?? ''));
     const drawnRemoved = document.querySelectorAll('[data-testid="c4-edge"][data-status="removed"]').length;
     expect(drawnRemoved).toBeGreaterThan(0);
     expect(removedArrows).toHaveLength(drawnRemoved);
