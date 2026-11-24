@@ -446,6 +446,19 @@
   left: 10px;
 }
 
+/* The status words give way to the change count: only they are cut (#629). */
+.c4-card__status-words {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.c4-card__status-count {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .c4-card__glyph {
   font-weight: 700;
 }

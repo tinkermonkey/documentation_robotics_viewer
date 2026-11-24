@@ -14,7 +14,18 @@ import type { C4ElementVerdict, VerdictCounts } from '../data/c4/c4PlanCompare';
 import type { C4ExportMark, C4ExportMarks, C4LineStyle } from '../data/c4/c4Export';
 import type { C4View } from '../data/c4/c4Views';
 import { PLAN_VERDICTS, type PlanVerdict } from '../data/planVerification';
-import { ELEMENT_MARKS, RELATIONSHIP_MARKS, elementStatusWords, relationshipStatusWords, rollUpLabel, rollUpOps } from './c4Marks';
+import {
+  ELEMENT_MARKS,
+  RELATIONSHIP_MARKS,
+  changeCount,
+  changeCountLabel,
+  elementStatusLabel,
+  elementStatusWords,
+  relationshipStatusLabel,
+  relationshipStatusWords,
+  rollUpLabel,
+  rollUpOps,
+} from './c4Marks';
 import { OP_OUTLINE, opOutlineCss } from './opStyles';
 import { VERDICT_STYLES, elementVerdictLabel, verdictOutlineCss, verdictRollUpChip, verdictRollUpLabel } from './verdictStyles';
 
@@ -45,8 +56,15 @@ export interface ResolvedMark {
   /** `data-status` and the class suffix. */
   status: string;
   glyph: string;
-  /** The words: the first is the chip's. */
+  /** The words for accessible names and tooltips: the first is the mark's own ("changed, 12 changes"). */
   words: string[];
+  /** The status words a card's chip shows, without the glyph or count: "changed", "moved from Web App" (a comparison: its verdict). */
+  chip: string;
+  /**
+   * The changes behind the mark past one, "4 changes", else ''. A card's chip and an arrow's label end
+   * with it after a middle dot; it is drawn whole, and only the words before it are cut to fit.
+   */
+  count: string;
   /** The status's own words, the same wherever it marks (an export's legend). */
   legend: string;
   /** Outline / stroke token, null for none. */
@@ -110,6 +128,8 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
       status: `v-${arrow.verdict}`,
       glyph: v.glyph,
       words: [v.label],
+      chip: v.label,
+      count: '',
       legend: v.label,
       token: v.token,
       outline: null,
@@ -123,10 +143,14 @@ export function edgeMark(source: C4DiagramMarkSource, relId: string): ResolvedMa
   const change = activeOverlay(source)?.relationships.get(relId);
   if (!change) return null;
   const mark = RELATIONSHIP_MARKS[change.status];
+  const count = changeCountLabel(changeCount(change));
+  const label = relationshipStatusLabel(change);
   return {
     status: change.status,
     glyph: mark.glyph,
     words: [relationshipStatusWords(change)],
+    chip: label,
+    count,
     legend: mark.label,
     token: mark.op ? OP_OUTLINE[mark.op].token : null,
     outline: null,
@@ -157,6 +181,8 @@ export function cardMark(
         status: `v-${e.verdict}`,
         glyph: v.glyph,
         words: [label],
+        chip: label,
+        count: '',
         legend: v.label,
         token: v.token,
         outline: verdictOutlineCss(e.verdict),
@@ -190,6 +216,8 @@ export function cardMark(
         status: change.status,
         glyph: m?.glyph ?? '',
         words,
+        chip: overlay ? elementStatusLabel(change, overlay.nameOf) : '',
+        count: changeCountLabel(changeCount(change)),
         legend: m?.label ?? change.status,
         token: outline?.token ?? null,
         outline: m?.op ? opOutlineCss(m.op) : null,
@@ -229,6 +257,8 @@ export function toExportMarks(
     status: mark.status,
     glyph: mark.glyph,
     words: words.length > 0 ? words : mark.words,
+    chip: mark.chip,
+    count: mark.count,
     legend: mark.legend,
     color: mark.token ? colorOf(mark.token) : null,
     lineStyle: mark.lineStyle,
