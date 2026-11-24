@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.17.0] - 2026-11-24
+
+Back and Forward now step through how you moved around the graphs, Apply shows how far a commit has got, the C4
+changeset overlay counts the changes behind each box, and the first load says "Loading…" instead of looking empty.
+Built on heimdall-ui 0.14; Tailwind and the other leftovers of the pre-Heimdall stack are gone. Works with a dr CLI
+whose central process serves the checkout-scoped routes, as 0.16.0 does; commit progress needs one with
+documentation_robotics#1361, and an older CLI gets a bar without a count.
+
 ### Added
 - **Back and Forward replay graph moves** (#619): in the Model, Schema, Changesets Impact, Model by-type lanes and
   Architecture views, each node, edge, lane or C4 box you click, each Impact focus and each lane or group you open
@@ -67,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   view too), the rail footer reads `SPEC …` instead of `0 layers · 0 rels`, and the status bar reads `cli …` and
   "loading model…". A read that fails says so rather than looking empty, and "—" still means the server sent no
   version. A refresh in the background (another tool changing the model, coming back to the tab) keeps what's on
-  screen. The loading lines are announced politely, and the regions they fill are marked busy.
+  screen. The loading lines are announced politely, and a failed read raises one alert, not one per section.
 - **The E2E suite runs again** against the dr CLI's central process. Since #623 it booted `dr visualize --no-auth`,
   which can't serve the checkout routes, so every test stopped at the checkout picker. `scripts/e2e-server.sh` now
   starts `dr serve` in a scratch farm (one project, `viewer`, a clone of the repo's committed model, checkout
