@@ -16,8 +16,8 @@ description: >-
   refusal after progress still shows inline, and the fallback works on a CLI
   without notifications.
 created: 2026-11-24T14:08:20.471Z
-modified: 2026-11-24T14:25:42.533Z
-status: staged
+modified: 2026-11-24T18:43:40.618Z
+status: committed
 baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
 origin:
   kind: plan

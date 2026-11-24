@@ -295,3 +295,40 @@ motivation.requirement.keep-checkouts-apart-in-one-browser:
     created_at: 2026-11-24T11:32:08.563Z
     updated_at: 2026-11-24T11:32:08.563Z
     version: 1
+motivation.requirement.apply-shows-commit-progress:
+  id: 761abe82-9568-4f4d-9e08-6fe21b4d71bf
+  path: motivation.requirement.apply-shows-commit-progress
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Apply shows commit progress
+  description: While a changeset commits, the person who pressed Apply sees how
+    far it has got (applied of total, and the phase when the server says), or at
+    least that it is still working on a dr CLI that reports no progress; Apply
+    stays shut until the commit answers. Progress is announced to assistive
+    technology now and then, not on every update.
+  attributes:
+    requirementType: functional
+    priority: medium
+  metadata:
+    created_at: 2026-11-24T14:08:44.664Z
+    updated_at: 2026-11-24T14:08:44.664Z
+    version: 1
+motivation.requirement.back-and-forward-replay-graph-moves:
+  id: fec40970-aab2-4c49-bcea-fa3931e19d6d
+  path: motivation.requirement.back-and-forward-replay-graph-moves
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Back and Forward replay graph moves
+  description: In the Model, Schema, Impact, by-type lanes and Architecture views,
+    Back undoes the last graph move (selection, recentre, focus, expand) and
+    Forward redoes it, with the viewport restored; a copied URL reopens that
+    state; panning and zooming alone never add history entries (#619).
+  attributes:
+    requirementType: functional
+    priority: medium
+  metadata:
+    created_at: 2026-11-24T15:09:41.757Z
+    updated_at: 2026-11-24T15:09:41.757Z
+    version: 1

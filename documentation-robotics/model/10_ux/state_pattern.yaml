@@ -6,7 +6,13 @@ ux.statepattern.data-loading-pattern:
   layer_id: ux
   name: Data Loading Pattern
   description: "Standard data-loading state pattern used across all views; states:
-    idle → loading → loaded/error; with optional retry action on error state."
+    idle → loading → loaded/error; with optional retry action on error state.
+    Only the FIRST load counts as loading (#636): while a read has no data and
+    hasn't failed, a region says \"Loading…\" (role=\"status\") and shows no
+    counts; data with zero items shows the empty hint; a failed first read shows
+    the error, never \"empty\". A background refetch keeps the data shown (no
+    flash back to Loading). Implemented by `data/loadState.ts` and
+    `ui/LoadStatus.tsx`."
   attributes:
     category: data-loading
   source_reference:

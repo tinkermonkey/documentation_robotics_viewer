@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.7.1
 spec_version: 0.14.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-24T12:04:19.629Z
+updated: 2026-11-24T18:48:38.491Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 15
+      requirement: 17
       stakeholder: 3
   business:
     order: 2
@@ -39,7 +39,7 @@ layers:
     path: documentation-robotics/model/03_product/
     enabled: true
     elements:
-      feature: 20
+      feature: 22
       persona: 2
       softwarecapability: 5
       userworkflow: 1
@@ -65,11 +65,11 @@ layers:
     path: documentation-robotics/model/05_application/
     enabled: true
     elements:
-      applicationcomponent: 39
+      applicationcomponent: 41
+      applicationevent: 4
       applicationfunction: 8
       applicationinterface: 2
-      applicationservice: 54
-      applicationevent: 4
+      applicationservice: 58
       message: 1
   technology:
     order: 6
@@ -77,10 +77,10 @@ layers:
     path: documentation-robotics/model/06_technology/
     enabled: true
     elements:
-      artifact: 4
-      node: 2
+      artifact: 2
+      node: 1
       path: 2
-      systemsoftware: 15
+      systemsoftware: 14
       technologyinterface: 2
       technologyprocess: 3
       technologyservice: 2
@@ -101,7 +101,7 @@ layers:
     path: documentation-robotics/model/08_data-model/
     enabled: true
     elements:
-      objectschema: 35
+      objectschema: 37
       schemadefinition: 3
   data-store:
     order: 9
@@ -117,12 +117,12 @@ layers:
     path: documentation-robotics/model/10_ux/
     enabled: true
     elements:
+      errorconfig: 1
       statepattern: 1
       subview: 13
       uxapplication: 1
       uxspec: 1
       view: 8
-      errorconfig: 1
   navigation:
     order: 11
     name: Navigation
@@ -156,7 +156,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 1022
+      testcasesketch: 1028
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -237,6 +237,24 @@ changeset_history:
     action: committed
   - name: scoped-checkout-routes
     committed_at: 2026-11-24T12:04:19.629Z
+    action: committed
+  - name: nav-changeset-groups
+    committed_at: 2026-11-24T18:25:07.396Z
+    action: committed
+  - name: remove-pre-heimdall-leftovers
+    committed_at: 2026-11-24T18:40:04.210Z
+    action: committed
+  - name: c4-overlay-change-counts
+    committed_at: 2026-11-24T18:43:26.878Z
+    action: committed
+  - name: apply-commit-progress
+    committed_at: 2026-11-24T18:43:40.620Z
+    action: committed
+  - name: graph-history-replay
+    committed_at: 2026-11-24T18:45:44.553Z
+    action: committed
+  - name: first-load-loading-states
+    committed_at: 2026-11-24T18:48:38.491Z
     action: committed
 reconciled:
   changeset: extract-02ab31d..59209a4

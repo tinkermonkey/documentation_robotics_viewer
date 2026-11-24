@@ -16,8 +16,8 @@ Infrastructure, platforms, systems, and technology components.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 30    |
-| Intra-Layer Relationships | 25    |
+| Elements                  | 26    |
+| Intra-Layer Relationships | 18    |
 | Inter-Layer Relationships | 23    |
 | Inbound Relationships     | 3     |
 | Outbound Relationships    | 20    |
@@ -32,11 +32,8 @@ Infrastructure, platforms, systems, and technology components.
 ```mermaid
 flowchart LR
   subgraph technology
-    technology_artifact_docker_agent_image["Docker Agent Image"]
     technology_artifact_embedded_app_bundle["Embedded App Bundle"]
     technology_artifact_open_api_specification["OpenAPI Specification"]
-    technology_artifact_switchyard_orchestrator["switchyard-orchestrator"]
-    technology_node_docker_agent_container["Docker Agent Container"]
     technology_node_vite_dev_server["Vite Dev Server"]
     technology_path_app_to_dr_cli_https_path["App to DR CLI HTTPS Path"]
     technology_path_app_to_dr_cli_web_socket_path["App to DR CLI WebSocket Path"]
@@ -48,7 +45,6 @@ flowchart LR
     technology_systemsoftware_nodejs["Node.js"]
     technology_systemsoftware_playwright["Playwright"]
     technology_systemsoftware_react_19["React 19"]
-    technology_systemsoftware_tailwind_css_v4["Tailwind CSS v4"]
     technology_systemsoftware_tan_stack_react_query["TanStack React Query"]
     technology_systemsoftware_tan_stack_router["TanStack Router"]
     technology_systemsoftware_type_script_59["TypeScript 5.9"]
@@ -62,14 +58,7 @@ flowchart LR
     technology_technologyprocess_vite_build_pipeline["Vite Build Pipeline"]
     technology_technologyservice_dr_cli_rest_server["DR CLI REST Server"]
     technology_technologyservice_web_socket_model_service["WebSocket Model Service"]
-    technology_artifact_docker_agent_image -->|depends-on| technology_artifact_switchyard_orchestrator
-    technology_artifact_docker_agent_image -->|realizes| technology_systemsoftware_nodejs
     technology_artifact_embedded_app_bundle -->|realizes| technology_systemsoftware_vite_6
-    technology_node_docker_agent_container -->|composes| technology_systemsoftware_playwright
-    technology_node_docker_agent_container -->|composes| technology_technologyinterface_rest_https_interface
-    technology_node_docker_agent_container -->|composes| technology_technologyinterface_web_socket_interface
-    technology_path_app_to_dr_cli_https_path -->|connects| technology_node_docker_agent_container
-    technology_path_app_to_dr_cli_web_socket_path -->|connects| technology_node_docker_agent_container
     technology_systemsoftware_axe_core_playwright -->|depends-on| technology_systemsoftware_playwright
     technology_systemsoftware_playwright -->|depends-on| technology_systemsoftware_nodejs
     technology_systemsoftware_react_19 -->|depends-on| technology_systemsoftware_nodejs
@@ -117,54 +106,33 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                     | Source Node                                       | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
-| ------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
-| `technology.node.serves.application.applicationcomponent`           | `technology.node.vite-dev-server`                 | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.satisfies.motivation.constraint`         | `technology.systemsoftware.elk`                   | `motivation.constraint.browser-only-deployment`                     | `motivation`  | `satisfies`  | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.elk`                   | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-inspector`                 | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-link-card`                 | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-impact-view`            | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.drift-notice`                     | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.type-hive-view`                   | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.heimdall-ui`           | `application.applicationcomponent.type-lanes-view`                  | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tailwind-css-v4`       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
-| `technology.systemsoftware.serves.application.applicationcomponent` | `technology.systemsoftware.tan-stack-react-query` | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
-| `technology.technologyservice.serves.api.openapidocument`           | `technology.technologyservice.dr-cli-rest-server` | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.architecture-view`                       | `technology.systemsoftware.elk`                                     | `technology`  | `depends-on` | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.changesets-view`                         | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
-| `ux.view.depends-on.technology.systemsoftware`                      | `ux.view.model-view`                              | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
+| Relationship ID                                                      | Source Node                                             | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
+| `technology.node.serves.application.applicationcomponent`            | `technology.node.vite-dev-server`                       | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.satisfies.motivation.constraint`          | `technology.systemsoftware.elk`                         | `motivation.constraint.browser-only-deployment`                     | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.elk`                         | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.change-inspector`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.change-link-card`                 | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.change-neighbourhood`             | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.changeset-impact-view`            | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.changeset-review-panel`           | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.drift-notice`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.markdown-text`                    | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.review-parts`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.type-hive-view`                   | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.heimdall-ui`                 | `application.applicationcomponent.type-lanes-view`                  | `application` | `serves`     | many-to-many | medium   |
+| `technology.systemsoftware.serves.application.applicationcomponent`  | `technology.systemsoftware.tan-stack-react-query`       | `application.applicationcomponent.graph-canvas`                     | `application` | `serves`     | many-to-many | medium   |
+| `technology.technologyservice.serves.api.openapidocument`            | `technology.technologyservice.dr-cli-rest-server`       | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
+| `technology.technologyservice.serves.application.applicationservice` | `technology.technologyservice.web-socket-model-service` | `application.applicationservice.commit-progress`                    | `application` | `serves`     | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                       | `ux.view.architecture-view`                             | `technology.systemsoftware.elk`                                     | `technology`  | `depends-on` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                       | `ux.view.changesets-view`                               | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
+| `ux.view.depends-on.technology.systemsoftware`                       | `ux.view.model-view`                                    | `technology.systemsoftware.heimdall-ui`                             | `technology`  | `depends-on` | many-to-many | medium   |
 
 ## Element Reference
-
-### Docker Agent Image {#docker-agent-image}
-
-**ID**: `technology.artifact.docker-agent-image`
-
-**Type**: `artifact`
-
-Docker container image for the Claude Code agent runtime, defined in Dockerfile.agent; used for isolated DR CLI beta testing
-
-#### Attributes
-
-| Name         | Value           |
-| ------------ | --------------- |
-| artifactType | container-image |
-
-#### Relationships
-
-| Type        | Related Element                               | Predicate    | Direction |
-| ----------- | --------------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.artifact.switchyard-orchestrator` | `depends-on` | outbound  |
-| intra-layer | `technology.systemsoftware.nodejs`            | `realizes`   | outbound  |
 
 ### Embedded App Bundle {#embedded-app-bundle}
 
@@ -207,48 +175,6 @@ OpenAPI 3.0 REST API contract (docs/api-spec.yaml) describing the DR CLI server 
 | ----------- | ------------------------------------------------------- | ---------- | --------- |
 | intra-layer | `technology.technologyprocess.open-api-type-generation` | `accesses` | inbound   |
 
-### switchyard-orchestrator {#switchyard-orchestrator}
-
-**ID**: `technology.artifact.switchyard-orchestrator`
-
-**Type**: `artifact`
-
-#### Attributes
-
-| Name         | Value           |
-| ------------ | --------------- |
-| artifactType | container-image |
-
-#### Relationships
-
-| Type        | Related Element                          | Predicate    | Direction |
-| ----------- | ---------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.artifact.docker-agent-image` | `depends-on` | inbound   |
-
-### Docker Agent Container {#docker-agent-container}
-
-**ID**: `technology.node.docker-agent-container`
-
-**Type**: `node`
-
-Container runtime node for the Claude Code agent process; defined by Dockerfile.agent, provides isolated execution environment for DR CLI beta test runs
-
-#### Attributes
-
-| Name     | Value     |
-| -------- | --------- |
-| nodeType | container |
-
-#### Relationships
-
-| Type        | Related Element                                       | Predicate  | Direction |
-| ----------- | ----------------------------------------------------- | ---------- | --------- |
-| intra-layer | `technology.systemsoftware.playwright`                | `composes` | outbound  |
-| intra-layer | `technology.technologyinterface.rest-https-interface` | `composes` | outbound  |
-| intra-layer | `technology.technologyinterface.web-socket-interface` | `composes` | outbound  |
-| intra-layer | `technology.path.app-to-dr-cli-https-path`            | `connects` | inbound   |
-| intra-layer | `technology.path.app-to-dr-cli-web-socket-path`       | `connects` | inbound   |
-
 ### Vite Dev Server {#vite-dev-server}
 
 **ID**: `technology.node.vite-dev-server`
@@ -284,12 +210,6 @@ HTTPS communication path from browser application to the DR CLI REST server; car
 | pathType | point-to-point |
 | protocol | https          |
 
-#### Relationships
-
-| Type        | Related Element                          | Predicate  | Direction |
-| ----------- | ---------------------------------------- | ---------- | --------- |
-| intra-layer | `technology.node.docker-agent-container` | `connects` | outbound  |
-
 ### App to DR CLI WebSocket Path {#app-to-dr-cli-websocket-path}
 
 **ID**: `technology.path.app-to-dr-cli-web-socket-path`
@@ -304,12 +224,6 @@ Persistent WebSocket path between browser application and DR CLI server; carries
 | -------- | ------------- |
 | pathType | bidirectional |
 | protocol | websocket     |
-
-#### Relationships
-
-| Type        | Related Element                          | Predicate  | Direction |
-| ----------- | ---------------------------------------- | ---------- | --------- |
-| intra-layer | `technology.node.docker-agent-container` | `connects` | outbound  |
 
 ### Axe Core Playwright {#axe-core-playwright}
 
@@ -379,7 +293,7 @@ DOM implementation for Vitest component tests.
 
 **Type**: `systemsoftware`
 
-@tinkermonkey/heimdall-ui — the Heimdall design system, pinned from a git commit; provides the app shell components (PageHeader, GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile, etc.) and the real force-directed GraphCanvas layout engine that replaced the old React Flow + custom layout-engine stack in the June 2026 UX rebuild
+@tinkermonkey/heimdall-ui — the Heimdall design system, pinned to an exact npm version (0.14.0); provides the app shell components (PageHeader, GraphCanvas, GraphInspector, ChatContainer, SideBySideDiff, StatTile, etc.), the GraphCanvas layouts with their viewport events (onViewportDwell / onViewportNavigate, silent setViewport) and usePanZoom (onUserGesture), which replaced the old React Flow + custom layout-engine stack in the June 2026 UX rebuild
 
 #### Attributes
 
@@ -446,7 +360,6 @@ JavaScript runtime environment powering the build toolchain, dev server, and tes
 
 | Type        | Related Element                            | Predicate    | Direction |
 | ----------- | ------------------------------------------ | ------------ | --------- |
-| intra-layer | `technology.artifact.docker-agent-image`   | `realizes`   | inbound   |
 | intra-layer | `technology.systemsoftware.playwright`     | `depends-on` | inbound   |
 | intra-layer | `technology.systemsoftware.react-19`       | `depends-on` | inbound   |
 | intra-layer | `technology.systemsoftware.type-script-59` | `depends-on` | inbound   |
@@ -470,7 +383,6 @@ JavaScript runtime environment powering the build toolchain, dev server, and tes
 
 | Type        | Related Element                                 | Predicate    | Direction |
 | ----------- | ----------------------------------------------- | ------------ | --------- |
-| intra-layer | `technology.node.docker-agent-container`        | `composes`   | inbound   |
 | intra-layer | `technology.systemsoftware.axe-core-playwright` | `depends-on` | inbound   |
 | intra-layer | `technology.systemsoftware.nodejs`              | `depends-on` | outbound  |
 
@@ -495,26 +407,6 @@ Core UI rendering framework; component-based architecture with concurrent render
 | intra-layer | `technology.systemsoftware.nodejs`           | `depends-on` | outbound  |
 | intra-layer | `technology.systemsoftware.tan-stack-router` | `depends-on` | inbound   |
 | intra-layer | `technology.systemsoftware.zustand-5`        | `depends-on` | inbound   |
-
-### Tailwind CSS v4 {#tailwind-css-v4}
-
-**ID**: `technology.systemsoftware.tailwind-css-v4`
-
-**Type**: `systemsoftware`
-
-Utility-first CSS framework v4 with PostCSS pipeline; all styling via utility classes, dark mode variants required on all components
-
-#### Attributes
-
-| Name         | Value      |
-| ------------ | ---------- |
-| softwareType | middleware |
-
-#### Relationships
-
-| Type        | Related Element                              | Predicate | Direction |
-| ----------- | -------------------------------------------- | --------- | --------- |
-| inter-layer | `application.applicationcomponent.app-shell` | `serves`  | outbound  |
 
 ### TanStack React Query {#tanstack-react-query}
 
@@ -656,7 +548,6 @@ HTTPS interface point exposing DR CLI REST API endpoints to the browser applicat
 
 | Type        | Related Element                                         | Predicate     | Direction |
 | ----------- | ------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `technology.node.docker-agent-container`                | `composes`    | inbound   |
 | intra-layer | `technology.technologyservice.dr-cli-rest-server`       | `assigned-to` | outbound  |
 | intra-layer | `technology.technologyprocess.open-api-type-generation` | `serves`      | outbound  |
 | intra-layer | `technology.technologyprocess.vite-build-pipeline`      | `serves`      | outbound  |
@@ -679,7 +570,6 @@ WebSocket interface providing full-duplex communication channel for real-time JS
 
 | Type        | Related Element                                          | Predicate     | Direction |
 | ----------- | -------------------------------------------------------- | ------------- | --------- |
-| intra-layer | `technology.node.docker-agent-container`                 | `composes`    | inbound   |
 | intra-layer | `technology.technologyservice.web-socket-model-service`  | `assigned-to` | outbound  |
 | intra-layer | `technology.technologyprocess.playwright-test-execution` | `serves`      | outbound  |
 
@@ -768,8 +658,9 @@ Persistent WebSocket messaging service on the DR CLI server; delivers real-time 
 
 | Type        | Related Element                                       | Predicate     | Direction |
 | ----------- | ----------------------------------------------------- | ------------- | --------- |
+| inter-layer | `application.applicationservice.commit-progress`      | `serves`      | outbound  |
 | intra-layer | `technology.technologyinterface.web-socket-interface` | `assigned-to` | inbound   |
 
 ---
 
-Generated: 2026-11-20T19:04:38.310Z | Model Version: 0.1.0
+Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0

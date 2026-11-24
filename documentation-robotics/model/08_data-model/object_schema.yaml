@@ -711,9 +711,10 @@ data-model.objectschema.c4-export-mark:
   layer_id: data-model
   name: C4 Export Mark
   description: "What a mark on a drawn box or arrow becomes in an export: its
-    status key (an overlay op or a plan verdict), glyph, words, colour and line
-    style. Built by the UI from the same resolution `C4Diagram` draws with, so
-    an export says what the screen says."
+    status key (an overlay op or a plan verdict), glyph, words, the chip text
+    and change count drawn on screen, colour and line style. Built by the UI
+    from the same resolution `C4Diagram` draws with, so an export says what the
+    screen says."
   attributes:
     type: object
   source_reference:
@@ -745,4 +746,52 @@ data-model.objectschema.checkout-ref:
   metadata:
     created_at: 2026-11-24T11:32:31.378Z
     updated_at: 2026-11-24T11:32:31.378Z
+    version: 1
+data-model.objectschema.commit-progress:
+  id: e9144aae-6287-4ee7-aa06-474c503e4c2c
+  path: data-model.objectschema.commit-progress
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Commit Progress
+  description: "The dr CLI's changeset.commit.progress WebSocket event
+    (documentation_robotics#1361), a plain {type} frame stamped with project and
+    checkout: changesetId, applied, total (the changes that will land), optional
+    phase (validating, applying, saving, reloading or another the server names)
+    and layer. Validated before it reaches React: a frame missing a string
+    changesetId or non-negative integer applied/total is dropped, applied is
+    clamped to total, an unknown phase is kept as text, a non-string layer is
+    dropped."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/commitProgress.ts
+        symbol: CommitProgress
+  metadata:
+    created_at: 2026-11-24T14:08:49.603Z
+    updated_at: 2026-11-24T14:08:49.603Z
+    version: 1
+data-model.objectschema.graph-move:
+  id: 70ad8bc0-8079-40ae-b74f-bb2a79657292
+  path: data-model.objectschema.graph-move
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Graph Move
+  description: "uiStore.graphMove: { seq, kind: select | focus | expand | recentre
+    | dwell | fit, target, at }. Written by the UI actions that make a
+    deliberate graph move, in the same store write as the state they change;
+    restore actions (router, back/forward) write none."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/historyPolicy.ts
+        symbol: GraphMove
+  metadata:
+    created_at: 2026-11-24T15:09:51.899Z
+    updated_at: 2026-11-24T15:09:51.899Z
     version: 1

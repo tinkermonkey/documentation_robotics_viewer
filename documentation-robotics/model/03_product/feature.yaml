@@ -368,3 +368,63 @@ product.feature.c4-diagram-export:
     created_at: 2026-11-23T23:18:18.912Z
     updated_at: 2026-11-23T23:18:18.912Z
     version: 1
+product.feature.nav-tree-changeset-groups:
+  id: 67887b0c-7e7d-46a8-a687-98754eb53d8f
+  path: product.feature.nav-tree-changeset-groups
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: Nav Tree Changeset Groups
+  description: The left rail's Changesets section groups its rows under Open
+    (staged changesets, expanded by default) and Closed (applied and discarded,
+    collapsed by default), each with its count in the badge and an accessible
+    name like "Open, 3 changesets". An empty group is hidden; the "no
+    changesets" hint shows only when both are empty. Opening or closing a group
+    pushes no history. The selected changeset's group opens on every selection,
+    so a deep link to an applied changeset shows its row. Each row keeps its
+    purpose in its title and accessible name.
+  attributes:
+    priority: medium
+    status: planned
+    size: s
+  accepted_gaps:
+    - direction: incoming
+      predicate: realizes
+      other_spec_node_id: ux.view
+      reason: The nav tree is shell chrome in the left rail, not a view; the model has
+        no UX element for the rail (as for nav-tree-type-groups). The feature is
+        realized by the nav-tree component and its grouping service.
+      decided_by: agent
+      decided_at: 2026-11-24T14:01:55.572Z
+      changeset: changeset-1795528893717-1yg9qsu8u
+  metadata:
+    created_at: 2026-11-24T14:01:50.616Z
+    updated_at: 2026-11-24T14:01:50.616Z
+    version: 1
+product.feature.c4-overlay-change-counts:
+  id: 7764c462-d013-4c01-83b9-e0de6d42bf47
+  path: product.feature.c4-overlay-change-counts
+  spec_node_id: product.feature
+  type: feature
+  layer_id: product
+  name: C4 Overlay Change Counts
+  description: "With a changeset overlaid on the C4 diagrams, each marked box and
+    arrow says how many of the changeset's changes are behind it (\"~ changed ·
+    12 changes\", \"+ uses · 4 changes\", none when it is 1), in its chip,
+    label, accessible name and the hidden arrow list; the changeset bar states
+    the total for the drawn scope (\"37 changes in Web App, each counted once\")
+    so a reader can check it against the \"N changes inside\" chip they
+    followed. Issue #629."
+  attributes:
+    priority: medium
+    status: planned
+    size: s
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/c4Marks.ts
+        symbol: changeCountLabel
+  metadata:
+    created_at: 2026-11-24T14:02:29.158Z
+    updated_at: 2026-11-24T14:02:29.158Z
+    version: 1
