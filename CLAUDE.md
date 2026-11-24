@@ -7,16 +7,16 @@ system**. The app is both **served from** and **fed data by** the Documentation 
 thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 
 **Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned via npm),
-Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5, `elkjs` (pinned exact; the C4 diagram
-layout only, loaded lazily).
+Vite 6, TanStack Router + TanStack Query, Zustand 5, `elkjs` (pinned exact; the C4 diagram
+layout only, loaded lazily). No CSS framework: Heimdall's precompiled CSS plus the viewer's own CSS files.
 
 **13 Architecture Layers** (spec 0.12+): Motivation, Business, Product, Security, Application, Technology,
 API, Data Model, Data Store, UX, Navigation, APM, Testing.
 
 > **History:** The UX was fully rebuilt on Heimdall (June 2026), replacing the previous React Flow +
-> Flowbite + Storybook + Playwright stack. There is **no React Flow, Flowbite, Storybook, or Playwright**
-> in the codebase. The data/infrastructure layer (API client, WS/JSON-RPC, chat service, data stores,
-> types) was kept; the entire presentation layer is new and lives under `src/apps/embedded/ui` + `data`.
+> Flowbite + Storybook stack (its last leftover, Tailwind, went in #616). There is **no React Flow, Flowbite,
+> Storybook or Tailwind** in the codebase; Playwright is used for the E2E suite only. The data/infrastructure
+> layer (API client, WS/JSON-RPC, chat service, data stores, types) was kept; the entire presentation layer is new and lives under `src/apps/embedded/ui` + `data`.
 
 ## Development Principles
 
@@ -90,7 +90,7 @@ src/
 │   ├── services/generatedApiClient.ts   # AUTO-GENERATED from docs/api-spec.yaml (npm run client:generate)
 │   ├── services/exceptionClassifier.ts
 │   └── types/                 # model.ts, layers.ts, api-client.ts (generated), exceptions.ts
-├── index.css                  # Tailwind v4 import + Heimdall css/fonts + domain swatch / nav helper CSS
+├── index.css                  # base reset (in `@layer reset`, below every unlayered rule) + --font-family-sans
 ```
 
 **Architecture Rules:**
@@ -141,10 +141,11 @@ single-canvas / 2-level only.)
 Pass `domainColor` = the **layer slug** (e.g. `data-model`), not a hex.
 
 **Styling Rules:**
-1. Compose Heimdall components + tokens; Tailwind v4 utilities only for the custom shell layout.
+1. Compose Heimdall components + tokens; the custom shell layout uses the `ui/*.css` files and inline styles
+   (there is no utility-class framework).
 2. NEVER hardcode hex in canvas regions — use `rgb(var(--canvas-*))` so dark mode flips it.
 3. NEVER use dot notation — `List.Item` → `ListItem`.
-4. Add `data-testid` to interactive elements (for the future E2E suite).
+4. Add `data-testid` to interactive elements (the E2E suite finds them by it).
 
 ## Data / API (the DR CLI)
 
@@ -692,7 +693,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~1040 tests)
+npm test            # Vitest: unit + integration + component (~1120 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -705,7 +706,7 @@ npx tsc --noEmit
 npm run client:generate
 ```
 
-**Verify changes live** (no test suite yet): open the app with the chrome-devtools MCP (or a headless Chrome
+**Verify UI changes live** as well as in the tests: open the app with the chrome-devtools MCP (or a headless Chrome
 over CDP) and check rendering, console, and network. Machine note: this Vite setup's watcher can serve stale
 transforms after edits — if a change doesn't appear, restart the dev server and `rm -rf node_modules/.vite`.
 
@@ -733,7 +734,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~1040 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~1120 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
@@ -766,7 +767,7 @@ All components must meet **WCAG 2.1 Level AA**:
 
 ## Notes for Agents
 
-- The project-configured sub-agents and skills named `*-flow-expert`, `*-storybook`, `*-test` (Playwright),
-  and `*-patterns` (React Flow) target the **removed** stack and are stale pending update — do not follow
-  their React Flow / Flowbite / Storybook guidance.
+- Project skills: `documentation_robotics_viewer-build` (build and check the bundle) and
+  `documentation_robotics_viewer-api-sync` (sync the API spec, regenerate the client). The stale agents and
+  skills for the removed stack were deleted (#616).
 - When touching the data layer, mind the dotted-id resolution and the `/api/spec` shape above.
