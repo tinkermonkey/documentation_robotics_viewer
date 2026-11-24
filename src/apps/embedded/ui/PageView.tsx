@@ -210,8 +210,8 @@ function Cell({
       <button
         type="button"
         className="drv-cell-link"
-        // `color`/`fontSize`/`fontFamily` aren't repeated here — Tailwind's
-        // Preflight resets `button` to inherit them from the span above.
+        // `color`/`fontSize`/`fontFamily` aren't repeated here — the reset in
+        // `src/index.css` makes `button` inherit them from the span above.
         // `overflow`/`textOverflow`/`whiteSpace` ARE non-inherited properties
         // and this button (not the span) is the box whose own content
         // actually needs to truncate, so they stay explicit.

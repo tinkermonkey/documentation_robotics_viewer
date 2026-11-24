@@ -1,0 +1,717 @@
+- type: add
+  elementId: motivation.requirement.diagrams-travel-outside-the-viewer
+  layerName: motivation
+  after:
+    id: af3e3ac1-1be1-4a45-a3b1-55b8ec0b7d37
+    path: motivation.requirement.diagrams-travel-outside-the-viewer
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Diagrams travel outside the viewer
+    description: A C4 diagram on screen, with its changeset overlay or plan
+      comparison, can be taken out of the viewer as an image (SVG, PNG) or as
+      diagram source the C4 tools read (Structurizr DSL, C4-PlantUML), so it can
+      go into a document, a review or another tool without a screenshot.
+    attributes:
+      requirementType: functional
+      priority: medium
+    metadata:
+      created_at: 2026-11-23T23:18:18.911Z
+      updated_at: 2026-11-23T23:18:18.911Z
+      version: 1
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 0
+- type: add
+  elementId: product.feature.c4-diagram-export
+  layerName: product
+  after:
+    id: 70c187fd-c430-45ef-8976-a1f97243838f
+    path: product.feature.c4-diagram-export
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Diagram Export
+    description: "An Export menu in the Architecture view's header: the diagram on
+      screen as SVG, PNG, Structurizr DSL or C4-PlantUML, downloaded as a file
+      named after the diagram. The export holds exactly the boxes, boundary and
+      arrows drawn; an overlay's or a comparison's marks go with it (drawn in
+      the images, tags in the text formats)."
+    attributes:
+      priority: medium
+      status: planned
+      size: m
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationservice.c4-diagram-export
+  layerName: application
+  after:
+    id: 4f9f35e7-92e0-4ba8-b1af-135d10521063
+    path: application.applicationservice.c4-diagram-export
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: C4 Diagram Export
+    description: "`data/c4/c4Export.ts` (pure): `toSvg(view, layout, marks,
+      palette)` draws a self-contained SVG from the laid-out view (no DOM
+      capture: boundary, cards, right-angle arrows and labels, colours and fonts
+      inlined); `toPlantUml(view, marks)` writes C4-PlantUML (the C4 stdlib
+      include, Person / System / System_Ext / Container / ContainerDb /
+      Component, System_Boundary / Container_Boundary, Rel with the arrow's
+      labels, marks as $tags with a legend); `toStructurizr(view, marks)` writes
+      a Structurizr DSL workspace holding this diagram's elements and one view
+      of its kind (systemContext / container / component) including exactly the
+      drawn elements, marks as tags. Identifiers are made valid per format and
+      text is escaped. `toPng` rasterises the SVG through a canvas at 2x."
+    attributes:
+      serviceType: synchronous
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    accepted_gaps:
+      - direction: incoming
+        predicate: depends-on
+        other_spec_node_id: application.applicationservice
+        reason: "A leaf: only the Architecture canvas calls the export writers; no other
+          service builds on them."
+        decided_by: agent
+        decided_at: 2026-11-23T23:18:36.318Z
+        changeset: changeset-1795475865021-rebuu0x5f
+      - direction: incoming
+        predicate: covers
+        other_spec_node_id: testing.testcoveragetarget
+        reason: Covered by its planned unit test sketches and the repo-wide Vitest
+          coverage include (src/apps/embedded/{ui,data}); the slice adds no
+          coverage target of its own.
+        decided_by: agent
+        decided_at: 2026-11-23T23:18:36.598Z
+        changeset: changeset-1795475865021-rebuu0x5f
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/c4/c4Export.ts
+          symbol: toSvg
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 2
+- type: add
+  elementId: data-model.objectschema.c4-export-mark
+  layerName: data-model
+  after:
+    id: e084da13-cbf9-44d1-9cc0-f750ec7716a9
+    path: data-model.objectschema.c4-export-mark
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Export Mark
+    description: "What a mark on a drawn box or arrow becomes in an export: its
+      status key (an overlay op or a plan verdict), glyph, words, colour and
+      line style. Built by the UI from the same resolution `C4Diagram` draws
+      with, so an export says what the screen says."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/c4/c4Export.ts
+          symbol: C4ExportMark
+  timestamp: 2026-11-24T02:02:50.364Z
+  sequenceNumber: 3
+- type: add
+  elementId: ux.subview.c4-export-menu
+  layerName: ux
+  after:
+    id: cd8b3aeb-0500-4ebf-aacd-a192e98004b2
+    path: ux.subview.c4-export-menu
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Export Menu
+    description: "The Architecture view's Export control in the page header: a menu
+      of SVG, PNG, Structurizr DSL and PlantUML, keyboard operable, each item a
+      download named `<level>-<scope>.<ext>`; disabled until the diagram is laid
+      out, with a status message after a download."
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/C4ExportMenu.tsx
+          symbol: C4ExportMenu
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 4
+- type: add
+  elementId: testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks
+  layerName: testing
+  after:
+    id: 34481ccc-bf48-4a45-9d45-aa8f31383254
+    path: testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4Export writes a valid SVG of the laid-out view with its marks
+    description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: boundary,
+      cards, arrows, escaped text, marks."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 5
+- type: add
+  elementId: testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level
+  layerName: testing
+  after:
+    id: 9840a775-635b-4b8b-a7c1-607adbcc9161
+    path: testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4Export writes C4-PlantUML for each level
+    description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: element macros
+      per kind, boundaries, Rel labels, identifiers, $tags legend."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 6
+- type: add
+  elementId: testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level
+  layerName: testing
+  after:
+    id: 89b91d48-013f-4c48-ade5-07004ad18b06
+    path: testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: c4Export writes a Structurizr DSL workspace for each level
+    description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: model nesting,
+      one view of the right kind including exactly the drawn elements, tags."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/unit/c4/c4Export.spec.ts
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 7
+- type: add
+  elementId: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram
+  layerName: testing
+  after:
+    id: 3eaf74b6-77a9-4fce-be78-7ffc059b072e
+    path: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: C4 export menu downloads each format named after the diagram
+    description: "Planned component test, tests/components/C4ExportMenu.spec.tsx:
+      menu items, file names, disabled until laid out, keyboard."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/components/C4ExportMenu.spec.tsx
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 8
+- type: add
+  elementId: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+  layerName: testing
+  after:
+    id: 01f1ac16-7636-41c8-8ecd-f558d36837f2
+    path: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+    spec_node_id: testing.testcasesketch
+    type: testcasesketch
+    layer_id: testing
+    name: Architecture view exports each format and the menu passes axe
+    description: "Planned E2E test, tests/e2e/architecture.spec.ts: a download per
+      format, with and without an overlay; axe on the open menu."
+    attributes:
+      status: draft
+    metadata:
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+    source_reference:
+      provenance: manual
+      locations:
+        - file: tests/e2e/architecture.spec.ts
+  timestamp: 2026-11-24T02:02:50.383Z
+  sequenceNumber: 9
+- type: relationship-add
+  elementId: motivation.requirement.diagrams-travel-outside-the-viewer::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.diagrams-travel-outside-the-viewer
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: product.feature.c4-diagram-export::satisfies::motivation.requirement.diagrams-travel-outside-the-viewer
+  layerName: product
+  after:
+    source: product.feature.c4-diagram-export
+    target: motivation.requirement.diagrams-travel-outside-the-viewer
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: product.feature.c4-diagram-export::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.c4-diagram-export
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: product.feature.c4-diagram-export::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.c4-diagram-export
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: product.feature.c4-diagram-export::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.c4-diagram-export
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: product.feature.c4-diagram-export::depends-on::product.feature.c4-architecture-diagrams
+  layerName: product
+  after:
+    source: product.feature.c4-diagram-export
+    target: product.feature.c4-architecture-diagrams
+    predicate: depends-on
+    layer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::realizes::product.feature.c4-diagram-export
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: product.feature.c4-diagram-export
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 16
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::satisfies::motivation.requirement.diagrams-travel-outside-the-viewer
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: motivation.requirement.diagrams-travel-outside-the-viewer
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 17
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::realizes::business.businessservice.architecture-model-visualization
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: business.businessservice.architecture-model-visualization
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 18
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::depends-on::application.applicationservice.c4-diagram-layout
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: application.applicationservice.c4-diagram-layout
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 20
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::accesses::data-model.objectschema.c4-view
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: data-model.objectschema.c4-view
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 21
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::accesses::data-model.objectschema.c4-export-mark
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: data-model.objectschema.c4-export-mark
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 22
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::serves::application.applicationcomponent.architecture-canvas
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: application.applicationcomponent.architecture-canvas
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 23
+- type: relationship-add
+  elementId: application.applicationcomponent.architecture-canvas::accesses::data-model.objectschema.c4-export-mark
+  layerName: application
+  after:
+    source: application.applicationcomponent.architecture-canvas
+    target: data-model.objectschema.c4-export-mark
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 24
+- type: relationship-add
+  elementId: data-model.objectschema.c4-export-mark::realizes::business.businessobject.architecture-model
+  layerName: data-model
+  after:
+    source: data-model.objectschema.c4-export-mark
+    target: business.businessobject.architecture-model
+    predicate: realizes
+    layer: data-model
+    targetLayer: business
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 25
+- type: relationship-add
+  elementId: ux.view.architecture-view::composes::ux.subview.c4-export-menu
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: ux.subview.c4-export-menu
+    predicate: composes
+    layer: ux
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 26
+- type: relationship-add
+  elementId: ux.view.architecture-view::realizes::product.feature.c4-diagram-export
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: product.feature.c4-diagram-export
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 27
+- type: relationship-add
+  elementId: ux.view.architecture-view::satisfies::motivation.requirement.diagrams-travel-outside-the-viewer
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: motivation.requirement.diagrams-travel-outside-the-viewer
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 28
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 29
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 30
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level::tests::application.applicationservice.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level
+    target: application.applicationservice.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 31
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram::tests::ux.subview.c4-export-menu
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram
+    target: ux.subview.c4-export-menu
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 32
+- type: relationship-add
+  elementId: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 33
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe::tests::ux.view.architecture-view
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+    target: ux.view.architecture-view
+    predicate: tests
+    layer: testing
+    targetLayer: ux
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 34
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe::tests::product.feature.c4-diagram-export
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+    target: product.feature.c4-diagram-export
+    predicate: tests
+    layer: testing
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-23T23:18:18.926Z
+  sequenceNumber: 35
+- type: update
+  elementId: application.applicationcomponent.architecture-canvas
+  layerName: application
+  before:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components) and a
+      scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
+      (`?changeset=`) or the C4 Plan Comparison Bar when a plan is compared with
+      an as-built changeset (`?changeset=` + `?built=`), the C4 Diagram below
+      it, and a details drawer for the selected box listing the model elements
+      behind it, each a link into the Model view; with an overlay an \"In this
+      changeset\" section (each change behind the box with its op, before and
+      after, and a link to it in the Changesets view), and with a comparison a
+      \"Plan vs as built\" section (each planned element behind the box with its
+      verdict, and each unplanned one). Reads the model through useModel and the
+      spec through useSpec; level, scope, selection, the overlaid changeset and
+      the as-built live in the UI store and the URL. Shows a plain message when
+      the model yields no C4 elements, and how many model elements (and overlaid
+      changes or verdicts) the rules left out."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/ArchitectureCanvas.tsx
+          symbol: ArchitectureCanvas
+    metadata: &a3
+      created_at: 2026-11-20T15:40:02.899Z
+      updated_at: 2026-11-20T15:40:02.899Z
+      version: 1
+  after:
+    id: 61f86250-4104-4dad-97d9-c63735e145b8
+    path: application.applicationcomponent.architecture-canvas
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Architecture Canvas
+    description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
+      header with the level control (Context · Containers · Components), the
+      changeset picker and the C4 Export Menu, a scope breadcrumb, the C4
+      Changeset Bar when a changeset is overlaid (`?changeset=`) or the C4 Plan
+      Comparison Bar when a plan is compared with an as-built changeset
+      (`?changeset=` + `?built=`), the C4 Diagram below it, and a details drawer
+      for the selected box listing the model elements behind it, each a link
+      into the Model view; with an overlay an \"In this changeset\" section, and
+      with a comparison a \"Plan vs as built\" section. Export hands the drawn
+      view, its layout and its marks (as C4 Export Marks, from the same
+      resolution the diagram draws with) to the C4 Diagram Export service and
+      downloads the result. Reads the model through useModel and the spec
+      through useSpec; level, scope, selection, the overlaid changeset and the
+      as-built live in the UI store and the URL."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-23T23:18:28.905Z
+  sequenceNumber: 36
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. With a C4 Diff, cards and arrows carry op
+      marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip
+      and the status in their accessible name, never colour alone; removed boxes
+      and arrows are drawn as ghosts; a box whose parts changed shows a count.
+      With a C4 Plan Comparison, the same slots carry the verdict instead
+      (ui/verdictStyles.ts + a chip: ✓ built as planned, ≈ probable, ≠ built
+      differently, ∅ planned but not built, ? can't be checked, + built but not
+      planned) and a box whose parts carry verdicts shows a count per verdict.
+      Colours from canvas tokens, so it flips with the dark canvas. Keyboard:
+      one Tab stop with arrow keys between cards, Enter drills into a card that
+      has parts (focus follows into the new diagram), Escape clears the
+      selection; the arrows, with their status, are also listed as text. Proof
+      of concept for boundary rendering, a C4 card and its status slot in
+      Heimdall."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a6
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. An overlay's op marks or a comparison's
+      verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`:
+      outline, glyph, words, colour token, dash per card and arrow), which the
+      export also uses, so an exported diagram carries the same marks. Colours
+      from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab
+      stop with arrow keys between cards, Enter drills into a card that has
+      parts, Escape clears the selection; the arrows, with their status, are
+      also listed as text."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-23T23:18:28.932Z
+  sequenceNumber: 37
+- type: relationship-add
+  elementId: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe::tests::application.applicationcomponent.architecture-canvas
+  layerName: testing
+  after:
+    source: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+    target: application.applicationcomponent.architecture-canvas
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-23T23:18:36.055Z
+  sequenceNumber: 39
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::depends-on::application.applicationservice.c4-model-transform
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: application.applicationservice.c4-model-transform
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T02:03:15.294Z
+  sequenceNumber: 51

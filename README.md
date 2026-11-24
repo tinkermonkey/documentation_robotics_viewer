@@ -1,596 +1,133 @@
 # Documentation Robotics Viewer
 
-A React-based graph visualization tool for the documentation robotics meta-model. Uses [@xyflow/react](https://reactflow.dev) for interactive graph display and [dagre.js](https://github.com/dagrejs/dagre) for automatic node layout.
+The browser front end of [Documentation Robotics](https://github.com/tinkermonkey/documentation_robotics) (DR):
+it shows a project's multi-layer architecture model, its changesets and C4 diagrams, and hosts DrBot, the
+model's chat agent. The `dr` CLI both **serves** the viewer and **feeds it data** over REST + WebSocket; this
+repository builds the bundle it serves.
+
+Built on the **Heimdall design system** (`@tinkermonkey/heimdall-ui`): React 19 + TypeScript, Vite 6,
+TanStack Router + TanStack Query, Zustand 5, and `elkjs` for the C4 diagram layout.
 
 ## Features
 
-- **Multi-Layer Architecture Visualization**: View architectural models across 12 layers (Motivation, Business, Security, Application, Technology, API, DataModel, DataStore, UX, Navigation, APM, Testing)
-- **Interactive Graph**: Powered by React Flow, allowing pan, zoom
-- **Automatic Layout**: Uses dagre.js and ELK to automatically arrange nodes in a hierarchical layout
-- **YAML & JSON Support**: Load models from YAML instance files or JSON schemas
-- **Embedded Mode**: Standalone viewer component for integration
-- **DR CLI Integration**: Works with the Documentation Robotics CLI server
+- **Model view**: each of the 13 layers (Motivation, Business, Product, Security, Application, Technology, API,
+  Data Model, Data Store, UX, Navigation, APM, Testing) as a graph, as lanes or a hive plot by node type, or as a
+  page; an inspector with relationships, reach across layers and annotations.
+- **Schema view**: the spec's node types and relationship types per layer.
+- **Changesets**: an inbox, a change-by-change review (keep / drop / ask DrBot), an Impact tab showing what a
+  changeset reaches, drift before Apply, and Apply / Discard.
+- **Architecture**: the model drawn as C4 System Context, Container and Component diagrams, with a changeset
+  overlay, plan-vs-as-built verdicts and export (SVG, PNG, Structurizr DSL, C4-PlantUML).
+- **DrBot**: live chat with the model's agent, in a floating or docked panel.
+- Search across elements and node types, light and dark canvas, deep links for every selection.
 
-## Project Structure
+[CLAUDE.md](CLAUDE.md) describes each feature and the code behind it in detail.
+
+## Project structure
 
 ```
-├── src/
-│   ├── apps/
-│   │   └── embedded/              # Embedded viewer application
-│   │       ├── components/        # App-specific components
-│   │       ├── routes/            # TanStack Router route components
-│   │       ├── services/          # WebSocket client, data loader
-│   │       └── stores/            # App-specific Zustand stores
-│   ├── catalog/                   # Storybook catalog (stories, fixtures, providers)
-│   ├── core/
-│   │   ├── components/            # Shared React components (GraphViewer, base UI)
-│   │   ├── edges/                 # Custom React Flow edge types
-│   │   ├── layout/                # Layout engines (Dagre, ELK)
-│   │   ├── nodes/                 # Custom React Flow nodes (UnifiedNode, config)
-│   │   ├── services/              # Core services (nodeTransformer, dataLoader, yamlParser)
-│   │   ├── stores/                # Zustand state stores
-│   │   └── types/                 # TypeScript type definitions
-│   └── theme/                     # Tailwind CSS theming
-├── documentation-robotics/        # Self-reflective architecture model
-│   └── model/                     # YAML layer files (12 layers)
-├── tests/                         # Playwright test suites
-│   ├── integration/               # Integration tests
-│   ├── unit/                      # Unit tests
-│   ├── stories/                   # Story validation
-│   ├── helpers/                   # Test utilities
-│   └── fixtures/                  # Test data
-├── docs/                          # API specifications
-├── vite.config.ts                 # Vite configuration
-├── vite.config.embedded.ts        # Embedded build configuration
-├── playwright.config.ts           # Default test config
-├── playwright.e2e.config.ts       # E2E test config (with servers)
-└── package.json                   # Dependencies and scripts
+src/
+├── apps/embedded/        # the application
+│   ├── main.tsx          # boot: magic-link token, fetch interceptor, CSS and fonts, router
+│   ├── router.tsx        # TanStack hash router: checkout picker, /p/:project/c/:checkout/... shell
+│   ├── ui/               # presentation: Heimdall components + the viewer's own CSS files
+│   ├── data/             # stateless React Query hooks and pure transforms over the API (no JSX)
+│   ├── services/         # WebSocket / JSON-RPC client, chat service, error tracking
+│   ├── stores/           # Zustand data stores (auth, chat, connection, checkout, local review)
+│   └── types/ utils/ routes/
+├── core/                 # framework-agnostic: the generated API client and types
+└── index.css             # base reset and font variable, loaded before Heimdall's CSS
+tests/
+├── unit/ integration/ components/   # Vitest
+├── e2e/                             # Playwright + axe, against the built bundle
+└── fixtures/ helpers/
+docs/api-spec.yaml        # the dr CLI's OpenAPI spec (synced from upstream)
+documentation-robotics/   # this project's own DR model and changesets
+scripts/                  # build, packaging and API-spec helpers
 ```
 
-## Getting Started
+## Getting started
 
 ### Prerequisites
 
-- Node.js (v18 or higher)
-- npm
-- Documentation Robotics CLI (for running the server)
+- Node.js 20 or later
+- The `dr` CLI, recent enough to run `dr serve`: this viewer reads project data through the CLI's per-checkout
+  routes. The published `@documentation-robotics/cli` (0.7.1) predates `dr serve`; until a release ships it, build
+  the CLI from [documentation_robotics](https://github.com/tinkermonkey/documentation_robotics) main
 
-### Installation
+### Install
 
 ```bash
-# Install Node.js dependencies
 npm install
-
-# Install Playwright browsers for testing
-npx playwright install
-
-# Verify setup
-npm run verify
+npx playwright install chromium   # only for the E2E suite
 ```
 
-### Running the Embedded Viewer
+### Run against a model
 
-The embedded viewer connects to the Documentation Robotics CLI server:
+The viewer needs the CLI's central process for its data:
 
 ```bash
-# Terminal 1 - Start the DR CLI server
-dr visualize [path-to-your-model]
-
-# Terminal 2 - Start the development server
-npm run dev:embedded
+dr serve --foreground                 # serves the bundled viewer and the API, default port 8080
 ```
 
-Open [http://localhost:3001](http://localhost:3001) to view the application.
-
-**Note**: The embedded viewer requires the DR CLI server to be running. The server provides the WebSocket endpoint and data layer for the visualization.
-
-### Running Tests
+Open the link it prints (`dr visualize` prints one for the current checkout). To work on the viewer with hot
+reload, run the Vite dev server, which proxies `/api`, `/health` and `/ws` to `:8080` (`DR_API_URL` /
+`DR_WS_URL` point it elsewhere):
 
 ```bash
-# All tests (unit + integration, 1197 tests)
-npm test
-
-# E2E tests (requires DR CLI server running)
-npm run test:e2e
-
-# E2E tests with UI
-npm run test:e2e:ui
+npm run dev                           # http://localhost:3001
 ```
 
-For E2E tests, start the DR CLI server first:
-```bash
-dr visualize [path-to-your-model]
-```
+Then open `http://localhost:3001/#/p/<project>/c/<checkout>/?token=<token>`, with the token from the link the CLI
+printed.
 
-### Component Catalog
-
-The project includes a Storybook-based component catalog for developing and testing components in isolation:
+### Build
 
 ```bash
-# Start the component catalog (port 61001)
-npm run storybook:dev
-
-# Run story tests
-npm run test:storybook
-
-# Generate accessibility report
-npm run test:storybook:a11y
+npm run build                         # → dist/embedded/dr-viewer-bundle
+dr serve --foreground --viewer-path dist/embedded/dr-viewer-bundle
 ```
 
-Open [http://localhost:61001](http://localhost:61001) to browse component stories.
+The build regenerates the API client from `docs/api-spec.yaml`, builds with `vite.config.embedded.ts` and packages
+the bundle (with the licences of the fonts and `elkjs` it redistributes).
 
-**Key Features:**
-- **Isolated Testing**: Each story runs independently without global state pollution
-- **Fast Iteration**: 40% faster startup than embedded app (2-3s vs 3-5s)
-- **Accessibility Testing**: Built-in a11y validation via Storybook addon
-
-### Building for Production
+## Tests
 
 ```bash
-npm run build  # Builds embedded mode
+npm test               # Vitest: unit, integration and component tests
+npm run test:types     # type-check the tests
+npx tsc --noEmit       # type-check the app
+npm run test:cov       # Vitest with coverage
+npm run test:e2e       # Playwright E2E + axe WCAG 2.1 AA, light and dark
 ```
 
-The production build will be output to the `dist/` directory.
-
-## DR CLI Server
-
-The Documentation Robotics CLI server provides:
-
-- `GET /health` - Health check endpoint
-- `GET /api/model` - Returns the architecture model
-- `WebSocket /ws` - Real-time model updates (JSON-RPC 2.0 protocol)
-- Embedded visualization UI integration
-- Optional token-based authentication
-
-The viewer connects to the CLI server on port 8080 (the DR CLI default, configurable via `--port`) to fetch model definitions and receive live updates via WebSocket.
-
-### API Endpoints
-
-**Health Check** (no auth required):
-```bash
-curl http://localhost:8080/health
-```
-
-**Get Model** (returns current architecture):
-```bash
-curl http://localhost:8080/api/model
-```
-
-**WebSocket Connection** (for real-time updates):
-```javascript
-const ws = new WebSocket('ws://localhost:8080/ws');
-```
-
-### Real-Time Updates
-
-The viewer maintains a WebSocket connection to receive model changes instantly:
-
-```
-Model File Changed (e.g., functions.yaml)
-         ↓
-    DR CLI detects change
-         ↓
-    WebSocket notification sent
-         ↓
-    Viewer updates graph automatically
-         ↓
-   Zero page refresh required
-```
-
-## Model Format
-
-The viewer supports two model formats:
-
-### 1. YAML Instance Models (v0.1.0)
-Hierarchical YAML files with `manifest.yaml` orchestration:
-```yaml
-# manifest.yaml
-version: 0.1.0
-schema: documentation-robotics-v1
-layers:
-  business:
-    order: 2
-    path: model/02_business/
-    enabled: true
-```
-
-### 2. JSON Schema Models (v0.1.1)
-Single JSON file per layer with schema definitions and element instances.
-
-See existing layer files in `documentation-robotics/model/` for examples.
-
-## System Architecture
-
-```
-┌──────────────────────────────────────────────────────────────┐
-│                    Dr Viewer (React 19)                      │
-│  • Multi-layer graph visualization                           │
-│  • 12 layer types (Motivation, Business, Tech, etc.)        │
-│  • Interactive pan/zoom with React Flow                      │
-│  • Real-time model updates via WebSocket                     │
-└────────────────────┬─────────────────────────────────────────┘
-                     │
-         HTTP (REST) + WebSocket (JSON-RPC 2.0)
-                     │
-┌────────────────────▼─────────────────────────────────────────┐
-│            DR CLI Server (Node.js Express)                   │
-│  • Model loading and parsing (YAML/JSON)                     │
-│  • REST API endpoints (/api/model, /health)                  │
-│  • WebSocket real-time updates                              │
-│  • Optional authentication (token-based)                     │
-│  • File watching and change detection                        │
-└────────────────────┬─────────────────────────────────────────┘
-                     │
-              File I/O (Direct)
-                     │
-┌────────────────────▼─────────────────────────────────────────┐
-│         Architecture Models (YAML/JSON Files)                │
-│  • manifest.yaml - Model orchestration                       │
-│  • Layer files - Element definitions                         │
-│  • Relationship definitions                                  │
-│  • Schema specifications                                     │
-└──────────────────────────────────────────────────────────────┘
-```
-
-**Key Features:**
-- **Stateless Frontend** - No local state persistence between sessions
-- **Live Updates** - Changes to model files appear instantly on screen
-- **Layered Architecture** - 12 distinct architecture layers
-- **Extensible** - Custom node types and layout algorithms
-- **Accessible** - WCAG 2.1 AA compliance throughout
-
-## Technologies Used
-
-### Frontend
-- **React 19** - UI framework
-- **TypeScript** - Type safety and strict checking
-- **Vite 6** - Fast build tool and dev server
-- **@xyflow/react** - Interactive graph visualization (v12.9+)
-- **dagre.js** - Graph layout algorithm
-- **Zustand 5** - State management (stores)
-- **Flowbite React** - UI component library
-- **Tailwind CSS v4** - Utility-first CSS framework
-- **TanStack Router** - Type-safe routing
-
-### Backend (DR CLI Server)
-- **Node.js Express** - Web server
-- **JSON-RPC 2.0** - WebSocket protocol
-- **YAML/JSON Parsing** - Model format support
-
-### Testing
-- **Playwright 1.57** - E2E testing framework
-- **Storybook** - Component catalog and isolation
-
-## Project Status
-
-**Version**: 0.2.3
-**Tests**: 1197 (unit + integration + E2E)
-
-## Quick Reference
-
-### Essential Commands
-```bash
-# Verify setup is complete
-npm run verify
-
-# Start DR CLI server (Terminal 1)
-dr visualize [path-to-your-model]
-
-# Start embedded viewer (Terminal 2)
-npm run dev:embedded
-
-# Run all tests
-npm test
-
-# Run E2E tests with UI
-npm run test:e2e:ui
-
-# Sync API specification from upstream DR CLI repository
-npm run sync:api-spec
-```
-
-### Syncing API Specification
-
-The `npm run sync:api-spec` command pulls the latest API specification from the upstream Documentation Robotics CLI repository. This keeps the local `docs/api-spec.yaml` synchronized with the official API definition.
-
-**When to use:**
-- Before implementing changes to API client code
-- When updating to a new version of the DR CLI
-- When the API specification has changed in the upstream repository
-
-**What it does:**
-1. Fetches the latest `api-spec.yaml` from the official DR CLI repository
-2. Saves it to `docs/api-spec.yaml` in your local project
-3. The API specification is then used by the REST API client (`EmbeddedDataLoader`) to determine available endpoints
-
-**Usage:**
-```bash
-npm run sync:api-spec
-```
-
-The command is a wrapper around the `scripts/sync-api-spec.sh` script, which handles the actual download and validation.
-
-## CI/CD Setup
-
-### Running E2E Tests in CI Environments
-
-The E2E tests require the Documentation Robotics CLI server to be running. This section explains how to configure your CI/CD pipeline for automated test runs.
-
-#### Installing DR CLI in CI
-
-The CLI must be installed globally before running E2E tests. Add these steps to your CI workflow:
+`npm run test:e2e` builds the bundle, and Playwright runs `scripts/e2e-server.sh`: `dr serve` on port 8099 in a
+scratch farm whose one project is a clone of the repository's committed model. It then drives every view. It needs
+a dr CLI with `dr serve`; until one is published, point it at one built from source:
 
 ```bash
-# Install DR CLI globally (v1.0.0 or higher)
-npm install -g @tinkermonkey/dr-cli
-
-# Verify installation
-dr --version
+DR_CLI="node <documentation_robotics>/cli/dist/cli.js" npm run test:e2e
 ```
 
-#### GitHub Actions Example
+See [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md).
 
-Add this job to your `.github/workflows/ci.yml`:
+## API spec
 
-```yaml
-name: E2E Tests
+`docs/api-spec.yaml` is the dr CLI's OpenAPI spec. `npm run sync:api-spec` fetches it from upstream and
+`npm run client:generate` regenerates `src/core/types/api-client.ts` and `src/core/services/generatedApiClient.ts`
+(never edit those by hand). The pre-commit hook syncs it on each commit (`HUSKY_OFFLINE=1` skips the fetch).
 
-on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+## CI
 
-jobs:
-  e2e-tests:
-    runs-on: ubuntu-latest
+GitHub Actions, in [.github/workflows](.github/workflows):
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Install DR CLI
-        run: npm install -g @tinkermonkey/dr-cli@latest
-
-      - name: Verify DR CLI
-        run: dr --version
-
-      - name: Start DR CLI server
-        run: dr visualize ./documentation-robotics/ &
-
-      - name: Wait for server to be ready
-        run: |
-          max_attempts=30
-          attempt=0
-          while [ $attempt -lt $max_attempts ]; do
-            if curl -f http://localhost:8080/health > /dev/null 2>&1; then
-              echo "Server is ready"
-              exit 0
-            fi
-            attempt=$((attempt + 1))
-            sleep 1
-          done
-          echo "Server failed to start"
-          exit 1
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: e2e-test-results
-          path: test-results/
-```
-
-#### Other CI Systems
-
-**GitLab CI** (`.gitlab-ci.yml`):
-```yaml
-e2e_tests:
-  image: node:18
-  before_script:
-    - npm install
-    - npx playwright install --with-deps
-    - npm install -g @tinkermonkey/dr-cli@latest
-    - dr visualize ./documentation-robotics/ &
-    - sleep 5  # Wait for server to start
-  script:
-    - npm run test:e2e
-  artifacts:
-    when: always
-    paths:
-      - test-results/
-```
-
-**CircleCI** (`.circleci/config.yml`):
-```yaml
-jobs:
-  e2e-tests:
-    docker:
-      - image: cimg/node:18.0
-    steps:
-      - checkout
-      - node/install-packages:
-          pkg-manager: npm
-      - run:
-          name: Install Playwright browsers
-          command: npx playwright install --with-deps
-      - run:
-          name: Install DR CLI
-          command: npm install -g @tinkermonkey/dr-cli@latest
-      - run:
-          name: Start DR CLI server
-          command: dr visualize ./documentation-robotics/ &
-      - run:
-          name: Wait for server
-          command: |
-            for i in {1..30}; do
-              curl http://localhost:8080/health && break
-              sleep 1
-            done
-      - run:
-          name: Run E2E tests
-          command: npm run test:e2e
-      - store_artifacts:
-          path: test-results/
-```
-
-### Environment Variables
-
-The following environment variables can be set in your CI environment:
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `DR_CLI_PORT` | `8080` | Port for the DR CLI server |
-| `DR_CLI_HOST` | `localhost` | Host for the DR CLI server |
-| `TEST_TIMEOUT` | `30000` | Playwright test timeout (ms) |
-| `DR_CLI_INSTALL_VERSION` | `latest` | Specific DR CLI version to install |
-
-Example:
-```yaml
-env:
-  DR_CLI_PORT: 8080
-  DR_CLI_HOST: localhost
-```
-
-### Prerequisites for CI
-
-Before running E2E tests in CI, ensure:
-
-1. **Node.js 18+** is installed
-2. **npm** is available
-3. **Network access** to install npm packages
-4. **Port 8080** is available (or configure `DR_CLI_PORT`)
-5. **Disk space** for Playwright browsers (typically ~400MB)
-
-### Troubleshooting CI Tests
-
-If E2E tests fail in CI but pass locally:
-
-1. **Verify DR CLI installation**:
-   ```bash
-   npm install -g @tinkermonkey/dr-cli@latest
-   dr --version
-   ```
-
-2. **Check server startup logs**:
-   ```bash
-   dr visualize ./documentation-robotics/ --verbose
-   ```
-
-3. **Confirm network connectivity**:
-   ```bash
-   curl http://localhost:8080/health
-   curl http://localhost:8080/api/model
-   ```
-
-4. **Increase timeout for slower runners**:
-   ```bash
-   npm run test:e2e -- --timeout=60000
-   ```
-
-5. **Review test-results directory** after failure:
-   ```bash
-   ls -la test-results/
-   cat test-results/*/results.json
-   ```
-
-### Troubleshooting
-
-#### Server Connection Issues
-
-```bash
-# Check if DR CLI server is running
-curl http://localhost:8080/health
-
-# If "Connection refused", start the server
-dr visualize ./my-model
-
-# Check if port 8080 is in use (DR CLI default)
-lsof -i :8080
-
-# Kill process on port 8080 (if stuck)
-kill -9 <PID>
-```
-
-#### WebSocket Connection Failed
-
-```bash
-# 1. Verify server is responding
-curl -i http://localhost:8080/api/model
-
-# 2. Check browser console for detailed error
-# - Open DevTools (F12)
-# - Look for error messages in Console tab
-# - Check Network tab for failed ws:// connections
-
-# 3. Clear browser cache and try again
-# - Open DevTools → Storage
-# - Click "Clear Site Data"
-# - Reload page
-```
-
-#### Model Not Loading
-
-```bash
-# 1. Verify manifest file exists and is valid
-cat my-model/manifest.yaml
-
-# 2. Validate model structure
-dr validate ./my-model
-
-# 3. Check server logs (Terminal 1 where server runs)
-# Look for error messages about YAML parsing
-
-# 4. Ensure model path is correct
-dr visualize $(pwd)/my-model  # Use absolute path
-```
-
-#### Port Already in Use
-
-```bash
-# Kill existing process on port 8080
-lsof -i :8080 | grep LISTEN | awk '{print $2}' | xargs kill -9
-
-# Or use different port (check DR CLI docs)
-dr visualize --port 3001 ./my-model
-```
-
-#### Tests Failing
-
-```bash
-# 1. Ensure DR CLI server is running in separate terminal
-dr visualize ./documentation-robotics/
-
-# 2. Verify server is healthy
-curl http://localhost:8080/health
-
-# 3. Run tests with verbose output
-npm run test:e2e -- --verbose
-
-# 4. Check test results
-ls -la test-results/
-```
-
-### Key URLs
-- **Embedded Viewer**: http://localhost:3001
-- **DR CLI Server**: http://localhost:8080
-- **Storybook**: http://localhost:61001
+- `test.yml`: the required gate (type checks, Vitest, build), plus a non-blocking Playwright E2E + axe job that
+  installs the dr CLI and runs `npm run test:e2e`; it skips, with a warning in the job summary, while the installed
+  CLI has no `dr serve`.
+- `ci.yml`: checks the API spec is in sync, runs the tests and builds; on a `v*` tag it publishes a GitHub Release
+  with the bundle as a zip.
+- `sync-api-spec.yml`: daily, opens a PR when the upstream API spec changed.
 
 ## License
 
-ISC
+MIT: see [LICENSE](LICENSE).

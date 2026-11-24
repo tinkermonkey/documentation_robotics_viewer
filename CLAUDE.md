@@ -7,16 +7,16 @@ system**. The app is both **served from** and **fed data by** the Documentation 
 thin, Heimdall-native front end over the CLI's REST + WebSocket API.
 
 **Tech Stack:** React 19 + TypeScript, `@tinkermonkey/heimdall-ui` (Heimdall design system, pinned via npm),
-Vite 6, Tailwind CSS v4, TanStack Router + TanStack Query, Zustand 5, `elkjs` (pinned exact; the C4 diagram
-layout only, loaded lazily).
+Vite 6, TanStack Router + TanStack Query, Zustand 5, `elkjs` (pinned exact; the C4 diagram
+layout only, loaded lazily). No CSS framework: Heimdall's precompiled CSS plus the viewer's own CSS files.
 
 **13 Architecture Layers** (spec 0.12+): Motivation, Business, Product, Security, Application, Technology,
 API, Data Model, Data Store, UX, Navigation, APM, Testing.
 
 > **History:** The UX was fully rebuilt on Heimdall (June 2026), replacing the previous React Flow +
-> Flowbite + Storybook + Playwright stack. There is **no React Flow, Flowbite, Storybook, or Playwright**
-> in the codebase. The data/infrastructure layer (API client, WS/JSON-RPC, chat service, data stores,
-> types) was kept; the entire presentation layer is new and lives under `src/apps/embedded/ui` + `data`.
+> Flowbite + Storybook stack (its last leftover, Tailwind, went in #616). There is **no React Flow, Flowbite,
+> Storybook or Tailwind** in the codebase; Playwright is used for the E2E suite only. The data/infrastructure
+> layer (API client, WS/JSON-RPC, chat service, data stores, types) was kept; the entire presentation layer is new and lives under `src/apps/embedded/ui` + `data`.
 
 ## Development Principles
 
@@ -45,6 +45,7 @@ src/
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
 │   │   ├── ChangesetInbox.tsx ChangesetReviewPanel.tsx ChangeInspector.tsx ApplyReview.tsx  # per-change review
+│   │   ├── CommitProgressBar.tsx  # a commit in flight: determinate from changeset.commit.progress, else indeterminate (#628)
 │   │   ├── ChangeLinkCard.tsx ChangeNeighbourhood.tsx  # change inspector: link as source→predicate→target; reach as wrapped lanes
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
@@ -81,6 +82,7 @@ src/
 │   │   │                      # c4Export.ts (SVG / PNG / Structurizr DSL / C4-PlantUML of the drawn view)
 │   │   ├── planVerification.ts usePlanVerification.ts  # the dr CLI's plan-vs-as-built report (validated) + pairing
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
+│   │   ├── commitProgress.ts  # changeset.commit.progress guard + merge + wording; useCommitProgress / useOutsideCommitProgress
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
 │   ├── stores/                # KEPT data stores: authStore, chatStore, connectionStore (+ localReviewStore, checkoutStore)
@@ -90,7 +92,7 @@ src/
 │   ├── services/generatedApiClient.ts   # AUTO-GENERATED from docs/api-spec.yaml (npm run client:generate)
 │   ├── services/exceptionClassifier.ts
 │   └── types/                 # model.ts, layers.ts, api-client.ts (generated), exceptions.ts
-├── index.css                  # Tailwind v4 import + Heimdall css/fonts + domain swatch / nav helper CSS
+├── index.css                  # base reset (in `@layer reset`, below every unlayered rule) + --font-family-sans
 ```
 
 **Architecture Rules:**
@@ -141,10 +143,11 @@ single-canvas / 2-level only.)
 Pass `domainColor` = the **layer slug** (e.g. `data-model`), not a hex.
 
 **Styling Rules:**
-1. Compose Heimdall components + tokens; Tailwind v4 utilities only for the custom shell layout.
+1. Compose Heimdall components + tokens; the custom shell layout uses the `ui/*.css` files and inline styles
+   (there is no utility-class framework).
 2. NEVER hardcode hex in canvas regions — use `rgb(var(--canvas-*))` so dark mode flips it.
 3. NEVER use dot notation — `List.Item` → `ListItem`.
-4. Add `data-testid` to interactive elements (for the future E2E suite).
+4. Add `data-testid` to interactive elements (the E2E suite finds them by it).
 
 ## Data / API (the DR CLI)
 
@@ -216,7 +219,7 @@ past slice 4B (not used).
 **WebSocket (JSON-RPC 2.0, `ws://:8080/ws`):** the client sends `{action: "subscribe" | "unsubscribe", project,
 checkout}` for the checkout shown (on open, after each reconnect, and on a switch); every plain event is stamped
 with `project` + `checkout`, and `websocketClient` drops events for another checkout (`isForCheckout` in the live
-hooks too). New events: `checkout.removed`, `server.stopping`. A server `{type: "error"}` frame is re-emitted as
+hooks too). New events: `checkout.removed`, `server.stopping`, `changeset.commit.progress` (#628). A server `{type: "error"}` frame is re-emitted as
 `server.error`, never the transport's `error`. Chat methods `chat.send` / `chat.status` / `chat.cancel` carry
 `project` + `checkout`; streaming notifications `chat.response.chunk` / `chat.tool.invoke` / `chat.thinking` /
 `chat.usage` / `chat.error` / `chat.turn.queued` / `chat.turn.started` carry `conversation_id` + `project` +
@@ -324,12 +327,19 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   `useC4Overlay(changesetId)` (in `useC4Model.ts`, takes the id so `data/` never reads the store) caches it per
   model payload, spec and changeset payload; the layout query key adds the changeset id + revision. `C4Diagram`'s
   `overlay` prop: a ring in the op's `ui/opStyles.ts` outline (colour AND line style) clear of the selection
-  outline, a text chip with a glyph (`ui/c4Marks.ts`: + added, − removed, → moved from X, ~ changed), a "N
-  changes inside" chip (`rollUpLabel`: the changeset's changes below the box), ghosts (`c4-card--ghost`: faded,
-  dotted, never drillable), arrows stroked in the op colour with their own dash pattern and a glyph on the label;
-  the status is in every card's accessible name and in the hidden arrow list. `ui/C4ChangesetBar.tsx` under the
-  breadcrumb: name, purpose, "staged, shown applied" / "applied, shown reverted", `DriftBadge`, tally, legend,
-  what the diagrams leave out, Review in Changesets, Clear. The drawer's "In this changeset" lists the changes
+  outline, a text chip with a glyph (`ui/c4Marks.ts`: + added, − removed, → moved from X, ~ changed) and, past
+  one, the changes behind it (#629: `changeCountLabel` of `sequences.length`, "~ changed · 12 changes", in the
+  accessible name as "changed, 12 changes"), a "N changes inside" chip (`rollUpLabel`: the changeset's changes
+  below the box, each once), ghosts (`c4-card--ghost`: faded, dotted, never drillable), arrows stroked in the op
+  colour with their own dash pattern, a glyph on the label and, past one, its count at the end
+  (`c4Layout.ts`'s `c4MarkedEdgeLabel` cuts the labels, never the count, and `c4EdgeLabelWidth` widens the
+  label's background; the export uses both); the status (with its count) is in every card's accessible name and
+  in the hidden arrow list. A link change can count on its arrow and on both end boxes, so children's counts
+  don't sum to the parent's chip: `ui/C4ChangesetBar.tsx` (`scope` prop) states the drawn scope's total instead
+  ("81 changes inside Web App, each counted once", `scopeChangesLabel`, the same number as the chip followed),
+  and the drawer says the chip counts each change once. The bar under the
+  breadcrumb: name, purpose, "staged, shown applied" / "applied, shown reverted", `DriftBadge`, tally, scope
+  total, legend, what the diagrams leave out, Review in Changesets, Clear. The drawer's "In this changeset" lists the changes
   behind the box (this box / inside it / its arrows), each `#seq` opening it in the Changesets review
   (`selectChangeset` + `selectChange`); a staged changeset's new box lists its model elements without links. A
   selection the drawn diagram doesn't hold is dropped once the overlay has loaded. DrBot's context names the
@@ -482,6 +492,23 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   server only applies reviewed-commit rules when the body names either); a committed changeset shows
   `AppliedResult` (landed by layer, what was left out, how many landed without a decision — server mode only). Refusals inline: 409 drift (an older dr CLI: "nothing was written, your
   decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
+  **Commit progress** (#628, needs documentation_robotics#1361): while the commit request runs, the summary card's
+  decided bar gives way to `ui/CommitProgressBar.tsx` (Apply, Keep and Discard stay shut). `data/commitProgress.ts`
+  reads the server's `changeset.commit.progress` frame (`{ type, changesetId, applied, total, phase?, layer?,
+  failed?, project, checkout }`; phases validating → applying → saving → reloading → done; a JSON-RPC
+  notification with the same params is read too) through `toCommitProgress` (string id, non-negative integer
+  counts, `applied` clamped to `total`, text phase/layer, `failed` only as `true`; anything else dropped) and
+  `mergeCommitProgress` (other changesets ignored, never backwards within a phase). Determinate: "Applying 340
+  of 1,200 changes · saving" + layer, `role="progressbar"` with `aria-valuenow`/`-max`. Before the first frame or
+  on an older dr CLI: indeterminate, "Applying N changes…" (N in the server's measure: what lands plus the folded
+  add-then-delete pairs, so the first frame's total matches), a sliding fill (still under reduced motion), no
+  `aria-valuenow`. A polite `role="status"` region (mounted empty, text set in an effect) speaks at the start,
+  each phase and each quarter (`commitProgressAnnouncement`). A refusal after progress keeps the bar frozen in rose
+  ("Stopped at 4 of 30 · validating") above the inline error until a decision changes (`commit.reset()`). The
+  `StatusBar` shows a compact bar for a commit this tab didn't start (the CLI's MCP `changeset_commit`, DrBot):
+  `useOutsideCommitProgress` skips ids `markOwnCommit` registered and keeps it until `done` (then 1.5 s) or
+  `failed` (shown stopped, 5 s), with a 60 s cap after the last frame. A separate `dr changeset commit` process
+  sends nothing.
   Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
   `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
   `onError` (revert only that PUT's verdicts on the CURRENT cached detail — never a stale snapshot, which would
@@ -699,7 +726,7 @@ npm run dev
 npm run build
 
 # Tests
-npm test            # Vitest: unit + integration + component (~1040 tests)
+npm test            # Vitest: unit + integration + component (~1120 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
@@ -712,7 +739,7 @@ npx tsc --noEmit
 npm run client:generate
 ```
 
-**Verify changes live** (no test suite yet): open the app with the chrome-devtools MCP (or a headless Chrome
+**Verify UI changes live** as well as in the tests: open the app with the chrome-devtools MCP (or a headless Chrome
 over CDP) and check rendering, console, and network. Machine note: this Vite setup's watcher can serve stale
 transforms after edits — if a change doesn't appear, restart the dev server and `rm -rf node_modules/.vite`.
 
@@ -740,7 +767,7 @@ transforms after edits — if a change doesn't appear, restart the dev server an
 
 The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md):
 
-- **Vitest** (`npm test`, **~1040 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
+- **Vitest** (`npm test`, **~1120 tests**): `tests/unit/` pure-function transforms (`modelGraph` dotted-id /
   445-link resolution, `chatAdapter`, `changesets` op-folding, `specGraph`, `relationships`, `reach`, `changesetImpact`, `uiStore`,
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
@@ -778,7 +805,7 @@ All components must meet **WCAG 2.1 Level AA**:
 
 ## Notes for Agents
 
-- The project-configured sub-agents and skills named `*-flow-expert`, `*-storybook`, `*-test` (Playwright),
-  and `*-patterns` (React Flow) target the **removed** stack and are stale pending update — do not follow
-  their React Flow / Flowbite / Storybook guidance.
+- Project skills: `documentation_robotics_viewer-build` (build and check the bundle) and
+  `documentation_robotics_viewer-api-sync` (sync the API spec, regenerate the client). The stale agents and
+  skills for the removed stack were deleted (#616).
 - When touching the data layer, mind the dotted-id resolution and the `/api/spec` shape above.

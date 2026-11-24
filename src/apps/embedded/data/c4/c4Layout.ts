@@ -66,6 +66,26 @@ function labelSize(text: string): { width: number; height: number } {
   return { width: Math.min(LABEL_MAX, Math.ceil(text.length * LABEL_CHAR) + 12), height: LABEL_HEIGHT };
 }
 
+/** Characters of a marked arrow's glyph and labels drawn before they are cut. */
+export const C4_EDGE_LABEL_CHARS = 28;
+
+/**
+ * A marked arrow's label as drawn: its glyph and labels, cut to
+ * `C4_EDGE_LABEL_CHARS`, then its change count, never cut ("+ uses · 4
+ * changes"). The layout sized the label without the mark: `c4EdgeLabelWidth`
+ * gives the width the drawn text needs.
+ */
+export function c4MarkedEdgeLabel(base: string, glyph = '', count = ''): string {
+  const full = glyph ? `${glyph} ${base}` : base;
+  const text = full.length > C4_EDGE_LABEL_CHARS ? `${full.slice(0, C4_EDGE_LABEL_CHARS - 1)}…` : full;
+  return count ? `${text} · ${count}` : text;
+}
+
+/** The width of a drawn arrow label: the layout's, widened (about its centre) to fit `text`. */
+export function c4EdgeLabelWidth(laidOut: number, text: string): number {
+  return Math.max(laidOut, Math.ceil(text.length * LABEL_CHAR) + 12);
+}
+
 type ElkLike = { layout: (graph: ElkNode) => Promise<ElkNode> };
 let elkPromise: Promise<ElkLike> | null = null;
 

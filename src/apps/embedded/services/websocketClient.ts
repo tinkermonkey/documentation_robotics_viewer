@@ -629,7 +629,7 @@ export class WebSocketClient implements WebSocketClientInterface {
   }
 }
 
-// Detect if we're in a test/story environment (Storybook or Playwright)
+// Detect if we're in a test environment (Playwright or a JS test runner)
 // IMPORTANT: Only check explicit flags, not port-based heuristics
 // In test environment, this method returns true and the WebSocket client uses a mock
 // (does NOT connect to real server). In production, returns false and uses real WebSocket.
@@ -638,9 +638,6 @@ function isTestEnvironment(): boolean {
 
   // Check for Playwright test environment (set by Playwright test runner)
   if (window.__PLAYWRIGHT__) return true;
-
-  // Check for explicit mock flag (must be set by Storybook/test configuration)
-  if (window.__STORYBOOK_MOCK_WEBSOCKET__) return true;
 
   // Check if we're in a test environment by looking for test-specific globals.
   // - karma: sets window.__karma__ (test runner property)
@@ -665,7 +662,6 @@ declare global {
     __INTENTIONAL_DISCONNECT__?: boolean;
     __CONNECTION_STATE__?: string;
     __PLAYWRIGHT__?: boolean;
-    __STORYBOOK_MOCK_WEBSOCKET__?: boolean;
     __karma__?: boolean;
     jasmine?: unknown;
     jest?: unknown;

@@ -12,7 +12,7 @@ if command -v node &> /dev/null; then
     NODE_VERSION=$(node --version)
     echo "✓ Node.js installed: $NODE_VERSION"
 else
-    echo "✗ Node.js not found. Please install Node.js v18 or higher."
+    echo "✗ Node.js not found. Please install Node.js 20 or later."
     exit 1
 fi
 
@@ -60,4 +60,4 @@ echo "To run tests with the DR CLI server:"
 echo "1. Start DR CLI server: dr visualize [path-to-your-model]"
 echo "2. Run tests: npm run test:e2e"
 echo ""
-echo "For more details, see tests/README.md"
+echo "For more details, see README.md"

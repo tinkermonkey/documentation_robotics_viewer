@@ -2,9 +2,9 @@ documentation/claude_thoughts
 playwright-report/
 test-results/
 tests/e2e/.server.json
-storybook-static/
+# Run folders (metadata.yaml) written by local agent tooling
+results/
 **/.venv/
-.flowbite-react/
 .api-version-cache.json
 
 # Claude Code review cycle files
@@ -22,9 +22,6 @@ yarn-error.log*
 lerna-debug.log*
 test-output.log
 test-output.txt
-storybook-test-output.txt
-storybook-test-results.txt
-debug-storybook.log
 
 # Debug artifacts (shell script output)
 /RESULT=

@@ -1,0 +1,119 @@
+id: changeset-1795529300462-e86ij5g8c
+name: apply-commit-progress
+description: >-
+  While Apply commits a changeset (#628), the summary card shows a progress bar
+  driven by the server's `changeset.commit.progress` WebSocket notification (`{
+  changesetId, applied, total, phase?, layer? }`, documentation_robotics#1361):
+  "Applying N of M changes", plus the phase when sent; an older dr CLI gets an
+  indeterminate bar ("Applying N changes…"). Apply stays disabled until the HTTP
+  response; AppliedResult and inline 409/422 refusals stay as today. A commit
+  the CLI or DrBot started shows in the status bar.
+
+
+  **Done when** the bar fills live from validated notifications (other
+  changesets and checkouts ignored, malformed payloads dropped), it is a
+  `role="progressbar"` with a polite live region that announces at intervals, a
+  refusal after progress still shows inline, and the fallback works on a CLI
+  without notifications.
+created: 2026-11-24T14:08:20.471Z
+modified: 2026-11-24T14:25:42.533Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 17
+  modifications: 2
+  deletions: 0
+lastSequence: 21
+unstaged:
+  - sequence: 2
+    removedAt: 19
+    change:
+      type: add
+      elementId: application.applicationcomponent.commit-progress-bar
+      layerName: application
+      after:
+        id: 4b0e6403-d132-476c-9c9c-3d0dde10b143
+        path: application.applicationcomponent.commit-progress-bar
+        spec_node_id: application.applicationcomponent
+        type: applicationcomponent
+        layer_id: application
+        name: Commit Progress Bar
+        description: 'ui/CommitProgressBar.tsx: a Heimdall ProgressBar for a commit in
+          flight. Determinate ("Applying 340 of 1,200 changes · saving",
+          role=progressbar with aria-valuenow/max) once the server reports
+          progress; indeterminate ("Applying 1,200 changes…", an animated fill,
+          no valuenow, still when reduced motion is asked) before the first
+          report or on an older dr CLI. A visually hidden polite live region
+          announces at intervals. Used by the changeset review summary card
+          while Apply runs, and in compact form by the status bar for a commit
+          the CLI or DrBot started.'
+        attributes:
+          type: internal
+        metadata:
+          created_at: 2026-11-24T14:08:44.683Z
+          updated_at: 2026-11-24T14:08:44.683Z
+          version: 1
+      timestamp: 2026-11-24T14:08:44.691Z
+    rewritten: true
+  - sequence: 10
+    removedAt: 20
+    change:
+      type: add
+      elementId: data-model.objectschema.commit-progress
+      layerName: data-model
+      after:
+        id: e9144aae-6287-4ee7-aa06-474c503e4c2c
+        path: data-model.objectschema.commit-progress
+        spec_node_id: data-model.objectschema
+        type: objectschema
+        layer_id: data-model
+        name: Commit Progress
+        description: "The dr CLI's changeset.commit.progress WebSocket event
+          (documentation_robotics#1361), a plain {type} frame stamped with
+          project and checkout: changesetId, applied, total (the changes that
+          will land), optional phase (validating, applying, saving, reloading or
+          another the server names) and layer. Validated before it reaches
+          React: a frame missing a string changesetId or non-negative integer
+          applied/total is dropped, applied is clamped to total, an unknown
+          phase is kept as text, a non-string layer is dropped."
+        attributes:
+          type: object
+        metadata:
+          created_at: 2026-11-24T14:08:49.603Z
+          updated_at: 2026-11-24T14:08:49.603Z
+          version: 1
+      timestamp: 2026-11-24T14:08:49.611Z
+    rewritten: true
+  - sequence: 1
+    removedAt: 21
+    change:
+      type: add
+      elementId: application.applicationservice.commit-progress
+      layerName: application
+      after:
+        id: b72dfce1-2724-41dd-b882-1ebcdebd558e
+        path: application.applicationservice.commit-progress
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Commit Progress
+        description: "data/commitProgress.ts: toCommitProgress validates a
+          changeset.commit.progress frame; commitProgressReducer keeps the
+          latest progress per changeset (never moving applied backwards within a
+          phase); useCommitProgress(changesetId) listens on the websocket for
+          the route's checkout and returns that changeset's progress, or null
+          when none has arrived (an older dr CLI); useAnyCommitProgress returns
+          the progress of any commit in the checkout for the status bar.
+          progressAnnouncement picks when the polite live region speaks (start,
+          each quarter, phase change, finish)."
+        attributes:
+          serviceType: event-driven
+        metadata:
+          created_at: 2026-11-24T14:08:44.682Z
+          updated_at: 2026-11-24T14:08:44.682Z
+          version: 1
+      timestamp: 2026-11-24T14:08:44.691Z
+    rewritten: true
