@@ -47,25 +47,30 @@ navigation.navigationtransition.layer-deep-link-transition:
     created_at: 2026-03-20T13:26:31.679Z
     updated_at: 2026-03-20T13:26:31.679Z
     version: 1
-navigation.navigationtransition.auth-redirect-transition:
-  id: 6a0364fb-3985-40d8-8921-d1634df686f2
-  path: navigation.navigationtransition.auth-redirect-transition
+navigation.navigationtransition.cli-deep-link-transition:
+  id: dbaccd23-631b-4928-bdfa-e1b3dc437f33
+  path: navigation.navigationtransition.cli-deep-link-transition
   spec_node_id: navigation.navigationtransition
   type: navigationtransition
   layer_id: navigation
-  name: Auth Redirect Transition
-  description: Programmatic redirect from the index route to the model graph view
-    after successful token extraction; triggered by the AuthRoute on token
-    validation success.
+  name: CLI Deep-Link Transition
+  description: "Reads a dr CLI viewer link: changesets/<id> opens the Changesets
+    view on that changeset (and with ?element=<id> selects its change to that
+    element); elements/<id> waits for the model, resolves the dotted id (or
+    UUID) and opens the Model view on that element's layer with it selected; an
+    id the model lacks shows the layer with a notice. Replaces the history
+    entry, so Back never returns to the raw link."
   attributes:
-    from: index-route
-    to: model-view-route
+    from: /p/:project/c/:checkout/changesets/:id |
+      /p/:project/c/:checkout/elements/:id
+    to: /p/:project/c/:checkout/:section/:view
     trigger: redirect
   source_reference:
-    provenance: extracted
+    provenance: manual
     locations:
-      - file: src/apps/embedded/routes/AuthRoute.tsx
+      - file: src/apps/embedded/routes/checkoutLinks.ts
+        symbol: readCliLink
   metadata:
-    created_at: 2026-03-20T13:26:35.262Z
-    updated_at: 2026-03-20T13:26:35.262Z
+    created_at: 2026-11-24T11:32:31.378Z
+    updated_at: 2026-11-24T11:32:31.378Z
     version: 1

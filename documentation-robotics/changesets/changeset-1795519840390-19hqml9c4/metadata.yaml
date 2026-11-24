@@ -12,8 +12,8 @@ description: "Move the viewer onto the dr CLI's central process (dr serve): hash
   Done when each CLI link form opens the named checkout and two tabs on two
   checkouts of one project don't cross events or chat."
 created: 2026-11-24T11:30:40.401Z
-modified: 2026-11-24T12:01:32.167Z
-status: staged
+modified: 2026-11-24T12:04:19.602Z
+status: committed
 baseSnapshot: v2:sha256:1cc6259c13daf9554d82b2946ea3c8a73d6b3606110fff8d7542bf5ee7e98339
 origin:
   kind: plan

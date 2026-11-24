@@ -1,6 +1,6 @@
 # Intra-layer relationships
 # Format: source_id -> predicate -> target_id
-# Last updated: 2026-11-24T10:59:48.941Z
+# Last updated: 2026-11-24T12:04:19.556Z
 
 - source: motivation.stakeholder.architecture-team
   target: motivation.goal.visualize-multi-layer-architecture-models
@@ -412,14 +412,6 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: application.applicationprocess.auth-route
-  target: application.applicationfunction.auth-store
-  predicate: depends-on
-  layer: application
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: application.applicationinterface.dr-cli-rest-interface
   target: application.applicationservice.generated-api-client
   predicate: assigned-to
@@ -802,27 +794,10 @@
   properties:
     source_provenance: inferred
     confidence: high
-- source: navigation.navigationguard.authentication-guard
-  target: navigation.navigationtransition.auth-redirect-transition
-  predicate: protects
-  layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
 - source: navigation.navigationflow.authentication-to-model-flow
   target: navigation.flowstep.token-extraction-step
   predicate: composes
   layer: navigation
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
-- source: navigation.navigationflow.authentication-to-model-flow
-  target: application.applicationprocess.auth-route
-  predicate: realizes
-  layer: navigation
-  targetLayer: application
   category: structural
   properties:
     source_provenance: inferred
@@ -953,17 +928,6 @@
   layer: data-model
   targetLayer: motivation
   category: structural
-- source: ux.uxspec.authentication-spec
-  target: motivation.requirement.dr-cli-server-integration
-  predicate: satisfies
-  layer: ux
-  targetLayer: motivation
-  category: structural
-- source: ux.statepattern.authentication-flow-pattern
-  target: ux.statepattern.data-loading-pattern
-  predicate: specializes
-  layer: ux
-  category: structural
 - source: a920ab1c-c481-46b6-bdb4-4050501adeac
   target: e642ad79-62ea-47a4-ae04-d512d0ef7881
   predicate: realizes
@@ -1043,16 +1007,6 @@
   properties:
     source_provenance: inferred
     confidence: medium
-    basis: domain-pattern
-- source: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
-  target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
-  predicate: realizes
-  layer: application
-  targetLayer: business
-  category: structural
-  properties:
-    source_provenance: inferred
-    confidence: high
     basis: domain-pattern
 - source: ff16c609-618e-4dd9-b477-12e17c000df8
   target: a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8
@@ -1513,11 +1467,6 @@
   predicate: references
   layer: data-store
   category: structural
-- source: ux.uxspec.authentication-spec
-  target: ux.view.auth-view
-  predicate: aggregates
-  layer: ux
-  category: structural
 - source: apm.instrumentationscope.error-tracker-instrumentation-scope
   target: apm.metricinstrument.web-socket-connection-state-gauge
   predicate: aggregates
@@ -1554,16 +1503,6 @@
   target: application.applicationservice.relationship-derivation
   predicate: realizes
   layer: application
-  category: structural
-- source: navigation.navigationtransition.tab-navigation-transition
-  target: navigation.route.app-shell-sectionview-route
-  predicate: navigates-to
-  layer: navigation
-  category: structural
-- source: navigation.navigationtransition.layer-deep-link-transition
-  target: navigation.route.app-shell-sectionview-route
-  predicate: navigates-to
-  layer: navigation
   category: structural
 - source: application.applicationfunction.chat-store
   target: data-model.objectschema.chat-message
@@ -1954,30 +1893,6 @@
   layer: ux
   targetLayer: technology
   category: structural
-- source: navigation.route.app-shell-sectionview-route
-  target: ux.view.model-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-- source: navigation.route.app-shell-sectionview-route
-  target: ux.view.schema-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-- source: navigation.route.app-shell-sectionview-route
-  target: ux.view.changesets-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
-- source: navigation.route.app-shell-sectionview-route
-  target: application.applicationcomponent.app-shell
-  predicate: depends-on
-  layer: navigation
-  targetLayer: application
-  category: structural
 - source: navigation.route.index-route
   target: navigation.route.app-shell-sectionview-route
   predicate: navigates-to
@@ -1991,11 +1906,6 @@
 - source: navigation.navigationgraph.embedded-app-navigation-graph
   target: navigation.route.app-shell-sectionview-route
   predicate: composes
-  layer: navigation
-  category: structural
-- source: navigation.flowstep.post-auth-model-entry-step
-  target: navigation.route.app-shell-sectionview-route
-  predicate: navigates-to
   layer: navigation
   category: structural
 - source: technology.systemsoftware.heimdall-ui
@@ -10967,12 +10877,6 @@
   predicate: composes
   layer: ux
   category: structural
-- source: navigation.route.app-shell-sectionview-route
-  target: ux.view.architecture-view
-  predicate: maps-to
-  layer: navigation
-  targetLayer: ux
-  category: structural
 - source: testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26
   target: ux.view.architecture-view
   predicate: tests
@@ -12531,4 +12435,308 @@
   target: application.applicationservice.c4-model-transform
   predicate: depends-on
   layer: application
+  category: structural
+- source: motivation.requirement.open-the-checkout-a-link-names
+  target: motivation.goal.visualize-multi-layer-architecture-models
+  predicate: realizes
+  layer: motivation
+  category: structural
+- source: motivation.requirement.keep-checkouts-apart-in-one-browser
+  target: motivation.goal.enable-real-time-collaboration
+  predicate: realizes
+  layer: motivation
+  category: structural
+- source: navigation.navigationgraph.embedded-app-navigation-graph
+  target: navigation.route.checkout-shell-route
+  predicate: composes
+  layer: navigation
+  category: structural
+- source: navigation.navigationgraph.embedded-app-navigation-graph
+  target: navigation.route.checkout-index-route
+  predicate: composes
+  layer: navigation
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: application.applicationcomponent.app-shell
+  predicate: depends-on
+  layer: navigation
+  targetLayer: application
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: ux.view.model-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: ux.view.schema-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: ux.view.changesets-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: ux.view.architecture-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: application.applicationservice.checkout-scope
+  predicate: uses
+  layer: navigation
+  targetLayer: application
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: ux.errorconfig.checkout-unavailable-error
+  predicate: uses
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: motivation.requirement.open-the-checkout-a-link-names
+  predicate: satisfies
+  layer: navigation
+  targetLayer: motivation
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: navigation
+  targetLayer: motivation
+  category: structural
+- source: navigation.route.checkout-index-route
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.route.checkout-index-route
+  target: motivation.requirement.open-the-checkout-a-link-names
+  predicate: satisfies
+  layer: navigation
+  targetLayer: motivation
+  category: structural
+- source: navigation.route.index-route
+  target: ux.view.checkout-picker-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: navigation.route.index-route
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.route.app-shell-sectionview-route
+  target: ux.view.checkout-picker-view
+  predicate: maps-to
+  layer: navigation
+  targetLayer: ux
+  category: structural
+- source: application.applicationservice.use-projects
+  target: ux.view.checkout-picker-view
+  predicate: serves
+  layer: application
+  targetLayer: ux
+  category: structural
+- source: application.applicationservice.use-projects
+  target: application.applicationcomponent.topbar
+  predicate: serves
+  layer: application
+  category: structural
+- source: ux.view.checkout-picker-view
+  target: motivation.requirement.open-the-checkout-a-link-names
+  predicate: satisfies
+  layer: ux
+  targetLayer: motivation
+  category: structural
+- source: application.applicationservice.checkout-scope
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+- source: application.applicationfunction.checkout-store
+  target: application.applicationservice.checkout-scope
+  predicate: realizes
+  layer: application
+  category: structural
+- source: application.applicationservice.web-socket-client
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+- source: application.applicationevent.checkout-removed
+  target: application.applicationfunction.checkout-store
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationevent.server-stopping
+  target: application.applicationfunction.checkout-store
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationservice.chat-service
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: data-model.objectschema.checkout-ref
+  predicate: accesses
+  layer: navigation
+  targetLayer: data-model
+  category: structural
+- source: navigation.route.checkout-shell-route
+  target: navigation.navigationtransition.cli-deep-link-transition
+  predicate: flows-to
+  layer: navigation
+  category: structural
+- source: navigation.navigationtransition.cli-deep-link-transition
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: ux.view.model-view
+  target: ux.subview.checkout-switcher
+  predicate: composes
+  layer: ux
+  category: structural
+- source: ux.view.schema-view
+  target: ux.subview.checkout-switcher
+  predicate: composes
+  layer: ux
+  category: structural
+- source: ux.view.changesets-view
+  target: ux.subview.checkout-switcher
+  predicate: composes
+  layer: ux
+  category: structural
+- source: ux.view.architecture-view
+  target: ux.subview.checkout-switcher
+  predicate: composes
+  layer: ux
+  category: structural
+- source: application.applicationservice.checkout-scope
+  target: data-model.objectschema.checkout-ref
+  predicate: accesses
+  layer: application
+  targetLayer: data-model
+  category: structural
+- source: application.applicationservice.use-model
+  target: application.applicationservice.checkout-scope
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationservice.use-changesets
+  target: application.applicationservice.checkout-scope
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationservice.generated-api-client
+  target: application.applicationservice.checkout-scope
+  predicate: depends-on
+  layer: application
+  category: structural
+- source: application.applicationfunction.checkout-store
+  target: data-model.objectschema.checkout-ref
+  predicate: accesses
+  layer: application
+  targetLayer: data-model
+  category: structural
+- source: application.applicationfunction.checkout-feed-subscription
+  target: application.applicationservice.web-socket-client
+  predicate: realizes
+  layer: application
+  category: structural
+- source: application.applicationfunction.checkout-feed-subscription
+  target: application.message.feed-subscription
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationfunction.checkout-feed-subscription
+  target: data-model.objectschema.checkout-ref
+  predicate: accesses
+  layer: application
+  targetLayer: data-model
+  category: structural
+- source: application.applicationfunction.checkout-feed-subscription
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+- source: application.applicationevent.checkout-removed
+  target: application.applicationfunction.checkout-feed-subscription
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationevent.server-stopping
+  target: application.applicationfunction.checkout-feed-subscription
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationfunction.chat-frame-routing
+  target: application.applicationservice.chat-service
+  predicate: realizes
+  layer: application
+  category: structural
+- source: application.applicationfunction.chat-frame-routing
+  target: data-model.objectschema.checkout-ref
+  predicate: accesses
+  layer: application
+  targetLayer: data-model
+  category: structural
+- source: application.applicationfunction.chat-frame-routing
+  target: motivation.requirement.keep-checkouts-apart-in-one-browser
+  predicate: satisfies
+  layer: application
+  targetLayer: motivation
+  category: structural
+- source: application.applicationevent.chat-turn-queued
+  target: application.applicationfunction.chat-frame-routing
+  predicate: triggers
+  layer: application
+  category: structural
+- source: application.applicationevent.chat-turn-started
+  target: application.applicationfunction.chat-frame-routing
+  predicate: triggers
+  layer: application
+  category: structural
+- source: ux.uxspec.architecture-exploration-spec
+  target: ux.view.checkout-picker-view
+  predicate: aggregates
+  layer: ux
+  category: structural
+- source: application.applicationservice.checkout-scope
+  target: application.applicationcomponent.app-shell
+  predicate: serves
+  layer: application
+  category: structural
+- source: navigation.navigationtransition.tab-navigation-transition
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.navigationtransition.layer-deep-link-transition
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.flowstep.post-auth-model-entry-step
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
+  category: structural
+- source: navigation.route.app-shell-sectionview-route
+  target: navigation.route.checkout-shell-route
+  predicate: navigates-to
+  layer: navigation
   category: structural

@@ -240,3 +240,22 @@ ux.subview.c4-export-menu:
     created_at: 2026-11-23T23:18:18.912Z
     updated_at: 2026-11-23T23:18:18.912Z
     version: 1
+ux.subview.checkout-switcher:
+  id: 40c9deb2-f6fc-44cb-9a7a-7a0829d6b9c9
+  path: ux.subview.checkout-switcher
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: Checkout Switcher
+  description: "In the topbar: the current project and checkout as two Heimdall
+    Selects, listing the farm's projects and the chosen project's checkouts;
+    switching opens the same view in the other checkout without a new link."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/CheckoutPicker.tsx
+        symbol: CheckoutSwitcher
+  metadata:
+    created_at: 2026-11-24T11:32:08.569Z
+    updated_at: 2026-11-24T11:32:08.569Z
+    version: 1

@@ -725,3 +725,24 @@ data-model.objectschema.c4-export-mark:
     created_at: 2026-11-23T23:18:18.912Z
     updated_at: 2026-11-23T23:18:18.912Z
     version: 1
+data-model.objectschema.checkout-ref:
+  id: 8aeb5761-dc58-40cb-97ad-52f8dcd51bf5
+  path: data-model.objectschema.checkout-ref
+  spec_node_id: data-model.objectschema
+  type: objectschema
+  layer_id: data-model
+  name: Checkout Ref
+  description: "{project, checkout}: names one checkout of the central process's
+    farm (the CLI's CheckoutRef). The route, the API paths, query keys, the feed
+    subscription and every DrBot frame carry it."
+  attributes:
+    type: object
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/checkoutStore.ts
+        symbol: CheckoutRef
+  metadata:
+    created_at: 2026-11-24T11:32:31.378Z
+    updated_at: 2026-11-24T11:32:31.378Z
+    version: 1

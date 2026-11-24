@@ -1,0 +1,83 @@
+application.applicationevent.checkout-removed:
+  id: 6b7f419a-ab69-4b29-8201-1baf755b5cab
+  path: application.applicationevent.checkout-removed
+  spec_node_id: application.applicationevent
+  type: applicationevent
+  layer_id: application
+  name: Checkout Removed
+  description: "checkout.removed {project, checkout}: the central process found
+    the checkout gone; its subscribers' DrBot turns end. The shell shows the
+    Checkout Unavailable error for it."
+  attributes:
+    eventType: integration
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: CHECKOUT_REMOVED_EVENT
+  metadata:
+    created_at: 2026-11-24T11:32:08.573Z
+    updated_at: 2026-11-24T11:32:08.573Z
+    version: 1
+application.applicationevent.server-stopping:
+  id: f7722a9a-b567-4268-bd39-a077c1a8449e
+  path: application.applicationevent.server-stopping
+  spec_node_id: application.applicationevent
+  type: applicationevent
+  layer_id: application
+  name: Server Stopping
+  description: "server.stopping {project, checkout}: the central process is
+    shutting down. The shell says so; the websocket client reconnects and
+    resubscribes when a process answers again."
+  attributes:
+    eventType: system
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/router.tsx
+        symbol: SERVER_STOPPING_EVENT
+  metadata:
+    created_at: 2026-11-24T11:32:08.573Z
+    updated_at: 2026-11-24T11:32:08.573Z
+    version: 1
+application.applicationevent.chat-turn-queued:
+  id: 099b7c0d-61ef-495d-a2a8-f22e670544a6
+  path: application.applicationevent.chat-turn-queued
+  spec_node_id: application.applicationevent
+  type: applicationevent
+  layer_id: application
+  name: Chat Turn Queued
+  description: "chat.turn.queued {conversation_id, project, checkout, position,
+    running, max_turns, message}: a DrBot send waits behind the process's
+    running-turn cap. The chat shows the queued state on the pending reply."
+  attributes:
+    eventType: integration
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/stores/chatStore.ts
+        symbol: ChatTurnQueued
+  metadata:
+    created_at: 2026-11-24T11:32:08.573Z
+    updated_at: 2026-11-24T11:32:08.573Z
+    version: 1
+application.applicationevent.chat-turn-started:
+  id: 787d5750-1341-4122-8139-ff4a7eee02e6
+  path: application.applicationevent.chat-turn-started
+  spec_node_id: application.applicationevent
+  type: applicationevent
+  layer_id: application
+  name: Chat Turn Started
+  description: "chat.turn.started {conversation_id, project, checkout, waited_ms}:
+    a queued DrBot send starts. The chat clears the queued state."
+  attributes:
+    eventType: integration
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/services/chatService.ts
+        symbol: chat.turn.started
+  metadata:
+    created_at: 2026-11-24T11:32:08.573Z
+    updated_at: 2026-11-24T11:32:08.573Z
+    version: 1

@@ -1,24 +1,3 @@
-ux.view.auth-view:
-  id: d840fbc5-353c-4bae-8188-5f33bbaf2dd9
-  path: ux.view.auth-view
-  spec_node_id: ux.view
-  type: view
-  layer_id: ux
-  name: Auth View
-  description: Landing view at route /#/; extracts the DR CLI bearer token from
-    the ?token= URL query parameter, persists it to localStorage, and redirects
-    to the model view.
-  attributes:
-    type: embedded
-  source_reference:
-    provenance: extracted
-    locations:
-      - file: src/apps/embedded/routes/AuthRoute.tsx
-        symbol: AuthRoute
-  metadata:
-    created_at: 2026-03-20T13:22:53.827Z
-    updated_at: 2026-03-20T13:22:53.827Z
-    version: 1
 ux.view.model-view:
   id: 8d1770a7-b93e-49d0-afc7-ef0ebb5c16f8
   path: ux.view.model-view
@@ -194,4 +173,29 @@ ux.view.architecture-view:
   metadata:
     created_at: 2026-11-20T15:40:02.904Z
     updated_at: 2026-11-20T15:40:02.904Z
+    version: 1
+ux.view.checkout-picker-view:
+  id: f96a33a2-793b-48f4-a682-9de83f2382d2
+  path: ux.view.checkout-picker-view
+  spec_node_id: ux.view
+  type: view
+  layer_id: ux
+  name: Checkout Picker View
+  description: "The page a bare /#/ (and any old unscoped /#/:section/:view link)
+    opens: every project the central process serves, each with its checkouts
+    (main checkout first, then worktrees, with branch), from GET /api/projects
+    and GET /api/projects/{project}/checkouts. Choosing one opens it (an old
+    link's section, view and search carried over). A farm with exactly one
+    checkout opens it directly. An older dr CLI without /api/projects gets a
+    message saying the viewer needs dr serve."
+  attributes:
+    type: page
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/CheckoutPicker.tsx
+        symbol: CheckoutPickerPage
+  metadata:
+    created_at: 2026-11-24T11:32:08.566Z
+    updated_at: 2026-11-24T11:32:08.566Z
     version: 1

@@ -16,15 +16,15 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 28    |
-| Intra-Layer Relationships | 34    |
-| Inter-Layer Relationships | 83    |
-| Inbound Relationships     | 83    |
+| Elements                  | 30    |
+| Intra-Layer Relationships | 36    |
+| Inter-Layer Relationships | 91    |
+| Inbound Relationships     | 91    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
 
-- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Product](./03-product-layer-report.md), [Technology](./06-technology-layer-report.md), [Testing](./13-testing-layer-report.md), [UX](./10-ux-layer-report.md)
+- **Upstream layers**: [API](./07-api-layer-report.md), [Application](./05-application-layer-report.md), [Business](./02-business-layer-report.md), [Data Model](./08-data-model-layer-report.md), [Navigation](./11-navigation-layer-report.md), [Product](./03-product-layer-report.md), [Technology](./06-technology-layer-report.md), [Testing](./13-testing-layer-report.md), [UX](./10-ux-layer-report.md)
 
 ## Intra-Layer Relationships
 
@@ -52,7 +52,9 @@ flowchart LR
     motivation_requirement_each_review_change_reads_on_its_own["Each review change reads on its own"]
     motivation_requirement_embedded_deployment_mode["Embedded Deployment Mode"]
     motivation_requirement_find_anything_by_name["Find anything by name"]
+    motivation_requirement_keep_checkouts_apart_in_one_browser["Keep Checkouts Apart in One Browser"]
     motivation_requirement_only_the_servers_allowed_moves_are_offered["Only the server's allowed moves are offered"]
+    motivation_requirement_open_the_checkout_a_link_names["Open the Checkout a Link Names"]
     motivation_requirement_plan_outcome_reads_as_architecture["Plan outcome reads as architecture"]
     motivation_requirement_viewer_covers_every_spec_layer["Viewer covers every spec layer"]
     motivation_requirement_wcag_21_aa_compliance["WCAG 2.1 AA Compliance"]
@@ -83,7 +85,9 @@ flowchart LR
     motivation_requirement_each_review_change_reads_on_its_own -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_embedded_deployment_mode -->|realizes| motivation_goal_accelerate_architecture_documentation
     motivation_requirement_find_anything_by_name -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
+    motivation_requirement_keep_checkouts_apart_in_one_browser -->|realizes| motivation_goal_enable_real_time_collaboration
     motivation_requirement_only_the_servers_allowed_moves_are_offered -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
+    motivation_requirement_open_the_checkout_a_link_names -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_plan_outcome_reads_as_architecture -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_viewer_covers_every_spec_layer -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_wcag_21_aa_compliance -->|realizes| motivation_goal_ensure_accessible_architecture_views
@@ -118,6 +122,7 @@ flowchart TB
   application --> motivation
   business --> motivation
   data_model --> motivation
+  navigation --> motivation
   product --> motivation
   technology --> motivation
   testing --> motivation
@@ -135,6 +140,8 @@ flowchart TB
 | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8-realizes-59d25358-33d1-4c2d-b8fb-2a03ab216ae6`  | `5308e41f-71c9-4ca6-8dfc-11d8b0483ce8`                                                                                              | `59d25358-33d1-4c2d-b8fb-2a03ab216ae6`                              | `motivation` | `realizes`   | unknown      | unknown  |
 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                                                                                              | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `api.operation.satisfies.motivation.requirement`                                      | `api.operation.get-changeset-verification`                                                                                          | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationfunction.satisfies.motivation.requirement`                    | `application.applicationfunction.chat-frame-routing`                                                                                | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationfunction.satisfies.motivation.requirement`                    | `application.applicationfunction.checkout-feed-subscription`                                                                        | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-changeset-diff`                                                                                  | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-diagram-export`                                                                                  | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-model-transform`                                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -143,10 +150,13 @@ flowchart TB
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-impact-analysis`                                                                          | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-purpose`                                                                                  | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-review-model`                                                                             | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.chat-service`                                                                                       | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.checkout-scope`                                                                                     | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`                                                                               | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.plan-verification`                                                                                  | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.search-index`                                                                                       | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-changeset-review`                                                                               | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.web-socket-client`                                                                                  | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                                                              | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`                                                                                       | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `realizes`   | many-to-many | medium   |
 | `data-model.schemadefinition.satisfies.motivation.constraint`                         | `data-model.schemadefinition.annotation-id`                                                                                         | `motivation.constraint.type-script-strict-mode`                     | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -163,6 +173,9 @@ flowchart TB
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                              | `ef84b64d-883c-4471-9b56-a58574bac2b9`                              | `motivation` | `supports`   | unknown      | unknown  |
 | `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                                                              | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                                                                                              | `731285cc-dc15-4c64-a342-a933ce00bd61`                              | `motivation` | `realizes`   | unknown      | unknown  |
+| `navigation.route.satisfies.motivation.requirement`                                   | `navigation.route.checkout-index-route`                                                                                             | `motivation.requirement.open-the-checkout-a-link-names`             | `motivation` | `satisfies`  | many-to-many | medium   |
+| `navigation.route.satisfies.motivation.requirement`                                   | `navigation.route.checkout-shell-route`                                                                                             | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `navigation.route.satisfies.motivation.requirement`                                   | `navigation.route.checkout-shell-route`                                                                                             | `motivation.requirement.open-the-checkout-a-link-names`             | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-architecture-diagrams`                                                                                          | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-architecture-diagrams`                                                                                          | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -197,7 +210,6 @@ flowchart TB
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-keyboard-slash-and-cmd-k-focus-it-arrows-move-aria-activedescendant-escape-closes`            | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `testing.testcasesketch.satisfies.motivation.requirement`                             | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`       | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | high     |
 | `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.architecture-exploration-spec`                                                                                           | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
-| `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                                                                                                     | `motivation.requirement.dr-cli-server-integration`                  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -207,6 +219,7 @@ flowchart TB
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                                                                                           | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.changesets-view`                                                                                                           | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`                                                    | `ux.view.changesets-view`                                                                                                           | `motivation.goal.enable-real-time-collaboration`                    | `motivation` | `supports`   | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.checkout-picker-view`                                                                                                      | `motivation.requirement.open-the-checkout-a-link-names`             | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.model-view`                                                                                                                | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`                                                    | `ux.view.model-view`                                                                                                                | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.schema-view`                                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -365,13 +378,14 @@ Support concurrent architecture review via real-time WebSocket model sync and co
 
 #### Relationships
 
-| Type        | Related Element                                      | Predicate   | Direction |
-| ----------- | ---------------------------------------------------- | ----------- | --------- |
-| inter-layer | `product.softwarecapability.model-annotation`        | `supports`  | inbound   |
-| inter-layer | `ux.view.changesets-view`                            | `supports`  | inbound   |
-| intra-layer | `motivation.driver.team-distributed-review-needs`    | `influence` | inbound   |
-| intra-layer | `motivation.principle.zustand-only-state-management` | `influence` | outbound  |
-| intra-layer | `motivation.stakeholder.development-team`            | `influence` | inbound   |
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `product.softwarecapability.model-annotation`                | `supports`  | inbound   |
+| inter-layer | `ux.view.changesets-view`                                    | `supports`  | inbound   |
+| intra-layer | `motivation.driver.team-distributed-review-needs`            | `influence` | inbound   |
+| intra-layer | `motivation.principle.zustand-only-state-management`         | `influence` | outbound  |
+| intra-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `realizes`  | inbound   |
+| intra-layer | `motivation.stakeholder.development-team`                    | `influence` | inbound   |
 
 ### Ensure Accessible Architecture Views {#ensure-accessible-architecture-views}
 
@@ -430,6 +444,7 @@ Provide interactive, navigable visualization of the DR spec's multi-layer archit
 | intra-layer | `motivation.requirement.each-review-change-reads-on-its-own`        | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.find-anything-by-name`                      | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.only-the-servers-allowed-moves-are-offered` | `realizes`  | inbound   |
+| intra-layer | `motivation.requirement.open-the-checkout-a-link-names`             | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.plan-outcome-reads-as-architecture`         | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.viewer-covers-every-spec-layer`             | `realizes`  | inbound   |
 | intra-layer | `motivation.stakeholder.architecture-team`                          | `influence` | inbound   |
@@ -617,7 +632,6 @@ Viewer must connect to DR CLI REST API and WebSocket JSON-RPC endpoint to load a
 
 | Type        | Related Element                                             | Predicate         | Direction |
 | ----------- | ----------------------------------------------------------- | ----------------- | --------- |
-| inter-layer | `ux.uxspec.authentication-spec`                             | `satisfies`       | inbound   |
 | intra-layer | `motivation.constraint.dr-cli-server-dependency`            | `constrains`      | inbound   |
 | intra-layer | `motivation.constraint.type-script-strict-mode`             | `constrains`      | inbound   |
 | intra-layer | `motivation.principle.zustand-only-state-management`        | `influence`       | inbound   |
@@ -719,6 +733,33 @@ From any view, a person can reach any model element or spec node type by typing 
 | inter-layer | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does` | `satisfies` | inbound   |
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                                                   | `realizes`  | outbound  |
 
+### Keep Checkouts Apart in One Browser {#keep-checkouts-apart-in-one-browser}
+
+**ID**: `motivation.requirement.keep-checkouts-apart-in-one-browser`
+
+**Type**: `requirement`
+
+Two tabs on two checkouts of one project never cross: each tab's data, websocket events and DrBot chat belong to the checkout it shows.
+
+#### Attributes
+
+| Name            | Value      |
+| --------------- | ---------- |
+| priority        | high       |
+| requirementType | functional |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `application.applicationfunction.chat-frame-routing`         | `satisfies` | inbound   |
+| inter-layer | `application.applicationfunction.checkout-feed-subscription` | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.chat-service`                | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.checkout-scope`              | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.web-socket-client`           | `satisfies` | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                      | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.enable-real-time-collaboration`             | `realizes`  | outbound  |
+
 ### Only the server's allowed moves are offered {#only-the-server-s-allowed-moves-are-offered}
 
 **ID**: `motivation.requirement.only-the-servers-allowed-moves-are-offered`
@@ -739,6 +780,30 @@ The viewer offers Apply and Discard for a changeset only when the dr CLI's actio
 | Type        | Related Element                                             | Predicate   | Direction |
 | ----------- | ----------------------------------------------------------- | ----------- | --------- |
 | inter-layer | `application.applicationservice.changeset-purpose`          | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
+
+### Open the Checkout a Link Names {#open-the-checkout-a-link-names}
+
+**ID**: `motivation.requirement.open-the-checkout-a-link-names`
+
+**Type**: `requirement`
+
+A viewer link from the dr CLI's central process (review_open, project_status, dr visualize) of the form /#/p/&lt;project&gt;/c/&lt;checkout&gt;/\[changesets/&lt;id&gt;\[?element=&lt;id&gt;\] \| elements/&lt;id&gt;\]?token=&lt;token&gt; opens that project's checkout, and the changeset or element it names, never the process's default checkout.
+
+#### Attributes
+
+| Name            | Value      |
+| --------------- | ---------- |
+| priority        | critical   |
+| requirementType | functional |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `navigation.route.checkout-index-route`                     | `satisfies` | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                     | `satisfies` | inbound   |
+| inter-layer | `ux.view.checkout-picker-view`                              | `satisfies` | inbound   |
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
 
 ### Plan outcome reads as architecture {#plan-outcome-reads-as-architecture}
@@ -899,4 +964,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0

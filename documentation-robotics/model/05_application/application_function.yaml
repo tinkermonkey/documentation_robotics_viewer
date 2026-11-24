@@ -94,3 +94,66 @@ application.applicationfunction.local-review-store:
     created_at: 2026-11-18T16:26:33.167Z
     updated_at: 2026-11-18T16:26:33.167Z
     version: 1
+application.applicationfunction.checkout-store:
+  id: 2783f9a7-5ad3-4508-8a41-de6b27c1339e
+  path: application.applicationfunction.checkout-store
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Checkout Store
+  description: "stores/checkoutStore.ts: Zustand store holding the checkout the
+    route names and whether it is unavailable (and why). Not persisted: the URL
+    is the authority. Read outside React by the websocket client and the chat
+    service."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/stores/checkoutStore.ts
+        symbol: useCheckoutStore
+  metadata:
+    created_at: 2026-11-24T11:32:08.572Z
+    updated_at: 2026-11-24T11:32:08.572Z
+    version: 1
+application.applicationfunction.checkout-feed-subscription:
+  id: 8f0fca1c-b43d-4a2b-828d-61e3fda8e0e1
+  path: application.applicationfunction.checkout-feed-subscription
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Checkout Feed Subscription
+  description: "In websocketClient: sends {action: subscribe, project, checkout}
+    for the checkout shown (on connect, after a reconnect, and on a switch, with
+    unsubscribe for the one left), and drops every plain event stamped with
+    another project or checkout before it reaches a handler. Hands
+    checkout.removed and server.stopping to checkoutStore."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/services/websocketClient.ts
+        symbol: WebSocketClient.setCheckout
+  metadata:
+    created_at: 2026-11-24T11:32:31.378Z
+    updated_at: 2026-11-24T11:32:31.378Z
+    version: 1
+application.applicationfunction.chat-frame-routing:
+  id: 9572e135-aad7-4168-97a8-8b10d276968a
+  path: application.applicationfunction.chat-frame-routing
+  spec_node_id: application.applicationfunction
+  type: applicationfunction
+  layer_id: application
+  name: Chat Frame Routing
+  description: "In chatService: sends project and checkout with chat.send,
+    chat.cancel and chat.status; ignores any chat notification whose
+    conversation_id or project/checkout is not the current conversation's;
+    starts a new conversation when the checkout changes (a conversation belongs
+    to one checkout); and marks the pending reply queued on chat.turn.queued
+    (position, the server's message) until chat.turn.started."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/services/chatService.ts
+        symbol: ChatService.isForThisConversation
+  metadata:
+    created_at: 2026-11-24T11:32:31.378Z
+    updated_at: 2026-11-24T11:32:31.378Z
+    version: 1

@@ -6,7 +6,9 @@ application.applicationservice.generated-api-client:
   layer_id: application
   name: Generated API Client
   description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
-    provides typed methods for all DR CLI REST endpoints
+    provides typed methods for all DR CLI REST endpoints. Project data is called
+    only through its /api/projects/{project}/checkouts/{checkout}/...
+    operations, with the current checkout from Checkout Scope.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -45,8 +47,11 @@ application.applicationservice.chat-service:
   type: applicationservice
   layer_id: application
   name: Chat Service
-  description: Interfaces with the Claude AI API to provide architectural
-    assistant chat functionality; manages message streaming and tool invocations
+  description: "DrBot chat over the central process's websocket: sends chat.send /
+    chat.cancel / chat.status with the current project and checkout, streams the
+    reply (text, tool calls, thinking, usage), matches every frame by
+    conversation id and checkout, and shows a turn queued behind the process's
+    cap (chat.turn.queued / chat.turn.started)"
   attributes:
     serviceType: asynchronous
   source_reference:
@@ -65,8 +70,10 @@ application.applicationservice.web-socket-client:
   type: applicationservice
   layer_id: application
   name: WebSocket Client
-  description: Manages the persistent WebSocket connection to the DR CLI server;
-    handles reconnection, topic subscriptions, and JSON-RPC message dispatch
+  description: Manages the persistent WebSocket connection to the DR CLI's central
+    process (/ws); handles reconnection, the per-checkout feed subscription
+    (subscribe / unsubscribe frames, resent after a reconnect), filtering of
+    events stamped for another checkout, and JSON-RPC message dispatch
   attributes:
     serviceType: event-driven
   source_reference:
@@ -1273,4 +1280,52 @@ application.applicationservice.c4-diagram-export:
   metadata:
     created_at: 2026-11-23T23:18:18.912Z
     updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
+application.applicationservice.checkout-scope:
+  id: 0abc272c-bee9-4fe1-acd2-28c3e3705c43
+  path: application.applicationservice.checkout-scope
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Checkout Scope
+  description: "data/checkoutScope.ts: the current CheckoutRef ({project,
+    checkout}) from checkoutStore as a hook (useCheckoutRef), the scoped query
+    keys the data hooks share (the generated client's scoped operation ids, then
+    project and checkout), invalidation for one checkout, and whether an API
+    error means the checkout is unavailable (404 on a scoped route). Every
+    project-data hook (model, layers, tier1, changesets with
+    commit/discard/review/verification, annotations) calls the generated
+    client's /api/projects/{project}/checkouts/{checkout}/... operations through
+    it."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/checkoutScope.ts
+        symbol: useCheckoutRef
+  metadata:
+    created_at: 2026-11-24T11:32:08.571Z
+    updated_at: 2026-11-24T11:32:08.571Z
+    version: 1
+application.applicationservice.use-projects:
+  id: 3f522d29-7f30-4b67-8a5d-123d52b9d94f
+  path: application.applicationservice.use-projects
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Use Projects
+  description: "data/useProjects.ts: React Query hooks over GET /api/projects and
+    GET /api/projects/{project}/checkouts (validated, unknown fields dropped)
+    for the checkout picker and switcher."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/data/useProjects.ts
+        symbol: useProjects
+  metadata:
+    created_at: 2026-11-24T11:32:08.572Z
+    updated_at: 2026-11-24T11:32:08.572Z
     version: 1

@@ -3,7 +3,7 @@ schema: documentation-robotics-v1
 cli_version: 0.7.1
 spec_version: 0.14.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-24T10:59:48.976Z
+updated: 2026-11-24T12:04:19.629Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -20,7 +20,7 @@ layers:
       driver: 2
       goal: 4
       principle: 3
-      requirement: 13
+      requirement: 15
       stakeholder: 3
   business:
     order: 2
@@ -66,10 +66,11 @@ layers:
     enabled: true
     elements:
       applicationcomponent: 39
-      applicationfunction: 5
+      applicationfunction: 8
       applicationinterface: 2
-      applicationprocess: 1
-      applicationservice: 52
+      applicationservice: 54
+      applicationevent: 4
+      message: 1
   technology:
     order: 6
     name: Technology
@@ -100,7 +101,7 @@ layers:
     path: documentation-robotics/model/08_data-model/
     enabled: true
     elements:
-      objectschema: 34
+      objectschema: 35
       schemadefinition: 3
   data-store:
     order: 9
@@ -116,11 +117,12 @@ layers:
     path: documentation-robotics/model/10_ux/
     enabled: true
     elements:
-      statepattern: 2
-      subview: 12
+      statepattern: 1
+      subview: 13
       uxapplication: 1
-      uxspec: 2
+      uxspec: 1
       view: 8
+      errorconfig: 1
   navigation:
     order: 11
     name: Navigation
@@ -132,7 +134,7 @@ layers:
       navigationgraph: 1
       navigationguard: 1
       navigationtransition: 3
-      route: 2
+      route: 4
   apm:
     order: 12
     name: Apm
@@ -232,6 +234,9 @@ changeset_history:
     action: committed
   - name: c4-diagram-export
     committed_at: 2026-11-24T10:59:48.976Z
+    action: committed
+  - name: scoped-checkout-routes
+    committed_at: 2026-11-24T12:04:19.629Z
     action: committed
 reconciled:
   changeset: extract-02ab31d..59209a4

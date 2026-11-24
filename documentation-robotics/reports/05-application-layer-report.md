@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 99    |
-| Intra-Layer Relationships | 339   |
-| Inter-Layer Relationships | 1217  |
+| Elements                  | 108   |
+| Intra-Layer Relationships | 353   |
+| Inter-Layer Relationships | 1226  |
 | Inbound Relationships     | 1087  |
-| Outbound Relationships    | 130   |
+| Outbound Relationships    | 139   |
 
 **Cross-Layer References**:
 
@@ -34,7 +34,7 @@ Application components, services, and interactions.
 | Element                                                          | Type                   | Relationships |
 | ---------------------------------------------------------------- | ---------------------- | ------------- |
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
-| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 23            |
+| `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 24            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 5             |
 | `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 23            |
 | `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 4             |
@@ -68,18 +68,24 @@ Application components, services, and interactions.
 | `application.applicationcomponent.rich-tooltip`                  | `applicationcomponent` | 3             |
 | `application.applicationcomponent.status-bar`                    | `applicationcomponent` | 5             |
 | `application.applicationcomponent.tier1-panel`                   | `applicationcomponent` | 4             |
-| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 6             |
+| `application.applicationcomponent.topbar`                        | `applicationcomponent` | 7             |
 | `application.applicationcomponent.topbar-search`                 | `applicationcomponent` | 7             |
 | `application.applicationcomponent.type-hive-view`                | `applicationcomponent` | 6             |
 | `application.applicationcomponent.type-lanes-view`               | `applicationcomponent` | 7             |
-| `application.applicationfunction.auth-store`                     | `applicationfunction`  | 2             |
+| `application.applicationevent.chat-turn-queued`                  | `applicationevent`     | 1             |
+| `application.applicationevent.chat-turn-started`                 | `applicationevent`     | 1             |
+| `application.applicationevent.checkout-removed`                  | `applicationevent`     | 2             |
+| `application.applicationevent.server-stopping`                   | `applicationevent`     | 2             |
+| `application.applicationfunction.auth-store`                     | `applicationfunction`  | 1             |
+| `application.applicationfunction.chat-frame-routing`             | `applicationfunction`  | 3             |
 | `application.applicationfunction.chat-store`                     | `applicationfunction`  | 2             |
+| `application.applicationfunction.checkout-feed-subscription`     | `applicationfunction`  | 4             |
+| `application.applicationfunction.checkout-store`                 | `applicationfunction`  | 3             |
 | `application.applicationfunction.connection-store`               | `applicationfunction`  | 2             |
 | `application.applicationfunction.local-review-store`             | `applicationfunction`  | 1             |
 | `application.applicationfunction.ui-store`                       | `applicationfunction`  | 6             |
 | `application.applicationinterface.dr-cli-rest-interface`         | `applicationinterface` | 1             |
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
-| `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
 | `application.applicationservice.c4-changeset-diff`               | `applicationservice`   | 4             |
 | `application.applicationservice.c4-diagram-export`               | `applicationservice`   | 3             |
 | `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 5             |
@@ -97,11 +103,12 @@ Application components, services, and interactions.
 | `application.applicationservice.chat-anchor`                     | `applicationservice`   | 5             |
 | `application.applicationservice.chat-context-builder`            | `applicationservice`   | 5             |
 | `application.applicationservice.chat-panel-layout`               | `applicationservice`   | 2             |
-| `application.applicationservice.chat-service`                    | `applicationservice`   | 4             |
+| `application.applicationservice.chat-service`                    | `applicationservice`   | 5             |
 | `application.applicationservice.chat-validation`                 | `applicationservice`   | 1             |
+| `application.applicationservice.checkout-scope`                  | `applicationservice`   | 5             |
 | `application.applicationservice.error-tracker`                   | `applicationservice`   | 4             |
 | `application.applicationservice.exception-classifier`            | `applicationservice`   | 2             |
-| `application.applicationservice.generated-api-client`            | `applicationservice`   | 14            |
+| `application.applicationservice.generated-api-client`            | `applicationservice`   | 15            |
 | `application.applicationservice.graph-viewport-key`              | `applicationservice`   | 2             |
 | `application.applicationservice.json-rpc-handler`                | `applicationservice`   | 4             |
 | `application.applicationservice.layer-domain-palette`            | `applicationservice`   | 24            |
@@ -122,16 +129,18 @@ Application components, services, and interactions.
 | `application.applicationservice.use-annotations`                 | `applicationservice`   | 2             |
 | `application.applicationservice.use-c4model`                     | `applicationservice`   | 9             |
 | `application.applicationservice.use-changeset-review`            | `applicationservice`   | 9             |
-| `application.applicationservice.use-changesets`                  | `applicationservice`   | 11            |
+| `application.applicationservice.use-changesets`                  | `applicationservice`   | 12            |
 | `application.applicationservice.use-cli-version`                 | `applicationservice`   | 3             |
 | `application.applicationservice.use-edge-interaction`            | `applicationservice`   | 1             |
 | `application.applicationservice.use-hover-dwell`                 | `applicationservice`   | 1             |
-| `application.applicationservice.use-model`                       | `applicationservice`   | 16            |
+| `application.applicationservice.use-model`                       | `applicationservice`   | 17            |
+| `application.applicationservice.use-projects`                    | `applicationservice`   | 1             |
 | `application.applicationservice.use-spec`                        | `applicationservice`   | 22            |
 | `application.applicationservice.use-tier1`                       | `applicationservice`   | 4             |
 | `application.applicationservice.use-type-name`                   | `applicationservice`   | 6             |
 | `application.applicationservice.use-viewport-history`            | `applicationservice`   | 3             |
-| `application.applicationservice.web-socket-client`               | `applicationservice`   | 5             |
+| `application.applicationservice.web-socket-client`               | `applicationservice`   | 6             |
+| `application.message.feed-subscription`                          | `message`              | 1             |
 
 ## Inter-Layer Dependencies
 
@@ -172,7 +181,6 @@ flowchart TB
 | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
 | `3dee662b-7dc2-4fcc-8677-15a2ba06136e-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                                                                                                                   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                                                                                                                   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04-realizes-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`   | `6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04`                                                                                                                   | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                              | `business`    | `realizes`   | unknown      | unknown  |
 | `8630981b-236c-47ed-b99b-e977c56bdc63-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `8630981b-236c-47ed-b99b-e977c56bdc63`                                                                                                                   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-accesses-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                                                   | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`                              | `business`    | `accesses`   | unknown      | unknown  |
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                                                   | `35295e18-08a8-4ca0-ada3-40a017cb4318`                              | `business`    | `realizes`   | unknown      | unknown  |
@@ -220,8 +228,13 @@ flowchart TB
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.drift-notice`                                                                                                          | `data-model.objectschema.changeset-detail`                          | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.review-parts`                                                                                                          | `data-model.objectschema.change-origin`                             | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.tier1-panel`                                                                                                           | `data-model.objectschema.tier1status`                               | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-frame-routing`                                                                                                     | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.satisfies.motivation.requirement`                     | `application.applicationfunction.chat-frame-routing`                                                                                                     | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                                                                             | `data-model.objectschema.chat-message`                              | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                                                                             | `data-model.objectschema.tool-invocation-content`                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-feed-subscription`                                                                                             | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationfunction.satisfies.motivation.requirement`                     | `application.applicationfunction.checkout-feed-subscription`                                                                                             | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.checkout-store`                                                                                                         | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                                                                     | `data-model.objectschema.review-decision`                           | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.local-review-store`                                                                                                     | `data-store.collection.local-review-verdicts`                       | `data-store`  | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-store.collection`                       | `application.applicationfunction.ui-store`                                                                                                               | `data-store.collection.ui-preferences`                              | `data-store`  | `accesses`   | many-to-many | medium   |
@@ -271,7 +284,10 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-anchor`                                                                                                             | `business.businessservice.ai-assisted-architecture-chat`            | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-panel-layout`                                                                                                       | `business.businessservice.ai-assisted-architecture-chat`            | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability`                   | `application.applicationservice.chat-service`                                                                                                            | `product.softwarecapability.model-chat`                             | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.chat-service`                                                                                                            | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.chat-validation`                                                                                                         | `business.businessservice.ai-assisted-architecture-chat`            | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.checkout-scope`                                                                                                          | `data-model.objectschema.checkout-ref`                              | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.checkout-scope`                                                                                                          | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.generated-api-client`                                                                                                    | `business.businessprocess.changeset-review-flow`                    | `business`    | `serves`     | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.json-rpc-handler`                                                                                                        | `business.businessprocess.real-time-model-synchronization`          | `business`    | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.layer-domain-palette`                                                                                                    | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
@@ -314,10 +330,12 @@ flowchart TB
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.use-changesets`                                                                                                          | `business.businessprocess.changeset-review-flow`                    | `business`    | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-model`                                                                                                               | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.use-model`                                                                                                               | `business.businessprocess.changeset-review-flow`                    | `business`    | `serves`     | many-to-many | medium   |
+| `application.applicationservice.serves.ux.view`                                        | `application.applicationservice.use-projects`                                                                                                            | `ux.view.checkout-picker-view`                                      | `ux`          | `serves`     | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.use-spec`                                                                                                                | `business.businessservice.schema-exploration`                       | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-mode-and-routing`                            | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-spend-panel`                                 | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.use-tier1`                                                                                                               | `product.feature.tier1-warming-progress`                            | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.web-socket-client`                                                                                                       | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.serves.business.businessprocess`                       | `application.applicationservice.web-socket-client`                                                                                                       | `business.businessprocess.real-time-model-synchronization`          | `business`    | `serves`     | many-to-many | medium   |
 | `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                                                                                   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                              | `application` | `references` | unknown      | unknown  |
 | `b7775f1a-2418-4c7a-84aa-997efd658a97-realizes-35295e18-08a8-4ca0-ada3-40a017cb4318`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                                                   | `35295e18-08a8-4ca0-ada3-40a017cb4318`                              | `business`    | `realizes`   | unknown      | unknown  |
@@ -325,8 +343,8 @@ flowchart TB
 | `b7775f1a-2418-4c7a-84aa-997efd658a97-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                                                   | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                              | `business`    | `serves`     | unknown      | unknown  |
 | `fbd68c51-36fa-48ef-b381-5599d2678a90-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`     | `fbd68c51-36fa-48ef-b381-5599d2678a90`                                                                                                                   | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                              | `business`    | `serves`     | unknown      | unknown  |
 | `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                                                                                                                   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `navigation.navigationflow.realizes.application.applicationprocess`                    | `navigation.navigationflow.authentication-to-model-flow`                                                                                                 | `application.applicationprocess.auth-route`                         | `application` | `realizes`   | many-to-many | medium   |
-| `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.app-shell-sectionview-route`                                                                                                           | `application.applicationcomponent.app-shell`                        | `application` | `depends-on` | many-to-many | medium   |
+| `navigation.route.depends-on.application.applicationcomponent`                         | `navigation.route.checkout-shell-route`                                                                                                                  | `application.applicationcomponent.app-shell`                        | `application` | `depends-on` | many-to-many | medium   |
+| `navigation.route.uses.application.applicationservice`                                 | `navigation.route.checkout-shell-route`                                                                                                                  | `application.applicationservice.checkout-scope`                     | `application` | `uses`       | many-to-many | medium   |
 | `technology.node.serves.application.applicationcomponent`                              | `technology.node.vite-dev-server`                                                                                                                        | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.elk`                                                                                                                          | `application.applicationcomponent.c4-diagram`                       | `application` | `serves`     | many-to-many | medium   |
 | `technology.systemsoftware.serves.application.applicationcomponent`                    | `technology.systemsoftware.heimdall-ui`                                                                                                                  | `application.applicationcomponent.app-shell`                        | `application` | `serves`     | many-to-many | medium   |
@@ -1440,7 +1458,7 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | Type        | Related Element                                                                                                                  | Predicate     | Direction |
 | ----------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
 | inter-layer | `data-model.objectschema.chat-message`                                                                                           | `accesses`    | outbound  |
-| inter-layer | `navigation.route.app-shell-sectionview-route`                                                                                   | `depends-on`  | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                                                                                          | `depends-on`  | inbound   |
 | inter-layer | `technology.node.vite-dev-server`                                                                                                | `serves`      | inbound   |
 | inter-layer | `technology.systemsoftware.heimdall-ui`                                                                                          | `serves`      | inbound   |
 | inter-layer | `technology.systemsoftware.tailwind-css-v4`                                                                                      | `serves`      | inbound   |
@@ -1469,6 +1487,7 @@ The viewer's four-pane frame: topbar, sidebar nav tree, the active view's canvas
 | intra-layer | `application.applicationcomponent.left-rail`                                                                                     | `uses`        | outbound  |
 | intra-layer | `application.applicationcomponent.status-bar`                                                                                    | `uses`        | outbound  |
 | intra-layer | `application.applicationcomponent.topbar`                                                                                        | `uses`        | outbound  |
+| intra-layer | `application.applicationservice.checkout-scope`                                                                                  | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.exception-classifier`                                                                            | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.layer-domain-palette`                                                                            | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.spec-graph-transform`                                                                            | `serves`      | inbound   |
@@ -2795,7 +2814,7 @@ Read-only card in the changeset inbox showing Tier 1's state (on, warming, cappe
 
 **Type**: `applicationcomponent`
 
-The shell's top bar: title, the element and node-type search box, connection state, light/dark canvas toggle and the DrBot drawer toggle.
+The shell's top bar: title, the project and checkout switcher, the element and node-type search box, connection state, light/dark canvas toggle and the DrBot drawer toggle.
 
 #### Attributes
 
@@ -2813,6 +2832,7 @@ The shell's top bar: title, the element and node-type search box, connection sta
 | intra-layer | `application.applicationcomponent.topbar-search` | `uses`     | outbound  |
 | intra-layer | `application.applicationservice.chat-anchor`     | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-model`       | `serves`   | inbound   |
+| intra-layer | `application.applicationservice.use-projects`    | `serves`   | inbound   |
 
 ### Topbar Search {#topbar-search}
 
@@ -2901,6 +2921,88 @@ GraphCanvas layout="layer-lanes" over useLayeredGraph with the type bands layeri
 | intra-layer | `application.applicationservice.type-bands`                                                    | `serves`   | inbound   |
 | intra-layer | `application.applicationservice.use-spec`                                                      | `serves`   | inbound   |
 
+### Chat Turn Queued {#chat-turn-queued}
+
+**ID**: `application.applicationevent.chat-turn-queued`
+
+**Type**: `applicationevent`
+
+chat.turn.queued \{conversation_id, project, checkout, position, running, max_turns, message\}: a DrBot send waits behind the process's running-turn cap. The chat shows the queued state on the pending reply.
+
+#### Attributes
+
+| Name      | Value       |
+| --------- | ----------- |
+| eventType | integration |
+
+#### Relationships
+
+| Type        | Related Element                                      | Predicate  | Direction |
+| ----------- | ---------------------------------------------------- | ---------- | --------- |
+| intra-layer | `application.applicationfunction.chat-frame-routing` | `triggers` | outbound  |
+
+### Chat Turn Started {#chat-turn-started}
+
+**ID**: `application.applicationevent.chat-turn-started`
+
+**Type**: `applicationevent`
+
+chat.turn.started \{conversation_id, project, checkout, waited_ms\}: a queued DrBot send starts. The chat clears the queued state.
+
+#### Attributes
+
+| Name      | Value       |
+| --------- | ----------- |
+| eventType | integration |
+
+#### Relationships
+
+| Type        | Related Element                                      | Predicate  | Direction |
+| ----------- | ---------------------------------------------------- | ---------- | --------- |
+| intra-layer | `application.applicationfunction.chat-frame-routing` | `triggers` | outbound  |
+
+### Checkout Removed {#checkout-removed}
+
+**ID**: `application.applicationevent.checkout-removed`
+
+**Type**: `applicationevent`
+
+checkout.removed \{project, checkout\}: the central process found the checkout gone; its subscribers' DrBot turns end. The shell shows the Checkout Unavailable error for it.
+
+#### Attributes
+
+| Name      | Value       |
+| --------- | ----------- |
+| eventType | integration |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `application.applicationfunction.checkout-feed-subscription` | `triggers` | outbound  |
+| intra-layer | `application.applicationfunction.checkout-store`             | `triggers` | outbound  |
+
+### Server Stopping {#server-stopping}
+
+**ID**: `application.applicationevent.server-stopping`
+
+**Type**: `applicationevent`
+
+server.stopping \{project, checkout\}: the central process is shutting down. The shell says so; the websocket client reconnects and resubscribes when a process answers again.
+
+#### Attributes
+
+| Name      | Value  |
+| --------- | ------ |
+| eventType | system |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `application.applicationfunction.checkout-feed-subscription` | `triggers` | outbound  |
+| intra-layer | `application.applicationfunction.checkout-store`             | `triggers` | outbound  |
+
 ### Auth Store {#auth-store}
 
 **ID**: `application.applicationfunction.auth-store`
@@ -2911,10 +3013,27 @@ Zustand store managing the DR CLI auth token, authentication state, and magic-li
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| intra-layer | `application.applicationservice.generated-api-client` | `realizes`   | outbound  |
-| intra-layer | `application.applicationprocess.auth-route`           | `depends-on` | inbound   |
+| Type        | Related Element                                       | Predicate  | Direction |
+| ----------- | ----------------------------------------------------- | ---------- | --------- |
+| intra-layer | `application.applicationservice.generated-api-client` | `realizes` | outbound  |
+
+### Chat Frame Routing {#chat-frame-routing}
+
+**ID**: `application.applicationfunction.chat-frame-routing`
+
+**Type**: `applicationfunction`
+
+In chatService: sends project and checkout with chat.send, chat.cancel and chat.status; ignores any chat notification whose conversation_id or project/checkout is not the current conversation's; starts a new conversation when the checkout changes (a conversation belongs to one checkout); and marks the pending reply queued on chat.turn.queued (position, the server's message) until chat.turn.started.
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `data-model.objectschema.checkout-ref`                       | `accesses`  | outbound  |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `satisfies` | outbound  |
+| intra-layer | `application.applicationevent.chat-turn-queued`              | `triggers`  | inbound   |
+| intra-layer | `application.applicationevent.chat-turn-started`             | `triggers`  | inbound   |
+| intra-layer | `application.applicationservice.chat-service`                | `realizes`  | outbound  |
 
 ### Chat Store {#chat-store}
 
@@ -2932,6 +3051,42 @@ Zustand store managing chat conversation history, streaming state, and active to
 | inter-layer | `data-model.objectschema.tool-invocation-content`  | `accesses`   | outbound  |
 | intra-layer | `application.applicationfunction.connection-store` | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.chat-validation`   | `serves`     | inbound   |
+
+### Checkout Feed Subscription {#checkout-feed-subscription}
+
+**ID**: `application.applicationfunction.checkout-feed-subscription`
+
+**Type**: `applicationfunction`
+
+In websocketClient: sends \{action: subscribe, project, checkout\} for the checkout shown (on connect, after a reconnect, and on a switch, with unsubscribe for the one left), and drops every plain event stamped with another project or checkout before it reaches a handler. Hands checkout.removed and server.stopping to checkoutStore.
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `data-model.objectschema.checkout-ref`                       | `accesses`  | outbound  |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `satisfies` | outbound  |
+| intra-layer | `application.applicationevent.checkout-removed`              | `triggers`  | inbound   |
+| intra-layer | `application.applicationevent.server-stopping`               | `triggers`  | inbound   |
+| intra-layer | `application.applicationservice.web-socket-client`           | `realizes`  | outbound  |
+| intra-layer | `application.message.feed-subscription`                      | `triggers`  | outbound  |
+
+### Checkout Store {#checkout-store}
+
+**ID**: `application.applicationfunction.checkout-store`
+
+**Type**: `applicationfunction`
+
+stores/checkoutStore.ts: Zustand store holding the checkout the route names and whether it is unavailable (and why). Not persisted: the URL is the authority. Read outside React by the websocket client and the chat service.
+
+#### Relationships
+
+| Type        | Related Element                                 | Predicate  | Direction |
+| ----------- | ----------------------------------------------- | ---------- | --------- |
+| inter-layer | `data-model.objectschema.checkout-ref`          | `accesses` | outbound  |
+| intra-layer | `application.applicationevent.checkout-removed` | `triggers` | inbound   |
+| intra-layer | `application.applicationevent.server-stopping`  | `triggers` | inbound   |
+| intra-layer | `application.applicationservice.checkout-scope` | `realizes` | outbound  |
 
 ### Connection Store {#connection-store}
 
@@ -3099,21 +3254,6 @@ The WebSocket interface for subscribing to real-time model/changeset/annotation 
 | ----------- | -------------------------------------------------- | ------------- | --------- |
 | intra-layer | `application.applicationservice.json-rpc-handler`  | `assigned-to` | outbound  |
 | intra-layer | `application.applicationservice.web-socket-client` | `assigned-to` | outbound  |
-
-### Auth Route {#auth-route}
-
-**ID**: `application.applicationprocess.auth-route`
-
-**Type**: `applicationprocess`
-
-TanStack Router route handling token-based authentication via magic link; extracts token from URL query params
-
-#### Relationships
-
-| Type        | Related Element                                          | Predicate    | Direction |
-| ----------- | -------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `navigation.navigationflow.authentication-to-model-flow` | `realizes`   | inbound   |
-| intra-layer | `application.applicationfunction.auth-store`             | `depends-on` | outbound  |
 
 ### C4 Changeset Diff {#c4-changeset-diff}
 
@@ -3820,7 +3960,7 @@ ui/chatPanelLayout.ts: the pure placement rule for the floating DrBot panel. Giv
 
 **Type**: `applicationservice`
 
-Interfaces with the Claude AI API to provide architectural assistant chat functionality; manages message streaming and tool invocations
+DrBot chat over the central process's websocket: sends chat.send / chat.cancel / chat.status with the current project and checkout, streams the reply (text, tool calls, thinking, usage), matches every frame by conversation id and checkout, and shows a turn queued behind the process's cap (chat.turn.queued / chat.turn.started)
 
 #### Attributes
 
@@ -3833,6 +3973,7 @@ Interfaces with the Claude AI API to provide architectural assistant chat functi
 | Type        | Related Element                                                                                                                       | Predicate    | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `product.softwarecapability.model-chat`                                                                                               | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser`                                                                          | `satisfies`  | outbound  |
 | inter-layer | `testing.testcasesketch.chat-service-chat-error-sets-the-store-error-stops-streaming-and-appends-an-error-part`                       | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.chat-service-chat-response-chunk-appends-streamed-text-to-the-current-streaming-assistant-message`            | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.chat-service-chat-response-chunk-does-not-throw-when-no-streaming-message-exists-logs-a-warning-f9e38281`     | `tests`      | inbound   |
@@ -3854,6 +3995,7 @@ Interfaces with the Claude AI API to provide architectural assistant chat functi
 | inter-layer | `testing.testcasesketch.chat-service-send-message-success-path-clears-the-assistant-is-streaming-flag-and-store-is-dd0f6815`          | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.chat-service-viewer-context-sends-the-context-with-the-question-but-shows-only-the-question-in-the-ae72b4ff`  | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                                | `covers`     | inbound   |
+| intra-layer | `application.applicationfunction.chat-frame-routing`                                                                                  | `realizes`   | inbound   |
 | intra-layer | `application.applicationservice.chat-context-builder`                                                                                 | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.error-tracker`                                                                                        | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.json-rpc-handler`                                                                                     | `depends-on` | outbound  |
@@ -3879,6 +4021,33 @@ Validates chat message content and enforces conversation constraints before subm
 | ----------- | -------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `business.businessservice.ai-assisted-architecture-chat` | `realizes` | outbound  |
 | intra-layer | `application.applicationfunction.chat-store`             | `serves`   | outbound  |
+
+### Checkout Scope {#checkout-scope}
+
+**ID**: `application.applicationservice.checkout-scope`
+
+**Type**: `applicationservice`
+
+data/checkoutScope.ts: the current CheckoutRef (\{project, checkout\}) from checkoutStore as a hook (useCheckoutRef), the scoped query keys the data hooks share (the generated client's scoped operation ids, then project and checkout), invalidation for one checkout, and whether an API error means the checkout is unavailable (404 on a scoped route). Every project-data hook (model, layers, tier1, changesets with commit/discard/review/verification, annotations) calls the generated client's /api/projects/\{project\}/checkouts/\{checkout\}/... operations through it.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `data-model.objectschema.checkout-ref`                       | `accesses`   | outbound  |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser` | `satisfies`  | outbound  |
+| inter-layer | `navigation.route.checkout-shell-route`                      | `uses`       | inbound   |
+| intra-layer | `application.applicationfunction.checkout-store`             | `realizes`   | inbound   |
+| intra-layer | `application.applicationcomponent.app-shell`                 | `serves`     | outbound  |
+| intra-layer | `application.applicationservice.generated-api-client`        | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.use-changesets`              | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.use-model`                   | `depends-on` | inbound   |
 
 ### Error Tracker {#error-tracker}
 
@@ -3930,7 +4099,7 @@ Classifies runtime exceptions into categories for structured error reporting and
 
 **Type**: `applicationservice`
 
-Auto-generated TypeScript HTTP client from the OpenAPI spec; provides typed methods for all DR CLI REST endpoints
+Auto-generated TypeScript HTTP client from the OpenAPI spec; provides typed methods for all DR CLI REST endpoints. Project data is called only through its /api/projects/\{project\}/checkouts/\{checkout\}/... operations, with the current checkout from Checkout Scope.
 
 #### Attributes
 
@@ -3960,6 +4129,7 @@ Auto-generated TypeScript HTTP client from the OpenAPI spec; provides typed meth
 | intra-layer | `application.applicationinterface.dr-cli-rest-interface`                                                     | `assigned-to` | inbound   |
 | intra-layer | `application.applicationservice.changeset-drift`                                                             | `depends-on`  | inbound   |
 | intra-layer | `application.applicationservice.changeset-purpose`                                                           | `depends-on`  | inbound   |
+| intra-layer | `application.applicationservice.checkout-scope`                                                              | `depends-on`  | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-inspector`                                                       | `serves`      | outbound  |
 | intra-layer | `application.applicationcomponent.changeset-review-panel`                                                    | `serves`      | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                       | `depends-on`  | inbound   |
@@ -4830,6 +5000,7 @@ React Query hooks over GET /api/changesets and /api/changesets/:id (with each ch
 | inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                    | `covers`     | inbound   |
 | intra-layer | `application.applicationservice.changeset-drift`                                                                          | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.changeset-purpose`                                                                        | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.checkout-scope`                                                                           | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                     | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.web-socket-client`                                                                        | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                              | `serves`     | outbound  |
@@ -4936,6 +5107,7 @@ React Query hook over GET /api/model, deriving the model graph index; useLiveMod
 | inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                       | `covers`     | inbound   |
 | intra-layer | `application.applicationservice.use-c4model`                                                                                 | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.use-changeset-review`                                                                        | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.checkout-scope`                                                                              | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.generated-api-client`                                                                        | `depends-on` | outbound  |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                       | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                 | `serves`     | outbound  |
@@ -4950,6 +5122,27 @@ React Query hook over GET /api/model, deriving the model graph index; useLiveMod
 | intra-layer | `application.applicationcomponent.status-bar`                                                                                | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.topbar`                                                                                    | `serves`     | outbound  |
 | intra-layer | `application.applicationcomponent.topbar-search`                                                                             | `serves`     | outbound  |
+
+### Use Projects {#use-projects}
+
+**ID**: `application.applicationservice.use-projects`
+
+**Type**: `applicationservice`
+
+data/useProjects.ts: React Query hooks over GET /api/projects and GET /api/projects/\{project\}/checkouts (validated, unknown fields dropped) for the checkout picker and switcher.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                           | Predicate | Direction |
+| ----------- | ----------------------------------------- | --------- | --------- |
+| inter-layer | `ux.view.checkout-picker-view`            | `serves`  | outbound  |
+| intra-layer | `application.applicationcomponent.topbar` | `serves`  | outbound  |
 
 ### useSpec {#usespec}
 
@@ -5084,7 +5277,7 @@ Records the graph viewport on dwell and navigate, and restores it from ?vp= (rel
 
 **Type**: `applicationservice`
 
-Manages the persistent WebSocket connection to the DR CLI server; handles reconnection, topic subscriptions, and JSON-RPC message dispatch
+Manages the persistent WebSocket connection to the DR CLI's central process (/ws); handles reconnection, the per-checkout feed subscription (subscribe / unsubscribe frames, resent after a reconnect), filtering of events stamped for another checkout, and JSON-RPC message dispatch
 
 #### Attributes
 
@@ -5097,6 +5290,7 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 | Type        | Related Element                                                                                                                      | Predicate     | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------- | --------- |
 | inter-layer | `apm.metricinstrument.web-socket-reconnection-attempt-counter`                                                                       | `monitors`    | inbound   |
+| inter-layer | `motivation.requirement.keep-checkouts-apart-in-one-browser`                                                                         | `satisfies`   | outbound  |
 | inter-layer | `business.businessprocess.real-time-model-synchronization`                                                                           | `serves`      | outbound  |
 | inter-layer | `testing.testcasesketch.websocket-client-disconnect-clears-a-pending-reconnect-timer-so-no-socket-is-created-later`                  | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.websocket-client-disconnect-detaches-all-handlers-and-closes-the-socket`                                     | `tests`       | inbound   |
@@ -5109,12 +5303,33 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 | inter-layer | `testing.testcasesketch.websocket-client-typed-app-frames-does-not-fire-a-model-listener-for-a-json-rpc-frame`                       | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.websocket-client-typed-app-frames-fires-both-the-typed-listener-and-the-generic-message-listener-39526ac2`   | `tests`       | inbound   |
 | inter-layer | `testing.testcoveragetarget.cross-component-integration-test-coverage`                                                               | `covers`      | inbound   |
+| intra-layer | `application.applicationfunction.checkout-feed-subscription`                                                                         | `realizes`    | inbound   |
 | intra-layer | `application.applicationfunction.connection-store`                                                                                   | `realizes`    | inbound   |
 | intra-layer | `application.applicationinterface.dr-cli-web-socket-interface`                                                                       | `assigned-to` | inbound   |
 | intra-layer | `application.applicationservice.json-rpc-handler`                                                                                    | `depends-on`  | inbound   |
 | intra-layer | `application.applicationservice.use-changesets`                                                                                      | `depends-on`  | inbound   |
 | intra-layer | `application.applicationservice.error-tracker`                                                                                       | `depends-on`  | outbound  |
 
+### Feed Subscription {#feed-subscription}
+
+**ID**: `application.message.feed-subscription`
+
+**Type**: `message`
+
+\{action: subscribe \| unsubscribe, project, checkout\}: the websocket frame that adds or removes the socket's subscription to one checkout's feed on the central process. The client sends subscribe for the shown checkout on connect and on every switch (unsubscribe for the one left) and again after a reconnect.
+
+#### Attributes
+
+| Name        | Value   |
+| ----------- | ------- |
+| messageType | command |
+
+#### Relationships
+
+| Type        | Related Element                                              | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `application.applicationfunction.checkout-feed-subscription` | `triggers` | inbound   |
+
 ---
 
-Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
+Generated: 2026-11-24T12:04:19.661Z | Model Version: 0.1.0
