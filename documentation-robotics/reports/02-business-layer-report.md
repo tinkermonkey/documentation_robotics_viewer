@@ -18,8 +18,8 @@ Business processes, functions, roles, and services.
 | ------------------------- | ----- |
 | Elements                  | 14    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 167   |
-| Inbound Relationships     | 160   |
+| Inter-Layer Relationships | 169   |
+| Inbound Relationships     | 162   |
 | Outbound Relationships    | 7     |
 
 **Cross-Layer References**:
@@ -111,6 +111,7 @@ flowchart TB
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-realizes-e642ad79-62ea-47a4-ae04-d512d0ef7881`  | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                       | `business`   | `realizes`   | unknown      | unknown  |
 | `a920ab1c-c481-46b6-bdb4-4050501adeac-serves-c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`    | `a920ab1c-c481-46b6-bdb4-4050501adeac`                                                                                                                   | `c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6`                       | `business`   | `serves`     | unknown      | unknown  |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-changeset-diff`                                                                                                       | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-diagram-export`                                                                                                       | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-model-transform`                                                                                                      | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-plan-comparison`                                                                                                      | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.business.businessservice`                    | `application.applicationservice.c4-view-scoping`                                                                                                         | `business.businessservice.architecture-model-visualization`  | `business`   | `realizes`   | many-to-many | medium   |
@@ -149,6 +150,7 @@ flowchart TB
 | `b7775f1a-2418-4c7a-84aa-997efd658a97-serves-83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`    | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                                                   | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                       | `business`   | `serves`     | unknown      | unknown  |
 | `business.businessservice.realizes.motivation.goal`                                   | `business.businessservice.schema-exploration`                                                                                                            | `motivation.goal.visualize-multi-layer-architecture-models`  | `motivation` | `realizes`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`  | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                                                                   | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`                       | `business`   | `realizes`   | unknown      | unknown  |
+| `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.c4-export-mark`                                                                                                                 | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.c4-model`                                                                                                                       | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.c4-plan-comparison`                                                                                                             | `business.businessobject.architecture-model`                 | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                            | `data-model.objectschema.changeset-detail`                                                                                                               | `business.businessobject.changeset`                          | `business`   | `realizes`   | many-to-many | medium   |
@@ -312,6 +314,7 @@ The multi-layer YAML architecture model managed by DR CLI and visualized by the 
 
 | Type        | Related Element                                              | Predicate    | Direction |
 | ----------- | ------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-export-mark`                     | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.c4-model`                           | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.c4-plan-comparison`                 | `realizes`   | inbound   |
 | inter-layer | `data-model.objectschema.extracted-reference`                | `realizes`   | inbound   |
@@ -473,6 +476,7 @@ Interactive multi-layer graph visualization of architecture models loaded from D
 | Type        | Related Element                                              | Predicate  | Direction |
 | ----------- | ------------------------------------------------------------ | ---------- | --------- |
 | inter-layer | `application.applicationservice.c4-changeset-diff`           | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-export`           | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.c4-model-transform`          | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.c4-plan-comparison`          | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.c4-view-scoping`             | `realizes` | inbound   |
@@ -628,4 +632,4 @@ Browse and inspect layer specification schemas to understand the architecture me
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0

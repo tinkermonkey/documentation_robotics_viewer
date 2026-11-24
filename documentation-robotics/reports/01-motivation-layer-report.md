@@ -16,10 +16,10 @@ Goals, requirements, drivers, and strategic outcomes of the architecture.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 27    |
-| Intra-Layer Relationships | 33    |
-| Inter-Layer Relationships | 79    |
-| Inbound Relationships     | 79    |
+| Elements                  | 28    |
+| Intra-Layer Relationships | 34    |
+| Inter-Layer Relationships | 83    |
+| Inbound Relationships     | 83    |
 | Outbound Relationships    | 0     |
 
 **Cross-Layer References**:
@@ -45,6 +45,7 @@ flowchart LR
     motivation_principle_zustand_only_state_management["Zustand-Only State Management"]
     motivation_requirement_architecture_reads_as_c4_diagrams["Architecture reads as C4 diagrams"]
     motivation_requirement_changesets_read_as_architecture_change["Changesets read as architecture change"]
+    motivation_requirement_diagrams_travel_outside_the_viewer["Diagrams travel outside the viewer"]
     motivation_requirement_dr_bot_opens_without_reflowing_the_canvas["DrBot opens without reflowing the canvas"]
     motivation_requirement_dr_cli_server_integration["DR CLI Server Integration"]
     motivation_requirement_drift_shows_before_apply["Drift shows before Apply"]
@@ -75,6 +76,7 @@ flowchart LR
     motivation_principle_zustand_only_state_management -->|influence| motivation_requirement_dr_cli_server_integration
     motivation_requirement_architecture_reads_as_c4_diagrams -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_changesets_read_as_architecture_change -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
+    motivation_requirement_diagrams_travel_outside_the_viewer -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_dr_bot_opens_without_reflowing_the_canvas -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_dr_cli_server_integration -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
     motivation_requirement_drift_shows_before_apply -->|realizes| motivation_goal_visualize_multi_layer_architecture_models
@@ -134,6 +136,7 @@ flowchart TB
 | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `83c81f34-4376-4ff9-8fb4-98f3ecbc6d68`                                                                                              | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `api.operation.satisfies.motivation.requirement`                                      | `api.operation.get-changeset-verification`                                                                                          | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-changeset-diff`                                                                                  | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-diagram-export`                                                                                  | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-model-transform`                                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.c4-plan-comparison`                                                                                 | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.changeset-drift`                                                                                    | `motivation.requirement.drift-shows-before-apply`                   | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -165,6 +168,8 @@ flowchart TB
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-changeset-overlay`                                                                                              | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-diagram-export`                                                                                                 | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-diagram-export`                                                                                                 | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                                    | `product.feature.c4-plan-vs-as-built`                                                                                               | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -195,6 +200,7 @@ flowchart TB
 | `ux.uxspec.satisfies.motivation.requirement`                                          | `ux.uxspec.authentication-spec`                                                                                                     | `motivation.requirement.dr-cli-server-integration`                  | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.satisfies.motivation.requirement`                                            | `ux.view.architecture-view`                                                                                                         | `motivation.requirement.wcag-21-aa-compliance`                      | `motivation` | `satisfies`  | many-to-many | medium   |
 | `ux.view.supports.motivation.goal`                                                    | `ux.view.architecture-view`                                                                                                         | `motivation.goal.visualize-multi-layer-architecture-models`         | `motivation` | `supports`   | many-to-many | medium   |
@@ -417,6 +423,7 @@ Provide interactive, navigable visualization of the DR spec's multi-layer archit
 | intra-layer | `motivation.principle.core-app-architectural-separation`            | `influence` | inbound   |
 | intra-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`          | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.changesets-read-as-architecture-change`     | `realizes`  | inbound   |
+| intra-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.dr-bot-opens-without-reflowing-the-canvas`  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.dr-cli-server-integration`                  | `realizes`  | inbound   |
 | intra-layer | `motivation.requirement.drift-shows-before-apply`                   | `realizes`  | inbound   |
@@ -539,6 +546,30 @@ A reviewer can see what a changeset does to the C4 diagrams (boxes and arrows ad
 | ----------- | ----------------------------------------------------------- | ----------- | --------- |
 | inter-layer | `application.applicationservice.c4-changeset-diff`          | `satisfies` | inbound   |
 | inter-layer | `product.feature.c4-changeset-overlay`                      | `satisfies` | inbound   |
+| inter-layer | `ux.view.architecture-view`                                 | `satisfies` | inbound   |
+| intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
+
+### Diagrams travel outside the viewer {#diagrams-travel-outside-the-viewer}
+
+**ID**: `motivation.requirement.diagrams-travel-outside-the-viewer`
+
+**Type**: `requirement`
+
+A C4 diagram on screen, with its changeset overlay or plan comparison, can be taken out of the viewer as an image (SVG, PNG) or as diagram source the C4 tools read (Structurizr DSL, C4-PlantUML), so it can go into a document, a review or another tool without a screenshot.
+
+#### Attributes
+
+| Name            | Value      |
+| --------------- | ---------- |
+| priority        | medium     |
+| requirementType | functional |
+
+#### Relationships
+
+| Type        | Related Element                                             | Predicate   | Direction |
+| ----------- | ----------------------------------------------------------- | ----------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export`          | `satisfies` | inbound   |
+| inter-layer | `product.feature.c4-diagram-export`                         | `satisfies` | inbound   |
 | inter-layer | `ux.view.architecture-view`                                 | `satisfies` | inbound   |
 | intra-layer | `motivation.goal.visualize-multi-layer-architecture-models` | `realizes`  | outbound  |
 
@@ -782,6 +813,7 @@ All interactive components must pass axe-core automated accessibility testing an
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------- | --------- |
 | inter-layer | `product.feature.c4-architecture-diagrams`                                                                                          | `satisfies`       | inbound   |
 | inter-layer | `product.feature.c4-changeset-overlay`                                                                                              | `satisfies`       | inbound   |
+| inter-layer | `product.feature.c4-diagram-export`                                                                                                 | `satisfies`       | inbound   |
 | inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                               | `satisfies`       | inbound   |
 | inter-layer | `product.feature.dr-bot-chat-drawer`                                                                                                | `satisfies`       | inbound   |
 | inter-layer | `product.feature.model-view-by-type`                                                                                                | `satisfies`       | inbound   |
@@ -867,4 +899,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0

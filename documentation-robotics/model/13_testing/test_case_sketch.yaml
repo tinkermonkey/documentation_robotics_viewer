@@ -20007,3 +20007,98 @@ testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-an
     created_at: 2026-11-23T16:34:43.246Z
     updated_at: 2026-11-23T16:34:43.246Z
     version: 1
+testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks:
+  id: 34481ccc-bf48-4a45-9d45-aa8f31383254
+  path: testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4Export writes a valid SVG of the laid-out view with its marks
+  description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: boundary,
+    cards, arrows, escaped text, marks."
+  attributes:
+    status: draft
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/c4/c4Export.spec.ts
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
+testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level:
+  id: 9840a775-635b-4b8b-a7c1-607adbcc9161
+  path: testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4Export writes C4-PlantUML for each level
+  description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: element macros
+    per kind, boundaries, Rel labels, identifiers, $tags legend."
+  attributes:
+    status: draft
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/c4/c4Export.spec.ts
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
+testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level:
+  id: 89b91d48-013f-4c48-ade5-07004ad18b06
+  path: testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: c4Export writes a Structurizr DSL workspace for each level
+  description: "Planned unit test, tests/unit/c4/c4Export.spec.ts: model nesting,
+    one view of the right kind including exactly the drawn elements, tags."
+  attributes:
+    status: draft
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/unit/c4/c4Export.spec.ts
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
+testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram:
+  id: 3eaf74b6-77a9-4fce-be78-7ffc059b072e
+  path: testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: C4 export menu downloads each format named after the diagram
+  description: "Planned component test, tests/components/C4ExportMenu.spec.tsx:
+    menu items, file names, disabled until laid out, keyboard."
+  attributes:
+    status: draft
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/components/C4ExportMenu.spec.tsx
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
+testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe:
+  id: 01f1ac16-7636-41c8-8ecd-f558d36837f2
+  path: testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe
+  spec_node_id: testing.testcasesketch
+  type: testcasesketch
+  layer_id: testing
+  name: Architecture view exports each format and the menu passes axe
+  description: "Planned E2E test, tests/e2e/architecture.spec.ts: a download per
+    format, with and without an overlay; axe on the open menu."
+  attributes:
+    status: draft
+  source_reference:
+    provenance: manual
+    locations:
+      - file: tests/e2e/architecture.spec.ts
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1

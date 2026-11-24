@@ -16,11 +16,11 @@ Product features, capabilities, personas, and milestones.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 31    |
-| Intra-Layer Relationships | 59    |
-| Inter-Layer Relationships | 85    |
-| Inbound Relationships     | 59    |
-| Outbound Relationships    | 26    |
+| Elements                  | 32    |
+| Intra-Layer Relationships | 62    |
+| Inter-Layer Relationships | 90    |
+| Inbound Relationships     | 62    |
+| Outbound Relationships    | 28    |
 
 **Cross-Layer References**:
 
@@ -33,8 +33,9 @@ Product features, capabilities, personas, and milestones.
 
 | Element                                           | Type                 | Relationships |
 | ------------------------------------------------- | -------------------- | ------------- |
-| `product.feature.c4-architecture-diagrams`        | `feature`            | 3             |
+| `product.feature.c4-architecture-diagrams`        | `feature`            | 4             |
 | `product.feature.c4-changeset-overlay`            | `feature`            | 3             |
+| `product.feature.c4-diagram-export`               | `feature`            | 3             |
 | `product.feature.c4-plan-vs-as-built`             | `feature`            | 3             |
 | `product.feature.change-origin-badges`            | `feature`            | 2             |
 | `product.feature.changeset-impact-tab`            | `feature`            | 3             |
@@ -52,12 +53,12 @@ Product features, capabilities, personas, and milestones.
 | `product.feature.tier1-spend-panel`               | `feature`            | 4             |
 | `product.feature.tier1-warming-progress`          | `feature`            | 3             |
 | `product.feature.topbar-search`                   | `feature`            | 4             |
-| `product.persona.architecture-reviewer`           | `persona`            | 15            |
+| `product.persona.architecture-reviewer`           | `persona`            | 16            |
 | `product.persona.model-author`                    | `persona`            | 10            |
 | `product.softwarecapability.changeset-review`     | `softwarecapability` | 7             |
 | `product.softwarecapability.model-annotation`     | `softwarecapability` | 1             |
 | `product.softwarecapability.model-chat`           | `softwarecapability` | 1             |
-| `product.softwarecapability.model-visualization`  | `softwarecapability` | 9             |
+| `product.softwarecapability.model-visualization`  | `softwarecapability` | 10            |
 | `product.softwarecapability.schema-exploration`   | `softwarecapability` | 2             |
 | `product.userworkflow.review-a-staged-changeset`  | `userworkflow`       | 5             |
 | `product.workflowstep.apply-the-kept-changes`     | `workflowstep`       | 3             |
@@ -102,6 +103,7 @@ flowchart TB
 | `api.operation.exposes.product.feature`                              | `api.operation.get-changeset-verification`                                                                                            | `product.feature.c4-plan-vs-as-built`                              | `product`    | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                                | `product.feature.per-change-review`                                | `product`    | `exposes`    | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-changeset-diff`                                                                                    | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-export`                                                                                    | `product.feature.c4-diagram-export`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-layout`                                                                                    | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-model-transform`                                                                                   | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-plan-comparison`                                                                                   | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
@@ -132,6 +134,8 @@ flowchart TB
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.changesets-read-as-architecture-change`    | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-diagram-export`                                                                                                   | `motivation.requirement.diagrams-travel-outside-the-viewer`        | `motivation` | `satisfies`  | many-to-many | medium   |
+| `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-diagram-export`                                                                                                   | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.plan-outcome-reads-as-architecture`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-plan-vs-as-built`                                                                                                 | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -156,6 +160,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                     | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`  | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a` | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                | `product.feature.c4-diagram-export`                                | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                              | `product.feature.c4-plan-vs-as-built`                              | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                        | `product.feature.model-view-by-type`                               | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-type-groups-a-layer-opens-onto-collapsed-groups-and-a-group-opens-without-history`                   | `product.feature.nav-tree-type-groups`                             | `product`    | `tests`      | many-to-many | medium   |
@@ -169,6 +174,7 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.topbar-search-typing-lists-grouped-results-and-enter-on-an-element-navigates-as-a-nav-tree-leaf-does`         | `product.feature.topbar-search`                                    | `product`    | `tests`      | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-diagram-export`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.architecture-view`                                                                                                           | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.changeset-inbox`                                  | `product`    | `realizes`   | many-to-many | medium   |
 | `ux.view.realizes.product.feature`                                   | `ux.view.changesets-view`                                                                                                             | `product.feature.per-change-review`                                | `product`    | `realizes`   | many-to-many | medium   |
@@ -202,21 +208,22 @@ The model as a C4 diagram set in a top-level Architecture view: System Context, 
 
 #### Relationships
 
-| Type        | Related Element                                                                                                                       | Predicate   | Direction |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------- |
-| inter-layer | `application.applicationservice.c4-diagram-layout`                                                                                    | `realizes`  | inbound   |
-| inter-layer | `application.applicationservice.c4-model-transform`                                                                                   | `realizes`  | inbound   |
-| inter-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `realizes`  | inbound   |
-| inter-layer | `application.applicationservice.use-c4model`                                                                                          | `realizes`  | inbound   |
-| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                            | `satisfies` | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                        | `satisfies` | outbound  |
-| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                     | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`  | `tests`     | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a` | `tests`     | inbound   |
-| inter-layer | `ux.view.architecture-view`                                                                                                           | `realizes`  | inbound   |
-| intra-layer | `product.softwarecapability.model-visualization`                                                                                      | `realizes`  | outbound  |
-| intra-layer | `product.persona.architecture-reviewer`                                                                                               | `serves`    | outbound  |
-| intra-layer | `product.persona.model-author`                                                                                                        | `serves`    | outbound  |
+| Type        | Related Element                                                                                                                       | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-layout`                                                                                    | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.c4-model-transform`                                                                                   | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.use-c4model`                                                                                          | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                            | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                        | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                     | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-drills-from-a-container-into-its-components-and-down-to-graph-canvas-ef259c90`  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a` | `tests`      | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                                                                           | `realizes`   | inbound   |
+| intra-layer | `product.softwarecapability.model-visualization`                                                                                      | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                                                               | `serves`     | outbound  |
+| intra-layer | `product.persona.model-author`                                                                                                        | `serves`     | outbound  |
+| intra-layer | `product.feature.c4-diagram-export`                                                                                                   | `depends-on` | inbound   |
 
 ### C4 Changeset Overlay {#c4-changeset-overlay}
 
@@ -247,6 +254,35 @@ A changeset laid over the Architecture view's C4 diagrams: op marks on cards and
 | intra-layer | `product.softwarecapability.model-visualization`                | `realizes`   | outbound  |
 | intra-layer | `product.persona.architecture-reviewer`                         | `serves`     | outbound  |
 | intra-layer | `product.feature.c4-plan-vs-as-built`                           | `depends-on` | inbound   |
+
+### C4 Diagram Export {#c4-diagram-export}
+
+**ID**: `product.feature.c4-diagram-export`
+
+**Type**: `feature`
+
+An Export menu in the Architecture view's header: the diagram on screen as SVG, PNG, Structurizr DSL or C4-PlantUML, downloaded as a file named after the diagram. The export holds exactly the boxes, boundary and arrows drawn; an overlay's or a comparison's marks go with it (drawn in the images, tags in the text formats).
+
+#### Attributes
+
+| Name     | Value   |
+| -------- | ------- |
+| priority | medium  |
+| size     | m       |
+| status   | planned |
+
+#### Relationships
+
+| Type        | Related Element                                                                        | Predicate    | Direction |
+| ----------- | -------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export`                                     | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`                            | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                         | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe` | `tests`      | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                            | `realizes`   | inbound   |
+| intra-layer | `product.feature.c4-architecture-diagrams`                                             | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.model-visualization`                                       | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                | `serves`     | outbound  |
 
 ### C4 Plan vs As-Built {#c4-plan-vs-as-built}
 
@@ -718,6 +754,7 @@ Reads a DR model and the changesets proposed against it, decides each change, an
 | inter-layer | `motivation.stakeholder.architecture-team`       | `references` | outbound  |
 | intra-layer | `product.feature.c4-architecture-diagrams`       | `serves`     | inbound   |
 | intra-layer | `product.feature.c4-changeset-overlay`           | `serves`     | inbound   |
+| intra-layer | `product.feature.c4-diagram-export`              | `serves`     | inbound   |
 | intra-layer | `product.feature.c4-plan-vs-as-built`            | `serves`     | inbound   |
 | intra-layer | `product.feature.change-origin-badges`           | `serves`     | inbound   |
 | intra-layer | `product.feature.changeset-impact-tab`           | `serves`     | inbound   |
@@ -859,6 +896,7 @@ Render a DR model layer by layer as a navigable graph or as pages, with relation
 | inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`  | `supports` | outbound  |
 | intra-layer | `product.feature.c4-architecture-diagrams`                   | `realizes` | inbound   |
 | intra-layer | `product.feature.c4-changeset-overlay`                       | `realizes` | inbound   |
+| intra-layer | `product.feature.c4-diagram-export`                          | `realizes` | inbound   |
 | intra-layer | `product.feature.c4-plan-vs-as-built`                        | `realizes` | inbound   |
 | intra-layer | `product.feature.cross-layer-follow`                         | `realizes` | inbound   |
 | intra-layer | `product.feature.model-graph-view`                           | `realizes` | inbound   |
@@ -1011,4 +1049,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0

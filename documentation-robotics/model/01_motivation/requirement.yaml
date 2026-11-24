@@ -242,3 +242,21 @@ motivation.requirement.plan-outcome-reads-as-architecture:
     created_at: 2026-11-23T16:33:54.225Z
     updated_at: 2026-11-23T16:33:54.225Z
     version: 1
+motivation.requirement.diagrams-travel-outside-the-viewer:
+  id: af3e3ac1-1be1-4a45-a3b1-55b8ec0b7d37
+  path: motivation.requirement.diagrams-travel-outside-the-viewer
+  spec_node_id: motivation.requirement
+  type: requirement
+  layer_id: motivation
+  name: Diagrams travel outside the viewer
+  description: A C4 diagram on screen, with its changeset overlay or plan
+    comparison, can be taken out of the viewer as an image (SVG, PNG) or as
+    diagram source the C4 tools read (Structurizr DSL, C4-PlantUML), so it can
+    go into a document, a review or another tool without a screenshot.
+  attributes:
+    requirementType: functional
+    priority: medium
+  metadata:
+    created_at: 2026-11-23T23:18:18.911Z
+    updated_at: 2026-11-23T23:18:18.911Z
+    version: 1

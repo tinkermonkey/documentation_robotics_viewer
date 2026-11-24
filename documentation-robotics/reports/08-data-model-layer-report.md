@@ -16,11 +16,11 @@ Data entities, relationships, and data structure definitions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 36    |
+| Elements                  | 37    |
 | Intra-Layer Relationships | 14    |
-| Inter-Layer Relationships | 56    |
-| Inbound Relationships     | 41    |
-| Outbound Relationships    | 15    |
+| Inter-Layer Relationships | 60    |
+| Inbound Relationships     | 44    |
+| Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
 
@@ -36,6 +36,7 @@ Data entities, relationships, and data structure definitions.
 | `data-model.objectschema.annotation`              | `objectschema`     | 1             |
 | `data-model.objectschema.annotation-create`       | `objectschema`     | 1             |
 | `data-model.objectschema.c4-diff`                 | `objectschema`     | 0             |
+| `data-model.objectschema.c4-export-mark`          | `objectschema`     | 0             |
 | `data-model.objectschema.c4-model`                | `objectschema`     | 0             |
 | `data-model.objectschema.c4-plan-comparison`      | `objectschema`     | 0             |
 | `data-model.objectschema.c4-view`                 | `objectschema`     | 0             |
@@ -104,6 +105,7 @@ flowchart TB
 | `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                                                                    | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`            | `security`   | `references` | unknown      | unknown  |
 | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5-realizes-ea84399d-45dc-4fef-a5a1-759c9b5b5870`   | `a0080aee-7e84-4c2c-8d76-0cd604bfd7f5`                                                                    | `ea84399d-45dc-4fef-a5a1-759c9b5b5870`            | `business`   | `realizes`   | unknown      | unknown  |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                              | `data-model.objectschema.chat-message`            | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-export-mark`          | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-plan-comparison`      | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                    | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
@@ -127,6 +129,8 @@ flowchart TB
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.chat-store`                                                              | `data-model.objectschema.tool-invocation-content` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationfunction.accesses.data-model.objectschema`                     | `application.applicationfunction.local-review-store`                                                      | `data-model.objectschema.review-decision`         | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-changeset-diff`                                                        | `data-model.objectschema.c4-diff`                 | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                        | `data-model.objectschema.c4-export-mark`          | `data-model` | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                        | `data-model.objectschema.c4-view`                 | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                       | `data-model.objectschema.c4-model`                | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-plan-comparison`                                                       | `data-model.objectschema.c4-plan-comparison`      | `data-model` | `accesses`   | many-to-many | medium   |
@@ -143,6 +147,7 @@ flowchart TB
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-action-result` | `data-model` | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.use-changesets`                                                           | `data-model.objectschema.changeset-summary`       | `data-model` | `accesses`   | many-to-many | medium   |
 | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a-realizes-ffa6bf4a-5281-402f-90d8-a895173fc4ba`   | `cfe8d725-4f64-4eae-b2fa-825e4a774a3a`                                                                    | `ffa6bf4a-5281-402f-90d8-a895173fc4ba`            | `business`   | `realizes`   | unknown      | unknown  |
+| `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-export-mark`                                                                  | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-model`                                                                        | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.c4-plan-comparison`                                                              | `business.businessobject.architecture-model`      | `business`   | `realizes`   | many-to-many | medium   |
 | `data-model.objectschema.realizes.business.businessobject`                             | `data-model.objectschema.changeset-detail`                                                                | `business.businessobject.changeset`               | `business`   | `realizes`   | many-to-many | medium   |
@@ -219,6 +224,28 @@ The result of `diffC4`: per C4 element a status and the change sequence numbers 
 | ----------- | -------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationservice.c4-changeset-diff` | `accesses` | inbound   |
 
+### C4 Export Mark {#c4-export-mark}
+
+**ID**: `data-model.objectschema.c4-export-mark`
+
+**Type**: `objectschema`
+
+What a mark on a drawn box or arrow becomes in an export: its status key (an overlay op or a plan verdict), glyph, words, colour and line style. Built by the UI from the same resolution `C4Diagram` draws with, so an export says what the screen says.
+
+#### Attributes
+
+| Name | Value  |
+| ---- | ------ |
+| type | object |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate  | Direction |
+| ----------- | ------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-export`     | `accesses` | inbound   |
+| inter-layer | `business.businessobject.architecture-model`           | `realizes` | outbound  |
+
 ### C4 Model {#c4-model}
 
 **ID**: `data-model.objectschema.c4-model`
@@ -286,6 +313,7 @@ One C4 diagram: level, scope element, the elements in scope, the outside element
 | ----------- | ------------------------------------------------------ | ---------- | --------- |
 | inter-layer | `application.applicationcomponent.architecture-canvas` | `accesses` | inbound   |
 | inter-layer | `application.applicationcomponent.c4-diagram`          | `accesses` | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-export`     | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.c4-diagram-layout`     | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.c4-view-scoping`       | `accesses` | inbound   |
 | inter-layer | `application.applicationservice.use-c4model`           | `accesses` | inbound   |
@@ -928,4 +956,4 @@ Branded string type for architecture element IDs (dot-notation format: layer.typ
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0
