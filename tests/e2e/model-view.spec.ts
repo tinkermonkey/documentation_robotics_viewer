@@ -8,7 +8,7 @@
  * selects the target there.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, ROUTES, DOMAIN_HEX, hexToRgb, fetchModel, openLayer } from './helpers';
 
 test.describe('model view', () => {

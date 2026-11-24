@@ -29,7 +29,8 @@
  * serious/critical rule.
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { test, expect } from './fixtures';
 import AxeBuilder from '@axe-core/playwright';
 import { gotoView, ROUTES } from './helpers';
 

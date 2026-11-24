@@ -1,6 +1,7 @@
 documentation/claude_thoughts
 playwright-report/
 test-results/
+tests/e2e/.server.json
 # Run folders (metadata.yaml) written by local agent tooling
 results/
 **/.venv/

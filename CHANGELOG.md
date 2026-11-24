@@ -45,6 +45,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `__STORYBOOK_MOCK_WEBSOCKET__` switch, `tslib`, the dead husky v4 config in `package.json`, and the project
   agents and skills written for React Flow, Flowbite and Storybook.
 
+### Fixed
+- **The E2E suite runs again** against the dr CLI's central process. Since #623 it booted `dr visualize --no-auth`,
+  which can't serve the checkout routes, so every test stopped at the checkout picker. `scripts/e2e-server.sh` now
+  starts `dr serve` in a scratch farm (one project, `viewer`, a clone of the repo's committed model, checkout
+  `main`) and writes its token for the specs (`tests/e2e/fixtures.ts`); routes and API calls are checkout-scoped.
+  It needs a dr CLI with `dr serve` (`DR_CLI` points it at one built from source); until one is published the CI
+  job skips with a warning that also goes in the job summary. When the suite ends, the script removes the scratch
+  farm and its token. Three assertions stale since #605 and the viewport-restore checks (now within a few pixels,
+  as `?vp=` keeps 4 decimals) are fixed too. 85 of 85 pass locally.
+
 ## [0.16.0] - 2026-11-24
 
 The viewer now runs on the dr CLI's central process (`dr serve`), which serves every project and every git

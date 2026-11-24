@@ -3,8 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 /**
  * Playwright E2E config (Test Phase D).
  *
- * Drives the BUILT production bundle against a real `dr visualize` server that
- * serves BOTH the viewer and the data API from one port. Testing the built
+ * Drives the BUILT production bundle against a real dr CLI central process
+ * (`dr serve`) that serves BOTH the viewer and the data API from one port. Testing the built
  * bundle (not the dev server) is intentional — it catches production-only
  * regressions (e.g. the font 404 / OTS bug fixed in the Heimdall rebuild).
  *
@@ -15,16 +15,20 @@ import { defineConfig, devices } from '@playwright/test';
  *
  * webServer:
  * - `npm run build` produces `dist/embedded/dr-viewer-bundle`, then
- *   `dr visualize` serves it on the dedicated port 8099 with auth disabled.
- * - Run from the repo root so `dr` serves the repo's committed `.dr` model —
- *   deterministic, version-controlled counts that match the Phase A fixtures.
+ *   `scripts/e2e-server.sh` serves it with `dr serve` on the dedicated port 8099
+ *   (E2E_PORT), in a scratch farm whose one project is a clone of the repo's
+ *   committed model: deterministic counts, one checkout (`main`), and no state
+ *   shared with the user's own farm. Needs a dr CLI with `dr serve`; DR_CLI
+ *   overrides the command (e.g. `DR_CLI="node <cli>/dist/cli.js"`).
+ * - The central process makes a new token each start: the script writes it to
+ *   `tests/e2e/.server.json`, and `tests/e2e/fixtures.ts` hands it to every page
+ *   and request.
  * - `reuseExistingServer: false` so the suite is self-contained / CI-reproducible
  *   (it always boots its own server on its own port, never an ad-hoc 8080 one).
  */
 
-const PORT = 8099;
+const PORT = Number(process.env.E2E_PORT ?? 8099);
 const BASE_URL = `http://localhost:${PORT}`;
-const BUNDLE_PATH = `${process.cwd()}/dist/embedded/dr-viewer-bundle`;
 
 export default defineConfig({
   testDir: 'tests/e2e',
@@ -48,12 +52,15 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: `npm run build && dr visualize --no-auth --port ${PORT} --no-browser --viewer-path ${BUNDLE_PATH}`,
+    command: 'npm run build && bash scripts/e2e-server.sh',
     url: `${BASE_URL}/health`,
     reuseExistingServer: false,
     // Build (~30s) + server boot; generous so a cold build never times out.
     timeout: 180_000,
     stdout: 'pipe',
     stderr: 'pipe',
+    // SIGTERM (not Playwright's default SIGKILL) so scripts/e2e-server.sh's trap stops dr serve and removes
+    // its scratch farm and token.
+    gracefulShutdown: { signal: 'SIGTERM', timeout: 5000 },
   },
 });

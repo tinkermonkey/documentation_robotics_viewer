@@ -6,7 +6,7 @@
  * content (instances vs node types).
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, ROUTES, layerCounts, nodeTypeCount } from './helpers';
 
 test.describe('schema view', () => {
@@ -15,7 +15,7 @@ test.describe('schema view', () => {
 
     // data-model is the default layer; the page header signals the meta-model.
     await expect(page.getByTestId('page-header-eyebrow')).toContainText('META-MODEL');
-    await expect(page.getByTestId('page-header-title')).toContainText('schema');
+    await expect(page.getByTestId('page-header-title')).toContainText(/schema/i);
 
     // One node per node type the live spec declares for data-model (at least one).
     const dataModelTypes = await nodeTypeCount(request, 'data-model');

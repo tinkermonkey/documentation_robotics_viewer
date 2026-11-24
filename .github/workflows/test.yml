@@ -52,8 +52,9 @@ jobs:
         timeout-minutes: 10
 
   # ── E2E + a11y (non-blocking) ───────────────────────────────────────────────
-  # Boots the real `dr visualize` server (Playwright webServer builds + serves the
-  # bundle on :8099 against the repo's committed .dr model) and runs the E2E + axe
+  # Boots the real `dr serve` central process (Playwright's webServer builds the bundle
+  # and runs scripts/e2e-server.sh: a scratch farm on :8099 holding a clone of the
+  # repo's committed .dr model) and runs the E2E + axe
   # suite. The chat spec is gated on `chat.status.sdk_available` and self-skips
   # when no chat client is present in CI.
   #
@@ -87,9 +88,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # The viewer is served by the `dr` CLI; the E2E webServer runs
-      # `dr visualize`. Adjust the package name/registry to your distribution.
-      # Guarded so a private-registry failure does not crash the step graph.
+      # The viewer is served by the `dr` CLI's central process: the suite needs a
+      # CLI with `dr serve` (documentation_robotics#1279; the published 0.7.1 has
+      # none), so the job skips until one is installed. Guarded so a
+      # private-registry failure does not crash the step graph.
       - name: Install dr CLI (global)
         id: install-dr
         continue-on-error: true
@@ -97,14 +99,23 @@ jobs:
           npm i -g @documentation-robotics/cli || \
           npm i -g documentation-robotics || \
           echo "dr CLI install failed (likely a private package) — skipping E2E"
-          dr --version && echo "dr_available=true" >> "$GITHUB_OUTPUT" || \
+          dr --version || true
+          # An older CLI answers `serve --help` with its root help and exit 0: look for the subcommand's usage.
+          if dr serve --help 2>&1 | grep -q 'Usage: dr serve'; then
+            echo "dr_available=true" >> "$GITHUB_OUTPUT"
+          else
+            msg="The installed dr CLI ($(dr --version 2>/dev/null | grep -m1 'CLI Version' | tr -s ' ' || echo 'not installed')) has no 'dr serve' (needs documentation_robotics#1279): E2E skipped."
+            echo "::warning::$msg"
+            echo "### E2E skipped" >> "$GITHUB_STEP_SUMMARY"
+            echo "$msg" >> "$GITHUB_STEP_SUMMARY"
             echo "dr_available=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Install Playwright Chromium
         if: steps.install-dr.outputs.dr_available == 'true'
         run: npx playwright install --with-deps chromium
 
-      - name: Run E2E + a11y (Playwright builds + boots dr visualize on :8099)
+      - name: Run E2E + a11y (Playwright builds + boots dr serve on :8099)
         if: steps.install-dr.outputs.dr_available == 'true'
         run: npm run test:e2e
         env:
