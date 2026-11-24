@@ -8,13 +8,15 @@
  */
 
 import { describe, it, expect, vi } from 'vitest';
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
 
 import { LeftRail } from '@/apps/embedded/ui/LeftRail';
 import { StatusBar } from '@/apps/embedded/ui/StatusBar';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
+import { websocketClient } from '@/apps/embedded/services/websocketClient';
+import { installMockWebSocket, latestSocket, resetMockWebSockets, restoreWebSocket } from '../helpers/mockWebSocket';
 
 function renderFooter() {
   return renderWithProviders(
@@ -66,5 +68,36 @@ describe('shell footer', () => {
     expect(screen.getByTestId('rail-spec-version')).toHaveTextContent('SPEC —');
     expect(screen.getByTestId('status-cli-version')).toHaveTextContent('cli — · refs ok');
     expect(screen.queryByText(/0\.1\.0/)).not.toBeInTheDocument();
+  });
+});
+
+describe('status bar: a commit started elsewhere (#628)', () => {
+  it('shows the progress the CLI or DrBot reports for a commit, compactly', async () => {
+    resetMockWebSockets();
+    const previous = installMockWebSocket();
+    websocketClient.connect();
+    const socket = latestSocket()!;
+    socket.simulateOpen();
+    try {
+      renderFooter();
+      expect(screen.queryByTestId('status-commit-progress')).not.toBeInTheDocument();
+      act(() =>
+        socket.simulateMessage({
+          type: 'changeset.commit.progress',
+          changesetId: 'from-cli',
+          applied: 340,
+          total: 1200,
+          phase: 'applying',
+          project: 'test-project',
+          checkout: 'main',
+        }),
+      );
+      const item = await screen.findByTestId('status-commit-progress');
+      expect(item).toHaveTextContent('Applying 340 of 1,200 changes · applying');
+      expect(item.querySelector('[role="progressbar"]')).toHaveAttribute('aria-valuenow', '340');
+    } finally {
+      websocketClient.disconnect();
+      restoreWebSocket(previous);
+    }
   });
 });

@@ -998,3 +998,54 @@ button.drv-hood__node:focus-visible {
   background: rgb(var(--accent-primary) / 0.14);
   font-weight: 600;
 }
+
+/* ─── A commit in flight (#628, CommitProgressBar) ─────────────────────────── */
+
+.drv-commit-progress {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.drv-commit-progress__label {
+  font-size: 12.5px;
+  color: rgb(var(--canvas-fg-2));
+  font-variant-numeric: tabular-nums;
+}
+
+.drv-commit-progress--compact {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.drv-commit-progress--compact .drv-commit-progress__label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgb(var(--shell-fg-3));
+  white-space: nowrap;
+}
+
+.drv-commit-progress--compact .progress-bar {
+  width: 96px;
+  flex: none;
+}
+
+/* Heimdall's ProgressBar has no indeterminate form: slide its fill instead. */
+.drv-commit-progress__bar--indeterminate .progress-bar__fill {
+  transition: none;
+  animation: drv-commit-indeterminate 1.4s ease-in-out infinite;
+}
+
+@keyframes drv-commit-indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(290%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .drv-commit-progress__bar--indeterminate .progress-bar__fill {
+    animation: none;
+    opacity: 0.6;
+  }
+}

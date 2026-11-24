@@ -45,6 +45,7 @@ src/
 │   │   │                                          # Inspector is a Heimdall DetailDrawer overlay INSIDE Canvas, not an AppShell column
 │   │   ├── ChangesetCanvas.tsx ChangesetInspector.tsx   # Changesets keeps a permanent Inspector column (not a drawer)
 │   │   ├── ChangesetInbox.tsx ChangesetReviewPanel.tsx ChangeInspector.tsx ApplyReview.tsx  # per-change review
+│   │   ├── CommitProgressBar.tsx  # a commit in flight: determinate from changeset.commit.progress, else indeterminate (#628)
 │   │   ├── ChangeLinkCard.tsx ChangeNeighbourhood.tsx  # change inspector: link as source→predicate→target; reach as wrapped lanes
 │   │   ├── reviewParts.tsx changeset-review.css   # review chips/swatches + styles
 │   │   ├── ChangesetImpactView.tsx # Changesets › Impact tab: reach of the changed elements as lanes
@@ -81,6 +82,7 @@ src/
 │   │   │                      # c4Export.ts (SVG / PNG / Structurizr DSL / C4-PlantUML of the drawn view)
 │   │   ├── planVerification.ts usePlanVerification.ts  # the dr CLI's plan-vs-as-built report (validated) + pairing
 │   │   ├── tier1.ts useTier1.ts  # Tier 1 wire types (ChangeOrigin, Tier1Status) + origin/spend helpers + status hook
+│   │   ├── commitProgress.ts  # changeset.commit.progress guard + merge + wording; useCommitProgress / useOutsideCommitProgress
 │   │   └── changesets.ts      # changeset op-row + diff helpers
 │   ├── services/              # KEPT infra: websocketClient, jsonRpcHandler, chatService, errorTracker, chatValidation
 │   ├── stores/                # KEPT data stores: authStore, chatStore, connectionStore (+ localReviewStore, checkoutStore)
@@ -216,7 +218,7 @@ past slice 4B (not used).
 **WebSocket (JSON-RPC 2.0, `ws://:8080/ws`):** the client sends `{action: "subscribe" | "unsubscribe", project,
 checkout}` for the checkout shown (on open, after each reconnect, and on a switch); every plain event is stamped
 with `project` + `checkout`, and `websocketClient` drops events for another checkout (`isForCheckout` in the live
-hooks too). New events: `checkout.removed`, `server.stopping`. A server `{type: "error"}` frame is re-emitted as
+hooks too). New events: `checkout.removed`, `server.stopping`, `changeset.commit.progress` (#628). A server `{type: "error"}` frame is re-emitted as
 `server.error`, never the transport's `error`. Chat methods `chat.send` / `chat.status` / `chat.cancel` carry
 `project` + `checkout`; streaming notifications `chat.response.chunk` / `chat.tool.invoke` / `chat.thinking` /
 `chat.usage` / `chat.error` / `chat.turn.queued` / `chat.turn.started` carry `conversation_id` + `project` +
@@ -489,6 +491,23 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   server only applies reviewed-commit rules when the body names either); a committed changeset shows
   `AppliedResult` (landed by layer, what was left out, how many landed without a decision — server mode only). Refusals inline: 409 drift (an older dr CLI: "nothing was written, your
   decisions are kept"), 422 `blockers` (named per delete), else the server's `{ error }`.
+  **Commit progress** (#628, needs documentation_robotics#1361): while the commit request runs, the summary card's
+  decided bar gives way to `ui/CommitProgressBar.tsx` (Apply, Keep and Discard stay shut). `data/commitProgress.ts`
+  reads the server's `changeset.commit.progress` frame (`{ type, changesetId, applied, total, phase?, layer?,
+  failed?, project, checkout }`; phases validating → applying → saving → reloading → done; a JSON-RPC
+  notification with the same params is read too) through `toCommitProgress` (string id, non-negative integer
+  counts, `applied` clamped to `total`, text phase/layer, `failed` only as `true`; anything else dropped) and
+  `mergeCommitProgress` (other changesets ignored, never backwards within a phase). Determinate: "Applying 340
+  of 1,200 changes · saving" + layer, `role="progressbar"` with `aria-valuenow`/`-max`. Before the first frame or
+  on an older dr CLI: indeterminate, "Applying N changes…" (N in the server's measure: what lands plus the folded
+  add-then-delete pairs, so the first frame's total matches), a sliding fill (still under reduced motion), no
+  `aria-valuenow`. A polite `role="status"` region (mounted empty, text set in an effect) speaks at the start,
+  each phase and each quarter (`commitProgressAnnouncement`). A refusal after progress keeps the bar frozen in rose
+  ("Stopped at 4 of 30 · validating") above the inline error until a decision changes (`commit.reset()`). The
+  `StatusBar` shows a compact bar for a commit this tab didn't start (the CLI's MCP `changeset_commit`, DrBot):
+  `useOutsideCommitProgress` skips ids `markOwnCommit` registered and keeps it until `done` (then 1.5 s) or
+  `failed` (shown stopped, 5 s), with a 60 s cap after the last frame. A separate `dr changeset commit` process
+  sends nothing.
   Verdicts: `useChangesetReview` → its own `useMutation` over the generated client's
   `putapichangesetschangesetIdreview`, with hook-level `onMutate` (cancel detail fetches, optimistic write) /
   `onError` (revert only that PUT's verdicts on the CURRENT cached detail — never a stale snapshot, which would

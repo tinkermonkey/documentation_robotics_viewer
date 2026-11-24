@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Progress while Apply commits** (#628): the changeset's summary card shows how far the commit has got,
+  "Applying 340 of 1,200 changes · saving", from the dr CLI's `changeset.commit.progress` notification
+  (documentation_robotics#1361), with Apply shut until it answers. A dr CLI that sends no progress gets a
+  working bar, "Applying 1,200 changes…". A refusal shows where the commit stopped, above the reason as before.
+  The bar is a `progressbar` with its value, and a polite status line announces it now and then, not on every
+  update. A commit started from the CLI's MCP server or by DrBot shows in the status bar.
 - **Change counts on the C4 changeset overlay** (#629): a box's status chip says how many of the changeset's
   changes are behind it ("~ changed · 12 changes", "+ added · 8 changes"; no count when there is one), and so does
   a marked arrow's label ("+ uses · 4 changes"), its tooltip and its row in the list of arrows for assistive
