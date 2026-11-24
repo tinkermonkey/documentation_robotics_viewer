@@ -703,7 +703,7 @@ npm test            # Vitest: unit + integration + component (~1040 tests)
 npm run test:watch  # Vitest watch
 npm run test:cov    # Vitest with coverage
 npm run test:types  # type-check the tests (tsconfig.test.json)
-npm run test:e2e    # Playwright E2E (builds + serves the bundle via dr visualize, then drives it)
+npm run test:e2e    # Playwright E2E (builds, serves the bundle via scripts/e2e-server.sh = dr serve, drives it)
 
 # Type check (must be clean)
 npx tsc --noEmit
@@ -745,12 +745,17 @@ The Heimdall-era suite (Vitest + Playwright) — see [documentation/TESTING_STRA
   `predicates`, and `c4/`: the C4 rules, model, views and layout over a hand-built model in `tests/unit/c4/fixture.ts`), `tests/integration/` infra over a mock WebSocket + MSW (the **WS double-emit** regression,
   `jsonRpcHandler`, `chatService` streaming, data hooks), `tests/components/` Testing Library renders of the
   `ui/` layer. Helpers + real API fixtures live in `tests/helpers/` + `tests/fixtures/`.
-- **Playwright** (`npm run test:e2e`, **78 tests** in `tests/e2e/`): drives the **production bundle** served
-  by `dr visualize` on a dedicated port — shell, model/schema/changesets/architecture views, URL routing + localStorage
+- **Playwright** (`npm run test:e2e`, **85 tests** in `tests/e2e/`): drives the **production bundle** served
+  by `dr serve` on a dedicated port (`scripts/e2e-server.sh`: a scratch farm whose one project, `viewer`, is a
+  clone of the repo's committed model, checkout `main`; `DR_CLI` overrides the command, e.g. a CLI built from
+  source). The central process makes a new token each start: the script writes it to `tests/e2e/.server.json`,
+  `tests/e2e/fixtures.ts` puts it in every page's localStorage and request header, so specs import `test` /
+  `expect` from `./fixtures`, routes from `helpers.ts`'s `ROUTES` (`#/p/viewer/c/main/...`) and scoped API
+  URLs from its `api()`. Shell, model/schema/changesets/architecture views, URL routing + localStorage
   persistence, live chat single-render (double-emit), annotations CRUD (self-cleaning), and **axe** WCAG
   2.1 AA on every view in light + dark.
 - **CI**: `.github/workflows/test.yml` — Vitest + `test:types` + build are the required gate; the E2E job is
-  separate (boots `dr visualize`).
+  separate and skips (with a warning) while the installed dr CLI has no `dr serve`.
 
 Tests assert **our** code (transforms, adapter, store, composition, flows) — not Heimdall or the CLI. Add tests
 alongside changes; for UI behavior also verify live with chrome-devtools / CDP.

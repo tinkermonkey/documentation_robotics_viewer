@@ -1,23 +1,32 @@
 /**
  * Shared E2E helpers (Phase D) — Playwright only.
  *
- * These run against the REAL `dr visualize` server booted by
- * `playwright.config.ts` (the built bundle + the repo's committed `.dr` model on
- * port 8099), so all counts are deterministic and match the Phase A fixtures.
+ * These run against the REAL `dr serve` central process that
+ * `scripts/e2e-server.sh` boots for `playwright.config.ts`: the built bundle and
+ * a clone of the repo's committed `.dr` model, as the one checkout (`main`) of
+ * the one project (`viewer`) of a scratch farm, on port 8099. The specs' `test`
+ * (./fixtures) carries its token.
  */
 
 import { type Page, type Locator, type APIRequestContext, expect } from '@playwright/test';
+import { scopedApi } from './server';
 
 /** The dedicated E2E base URL (mirrors playwright.config.ts). */
-export const BASE_URL = 'http://localhost:8099';
+export const BASE_URL = `http://localhost:${process.env.E2E_PORT ?? 8099}`;
+
+/** Every page of the SPA belongs to a checkout: the scratch farm's only one. */
+export const CHECKOUT = '#/p/viewer/c/main';
 
 /** Hash routes of the SPA. */
 export const ROUTES = {
-  model: '#/model/graph',
-  spec: '#/spec/graph',
-  changesets: '#/changesets/list',
-  architecture: '#/architecture/diagram',
+  model: `${CHECKOUT}/model/graph`,
+  spec: `${CHECKOUT}/spec/graph`,
+  changesets: `${CHECKOUT}/changesets/list`,
+  architecture: `${CHECKOUT}/architecture/diagram`,
 } as const;
+
+/** URL of the checkout's own data: `/api/projects/viewer/checkouts/main<suffix>` (e.g. `/model`). */
+export const api = scopedApi;
 
 /** The 12-layer domain palette (slug → hex), verbatim from `ui/domain.ts`. */
 export const DOMAIN_HEX: Record<string, string> = {
@@ -45,9 +54,8 @@ export function hexToRgb(hex: string): string {
 }
 
 /**
- * Navigate to a hash route and wait for the shell to mount. The SPA boots at `/`
- * (AuthRoute) then sets the hash; navigating straight to the hash route is the
- * deterministic deep-link path the router supports.
+ * Navigate to a hash route (one of ROUTES, with or without a `?` search) and
+ * wait for the shell to mount: the deep-link path the router supports.
  */
 export async function gotoView(page: Page, route: string): Promise<void> {
   await page.goto(`/${route}`);
@@ -61,7 +69,7 @@ export async function fetchModel(request: APIRequestContext): Promise<{
   nodes: Array<{ id: string; layer_id: string; type: string; name: string }>;
   links: Array<{ id: string; source: string; target: string; type: string }>;
 }> {
-  const res = await request.get(`${BASE_URL}/api/model`);
+  const res = await request.get(api('/model'));
   expect(res.ok()).toBeTruthy();
   return res.json();
 }
@@ -104,7 +112,7 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       try {
         const wsUrl = base.replace(/^http/, 'ws') + '/ws';
-        const ws = new WebSocket(wsUrl, ['token', 'none']);
+        const ws = new WebSocket(wsUrl, ['token', localStorage.getItem('dr_auth_token') ?? 'none']);
         const done = (v: boolean) => {
           try {
             ws.close();
@@ -116,7 +124,12 @@ export async function chatSdkAvailable(page: Page): Promise<boolean> {
         const timer = setTimeout(() => done(false), 8000);
         ws.onopen = () => {
           ws.send(
-            JSON.stringify({ jsonrpc: '2.0', id: 99, method: 'chat.status', params: {} }),
+            JSON.stringify({
+              jsonrpc: '2.0',
+              id: 99,
+              method: 'chat.status',
+              params: { project: 'viewer', checkout: 'main' },
+            }),
           );
         };
         ws.onmessage = (ev) => {

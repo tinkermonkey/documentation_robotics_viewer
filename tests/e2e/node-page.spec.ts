@@ -9,7 +9,8 @@
  * 5. Accessibility: axe WCAG 2.1 AA on node pages with graph, light + dark
  */
 
-import { test, expect, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { test, expect } from './fixtures';
 import AxeBuilder from '@axe-core/playwright';
 import { gotoView, ROUTES, openLayer } from './helpers';
 
@@ -188,7 +189,9 @@ test.describe('node page — E2E navigation + graph', () => {
 
     // The page title should match the clicked element.
     const pageTitle = page.getByTestId('page-header-title');
-    await expect(pageTitle).toContainText(cellText!);
+    // A type cell shows the type id ("Objectschema"), the page title its label ("Object Schema", #605).
+    const squash = (t: string | null) => (t ?? '').replace(/\s+/g, '').toLowerCase();
+    await expect.poll(async () => squash(await pageTitle.textContent())).toContain(squash(cellText));
   });
 
   test("node page without connections graph (empty neighborhood) doesn't crash", async ({
@@ -383,6 +386,8 @@ test.describe('node page — graph + table row click flow', () => {
     // Should navigate to the target node page.
     await expect(pageView).toBeVisible({ timeout: 10_000 });
     const pageTitle = page.getByTestId('page-header-title');
-    await expect(pageTitle).toContainText(cellText!);
+    // A type cell shows the type id ("Objectschema"), the page title its label ("Object Schema", #605).
+    const squash = (t: string | null) => (t ?? '').replace(/\s+/g, '').toLowerCase();
+    await expect.poll(async () => squash(await pageTitle.textContent())).toContain(squash(cellText));
   });
 });

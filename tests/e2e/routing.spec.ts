@@ -9,7 +9,7 @@
  *   - back/forward restore the store without pushing duplicate entries
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, ROUTES, fetchModel, openLayer } from './helpers';
 
 /** The hash route's own search params (after the `?` inside the `#...` fragment —
@@ -54,7 +54,7 @@ test.describe('URL routing — left-panel selections', () => {
     const apmNode = model.nodes.find((n) => n.layer_id === 'apm');
     expect(apmNode).toBeTruthy();
 
-    await page.goto(`/#/model/graph?layer=apm&node=${apmNode!.id}`);
+    await page.goto(`/${ROUTES.model}?layer=apm&node=${apmNode!.id}`);
     await expect(page.getByTestId('app-shell')).toBeVisible();
 
     await expect(page.getByTestId('page-header-id-chip')).toHaveText('apm');
@@ -138,12 +138,12 @@ test.describe('URL routing — left-panel selections', () => {
     // A pure selection change (still Model view) replaces the entry in place —
     // switching views is what actually pushes a new history entry.
     await page.getByRole('button', { name: /^Changesets \d+$/ }).click();
-    await expect(page).toHaveURL(/#\/changesets\//);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/changesets\//);
 
     await page.goBack();
     // Back landed on Model with the layer selection still intact (it was
     // replaced into the SAME entry gotoView started on, never pushed).
-    await expect(page).toHaveURL(/#\/model\//);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/model\//);
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
   });
 });
@@ -169,14 +169,14 @@ test.describe('URL routing — browser history for navigation', () => {
   test('graph/page mode is in the URL and in history', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await (await openLayer(page, 'APM')).click();
-    await expect(page).toHaveURL(/#\/model\/graph\?/);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/model\/graph\?/);
 
     await page.getByRole('radio', { name: 'page', exact: true }).click();
     await expect(page.getByTestId('page-view')).toBeVisible();
-    await expect(page).toHaveURL(/#\/model\/page\?/);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/model\/page\?/);
 
     await page.goBack();
-    await expect(page).toHaveURL(/#\/model\/graph\?/);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/model\/graph\?/);
     await expect(page.getByTestId('page-view')).toHaveCount(0);
 
     // A deep link straight into page mode restores it.
@@ -274,6 +274,20 @@ test.describe('URL routing — graph viewport history', () => {
     return { testId, x: Math.round(box.x), y: Math.round(box.y) };
   }
 
+  /** The same node within a few pixels of where it was seen: `?vp=` keeps the zoom to 4 decimals, so a
+   *  restored view can land a pixel or two off, while a view that wasn't restored (auto-centre, fit) is off
+   *  by far more. */
+  async function expectNodeBack(page: import('@playwright/test').Page, layer: string, seen: Awaited<ReturnType<typeof nodeBox>>) {
+    await expect
+      .poll(async () => {
+        const now = await nodeBox(page, layer);
+        return now.testId === seen.testId && Math.abs(now.x - seen.x) <= 6 && Math.abs(now.y - seen.y) <= 6
+          ? 'restored'
+          : JSON.stringify(now);
+      })
+      .toBe('restored');
+  }
+
   test('a settled zoom writes ?vp= without pushing, and a reload restores the view', async ({ page }) => {
     await gotoView(page, ROUTES.model);
     await openLayer(page, 'APM');
@@ -289,7 +303,7 @@ test.describe('URL routing — graph viewport history', () => {
     await page.reload();
     await graphIdle(page);
     expect(vpOf(page.url())).toBe(vp);
-    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+    await expectNodeBack(page, 'apm', seen);
   });
 
   test('Back to a previous layer restores the viewport it was left at', async ({ page }) => {
@@ -307,7 +321,7 @@ test.describe('URL routing — graph viewport history', () => {
     await expect(page).toHaveURL(/[?&]layer=apm(&|$)/);
     expect(vpOf(page.url())).toBe(vp);
     await graphIdle(page);
-    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+    await expectNodeBack(page, 'apm', seen);
   });
 
   test('Back after a same-layer navigation restores the earlier viewport, not the auto-centre', async ({ page }) => {
@@ -325,7 +339,7 @@ test.describe('URL routing — graph viewport history', () => {
 
     await page.goBack();
     await expect.poll(() => vpOf(page.url())).toBe(vp);
-    await expect.poll(() => nodeBox(page, 'apm')).toEqual(seen);
+    await expectNodeBack(page, 'apm', seen);
     // The restore must not have been overwritten by a late centerOnSelect report.
     await page.waitForTimeout(500);
     expect(vpOf(page.url())).toBe(vp);

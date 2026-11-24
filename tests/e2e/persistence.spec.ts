@@ -6,7 +6,7 @@
  * the URL router's job, see routing.spec.ts.
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, ROUTES } from './helpers';
 
 test.describe('localStorage persistence', () => {

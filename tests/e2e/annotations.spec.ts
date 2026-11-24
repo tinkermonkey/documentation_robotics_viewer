@@ -12,8 +12,9 @@
  * created.
  */
 
-import { test, expect, type APIRequestContext } from '@playwright/test';
-import { gotoView, ROUTES, BASE_URL, fetchModel } from './helpers';
+import { type APIRequestContext } from '@playwright/test';
+import { test, expect } from './fixtures';
+import { gotoView, ROUTES, api, fetchModel } from './helpers';
 
 /** App's `slugifyName` (verbatim from `data/modelGraph.ts`, a port of the dr CLI's `toKebabCase`). */
 function slugifyName(name: string): string {
@@ -42,12 +43,12 @@ async function purgeAnnotations(
   elementId: string,
 ): Promise<void> {
   const res = await request.get(
-    `${BASE_URL}/api/annotations?elementId=${encodeURIComponent(elementId)}`,
+    api(`/annotations?elementId=${encodeURIComponent(elementId)}`),
   );
   if (!res.ok()) return;
   const body = await res.json();
   for (const ann of body.annotations ?? []) {
-    await request.delete(`${BASE_URL}/api/annotations/${ann.id}`);
+    await request.delete(api(`/annotations/${ann.id}`));
   }
 }
 
@@ -69,7 +70,7 @@ test.describe('annotations', () => {
     // is left unchanged (GET returns []).
     await purgeAnnotations(request, testElementId);
     const res = await request.get(
-      `${BASE_URL}/api/annotations?elementId=${encodeURIComponent(testElementId)}`,
+      api(`/annotations?elementId=${encodeURIComponent(testElementId)}`),
     );
     const body = await res.json();
     expect(body.annotations ?? []).toHaveLength(0);
