@@ -16,11 +16,11 @@ Test strategies, test cases, test data, and test coverage.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 1023  |
+| Elements                  | 1028  |
 | Intra-Layer Relationships | 5     |
-| Inter-Layer Relationships | 1193  |
+| Inter-Layer Relationships | 1201  |
 | Inbound Relationships     | 0     |
-| Outbound Relationships    | 1193  |
+| Outbound Relationships    | 1201  |
 
 **Cross-Layer References**:
 
@@ -69,6 +69,7 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                                   | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `testcasesketch`      | 0             |
 | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `testcasesketch`      | 0             |
@@ -122,6 +123,10 @@ Test strategies, test cases, test data, and test coverage.
 | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150`                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-fixture-changeset-does-what-the-tests-expect`                                          | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`                                                                    | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`                                                                     | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks`                                                                | `testcasesketch`      | 0             |
+| `testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level`                                                                                    | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `testcasesketch`      | 0             |
 | `testing.testcasesketch.c4-layout-lays-out-nothing-for-an-empty-view`                                                                                    | `testcasesketch`      | 0             |
@@ -1140,6 +1145,9 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `application.applicationcomponent.nav-tree`                        | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a`                    | `product.feature.c4-architecture-diagrams`                         | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                                   | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                                   | `product.feature.c4-diagram-export`                                | `product`     | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                                   | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                                        | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `product.feature.c4-plan-vs-as-built`                              | `product`     | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`                                                | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `ux.view.architecture-view`                                        | `ux`          | `tests`     | many-to-many | medium   |
@@ -1194,6 +1202,11 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands`                                                        | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150`                    | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`                         | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                       | `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`                                                                    | `application.applicationcomponent.architecture-canvas`             | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.ux.subview`                                             | `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`                                                                    | `ux.subview.c4-export-menu`                                        | `ux`          | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`                                                                     | `application.applicationservice.c4-diagram-export`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks`                                                                | `application.applicationservice.c4-diagram-export`                 | `application` | `tests`     | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level`                                                                                    | `application.applicationservice.c4-diagram-export`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-view-scoping`                   | `application` | `tests`     | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                         | `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `application.applicationservice.c4-diagram-layout`                 | `application` | `tests`     | many-to-many | medium   |
@@ -2939,6 +2952,28 @@ Aggregate coverage status across the full test suite: Vitest unit/integration/co
 | ----------- | ------------------------------------------ | --------- | --------- |
 | inter-layer | `product.feature.c4-architecture-diagrams` | `tests`   | outbound  |
 
+### Architecture view exports each format and the menu passes axe {#architecture-view-exports-each-format-and-the-menu-passes-axe}
+
+**ID**: `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`
+
+**Type**: `testcasesketch`
+
+Planned E2E test, tests/e2e/architecture.spec.ts: a download per format, with and without an overlay; axe on the open menu.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `product.feature.c4-diagram-export`                    | `tests`   | outbound  |
+| inter-layer | `ux.view.architecture-view`                            | `tests`   | outbound  |
+
 ### Architecture view plan vs as built passes axe in light and dark {#architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark}
 
 **ID**: `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`
@@ -3892,6 +3927,87 @@ Planned E2E test, tests/e2e/architecture.spec.ts: ?changeset= + ?built= draws th
 | Name   | Value     |
 | ------ | --------- |
 | status | automated |
+
+### C4 export menu downloads each format named after the diagram {#c4-export-menu-downloads-each-format-named-after-the-diagram}
+
+**ID**: `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`
+
+**Type**: `testcasesketch`
+
+Planned component test, tests/components/C4ExportMenu.spec.tsx: menu items, file names, disabled until laid out, keyboard.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                        | Predicate | Direction |
+| ----------- | ------------------------------------------------------ | --------- | --------- |
+| inter-layer | `application.applicationcomponent.architecture-canvas` | `tests`   | outbound  |
+| inter-layer | `ux.subview.c4-export-menu`                            | `tests`   | outbound  |
+
+### c4Export writes a Structurizr DSL workspace for each level {#c4export-writes-a-structurizr-dsl-workspace-for-each-level}
+
+**ID**: `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/c4/c4Export.spec.ts: model nesting, one view of the right kind including exactly the drawn elements, tags.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export` | `tests`   | outbound  |
+
+### c4Export writes a valid SVG of the laid-out view with its marks {#c4export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks}
+
+**ID**: `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/c4/c4Export.spec.ts: boundary, cards, arrows, escaped text, marks.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export` | `tests`   | outbound  |
+
+### c4Export writes C4-PlantUML for each level {#c4export-writes-c4-plantuml-for-each-level}
+
+**ID**: `testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level`
+
+**Type**: `testcasesketch`
+
+Planned unit test, tests/unit/c4/c4Export.spec.ts: element macros per kind, boundaries, Rel labels, identifiers, $tags legend.
+
+#### Attributes
+
+| Name   | Value |
+| ------ | ----- |
+| status | draft |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate | Direction |
+| ----------- | -------------------------------------------------- | --------- | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export` | `tests`   | outbound  |
 
 ### c4 layout &gt; draws a context diagram without a boundary {#c4-layout-draws-a-context-diagram-without-a-boundary}
 
@@ -20895,4 +21011,4 @@ Coverage target for unit testing of all core services (dataLoader, nodeTransform
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0

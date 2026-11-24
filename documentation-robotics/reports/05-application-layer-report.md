@@ -16,11 +16,11 @@ Application components, services, and interactions.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 98    |
-| Intra-Layer Relationships | 336   |
-| Inter-Layer Relationships | 1206  |
-| Inbound Relationships     | 1082  |
-| Outbound Relationships    | 124   |
+| Elements                  | 99    |
+| Intra-Layer Relationships | 339   |
+| Inter-Layer Relationships | 1217  |
+| Inbound Relationships     | 1087  |
+| Outbound Relationships    | 130   |
 
 **Cross-Layer References**:
 
@@ -36,7 +36,7 @@ Application components, services, and interactions.
 | `application.applicationcomponent.annotations-section`           | `applicationcomponent` | 4             |
 | `application.applicationcomponent.app-shell`                     | `applicationcomponent` | 23            |
 | `application.applicationcomponent.apply-review`                  | `applicationcomponent` | 5             |
-| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 22            |
+| `application.applicationcomponent.architecture-canvas`           | `applicationcomponent` | 23            |
 | `application.applicationcomponent.c4-diagram`                    | `applicationcomponent` | 4             |
 | `application.applicationcomponent.change-inspector`              | `applicationcomponent` | 15            |
 | `application.applicationcomponent.change-link-card`              | `applicationcomponent` | 9             |
@@ -81,8 +81,9 @@ Application components, services, and interactions.
 | `application.applicationinterface.dr-cli-web-socket-interface`   | `applicationinterface` | 2             |
 | `application.applicationprocess.auth-route`                      | `applicationprocess`   | 1             |
 | `application.applicationservice.c4-changeset-diff`               | `applicationservice`   | 4             |
-| `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 4             |
-| `application.applicationservice.c4-model-transform`              | `applicationservice`   | 6             |
+| `application.applicationservice.c4-diagram-export`               | `applicationservice`   | 3             |
+| `application.applicationservice.c4-diagram-layout`               | `applicationservice`   | 5             |
+| `application.applicationservice.c4-model-transform`              | `applicationservice`   | 7             |
 | `application.applicationservice.c4-plan-comparison`              | `applicationservice`   | 4             |
 | `application.applicationservice.c4-view-scoping`                 | `applicationservice`   | 7             |
 | `application.applicationservice.change-origin-helpers`           | `applicationservice`   | 4             |
@@ -199,6 +200,7 @@ flowchart TB
 | `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                                                                                                                       | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
 | `apm.metricinstrument.monitors.application.applicationservice`                         | `apm.metricinstrument.web-socket-reconnection-attempt-counter`                                                                                           | `application.applicationservice.web-socket-client`                  | `application` | `monitors`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.app-shell`                                                                                                             | `data-model.objectschema.chat-message`                              | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-export-mark`                            | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-plan-comparison`                        | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationcomponent.accesses.data-model.objectschema`                    | `application.applicationcomponent.architecture-canvas`                                                                                                   | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -227,6 +229,11 @@ flowchart TB
 | `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-changeset-diff`                                                                                                       | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-changeset-diff`                                                                                                       | `product.feature.c4-changeset-overlay`                              | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.c4-changeset-diff`                                                                                                       | `motivation.requirement.changesets-read-as-architecture-change`     | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                                                                       | `data-model.objectschema.c4-export-mark`                            | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-export`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
+| `application.applicationservice.realizes.business.businessservice`                     | `application.applicationservice.c4-diagram-export`                                                                                                       | `business.businessservice.architecture-model-visualization`         | `business`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-export`                                                                                                       | `product.feature.c4-diagram-export`                                 | `product`     | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                      | `application.applicationservice.c4-diagram-export`                                                                                                       | `motivation.requirement.diagrams-travel-outside-the-viewer`         | `motivation`  | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-diagram-layout`                                                                                                       | `data-model.objectschema.c4-view`                                   | `data-model`  | `accesses`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`                              | `application.applicationservice.c4-diagram-layout`                                                                                                       | `product.feature.c4-architecture-diagrams`                          | `product`     | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.accesses.data-model.objectschema`                      | `application.applicationservice.c4-model-transform`                                                                                                      | `data-model.objectschema.c4-model`                                  | `data-model`  | `accesses`   | many-to-many | medium   |
@@ -365,6 +372,7 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                                          | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                                      | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                                       | `application.applicationcomponent.nav-tree`                         | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                                   | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                                                 | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-does-not-persist-the-c4-level-scope-or-9202dcca`                             | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationfunction`                         | `testing.testcasesketch.architecture-view-state-c4-level-scope-selected-box-keeps-a-scope-only-at-the-component-level`                                   | `application.applicationfunction.ui-store`                          | `application` | `tests`      | many-to-many | medium   |
@@ -417,6 +425,10 @@ flowchart TB
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands`                                                        | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150`                    | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`                         | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationcomponent`                        | `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`                                                                    | `application.applicationcomponent.architecture-canvas`              | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`                                                                     | `application.applicationservice.c4-diagram-export`                  | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks`                                                                | `application.applicationservice.c4-diagram-export`                  | `application` | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level`                                                                                    | `application.applicationservice.c4-diagram-export`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-diagram-layout`                  | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-draws-a-context-diagram-without-a-boundary`                                                                            | `application.applicationservice.c4-view-scoping`                    | `application` | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.application.applicationservice`                          | `testing.testcasesketch.c4-layout-labels-an-arrow-with-its-predicates-and-past-one-link-a-count`                                                         | `application.applicationservice.c4-diagram-layout`                  | `application` | `tests`      | many-to-many | medium   |
@@ -1495,7 +1507,7 @@ Apply confirmation (what lands, what's left out, links deleted with their elemen
 
 **Type**: `applicationcomponent`
 
-ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with the level control (Context · Containers · Components) and a scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid (`?changeset=`) or the C4 Plan Comparison Bar when a plan is compared with an as-built changeset (`?changeset=` + `?built=`), the C4 Diagram below it, and a details drawer for the selected box listing the model elements behind it, each a link into the Model view; with an overlay an "In this changeset" section (each change behind the box with its op, before and after, and a link to it in the Changesets view), and with a comparison a "Plan vs as built" section (each planned element behind the box with its verdict, and each unplanned one). Reads the model through useModel and the spec through useSpec; level, scope, selection, the overlaid changeset and the as-built live in the UI store and the URL. Shows a plain message when the model yields no C4 elements, and how many model elements (and overlaid changes or verdicts) the rules left out.
+ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with the level control (Context · Containers · Components), the changeset picker and the C4 Export Menu, a scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid (`?changeset=`) or the C4 Plan Comparison Bar when a plan is compared with an as-built changeset (`?changeset=` + `?built=`), the C4 Diagram below it, and a details drawer for the selected box listing the model elements behind it, each a link into the Model view; with an overlay an "In this changeset" section, and with a comparison a "Plan vs as built" section. Export hands the drawn view, its layout and its marks (as C4 Export Marks, from the same resolution the diagram draws with) to the C4 Diagram Export service and downloads the result. Reads the model through useModel and the spec through useSpec; level, scope, selection, the overlaid changeset and the as-built live in the UI store and the URL.
 
 #### Attributes
 
@@ -1508,6 +1520,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 | Type        | Related Element                                                                                                                       | Predicate     | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------- | --------- |
 | inter-layer | `api.operation.get-changeset-verification`                                                                                            | `serves`      | inbound   |
+| inter-layer | `data-model.objectschema.c4-export-mark`                                                                                              | `accesses`    | outbound  |
 | inter-layer | `data-model.objectschema.c4-model`                                                                                                    | `accesses`    | outbound  |
 | inter-layer | `data-model.objectschema.c4-plan-comparison`                                                                                          | `accesses`    | outbound  |
 | inter-layer | `data-model.objectschema.c4-view`                                                                                                     | `accesses`    | outbound  |
@@ -1522,6 +1535,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 | inter-layer | `testing.testcasesketch.architecture-canvas-opens-the-details-of-a-selected-box-and-a-model-element-from-them`                        | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-canvas-shows-the-default-container-when-the-components-level-has-no-scope`                       | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-canvas-switches-level-from-the-header-control`                                                   | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                              | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-draws-the-removed-box-as-a-ghost-that-can-be-selected-but-not-2c0926c4` | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-lets-go-of-a-selected-box-once-the-overlay-that-drew-it-is-ecf03bfc`    | `tests`       | inbound   |
@@ -1529,6 +1543,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 | inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-added-box-where-it-lands`                                     | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-marks-the-changed-box-with-an-outline-and-a-chip-and-rolls-up-eb3c2150` | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.c4-changeset-overlay-staged-changeset-the-bar-names-the-changeset-and-says-what-differs-with-a-eb32f079`      | `tests`       | inbound   |
+| inter-layer | `testing.testcasesketch.c4-export-menu-downloads-each-format-named-after-the-diagram`                                                 | `tests`       | inbound   |
 | inter-layer | `testing.testcasesketch.c4-plan-comparison-bar-tallies-verdicts-and-cards-carry-glyphs`                                               | `tests`       | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `composes`    | inbound   |
 | intra-layer | `application.applicationcomponent.app-shell`                                                                                          | `uses`        | inbound   |
@@ -1539,6 +1554,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 | intra-layer | `application.applicationcomponent.c4-diagram`                                                                                         | `uses`        | outbound  |
 | intra-layer | `application.applicationcomponent.markdown-text`                                                                                      | `uses`        | outbound  |
 | intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                    | `serves`      | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-export`                                                                                    | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.c4-model-transform`                                                                                   | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.c4-plan-comparison`                                                                                   | `serves`      | inbound   |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                                                      | `serves`      | inbound   |
@@ -1559,7 +1575,7 @@ ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page header with th
 
 **Type**: `applicationcomponent`
 
-ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. With a C4 Diff, cards and arrows carry op marks in the Impact tab's outline styles (ui/opStyles.ts) plus a text chip and the status in their accessible name, never colour alone; removed boxes and arrows are drawn as ghosts; a box whose parts changed shows a count. With a C4 Plan Comparison, the same slots carry the verdict instead (ui/verdictStyles.ts + a chip: ✓ built as planned, ≈ probable, ≠ built differently, ∅ planned but not built, ? can't be checked, + built but not planned) and a box whose parts carry verdicts shows a count per verdict. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts (focus follows into the new diagram), Escape clears the selection; the arrows, with their status, are also listed as text. Proof of concept for boundary rendering, a C4 card and its status slot in Heimdall.
+ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through Heimdall's usePanZoom, with its own zoom and fit buttons styled as Heimdall's graph toolbar (GraphToolbar itself only works inside a GraphCanvas); a dashed boundary rectangle titled with the scope; a card per element (name, kind and technology, one line of description; a person and a data store get their own shape); right-angle edges with a label of the predicates and a count. An overlay's op marks or a comparison's verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`: outline, glyph, words, colour token, dash per card and arrow), which the export also uses, so an exported diagram carries the same marks. Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys between cards, Enter drills into a card that has parts, Escape clears the selection; the arrows, with their status, are also listed as text.
 
 #### Attributes
 
@@ -3126,6 +3142,36 @@ TanStack Router route handling token-based authentication via magic link; extrac
 | intra-layer | `application.applicationcomponent.architecture-canvas`          | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.use-c4model`                    | `depends-on` | inbound   |
 
+### C4 Diagram Export {#c4-diagram-export}
+
+**ID**: `application.applicationservice.c4-diagram-export`
+
+**Type**: `applicationservice`
+
+`data/c4/c4Export.ts` (pure): `toSvg(view, layout, marks, palette)` draws a self-contained SVG from the laid-out view (no DOM capture: boundary, cards, right-angle arrows and labels, colours and fonts inlined); `toPlantUml(view, marks)` writes C4-PlantUML (the C4 stdlib include, Person / System / System_Ext / Container / ContainerDb / Component, System_Boundary / Container_Boundary, Rel with the arrow's labels, marks as $tags with a legend); `toStructurizr(view, marks)` writes a Structurizr DSL workspace holding this diagram's elements and one view of its kind (systemContext / container / component) including exactly the drawn elements, marks as tags. Identifiers are made valid per format and text is escaped. `toPng` rasterises the SVG through a canvas at 2x.
+
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| serviceType | synchronous |
+
+#### Relationships
+
+| Type        | Related Element                                                                           | Predicate    | Direction |
+| ----------- | ----------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `data-model.objectschema.c4-export-mark`                                                  | `accesses`   | outbound  |
+| inter-layer | `data-model.objectschema.c4-view`                                                         | `accesses`   | outbound  |
+| inter-layer | `business.businessservice.architecture-model-visualization`                               | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-diagram-export`                                                       | `realizes`   | outbound  |
+| inter-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`                               | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.c4-export-writes-a-structurizr-dsl-workspace-for-each-level`      | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-export-writes-a-valid-svg-of-the-laid-out-view-with-its-marks` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-export-writes-c4-plant-uml-for-each-level`                     | `tests`      | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-layout`                                        | `depends-on` | outbound  |
+| intra-layer | `application.applicationservice.c4-model-transform`                                       | `depends-on` | outbound  |
+| intra-layer | `application.applicationcomponent.architecture-canvas`                                    | `serves`     | outbound  |
+
 ### C4 Diagram Layout {#c4-diagram-layout}
 
 **ID**: `application.applicationservice.c4-diagram-layout`
@@ -3153,6 +3199,7 @@ data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top to bottom, nest
 | inter-layer | `testing.testcasesketch.c4-layout-routes-one-arrow-per-relationship-from-box-edge-to-box-edge-with-a-label` | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                           | `covers`     | inbound   |
 | intra-layer | `application.applicationcomponent.c4-diagram`                                                               | `realizes`   | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-export`                                                          | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.c4-view-scoping`                                                            | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.c4-diagram`                                                               | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.use-c4model`                                                                | `depends-on` | inbound   |
@@ -3222,6 +3269,7 @@ data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model (nodes and reso
 | inter-layer | `testing.testcasesketch.union-c4-and-union-c4-view-opens-a-removed-container-as-a-ghost-scope`                                        | `tests`      | inbound   |
 | inter-layer | `testing.testcoveragetarget.service-and-store-unit-test-coverage`                                                                     | `covers`     | inbound   |
 | intra-layer | `application.applicationservice.c4-changeset-diff`                                                                                    | `depends-on` | inbound   |
+| intra-layer | `application.applicationservice.c4-diagram-export`                                                                                    | `depends-on` | inbound   |
 | intra-layer | `application.applicationservice.model-graph-transform`                                                                                | `depends-on` | outbound  |
 | intra-layer | `application.applicationcomponent.architecture-canvas`                                                                                | `serves`     | outbound  |
 | intra-layer | `application.applicationservice.c4-plan-comparison`                                                                                   | `depends-on` | inbound   |
@@ -5069,4 +5117,4 @@ Manages the persistent WebSocket connection to the DR CLI server; handles reconn
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-24T10:59:48.979Z | Model Version: 0.1.0

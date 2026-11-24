@@ -887,20 +887,19 @@ application.applicationcomponent.architecture-canvas:
   layer_id: application
   name: Architecture Canvas
   description: "ui/ArchitectureCanvas.tsx: the Architecture view's canvas. A page
-    header with the level control (Context · Containers · Components) and a
-    scope breadcrumb, the C4 Changeset Bar when a changeset is overlaid
-    (`?changeset=`) or the C4 Plan Comparison Bar when a plan is compared with
-    an as-built changeset (`?changeset=` + `?built=`), the C4 Diagram below it,
-    and a details drawer for the selected box listing the model elements behind
-    it, each a link into the Model view; with an overlay an \"In this
-    changeset\" section (each change behind the box with its op, before and
-    after, and a link to it in the Changesets view), and with a comparison a
-    \"Plan vs as built\" section (each planned element behind the box with its
-    verdict, and each unplanned one). Reads the model through useModel and the
-    spec through useSpec; level, scope, selection, the overlaid changeset and
-    the as-built live in the UI store and the URL. Shows a plain message when
-    the model yields no C4 elements, and how many model elements (and overlaid
-    changes or verdicts) the rules left out."
+    header with the level control (Context · Containers · Components), the
+    changeset picker and the C4 Export Menu, a scope breadcrumb, the C4
+    Changeset Bar when a changeset is overlaid (`?changeset=`) or the C4 Plan
+    Comparison Bar when a plan is compared with an as-built changeset
+    (`?changeset=` + `?built=`), the C4 Diagram below it, and a details drawer
+    for the selected box listing the model elements behind it, each a link into
+    the Model view; with an overlay an \"In this changeset\" section, and with a
+    comparison a \"Plan vs as built\" section. Export hands the drawn view, its
+    layout and its marks (as C4 Export Marks, from the same resolution the
+    diagram draws with) to the C4 Diagram Export service and downloads the
+    result. Reads the model through useModel and the spec through useSpec;
+    level, scope, selection, the overlaid changeset and the as-built live in the
+    UI store and the URL."
   attributes:
     type: internal
   source_reference:
@@ -925,19 +924,13 @@ application.applicationcomponent.c4-diagram:
     GraphCanvas); a dashed boundary rectangle titled with the scope; a card per
     element (name, kind and technology, one line of description; a person and a
     data store get their own shape); right-angle edges with a label of the
-    predicates and a count. With a C4 Diff, cards and arrows carry op marks in
-    the Impact tab's outline styles (ui/opStyles.ts) plus a text chip and the
-    status in their accessible name, never colour alone; removed boxes and
-    arrows are drawn as ghosts; a box whose parts changed shows a count. With a
-    C4 Plan Comparison, the same slots carry the verdict instead
-    (ui/verdictStyles.ts + a chip: ✓ built as planned, ≈ probable, ≠ built
-    differently, ∅ planned but not built, ? can't be checked, + built but not
-    planned) and a box whose parts carry verdicts shows a count per verdict.
-    Colours from canvas tokens, so it flips with the dark canvas. Keyboard: one
-    Tab stop with arrow keys between cards, Enter drills into a card that has
-    parts (focus follows into the new diagram), Escape clears the selection; the
-    arrows, with their status, are also listed as text. Proof of concept for
-    boundary rendering, a C4 card and its status slot in Heimdall."
+    predicates and a count. An overlay's op marks or a comparison's verdict
+    marks come from one shared resolution (`ui/c4DiagramMarks.ts`: outline,
+    glyph, words, colour token, dash per card and arrow), which the export also
+    uses, so an exported diagram carries the same marks. Colours from canvas
+    tokens, so it flips with the dark canvas. Keyboard: one Tab stop with arrow
+    keys between cards, Enter drills into a card that has parts, Escape clears
+    the selection; the arrows, with their status, are also listed as text."
   attributes:
     type: internal
   source_reference:

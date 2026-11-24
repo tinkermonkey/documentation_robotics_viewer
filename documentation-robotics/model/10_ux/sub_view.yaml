@@ -220,3 +220,23 @@ ux.subview.c4-plan-comparison-bar:
     created_at: 2026-11-23T16:33:54.252Z
     updated_at: 2026-11-23T16:33:54.252Z
     version: 1
+ux.subview.c4-export-menu:
+  id: cd8b3aeb-0500-4ebf-aacd-a192e98004b2
+  path: ux.subview.c4-export-menu
+  spec_node_id: ux.subview
+  type: subview
+  layer_id: ux
+  name: C4 Export Menu
+  description: "The Architecture view's Export control in the page header: a menu
+    of SVG, PNG, Structurizr DSL and PlantUML, keyboard operable, each item a
+    download named `<level>-<scope>.<ext>`; disabled until the diagram is laid
+    out, with a status message after a download."
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/ui/C4ExportMenu.tsx
+        symbol: C4ExportMenu
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1

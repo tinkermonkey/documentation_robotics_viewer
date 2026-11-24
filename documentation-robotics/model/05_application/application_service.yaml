@@ -1227,3 +1227,50 @@ application.applicationservice.c4-plan-comparison:
     created_at: 2026-11-23T16:33:54.252Z
     updated_at: 2026-11-23T16:33:54.252Z
     version: 1
+application.applicationservice.c4-diagram-export:
+  id: 4f9f35e7-92e0-4ba8-b1af-135d10521063
+  path: application.applicationservice.c4-diagram-export
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Diagram Export
+  description: "`data/c4/c4Export.ts` (pure): `toSvg(view, layout, marks,
+    palette)` draws a self-contained SVG from the laid-out view (no DOM capture:
+    boundary, cards, right-angle arrows and labels, colours and fonts inlined);
+    `toPlantUml(view, marks)` writes C4-PlantUML (the C4 stdlib include, Person
+    / System / System_Ext / Container / ContainerDb / Component, System_Boundary
+    / Container_Boundary, Rel with the arrow's labels, marks as $tags with a
+    legend); `toStructurizr(view, marks)` writes a Structurizr DSL workspace
+    holding this diagram's elements and one view of its kind (systemContext /
+    container / component) including exactly the drawn elements, marks as tags.
+    Identifiers are made valid per format and text is escaped. `toPng`
+    rasterises the SVG through a canvas at 2x."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: manual
+    locations:
+      - file: src/apps/embedded/data/c4/c4Export.ts
+        symbol: toSvg
+  accepted_gaps:
+    - direction: incoming
+      predicate: depends-on
+      other_spec_node_id: application.applicationservice
+      reason: "A leaf: only the Architecture canvas calls the export writers; no other
+        service builds on them."
+      decided_by: agent
+      decided_at: 2026-11-23T23:18:36.318Z
+      changeset: changeset-1795475865021-rebuu0x5f
+    - direction: incoming
+      predicate: covers
+      other_spec_node_id: testing.testcoveragetarget
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest
+        coverage include (src/apps/embedded/{ui,data}); the slice adds no
+        coverage target of its own.
+      decided_by: agent
+      decided_at: 2026-11-23T23:18:36.598Z
+      changeset: changeset-1795475865021-rebuu0x5f
+  metadata:
+    created_at: 2026-11-23T23:18:18.912Z
+    updated_at: 2026-11-23T23:18:18.912Z
+    version: 1
