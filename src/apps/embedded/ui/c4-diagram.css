@@ -458,6 +458,31 @@
   color: rgb(var(--canvas-fg-2));
 }
 
+/* The roll-up follows the legend: its border is the main op's (set inline),
+ * and each op inside is a swatch + glyph. Text stays --canvas-fg-2,
+ * so the colour is never what carries the contrast. */
+.c4-card__rollup[style] {
+  border-width: 2px;
+}
+
+.c4-card__rollup-op {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-weight: 700;
+}
+
+.c4-card__rollup-swatch {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.c4-card__rollup-sep {
+  color: rgb(var(--canvas-fg-3));
+}
+
 /* A removed box, drawn back: dimmed, dotted, flat. */
 .c4-card--ghost {
   border-style: dotted;

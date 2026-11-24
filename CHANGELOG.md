@@ -15,6 +15,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The bar is a `progressbar` with its value, and a polite status line announces it now and then, not on every
   update. A commit started from the CLI's MCP server or by DrBot shows in the status bar.
 
+### Changed
+- **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
+  **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
+  that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an
+  applied changeset opens Closed to show its row. An empty group is hidden.
+
 ## [0.16.0] - 2026-11-24
 
 The viewer now runs on the dr CLI's central process (`dr serve`), which serves every project and every git

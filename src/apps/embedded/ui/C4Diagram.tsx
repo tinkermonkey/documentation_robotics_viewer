@@ -359,7 +359,7 @@ export function C4Diagram({
           const icon = element.shape === 'datastore' ? 'data' : KIND_ICONS[element.kind];
           const drillable = canDrill(item);
           const parts = drillable ? `, ${item.childCount} ${item.childCount === 1 ? 'part' : 'parts'}, Enter opens it` : '';
-          const { mark, words, inside } = cardMark(item.id);
+          const { mark, words, inside, insideMark } = cardMark(item.id);
           const status = words.length > 0 ? `, ${words.join(', ')}` : '';
           const ghost = isGhost(item.id);
           const classes = [
@@ -425,7 +425,23 @@ export function C4Diagram({
                 </span>
               )}
               {inside && (
-                <span className="c4-card__rollup" aria-hidden="true" data-testid="c4-card-rollup">
+                <span
+                  className="c4-card__rollup"
+                  style={
+                    insideMark?.token
+                      ? { borderColor: `rgb(var(${insideMark.token}))`, borderStyle: insideMark.style ?? 'solid' }
+                      : undefined
+                  }
+                  aria-hidden="true"
+                  data-testid="c4-card-rollup"
+                >
+                  {insideMark?.ops.map((o) => (
+                    <span key={o.glyph} className="c4-card__rollup-op" data-testid="c4-card-rollup-op">
+                      <span className="c4-card__rollup-swatch" style={{ background: `rgb(var(${o.token}))` }} />
+                      {o.glyph}
+                    </span>
+                  ))}
+                  {insideMark?.ops.length ? <span className="c4-card__rollup-sep">·</span> : null}
                   {inside}
                 </span>
               )}
