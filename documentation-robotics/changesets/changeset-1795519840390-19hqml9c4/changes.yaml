@@ -67,7 +67,12 @@
       created_at: 2026-11-24T11:32:08.563Z
       updated_at: 2026-11-24T11:32:08.563Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CheckoutShellRoute
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 2
 - type: add
   elementId: navigation.route.checkout-index-route
@@ -87,7 +92,12 @@
       created_at: 2026-11-24T11:32:08.565Z
       updated_at: 2026-11-24T11:32:08.565Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CheckoutIndexRoute
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 3
 - type: add
   elementId: ux.view.checkout-picker-view
@@ -112,7 +122,12 @@
       created_at: 2026-11-24T11:32:08.566Z
       updated_at: 2026-11-24T11:32:08.566Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutPickerPage
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 4
 - type: add
   elementId: ux.subview.checkout-switcher
@@ -131,7 +146,12 @@
       created_at: 2026-11-24T11:32:08.569Z
       updated_at: 2026-11-24T11:32:08.569Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutSwitcher
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 5
 - type: add
   elementId: ux.errorconfig.checkout-unavailable-error
@@ -151,7 +171,12 @@
       created_at: 2026-11-24T11:32:08.570Z
       updated_at: 2026-11-24T11:32:08.570Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/CheckoutPicker.tsx
+          symbol: CheckoutUnavailablePage
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 6
 - type: add
   elementId: application.applicationservice.checkout-scope
@@ -178,7 +203,12 @@
       created_at: 2026-11-24T11:32:08.571Z
       updated_at: 2026-11-24T11:32:08.571Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/checkoutScope.ts
+          symbol: useCheckoutRef
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 7
 - type: add
   elementId: application.applicationservice.use-projects
@@ -199,7 +229,12 @@
       created_at: 2026-11-24T11:32:08.572Z
       updated_at: 2026-11-24T11:32:08.572Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/useProjects.ts
+          symbol: useProjects
+  timestamp: 2026-11-24T12:01:32.118Z
   sequenceNumber: 8
 - type: add
   elementId: application.applicationfunction.checkout-store
@@ -219,7 +254,12 @@
       created_at: 2026-11-24T11:32:08.572Z
       updated_at: 2026-11-24T11:32:08.572Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/stores/checkoutStore.ts
+          symbol: useCheckoutStore
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 9
 - type: add
   elementId: application.applicationevent.checkout-removed
@@ -240,7 +280,12 @@
       created_at: 2026-11-24T11:32:08.573Z
       updated_at: 2026-11-24T11:32:08.573Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: CHECKOUT_REMOVED_EVENT
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 10
 - type: add
   elementId: application.applicationevent.server-stopping
@@ -261,7 +306,12 @@
       created_at: 2026-11-24T11:32:08.573Z
       updated_at: 2026-11-24T11:32:08.573Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/router.tsx
+          symbol: SERVER_STOPPING_EVENT
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 11
 - type: add
   elementId: application.applicationevent.chat-turn-queued
@@ -282,7 +332,12 @@
       created_at: 2026-11-24T11:32:08.573Z
       updated_at: 2026-11-24T11:32:08.573Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/chatStore.ts
+          symbol: ChatTurnQueued
+  timestamp: 2026-11-24T12:01:32.118Z
   sequenceNumber: 12
 - type: add
   elementId: application.applicationevent.chat-turn-started
@@ -302,7 +357,12 @@
       created_at: 2026-11-24T11:32:08.573Z
       updated_at: 2026-11-24T11:32:08.573Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/chatService.ts
+          symbol: chat.turn.started
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 13
 - type: add
   elementId: application.message.feed-subscription
@@ -325,7 +385,12 @@
       created_at: 2026-11-24T11:32:08.573Z
       updated_at: 2026-11-24T11:32:08.573Z
       version: 1
-  timestamp: 2026-11-24T11:32:08.587Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/types/websocket.ts
+          symbol: FeedSubscriptionFrame
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 14
 - type: relationship-add
   elementId: motivation.requirement.open-the-checkout-a-link-names::realizes::motivation.goal.visualize-multi-layer-architecture-models
@@ -666,7 +731,12 @@
       created_at: 2026-11-24T11:32:31.378Z
       updated_at: 2026-11-24T11:32:31.378Z
       version: 1
-  timestamp: 2026-11-24T11:32:31.393Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/routes/checkoutLinks.ts
+          symbol: readCliLink
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 42
 - type: add
   elementId: data-model.objectschema.checkout-ref
@@ -687,7 +757,12 @@
       created_at: 2026-11-24T11:32:31.378Z
       updated_at: 2026-11-24T11:32:31.378Z
       version: 1
-  timestamp: 2026-11-24T11:32:31.393Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/stores/checkoutStore.ts
+          symbol: CheckoutRef
+  timestamp: 2026-11-24T12:01:32.118Z
   sequenceNumber: 43
 - type: add
   elementId: application.applicationfunction.checkout-feed-subscription
@@ -708,7 +783,12 @@
       created_at: 2026-11-24T11:32:31.378Z
       updated_at: 2026-11-24T11:32:31.378Z
       version: 1
-  timestamp: 2026-11-24T11:32:31.393Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/websocketClient.ts
+          symbol: WebSocketClient.setCheckout
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 44
 - type: add
   elementId: application.applicationfunction.chat-frame-routing
@@ -731,7 +811,12 @@
       created_at: 2026-11-24T11:32:31.378Z
       updated_at: 2026-11-24T11:32:31.378Z
       version: 1
-  timestamp: 2026-11-24T11:32:31.393Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/services/chatService.ts
+          symbol: ChatService.isForThisConversation
+  timestamp: 2026-11-24T12:01:32.155Z
   sequenceNumber: 45
 - type: relationship-add
   elementId: navigation.route.checkout-shell-route::accesses::data-model.objectschema.checkout-ref
@@ -1395,3 +1480,300 @@
     layer: navigation
   timestamp: 2026-11-24T11:33:06.489Z
   sequenceNumber: 88
+- type: delete
+  elementId: ux.view.auth-view
+  layerName: ux
+  before:
+    id: d840fbc5-353c-4bae-8188-5f33bbaf2dd9
+    path: ux.view.auth-view
+    spec_node_id: ux.view
+    type: view
+    layer_id: ux
+    name: Auth View
+    description: Landing view at route /#/; extracts the DR CLI bearer token from
+      the ?token= URL query parameter, persists it to localStorage, and
+      redirects to the model view.
+    attributes:
+      type: embedded
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T13:22:53.827Z
+      updated_at: 2026-03-20T13:22:53.827Z
+      version: 1
+  timestamp: 2026-11-24T12:01:16.792Z
+  sequenceNumber: 89
+- type: relationship-delete
+  elementId: ux.uxspec.authentication-spec::aggregates::ux.view.auth-view
+  layerName: ux
+  before:
+    source: ux.uxspec.authentication-spec
+    target: ux.view.auth-view
+    predicate: aggregates
+    layer: ux
+  timestamp: 2026-11-24T12:01:16.822Z
+  sequenceNumber: 90
+- type: delete
+  elementId: application.applicationprocess.auth-route
+  layerName: application
+  before:
+    id: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+    path: application.applicationprocess.auth-route
+    spec_node_id: application.applicationprocess
+    type: applicationprocess
+    layer_id: application
+    name: Auth Route
+    description: TanStack Router route handling token-based authentication via magic
+      link; extracts token from URL query params
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T12:57:27.016Z
+      updated_at: 2026-03-20T12:57:27.016Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.134Z
+  sequenceNumber: 91
+- type: relationship-delete
+  elementId: application.applicationprocess.auth-route::depends-on::application.applicationfunction.auth-store
+  layerName: application
+  before:
+    source: application.applicationprocess.auth-route
+    target: application.applicationfunction.auth-store
+    predicate: depends-on
+    layer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.156Z
+  sequenceNumber: 92
+- type: relationship-delete
+  elementId: navigation.navigationflow.authentication-to-model-flow::realizes::application.applicationprocess.auth-route
+  layerName: navigation
+  before:
+    source: navigation.navigationflow.authentication-to-model-flow
+    target: application.applicationprocess.auth-route
+    predicate: realizes
+    layer: navigation
+    targetLayer: application
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.179Z
+  sequenceNumber: 93
+- type: relationship-delete
+  elementId: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04::realizes::c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+  layerName: application
+  before:
+    source: 6b2f9b1a-bd90-4b1e-9ee2-bed4cbb73a04
+    target: c20e00b6-ef86-415a-92a3-3e9fd9dc7cd6
+    predicate: realizes
+    layer: application
+    targetLayer: business
+    properties:
+      source_provenance: inferred
+      confidence: high
+      basis: domain-pattern
+  timestamp: 2026-11-24T12:01:17.210Z
+  sequenceNumber: 94
+- type: delete
+  elementId: navigation.navigationtransition.auth-redirect-transition
+  layerName: navigation
+  before:
+    id: 6a0364fb-3985-40d8-8921-d1634df686f2
+    path: navigation.navigationtransition.auth-redirect-transition
+    spec_node_id: navigation.navigationtransition
+    type: navigationtransition
+    layer_id: navigation
+    name: Auth Redirect Transition
+    description: Programmatic redirect from the index route to the model graph view
+      after successful token extraction; triggered by the AuthRoute on token
+      validation success.
+    attributes:
+      from: index-route
+      to: model-view-route
+      trigger: redirect
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata:
+      created_at: 2026-03-20T13:26:35.262Z
+      updated_at: 2026-03-20T13:26:35.262Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.576Z
+  sequenceNumber: 95
+- type: relationship-delete
+  elementId: navigation.navigationguard.authentication-guard::protects::navigation.navigationtransition.auth-redirect-transition
+  layerName: navigation
+  before:
+    source: navigation.navigationguard.authentication-guard
+    target: navigation.navigationtransition.auth-redirect-transition
+    predicate: protects
+    layer: navigation
+    properties:
+      source_provenance: inferred
+      confidence: high
+  timestamp: 2026-11-24T12:01:17.598Z
+  sequenceNumber: 96
+- type: delete
+  elementId: ux.statepattern.authentication-flow-pattern
+  layerName: ux
+  before:
+    id: f98c00c5-f24b-47e6-a51a-5c0f68127997
+    path: ux.statepattern.authentication-flow-pattern
+    spec_node_id: ux.statepattern
+    type: statepattern
+    layer_id: ux
+    name: Authentication Flow Pattern
+    description: "Multi-step UX state machine for the token-based authentication
+      flow; states: unauthenticated → extracting-token → validating →
+      authenticated; handles invalid token rejection."
+    attributes:
+      category: authentication
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata:
+      created_at: 2026-03-20T13:25:10.821Z
+      updated_at: 2026-03-20T13:25:10.822Z
+      version: 1
+  timestamp: 2026-11-24T12:01:17.951Z
+  sequenceNumber: 97
+- type: relationship-delete
+  elementId: ux.statepattern.authentication-flow-pattern::specializes::ux.statepattern.data-loading-pattern
+  layerName: ux
+  before:
+    source: ux.statepattern.authentication-flow-pattern
+    target: ux.statepattern.data-loading-pattern
+    predicate: specializes
+    layer: ux
+  timestamp: 2026-11-24T12:01:17.974Z
+  sequenceNumber: 98
+- type: delete
+  elementId: ux.uxspec.authentication-spec
+  layerName: ux
+  before:
+    id: 9f80cdb4-4e5f-480f-b8e5-255ed97bf829
+    path: ux.uxspec.authentication-spec
+    spec_node_id: ux.uxspec
+    type: uxspec
+    layer_id: ux
+    name: Authentication Spec
+    description: UX specification for token-based authentication flow; extracts
+      bearer token from magic link URL query parameter and redirects to the
+      model view on success.
+    attributes:
+      experience: visual
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata:
+      created_at: 2026-03-20T13:22:49.389Z
+      updated_at: 2026-03-20T13:22:49.389Z
+      version: 1
+  timestamp: 2026-11-24T12:01:18.342Z
+  sequenceNumber: 99
+- type: relationship-delete
+  elementId: ux.uxspec.authentication-spec::satisfies::motivation.requirement.dr-cli-server-integration
+  layerName: ux
+  before:
+    source: ux.uxspec.authentication-spec
+    target: motivation.requirement.dr-cli-server-integration
+    predicate: satisfies
+    layer: ux
+    targetLayer: motivation
+  timestamp: 2026-11-24T12:01:18.364Z
+  sequenceNumber: 100
+- type: update
+  elementId: navigation.flowstep.token-extraction-step
+  layerName: navigation
+  before:
+    id: 5124a95d-6e9e-4d62-a725-f306ac7498f0
+    path: navigation.flowstep.token-extraction-step
+    spec_node_id: navigation.flowstep
+    type: flowstep
+    layer_id: navigation
+    name: Token Extraction Step
+    description: First step in the auth flow; renders on the index route, reads
+      ?token= from URL, stores token, then triggers programmatic redirect.
+    attributes: &a18
+      sequence: 1
+      route: index-route
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+          symbol: AuthRoute
+    metadata: &a19
+      created_at: 2026-03-20T13:26:01.263Z
+      updated_at: 2026-03-20T13:26:01.263Z
+      version: 1
+  after:
+    id: 5124a95d-6e9e-4d62-a725-f306ac7498f0
+    path: navigation.flowstep.token-extraction-step
+    spec_node_id: navigation.flowstep
+    type: flowstep
+    layer_id: navigation
+    name: Token Extraction Step
+    description: "First step of the auth flow: before the router starts (and on
+      popstate / hashchange, for a link opened in a tab that already shows the
+      viewer), main.tsx takes the magic link's token from the fragment (the dr
+      CLI's /#/p/<project>/c/<checkout>/...?token=) or the query string, stores
+      it for API and websocket calls and removes it from the address bar."
+    attributes: *a18
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/main.tsx
+          symbol: takeTokenFromHashChange
+    metadata: *a19
+  timestamp: 2026-11-24T12:01:31.289Z
+  sequenceNumber: 101
+- type: update
+  elementId: navigation.navigationflow.authentication-to-model-flow
+  layerName: navigation
+  before:
+    id: 224c1c80-4e61-4450-b8b2-dfca369b0bf5
+    path: navigation.navigationflow.authentication-to-model-flow
+    spec_node_id: navigation.navigationflow
+    type: navigationflow
+    layer_id: navigation
+    name: Authentication to Model Flow
+    description: "Two-step navigation flow for first-time access: step 1 lands on
+      the index route to extract the magic link token; step 2 navigates
+      programmatically to the model graph view after token validation."
+    source_reference:
+      provenance: inferred
+      locations:
+        - file: src/apps/embedded/routes/AuthRoute.tsx
+    metadata: &a20
+      created_at: 2026-03-20T13:25:56.005Z
+      updated_at: 2026-03-20T13:25:56.005Z
+      version: 1
+  after:
+    id: 224c1c80-4e61-4450-b8b2-dfca369b0bf5
+    path: navigation.navigationflow.authentication-to-model-flow
+    spec_node_id: navigation.navigationflow
+    type: navigationflow
+    layer_id: navigation
+    name: Authentication to Model Flow
+    description: "From a dr CLI link to the checkout it names: the token is taken
+      from the fragment (main.tsx), then the checkout route opens the Model
+      view, the changeset or the element the link names; a bare /#/ opens the
+      checkout picker."
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/main.tsx
+    metadata: *a20
+  timestamp: 2026-11-24T12:01:31.349Z
+  sequenceNumber: 102
