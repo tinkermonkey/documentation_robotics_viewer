@@ -23,7 +23,7 @@
 
 import { C4_SYSTEM_ID, c4Ancestors, type C4Element, type C4Kind, type C4Model } from './c4Model';
 import type { C4View, C4ViewElement } from './c4Views';
-import { C4_CARD, c4EdgeLabel, type C4Layout } from './c4Layout';
+import { C4_CARD, C4_EDGE_LABEL_CHARS, c4EdgeLabel, c4EdgeLabelWidth, c4MarkedEdgeLabel, type C4Layout } from './c4Layout';
 
 export type C4LineStyle = 'solid' | 'dashed' | 'dotted' | 'double' | 'groove';
 
@@ -32,8 +32,12 @@ export interface C4ExportMark {
   /** An overlay status (`added`) or a verdict (`v-missing`): the tag in the text formats. */
   status: string;
   glyph: string;
-  /** The words, the first the chip's ("moved from Old Home"). */
+  /** The words for titles, the first the mark's own ("changed, 12 changes"). */
   words: string[];
+  /** A card's chip text without the glyph ("changed · 12 changes"); the first word when absent. */
+  chip?: string;
+  /** An arrow's change count past one ("4 changes"), drawn after its label; none when absent. */
+  count?: string;
   /** The status's own words, the same for every box or arrow it marks ("moved"): a legend's. */
   legend: string;
   /** A CSS colour (`#rrggbb` or `rgb(…)`), null for no outline. */
@@ -283,7 +287,7 @@ export function toSvg(
     if (!rel) continue;
     const mark = marks.relationships.get(rel.id);
     const base = c4EdgeLabel(rel.labels, rel.count);
-    const label = cut(mark ? `${mark.glyph} ${base}` : base, 28);
+    const label = mark ? c4MarkedEdgeLabel(base, mark.glyph, mark.count) : cut(base, C4_EDGE_LABEL_CHARS);
     const stroke = mark?.color ?? c('--canvas-fg-3');
     const dash = mark?.dash ? ` stroke-dasharray="${mark.dash}"` : '';
     const strokeWidth = mark?.color ? 2 : 1.25;
@@ -293,8 +297,9 @@ export function toSvg(
     );
     if (edge.label && label) {
       const l = edge.label;
+      const width = c4EdgeLabelWidth(l.width, label);
       out.push(
-        `<rect x="${l.x}" y="${l.y}" width="${l.width}" height="${l.height}" rx="4" fill="${c('--canvas-bg')}" fill-opacity="0.92"/>`,
+        `<rect x="${l.x + (l.width - width) / 2}" y="${l.y}" width="${width}" height="${l.height}" rx="4" fill="${c('--canvas-bg')}" fill-opacity="0.92"/>`,
         `<text x="${l.x + l.width / 2}" y="${l.y + l.height / 2}" text-anchor="middle" dominant-baseline="central" font-family="${MONO}" font-size="10" fill="${c('--canvas-fg-2')}">${xmlEscape(label)}</text>`,
       );
     }
@@ -377,8 +382,9 @@ function svgCard(
     const left = anchorEnd ? cx - cw : cx;
     return `<g><rect x="${left}" y="${cy}" width="${cw}" height="18" rx="9" fill="${c('--canvas-card')}" stroke="${border}" stroke-width="1.5"/><text x="${left + 8}" y="${cy + 9}" dominant-baseline="central" font-family="${SANS}" font-size="10.5" fill="${c('--canvas-fg-1')}">${xmlEscape(label)}</text></g>`;
   };
-  if (mark && (mark.glyph || mark.color) && words[0]) {
-    parts.push(chip(`${mark.glyph ? `${mark.glyph} ` : ''}${words[0]}`, x + 10, y - 16, mark.color ?? c('--canvas-border'), false));
+  const chipText = mark?.chip || words[0];
+  if (mark && (mark.glyph || mark.color) && chipText) {
+    parts.push(chip(`${mark.glyph ? `${mark.glyph} ` : ''}${chipText}`, x + 10, y - 16, mark.color ?? c('--canvas-border'), false));
   }
   if (inside) parts.push(chip(inside, x + w - 10, y + h - 2, marks.insideColor?.get(item.id) ?? c('--canvas-fg-3'), true));
 

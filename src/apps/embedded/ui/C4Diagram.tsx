@@ -32,7 +32,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Icon, usePanZoom, type IconName } from '@tinkermonkey/heimdall-ui';
 import type { C4Kind } from '../data/c4/c4Model';
 import type { C4View, C4ViewElement } from '../data/c4/c4Views';
-import { C4_CARD, c4EdgeLabel, type C4Layout } from '../data/c4/c4Layout';
+import { C4_CARD, c4EdgeLabel, c4EdgeLabelWidth, c4MarkedEdgeLabel, type C4Layout } from '../data/c4/c4Layout';
 import { OP_OUTLINE, OVERLAY_OPS } from './opStyles';
 import { VERDICT_STYLES } from './verdictStyles';
 import { PLAN_VERDICTS } from '../data/planVerification';
@@ -77,8 +77,6 @@ const KIND_ICONS: Partial<Record<C4Kind, IconName>> = {
 const MIN_ZOOM = 0.1;
 const MAX_ZOOM = 2;
 const FIT_PADDING = 32;
-/** Longest label drawn on an arrow; the rest is in its tooltip and the text list. */
-const LABEL_CHARS = 28;
 
 /** The line under a card's name: `[Container: web app]`. */
 export function c4KindLine(item: C4ViewElement): string {
@@ -303,8 +301,7 @@ export function C4Diagram({
             const hot = touchesSelection(rel.sourceId, rel.targetId);
             const mark = edgeMark(rel.id);
             const base = c4EdgeLabel(rel.labels, rel.count);
-            const full = mark ? `${mark.glyph} ${base}` : base;
-            const text = full.length > LABEL_CHARS ? `${full.slice(0, LABEL_CHARS - 1)}…` : full;
+            const text = c4MarkedEdgeLabel(base, mark?.glyph, mark?.count);
             const classes = [
               'c4-diagram__edge',
               hot ? 'c4-diagram__edge--hot' : '',
@@ -329,9 +326,9 @@ export function C4Diagram({
                   <g>
                     <rect
                       className="c4-diagram__edge-label-bg"
-                      x={edge.label.x}
+                      x={edge.label.x + (edge.label.width - c4EdgeLabelWidth(edge.label.width, text)) / 2}
                       y={edge.label.y}
-                      width={edge.label.width}
+                      width={c4EdgeLabelWidth(edge.label.width, text)}
                       height={edge.label.height}
                       rx={4}
                     />
@@ -421,7 +418,7 @@ export function C4Diagram({
                   aria-hidden="true"
                   data-testid="c4-card-status"
                 >
-                  <span className="c4-card__glyph">{mark.glyph}</span> {words[0]}
+                  <span className="c4-card__glyph">{mark.glyph}</span> {mark.chip}
                 </span>
               )}
               {inside && (

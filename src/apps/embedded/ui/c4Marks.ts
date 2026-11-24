@@ -51,16 +51,43 @@ export function rollUpOps(rollUp: C4RollUp | undefined): { op: OverlayOp; count:
   return OVERLAY_OPS.filter((op) => counts.has(op)).map((op) => ({ op, count: counts.get(op)! }));
 }
 
+/** "12 changes", or '' when there is one change or none (the mark already says one thing changed). */
+export function changeCountLabel(n: number): string {
+  return n > 1 ? `${n} changes` : '';
+}
+
+/** How many of the changeset's changes are behind a box's or an arrow's own mark. */
+export function changeCount(diff: { sequences: readonly number[] } | undefined): number {
+  return diff?.sequences.length ?? 0;
+}
+
 /** "3 changes inside", or '' when nothing below the box changed. */
 export function rollUpLabel(rollUp: C4RollUp | undefined): string {
   const n = rollUpCount(rollUp);
   return n === 0 ? '' : `${n} ${n === 1 ? 'change' : 'changes'} inside`;
 }
 
+/** A box's own status in words, without its count: "added", "moved from Web App". Empty for none or parts changed. */
+export function elementStatusLabel(diff: C4ElementDiff | undefined, nameOf: (id: string) => string | undefined): string {
+  if (!diff || diff.status === 'parts-changed') return '';
+  if (diff.status === 'moved') {
+    const from = diff.previousParentId ? nameOf(diff.previousParentId) : undefined;
+    return from ? `moved from ${from}` : 'moved';
+  }
+  return ELEMENT_MARKS[diff.status].label;
+}
+
+/** A box's status chip, without its glyph: "changed · 12 changes", "added". Empty for none or parts changed. */
+export function elementChipLabel(diff: C4ElementDiff | undefined, nameOf: (id: string) => string | undefined): string {
+  const label = elementStatusLabel(diff, nameOf);
+  const n = changeCountLabel(changeCount(diff));
+  return label && n ? `${label} · ${n}` : label;
+}
+
 /**
  * A box's status words for its accessible name and tooltip: "added",
- * "moved from Web App", "3 changes inside". Empty when the changeset leaves it
- * and its parts alone.
+ * "changed, 12 changes", "moved from Web App", "3 changes inside". Empty when
+ * the changeset leaves it and its parts alone.
  */
 export function elementStatusWords(
   diff: C4ElementDiff | undefined,
@@ -68,22 +95,37 @@ export function elementStatusWords(
   nameOf: (id: string) => string | undefined,
 ): string[] {
   const words: string[] = [];
-  if (diff && diff.status !== 'parts-changed') {
-    if (diff.status === 'moved') {
-      const from = diff.previousParentId ? nameOf(diff.previousParentId) : undefined;
-      words.push(from ? `moved from ${from}` : 'moved');
-    } else {
-      words.push(ELEMENT_MARKS[diff.status].label);
-    }
+  const label = elementStatusLabel(diff, nameOf);
+  if (label) {
+    const n = changeCountLabel(changeCount(diff));
+    words.push(n ? `${label}, ${n}` : label);
   }
   const inside = rollUpLabel(rollUp);
   if (inside) words.push(inside);
   return words;
 }
 
-/** An arrow's status words: "added", "removed", "relabelled, was uses", "relinked". */
-export function relationshipStatusWords(diff: C4ViewRelationshipDiff | undefined): string {
+/** An arrow's own status in words, without its count: "added", "relabelled, was uses". */
+export function relationshipStatusLabel(diff: C4ViewRelationshipDiff | undefined): string {
   if (!diff) return '';
   if (diff.status === 'relabelled' && diff.baseLabels.length > 0) return `relabelled, was ${diff.baseLabels.join(', ')}`;
   return RELATIONSHIP_MARKS[diff.status].label;
+}
+
+/** An arrow's status words: "added", "removed, 4 changes", "relabelled, was uses", "relinked". */
+export function relationshipStatusWords(diff: C4ViewRelationshipDiff | undefined): string {
+  if (!diff) return '';
+  const label = relationshipStatusLabel(diff);
+  const n = changeCountLabel(changeCount(diff));
+  return n ? `${label}, ${n}` : label;
+}
+
+/**
+ * The changes inside a diagram's scope, each counted once: the same number
+ * as the scope box's "N changes inside" chip one level up, so a reader who
+ * followed that chip can check it here. "37 changes inside Web App", or '' for none.
+ */
+export function scopeChangesLabel(scopeName: string, rollUp: C4RollUp | undefined): string {
+  const n = rollUpCount(rollUp);
+  return n === 0 ? '' : `${n} ${n === 1 ? 'change' : 'changes'} inside ${scopeName}`;
 }

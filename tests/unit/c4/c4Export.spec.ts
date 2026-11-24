@@ -126,6 +126,34 @@ describe('c4Export: SVG', () => {
     expect(edge.querySelector('text')?.textContent?.startsWith('+ ')).toBe(true);
   });
 
+  it("draws an overlay's change counts as the screen does: on the chip, and at the end of the arrow label (#629)", () => {
+    const view = buildC4View(c4, 'container', C4_SYSTEM_ID);
+    const first = view.elements.find((e) => e.inScope)!;
+    const rel = view.relationships[0];
+    const changed: C4ExportMark = {
+      ...added,
+      status: 'changed',
+      glyph: '~',
+      words: ['changed, 12 changes'],
+      chip: 'changed · 12 changes',
+      legend: 'changed',
+      color: '#22d3ee',
+    };
+    const marks: C4ExportMarks = {
+      elements: new Map([[first.id, changed]]),
+      relationships: new Map([[rel.id, { ...added, words: ['added, 4 changes'], count: '4 changes' }]]),
+      inside: new Map(),
+      ghosts: new Set(),
+    };
+    const doc = parse(toSvg(view, grid(view), marks));
+    const card = doc.querySelector(`[data-c4-id="${CSS.escape(first.id)}"]`)!;
+    expect(card.textContent).toContain('~ changed · 12 changes');
+    expect(card.querySelector('title')?.textContent).toContain('changed, 12 changes');
+    const edge = doc.querySelector('[data-c4="edge"][data-status="added"]')!;
+    expect(edge.querySelector('text')?.textContent).toMatch(/^\+ .* · 4 changes$/);
+    expect(edge.querySelector('title')?.textContent).toContain('added, 4 changes');
+  });
+
   it('wraps a long name at words and ends what is left over with an ellipsis', () => {
     expect(wrap('one two three four five', 9, 2)).toEqual(['one two', 'three…']);
     expect(wrap('short', 9, 2)).toEqual(['short']);

@@ -1,0 +1,24 @@
+id: changeset-1795528942628-wd33cljvc
+name: c4-overlay-change-counts
+description: "Issue #629. On the Architecture view's changeset overlay, a box's
+  status chip and an arrow's label say how many changeset changes are behind
+  them (\"~ changed · 12 changes\", \"+ uses · 4 changes\"; no count when it is
+  1), with the count in accessible names, tooltips and the hidden arrow list.
+  The numbers add up across levels: the changeset bar says how many changes are
+  in the drawn scope (\"37 changes in Web App, each counted once\"), matching
+  the \"N changes inside\" chip followed to get there, and the drawer says that
+  chip counts each change once. The SVG/PNG export draws the same chips and
+  labels. Done when the chips, arrows, bar, drawer and export agree, with unit
+  and component tests."
+created: 2026-11-24T14:02:22.637Z
+modified: 2026-11-24T14:02:44.111Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 8
+  modifications: 3
+  deletions: 0
+lastSequence: 10

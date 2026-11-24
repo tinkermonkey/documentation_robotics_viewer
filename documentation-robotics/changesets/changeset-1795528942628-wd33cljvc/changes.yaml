@@ -1,0 +1,254 @@
+- type: add
+  elementId: product.feature.c4-overlay-change-counts
+  layerName: product
+  after:
+    id: 7764c462-d013-4c01-83b9-e0de6d42bf47
+    path: product.feature.c4-overlay-change-counts
+    spec_node_id: product.feature
+    type: feature
+    layer_id: product
+    name: C4 Overlay Change Counts
+    description: "With a changeset overlaid on the C4 diagrams, each marked box and
+      arrow says how many of the changeset's changes are behind it (\"~ changed
+      · 12 changes\", \"+ uses · 4 changes\", none when it is 1), in its chip,
+      label, accessible name and the hidden arrow list; the changeset bar states
+      the total for the drawn scope (\"37 changes in Web App, each counted
+      once\") so a reader can check it against the \"N changes inside\" chip
+      they followed. Issue #629."
+    attributes:
+      priority: medium
+      status: planned
+      size: s
+    metadata:
+      created_at: 2026-11-24T14:02:29.158Z
+      updated_at: 2026-11-24T14:02:29.158Z
+      version: 1
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 0
+- type: relationship-add
+  elementId: product.feature.c4-overlay-change-counts::depends-on::product.feature.c4-changeset-overlay
+  layerName: product
+  after:
+    source: product.feature.c4-overlay-change-counts
+    target: product.feature.c4-changeset-overlay
+    predicate: depends-on
+    layer: product
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 1
+- type: relationship-add
+  elementId: product.feature.c4-overlay-change-counts::realizes::product.softwarecapability.model-visualization
+  layerName: product
+  after:
+    source: product.feature.c4-overlay-change-counts
+    target: product.softwarecapability.model-visualization
+    predicate: realizes
+    layer: product
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 2
+- type: relationship-add
+  elementId: product.feature.c4-overlay-change-counts::serves::product.persona.architecture-reviewer
+  layerName: product
+  after:
+    source: product.feature.c4-overlay-change-counts
+    target: product.persona.architecture-reviewer
+    predicate: serves
+    layer: product
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: product.feature.c4-overlay-change-counts::satisfies::motivation.requirement.changesets-read-as-architecture-change
+  layerName: product
+  after:
+    source: product.feature.c4-overlay-change-counts
+    target: motivation.requirement.changesets-read-as-architecture-change
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: product.feature.c4-overlay-change-counts::satisfies::motivation.requirement.wcag-21-aa-compliance
+  layerName: product
+  after:
+    source: product.feature.c4-overlay-change-counts
+    target: motivation.requirement.wcag-21-aa-compliance
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.c4-diagram-export::realizes::product.feature.c4-overlay-change-counts
+  layerName: application
+  after:
+    source: application.applicationservice.c4-diagram-export
+    target: product.feature.c4-overlay-change-counts
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T14:02:29.186Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: ux.view.architecture-view::realizes::product.feature.c4-overlay-change-counts
+  layerName: ux
+  after:
+    source: ux.view.architecture-view
+    target: product.feature.c4-overlay-change-counts
+    predicate: realizes
+    layer: ux
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T14:02:34.110Z
+  sequenceNumber: 7
+- type: update
+  elementId: application.applicationcomponent.c4-diagram
+  layerName: application
+  before:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. An overlay's op marks or a comparison's
+      verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`:
+      outline, glyph, words, colour token, dash per card and arrow), which the
+      export also uses, so an exported diagram carries the same marks. Colours
+      from canvas tokens, so it flips with the dark canvas. Keyboard: one Tab
+      stop with arrow keys between cards, Enter drills into a card that has
+      parts, Escape clears the selection; the arrows, with their status, are
+      also listed as text."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/C4Diagram.tsx
+          symbol: C4Diagram
+    metadata: &a3
+      created_at: 2026-11-20T15:40:02.900Z
+      updated_at: 2026-11-20T15:40:02.900Z
+      version: 1
+  after:
+    id: 45be0003-c860-49b9-b33d-6af1e98954fb
+    path: application.applicationcomponent.c4-diagram
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: C4 Diagram
+    description: "ui/C4Diagram.tsx: draws one laid-out C4 view. Pan and zoom through
+      Heimdall's usePanZoom, with its own zoom and fit buttons styled as
+      Heimdall's graph toolbar (GraphToolbar itself only works inside a
+      GraphCanvas); a dashed boundary rectangle titled with the scope; a card
+      per element (name, kind and technology, one line of description; a person
+      and a data store get their own shape); right-angle edges with a label of
+      the predicates and a count. An overlay's op marks or a comparison's
+      verdict marks come from one shared resolution (`ui/c4DiagramMarks.ts`:
+      outline, glyph, words, chip text, change count, colour token, dash per
+      card and arrow), which the export also uses, so an exported diagram
+      carries the same marks. An overlay's status chip and arrow label carry the
+      number of changeset changes behind them past one (\"~ changed · 12
+      changes\", \"+ uses · 4 changes\"), also in the card's accessible name,
+      the arrow's tooltip and the hidden arrow list. Colours from canvas tokens,
+      so it flips with the dark canvas. Keyboard: one Tab stop with arrow keys
+      between cards, Enter drills into a card that has parts, Escape clears the
+      selection; the arrows, with their status, are also listed as text."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-24T14:02:44.065Z
+  sequenceNumber: 8
+- type: update
+  elementId: ux.subview.c4-changeset-bar
+  layerName: ux
+  before:
+    id: e2568d76-6a12-4221-92f6-a4d07b77b8df
+    path: ux.subview.c4-changeset-bar
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Changeset Bar
+    description: "The Architecture view's changeset overlay bar under the
+      breadcrumb: a changeset picker (staged first, then applied), its name and
+      purpose, a drift badge when commit is blocked, a tally, the legend and
+      Clear."
+    source_reference: &a4
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/C4ChangesetBar.tsx
+          symbol: C4ChangesetBar
+    metadata: &a5
+      created_at: 2026-11-21T01:28:54.108Z
+      updated_at: 2026-11-21T01:28:54.108Z
+      version: 1
+  after:
+    id: e2568d76-6a12-4221-92f6-a4d07b77b8df
+    path: ux.subview.c4-changeset-bar
+    spec_node_id: ux.subview
+    type: subview
+    layer_id: ux
+    name: C4 Changeset Bar
+    description: "The Architecture view's changeset overlay bar under the
+      breadcrumb: a changeset picker (staged first, then applied), its name and
+      purpose, a drift badge when commit is blocked, a tally, the number of
+      changes in the drawn scope (\"37 changes in Web App, each counted once\",
+      matching the \"N changes inside\" chip that led there), the legend and
+      Clear."
+    source_reference: *a4
+    metadata: *a5
+  timestamp: 2026-11-24T14:02:44.095Z
+  sequenceNumber: 9
+- type: update
+  elementId: data-model.objectschema.c4-export-mark
+  layerName: data-model
+  before:
+    id: e084da13-cbf9-44d1-9cc0-f750ec7716a9
+    path: data-model.objectschema.c4-export-mark
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Export Mark
+    description: "What a mark on a drawn box or arrow becomes in an export: its
+      status key (an overlay op or a plan verdict), glyph, words, colour and
+      line style. Built by the UI from the same resolution `C4Diagram` draws
+      with, so an export says what the screen says."
+    attributes: &a6
+      type: object
+    source_reference: &a7
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/c4/c4Export.ts
+          symbol: C4ExportMark
+    metadata: &a8
+      created_at: 2026-11-23T23:18:18.912Z
+      updated_at: 2026-11-23T23:18:18.912Z
+      version: 1
+  after:
+    id: e084da13-cbf9-44d1-9cc0-f750ec7716a9
+    path: data-model.objectschema.c4-export-mark
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: C4 Export Mark
+    description: "What a mark on a drawn box or arrow becomes in an export: its
+      status key (an overlay op or a plan verdict), glyph, words, the chip text
+      and change count drawn on screen, colour and line style. Built by the UI
+      from the same resolution `C4Diagram` draws with, so an export says what
+      the screen says."
+    attributes: *a6
+    source_reference: *a7
+    metadata: *a8
+  timestamp: 2026-11-24T14:02:44.107Z
+  sequenceNumber: 10
