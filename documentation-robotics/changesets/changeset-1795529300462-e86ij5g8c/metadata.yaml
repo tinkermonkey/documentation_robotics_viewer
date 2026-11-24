@@ -1,0 +1,29 @@
+id: changeset-1795529300462-e86ij5g8c
+name: apply-commit-progress
+description: >-
+  While Apply commits a changeset (#628), the summary card shows a progress bar
+  driven by the server's `changeset.commit.progress` WebSocket notification (`{
+  changesetId, applied, total, phase?, layer? }`, documentation_robotics#1361):
+  "Applying N of M changes", plus the phase when sent; an older dr CLI gets an
+  indeterminate bar ("Applying N changes…"). Apply stays disabled until the HTTP
+  response; AppliedResult and inline 409/422 refusals stay as today. A commit
+  the CLI or DrBot started shows in the status bar.
+
+
+  **Done when** the bar fills live from validated notifications (other
+  changesets and checkouts ignored, malformed payloads dropped), it is a
+  `role="progressbar"` with a polite live region that announces at intervals, a
+  refusal after progress still shows inline, and the fallback works on a CLI
+  without notifications.
+created: 2026-11-24T14:08:20.471Z
+modified: 2026-11-24T14:09:10.380Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 17
+  modifications: 2
+  deletions: 0
+lastSequence: 18

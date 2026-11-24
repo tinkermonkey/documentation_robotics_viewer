@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Progress while Apply commits** (#628): the changeset's summary card shows how far the commit has got,
+  "Applying 340 of 1,200 changes · saving", from the dr CLI's `changeset.commit.progress` notification
+  (documentation_robotics#1361), with Apply shut until it answers. A dr CLI that sends no progress gets a
+  working bar, "Applying 1,200 changes…". A refusal shows where the commit stopped, above the reason as before.
+  The bar is a `progressbar` with its value, and a polite status line announces it now and then, not on every
+  update. A commit started from the CLI's MCP server or by DrBot shows in the status bar.
+
 ## [0.16.0] - 2026-11-24
 
 The viewer now runs on the dr CLI's central process (`dr serve`), which serves every project and every git

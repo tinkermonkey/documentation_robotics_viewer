@@ -27,7 +27,7 @@
  * changeset, so a discard here hands back to the canvas (`onGone`).
  */
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Button,
   Chip,
@@ -89,6 +89,8 @@ import {
 import { originFilterOptions, originOf, passesOriginFilter, type OriginFilter } from '../data/tier1';
 import { canDo } from '../data/changesetPurpose';
 import { DriftApplyNote } from './DriftNotice';
+import { CommitProgressBar } from './CommitProgressBar';
+import { markOwnCommit, useCommitProgress } from '../data/commitProgress';
 
 /**
  * The bulk keep's label: "Keep all N" before anything is decided, "Keep the
@@ -444,6 +446,12 @@ function SummaryCard({
   const busy = commit.isPending || discard.isPending || settled !== null;
   const applying = commit.isPending || settled === 'apply';
   const local = review.mode === 'local';
+  // How far the commit has got (#628): the server's changeset.commit.progress
+  // while the request runs; null on a dr CLI that sends none (the bar is then
+  // indeterminate). Kept after a refusal, to show where it stopped.
+  const commitProgress = useCommitProgress(detail.id, commit.isPending);
+  // This card shows its own commit: the status bar leaves it out.
+  useEffect(() => (commit.isPending ? markOwnCommit(detail.id) : undefined), [commit.isPending, detail.id]);
   // The moves the server allows (a verification record: Discard only).
   const canApply = canDo(detail, 'commit');
   const canDiscard = canDo(detail, 'discard');
@@ -609,16 +617,26 @@ function SummaryCard({
           </span>
         )}
       </div>
-      <ProgressBar
-        percent={pct}
-        color={tally.undecided > 0 ? 'amber' : 'emerald'}
-        height={4}
-        role="progressbar"
-        aria-label={`${counts.decided} of ${counts.total} decided`}
-        aria-valuemin={0}
-        aria-valuemax={counts.total}
-        aria-valuenow={counts.decided}
-      />
+      {applying ? (
+        <CommitProgressBar progress={commitProgress} expected={lands} />
+      ) : (
+        <>
+          <ProgressBar
+            percent={pct}
+            color={tally.undecided > 0 ? 'amber' : 'emerald'}
+            height={4}
+            role="progressbar"
+            aria-label={`${counts.decided} of ${counts.total} decided`}
+            aria-valuemin={0}
+            aria-valuemax={counts.total}
+            aria-valuenow={counts.decided}
+          />
+          {/* A refused commit that had reported progress: where it stopped, above the refusal. */}
+          {commit.isError && commitProgress && (
+            <CommitProgressBar progress={commitProgress} expected={lands} stopped />
+          )}
+        </>
+      )}
       {canApply && <DriftApplyNote drift={detail.drift} />}
       {local && (
         <p className="drv-note" style={{ margin: 0 }} data-testid="review-local-note">

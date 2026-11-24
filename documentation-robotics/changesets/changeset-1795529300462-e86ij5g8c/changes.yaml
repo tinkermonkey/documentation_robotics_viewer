@@ -1,0 +1,364 @@
+- type: add
+  elementId: motivation.requirement.apply-shows-commit-progress
+  layerName: motivation
+  after:
+    id: 761abe82-9568-4f4d-9e08-6fe21b4d71bf
+    path: motivation.requirement.apply-shows-commit-progress
+    spec_node_id: motivation.requirement
+    type: requirement
+    layer_id: motivation
+    name: Apply shows commit progress
+    description: While a changeset commits, the person who pressed Apply sees how
+      far it has got (applied of total, and the phase when the server says), or
+      at least that it is still working on a dr CLI that reports no progress;
+      Apply stays shut until the commit answers. Progress is announced to
+      assistive technology now and then, not on every update.
+    attributes:
+      requirementType: functional
+      priority: medium
+    metadata:
+      created_at: 2026-11-24T14:08:44.664Z
+      updated_at: 2026-11-24T14:08:44.664Z
+      version: 1
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 0
+- type: add
+  elementId: application.applicationservice.commit-progress
+  layerName: application
+  after:
+    id: b72dfce1-2724-41dd-b882-1ebcdebd558e
+    path: application.applicationservice.commit-progress
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Commit Progress
+    description: "data/commitProgress.ts: toCommitProgress validates a
+      changeset.commit.progress frame; commitProgressReducer keeps the latest
+      progress per changeset (never moving applied backwards within a phase);
+      useCommitProgress(changesetId) listens on the websocket for the route's
+      checkout and returns that changeset's progress, or null when none has
+      arrived (an older dr CLI); useAnyCommitProgress returns the progress of
+      any commit in the checkout for the status bar. progressAnnouncement picks
+      when the polite live region speaks (start, each quarter, phase change,
+      finish)."
+    attributes:
+      serviceType: event-driven
+    metadata:
+      created_at: 2026-11-24T14:08:44.682Z
+      updated_at: 2026-11-24T14:08:44.682Z
+      version: 1
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 1
+- type: add
+  elementId: application.applicationcomponent.commit-progress-bar
+  layerName: application
+  after:
+    id: 4b0e6403-d132-476c-9c9c-3d0dde10b143
+    path: application.applicationcomponent.commit-progress-bar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Commit Progress Bar
+    description: 'ui/CommitProgressBar.tsx: a Heimdall ProgressBar for a commit in
+      flight. Determinate ("Applying 340 of 1,200 changes · saving",
+      role=progressbar with aria-valuenow/max) once the server reports progress;
+      indeterminate ("Applying 1,200 changes…", an animated fill, no valuenow,
+      still when reduced motion is asked) before the first report or on an older
+      dr CLI. A visually hidden polite live region announces at intervals. Used
+      by the changeset review summary card while Apply runs, and in compact form
+      by the status bar for a commit the CLI or DrBot started.'
+    attributes:
+      type: internal
+    metadata:
+      created_at: 2026-11-24T14:08:44.683Z
+      updated_at: 2026-11-24T14:08:44.683Z
+      version: 1
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 2
+- type: relationship-add
+  elementId: motivation.requirement.apply-shows-commit-progress::realizes::motivation.goal.visualize-multi-layer-architecture-models
+  layerName: motivation
+  after:
+    source: motivation.requirement.apply-shows-commit-progress
+    target: motivation.goal.visualize-multi-layer-architecture-models
+    predicate: realizes
+    layer: motivation
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 3
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::satisfies::motivation.requirement.apply-shows-commit-progress
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: motivation.requirement.apply-shows-commit-progress
+    predicate: satisfies
+    layer: application
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 4
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::serves::application.applicationcomponent.commit-progress-bar
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: application.applicationcomponent.commit-progress-bar
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 5
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::serves::application.applicationcomponent.changeset-review-panel
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: application.applicationcomponent.changeset-review-panel
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 6
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::serves::application.applicationcomponent.status-bar
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: application.applicationcomponent.status-bar
+    predicate: serves
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 7
+- type: relationship-add
+  elementId: application.applicationcomponent.changeset-review-panel::uses::application.applicationcomponent.commit-progress-bar
+  layerName: application
+  after:
+    source: application.applicationcomponent.changeset-review-panel
+    target: application.applicationcomponent.commit-progress-bar
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 8
+- type: relationship-add
+  elementId: application.applicationcomponent.status-bar::uses::application.applicationcomponent.commit-progress-bar
+  layerName: application
+  after:
+    source: application.applicationcomponent.status-bar
+    target: application.applicationcomponent.commit-progress-bar
+    predicate: uses
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:08:44.691Z
+  sequenceNumber: 9
+- type: add
+  elementId: data-model.objectschema.commit-progress
+  layerName: data-model
+  after:
+    id: e9144aae-6287-4ee7-aa06-474c503e4c2c
+    path: data-model.objectschema.commit-progress
+    spec_node_id: data-model.objectschema
+    type: objectschema
+    layer_id: data-model
+    name: Commit Progress
+    description: "The dr CLI's changeset.commit.progress WebSocket event
+      (documentation_robotics#1361), a plain {type} frame stamped with project
+      and checkout: changesetId, applied, total (the changes that will land),
+      optional phase (validating, applying, saving, reloading or another the
+      server names) and layer. Validated before it reaches React: a frame
+      missing a string changesetId or non-negative integer applied/total is
+      dropped, applied is clamped to total, an unknown phase is kept as text, a
+      non-string layer is dropped."
+    attributes:
+      type: object
+    metadata:
+      created_at: 2026-11-24T14:08:49.603Z
+      updated_at: 2026-11-24T14:08:49.603Z
+      version: 1
+  timestamp: 2026-11-24T14:08:49.611Z
+  sequenceNumber: 10
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::accesses::data-model.objectschema.commit-progress
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: data-model.objectschema.commit-progress
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T14:08:49.611Z
+  sequenceNumber: 11
+- type: relationship-add
+  elementId: product.feature.per-change-review::satisfies::motivation.requirement.apply-shows-commit-progress
+  layerName: product
+  after:
+    source: product.feature.per-change-review
+    target: motivation.requirement.apply-shows-commit-progress
+    predicate: satisfies
+    layer: product
+    targetLayer: motivation
+    category: structural
+  timestamp: 2026-11-24T14:09:00.050Z
+  sequenceNumber: 12
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::realizes::product.feature.per-change-review
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: product.feature.per-change-review
+    predicate: realizes
+    layer: application
+    targetLayer: product
+    category: structural
+  timestamp: 2026-11-24T14:09:00.050Z
+  sequenceNumber: 13
+- type: relationship-add
+  elementId: technology.technologyservice.web-socket-model-service::serves::application.applicationservice.commit-progress
+  layerName: technology
+  after:
+    source: technology.technologyservice.web-socket-model-service
+    target: application.applicationservice.commit-progress
+    predicate: serves
+    layer: technology
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:09:00.050Z
+  sequenceNumber: 14
+- type: relationship-add
+  elementId: application.applicationservice.commit-progress::depends-on::application.applicationservice.checkout-scope
+  layerName: application
+  after:
+    source: application.applicationservice.commit-progress
+    target: application.applicationservice.checkout-scope
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:09:00.050Z
+  sequenceNumber: 15
+- type: relationship-add
+  elementId: application.applicationcomponent.commit-progress-bar::accesses::data-model.objectschema.commit-progress
+  layerName: application
+  after:
+    source: application.applicationcomponent.commit-progress-bar
+    target: data-model.objectschema.commit-progress
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T14:09:00.050Z
+  sequenceNumber: 16
+- type: update
+  elementId: application.applicationcomponent.changeset-review-panel
+  layerName: application
+  before:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      The summary card's Apply is enabled with changes still undecided (it reads
+      \"Apply N, M undecided as kept\" and says so under the card); it waits
+      only on an undecided blocked delete, an ask or a drop conflict, and Keep
+      the other N stays for recording verdicts. Apply and Discard are offered
+      only when the server's actions allow them (a verification record gets
+      Discard, never Apply); a refused commit of a verification record is
+      explained inline. When the server reports drift that blocks a commit, the
+      summary card warns before Apply (which stays enabled) and the Apply
+      confirm dialog says the drift refusal is the expected outcome; the 409
+      after confirm is the result."
+    attributes: &a1
+      type: internal
+    source_reference: &a2
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/ui/ChangesetReviewPanel.tsx
+          symbol: ChangesetReviewPanel
+    metadata: &a3
+      created_at: 2026-11-17T22:03:39.519Z
+      updated_at: 2026-11-17T22:03:39.519Z
+      version: 1
+  after:
+    id: 52d0e845-92ee-412f-b9f2-8ef0a37cbf85
+    path: application.applicationcomponent.changeset-review-panel
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Changeset Review Panel
+    description: "A changeset's Review tab: the summary card, the Show / Group by /
+      Decided by controls and the per-change rows. Columns are labelled (#,
+      Change, Element or link, What it says, Your decision); a change chip
+      carries a glyph (+ element, + link, ~ update, − delete) and the decision
+      is an outlined pill in its own column; a link row is a chain [source]
+      —predicate→ [target] with a dashed end for an element this changeset adds.
+      The summary card's Apply is enabled with changes still undecided (it reads
+      \"Apply N, M undecided as kept\" and says so under the card); it waits
+      only on an undecided blocked delete, an ask or a drop conflict, and Keep
+      the other N stays for recording verdicts. Apply and Discard are offered
+      only when the server's actions allow them (a verification record gets
+      Discard, never Apply); a refused commit of a verification record is
+      explained inline. When the server reports drift that blocks a commit, the
+      summary card warns before Apply (which stays enabled) and the Apply
+      confirm dialog says the drift refusal is the expected outcome; the 409
+      after confirm is the result. While Apply commits, the card's decided bar
+      gives way to the Commit Progress Bar (applied of total and phase from the
+      server's changeset.commit.progress, or indeterminate on a dr CLI that
+      sends none) and Apply, Keep and Discard stay shut until the commit
+      answers; a refusal shows inline below it."
+    attributes: *a1
+    source_reference: *a2
+    metadata: *a3
+  timestamp: 2026-11-24T14:09:10.353Z
+  sequenceNumber: 17
+- type: update
+  elementId: application.applicationcomponent.status-bar
+  layerName: application
+  before:
+    id: 40ca94e2-6c6a-42e3-a5ad-56ea61db31de
+    path: application.applicationcomponent.status-bar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Status Bar
+    description: "The shell's bottom status bar (Heimdall Statusbar): connection,
+      model and selection status. Its right side reads cli {version}, the
+      version GET /health reports as cliVersion, or — when the server doesn't
+      send one (never /health's API version)."
+    attributes: &a4
+      type: internal
+    source_reference: &a5
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/StatusBar.tsx
+          symbol: StatusBar
+    metadata: &a6
+      created_at: 2026-11-18T16:26:33.167Z
+      updated_at: 2026-11-18T16:26:33.167Z
+      version: 1
+  after:
+    id: 40ca94e2-6c6a-42e3-a5ad-56ea61db31de
+    path: application.applicationcomponent.status-bar
+    spec_node_id: application.applicationcomponent
+    type: applicationcomponent
+    layer_id: application
+    name: Status Bar
+    description: "The shell's bottom status bar (Heimdall Statusbar): connection,
+      model and selection status. Its right side reads cli {version}, the
+      version GET /health reports as cliVersion, or — when the server doesn't
+      send one (never /health's API version). While a changeset commit started
+      outside this tab (the CLI, MCP or DrBot) reports
+      changeset.commit.progress, it shows a compact progress item for it."
+    attributes: *a4
+    source_reference: *a5
+    metadata: *a6
+  timestamp: 2026-11-24T14:09:10.376Z
+  sequenceNumber: 18

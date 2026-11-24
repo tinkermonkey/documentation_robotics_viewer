@@ -27,6 +27,14 @@ import { ApiError } from '@/core/services/generatedApiClient';
 import { renderWithProviders } from '../helpers/renderWithProviders';
 import { mswServer } from '../helpers/mswServer';
 import changesetDetail from '../fixtures/changeset-detail.json';
+import { websocketClient } from '@/apps/embedded/services/websocketClient';
+import {
+  installMockWebSocket,
+  latestSocket,
+  resetMockWebSockets,
+  restoreWebSocket,
+  type MockWebSocket,
+} from '../helpers/mockWebSocket';
 
 const ID = 'changeset-1774309821523-1gs13ct6s';
 const FIXTURE = changesetDetail.changes as ChangeRecord[];
@@ -56,6 +64,8 @@ interface ServeOptions {
   deleteOnDiscard?: boolean;
   /** The detail's base drift (a dr CLI that reports it); omitted, an older dr CLI. */
   drift?: unknown;
+  /** The commit answers only once this settles (a long commit in flight). */
+  commitGate?: Promise<void>;
 }
 
 interface Server {
@@ -116,6 +126,7 @@ function serve(opts: ServeOptions = {}): Server {
     http.post('*/api/projects/:project/checkouts/:checkout/changesets/:id/commit', async ({ params, request }) => {
       const text = await request.text();
       server.commits.push(text ? JSON.parse(text) : null);
+      if (opts.commitGate) await opts.commitGate;
       if (opts.commitError) return HttpResponse.json(opts.commitError.body as object, { status: opts.commitError.status });
       status = 'committed';
       const drop = text ? ((JSON.parse(text) as { drop?: number[] }).drop ?? []) : [];
@@ -1189,5 +1200,118 @@ describe('review — drift before Apply', () => {
     expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent(
       'Nothing was written. The model changed after this was staged.',
     );
+  });
+});
+
+// ─── Commit progress (#628) ──────────────────────────────────────────────────
+
+describe('review — progress while Apply commits', () => {
+  let previousWs: typeof globalThis.WebSocket | undefined;
+  let socket: MockWebSocket;
+
+  beforeEach(() => {
+    resetMockWebSockets();
+    previousWs = installMockWebSocket();
+    websocketClient.connect();
+    socket = latestSocket()!;
+    socket.simulateOpen();
+    return () => {
+      websocketClient.disconnect();
+      restoreWebSocket(previousWs);
+    };
+  });
+
+  function gate() {
+    let open!: () => void;
+    const promise = new Promise<void>((resolve) => (open = resolve));
+    return { promise, open };
+  }
+
+  const progress = (applied: number, total: number, extra: Record<string, unknown> = {}) =>
+    act(() =>
+      socket.simulateMessage({
+        type: 'changeset.commit.progress',
+        changesetId: ID,
+        applied,
+        total,
+        project: 'test-project',
+        checkout: 'main',
+        ...extra,
+      }),
+    );
+
+  async function pressApply() {
+    const user = userEvent.setup();
+    const apply = await screen.findByTestId('changeset-apply-button');
+    await waitFor(() => expect(apply).toBeEnabled());
+    await user.click(apply);
+    await user.click(within(await screen.findByTestId('apply-confirm')).getByTestId('apply-confirm-button'));
+    return apply;
+  }
+
+  it('is indeterminate until the server reports, then fills with the count and phase', async () => {
+    const commit = gate();
+    const server = serve({ review: keepAll(), commitGate: commit.promise });
+    renderReview();
+    const apply = await pressApply();
+    await waitFor(() => expect(server.commits).toHaveLength(1));
+
+    // No progress yet (or an older dr CLI): working, with no value.
+    const bar = await screen.findByTestId('commit-progress');
+    expect(bar).toHaveAttribute('data-state', 'indeterminate');
+    expect(bar).toHaveTextContent('Applying 30 changes…');
+    expect(within(bar).getByRole('progressbar')).not.toHaveAttribute('aria-valuenow');
+    expect(apply).toBeDisabled();
+    expect(apply).toHaveTextContent('Applying…');
+    expect(screen.getByTestId('changeset-discard-button')).toBeDisabled();
+    expect(screen.getByTestId('review-keep-rest')).toBeDisabled();
+
+    progress(12, 30, { phase: 'applying', layer: 'application' });
+    expect(bar).toHaveAttribute('data-state', 'determinate');
+    expect(bar).toHaveTextContent('Applying 12 of 30 changes · applying · Application');
+    const pb = within(bar).getByRole('progressbar');
+    expect(pb).toHaveAttribute('aria-valuenow', '12');
+    expect(pb).toHaveAttribute('aria-valuemax', '30');
+    const said = screen.getByTestId('commit-progress-announcement');
+    expect(said).toHaveTextContent('Applying 12 of 30 changes · applying, 40%');
+
+    // Another changeset's commit, or a malformed frame: ignored.
+    progress(29, 30, { changesetId: 'someone-else' });
+    progress(-1, 30);
+    expect(pb).toHaveAttribute('aria-valuenow', '12');
+
+    // A frame inside the same quarter moves the bar but stays quiet.
+    progress(13, 30, { phase: 'applying' });
+    expect(pb).toHaveAttribute('aria-valuenow', '13');
+    expect(said).toHaveTextContent('12 of 30');
+    // A new phase is announced.
+    progress(30, 30, { phase: 'saving' });
+    expect(said).toHaveTextContent('Applying 30 of 30 changes · saving, 100%');
+
+    commit.open();
+    expect(await screen.findByTestId('applied-result')).toBeInTheDocument();
+    expect(screen.queryByTestId('commit-progress')).not.toBeInTheDocument();
+  });
+
+  it('shows a refusal inline after the progress it got to', async () => {
+    const commit = gate();
+    serve({
+      review: keepAll(),
+      commitGate: commit.promise,
+      commitError: { status: 422, body: { error: 'Validation failed: application.applicationservice.x is invalid' } },
+    });
+    renderReview();
+    await pressApply();
+    await screen.findByTestId('commit-progress');
+    progress(4, 30, { phase: 'validating' });
+
+    commit.open();
+    expect(await screen.findByTestId('changeset-action-error')).toHaveTextContent('Validation failed');
+    const stopped = screen.getByTestId('commit-progress');
+    expect(stopped).toHaveAttribute('data-state', 'stopped');
+    expect(stopped).toHaveTextContent('Stopped at 4 of 30 · validating');
+    // The decided bar is back, and Apply opens again.
+    expect(screen.getByRole('progressbar', { name: /decided/ })).toBeInTheDocument();
+    await waitFor(() => expect(screen.getByTestId('changeset-apply-button')).toBeEnabled());
   });
 });
