@@ -46,6 +46,8 @@ import { rollUpLabel } from './c4Marks';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { specTypeLabel, withCount } from '../data/typeLabel';
+import { useViewportHistory } from './useViewportHistory';
+import { c4CanvasKey } from './graphViewport';
 import { useC4Layout, useC4Model, useC4Overlay, useC4PlanComparison, type C4Overlay } from '../data/c4/useC4Model';
 import { viewArrowVerdicts, type C4PlanComparison } from '../data/c4/c4PlanCompare';
 import type { VerdictItem } from '../data/planVerification';
@@ -496,6 +498,10 @@ export function ArchitectureCanvas() {
   const c4SelectedId = useUiStore((s) => s.c4SelectedId);
   const c4ChangesetId = useUiStore((s) => s.c4ChangesetId);
   const c4BuiltId = useUiStore((s) => s.c4BuiltId);
+  const clearC4Selection = useUiStore((s) => s.clearC4Selection);
+  // The diagram's viewport is in `?vp=`, scoped to this diagram (#619).
+  const diagramKey = c4CanvasKey({ c4Level, c4Scope, c4ChangesetId, c4BuiltId });
+  const viewportProps = useViewportHistory(diagramKey);
   const showC4 = useUiStore((s) => s.showC4);
   const selectC4 = useUiStore((s) => s.selectC4);
 
@@ -558,8 +564,9 @@ export function ArchitectureCanvas() {
   // is the one that will be drawn.
   const settled = !isLoading && !isError && !empty && !overlayState.isLoading && !compareState.isLoading;
   useEffect(() => {
-    if (settled && c4SelectedId && !selected) selectC4(null);
-  }, [settled, c4SelectedId, selected, selectC4]);
+    // Not selectC4: a box the diagram no longer draws is let go, not a move to push.
+    if (settled && c4SelectedId && !selected) clearC4Selection();
+  }, [settled, c4SelectedId, selected, clearC4Selection]);
 
   // A drill-in removes the control that made it (the card, the drawer's button,
   // a breadcrumb link): the next diagram takes focus once it is drawn.
@@ -641,6 +648,8 @@ export function ArchitectureCanvas() {
           <Message>Laying out…</Message>
         ) : (
           <C4Diagram
+            key={diagramKey}
+            {...viewportProps}
             view={view}
             layout={layout}
             selectedId={selected?.id ?? null}

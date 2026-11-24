@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Back and Forward replay graph moves** (#619): in the Model, Schema, Changesets Impact, Model by-type lanes and
+  Architecture views, each node, edge, lane or C4 box you click, each Impact focus and each lane or group you open
+  is a history step of its own, so Back undoes the last one and Forward redoes it, with the view where you left
+  it. Panning and zooming never add a step: the step you're on keeps the view you settle on. A selection and the
+  recentre that follows it are one step, and so is a double-click. The URL carries what each step needs, so a
+  copied link reopens it: `?focus=` (Impact focus), `?open=` (opened lanes and groups), `?seq=` (the change open in
+  a review), `?tab=impact`, and `?vp=` for the Impact lanes and the C4 diagrams too. A fresh graph writes its
+  first view into the URL as well, so every step has one to go back to.
 - **Progress while Apply commits** (#628): the changeset's summary card shows how far the commit has got,
   "Applying 340 of 1,200 changes · saving", from the dr CLI's `changeset.commit.progress` notification
   (documentation_robotics#1361), with Apply shut until it answers. A dr CLI that sends no progress gets a
@@ -23,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   chip. SVG and PNG exports draw the same chips and labels.
 
 ### Changed
+- **heimdall-ui 0.12.0 → 0.14.0.** Edge labels on the graphs no longer print over each other or over cards (a
+  label with no clear spot shows when its edge or an end is hovered or selected), and large orthogonal graphs route
+  edges between nodes. The package is now one module per source file, so the bundle keeps only what the viewer
+  imports. No viewer code needed changing.
 - **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
   **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
   that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an

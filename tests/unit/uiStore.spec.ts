@@ -908,3 +908,103 @@ describe('Architecture view: the overlaid changeset (c4ChangesetId)', () => {
     expect(stored.state).not.toHaveProperty('c4ChangesetId');
   });
 });
+
+describe('graph moves (#619)', () => {
+  beforeEach(() => {
+    useUiStore.setState({ graphMove: null, openGroups: [], layerId: 'application', selectedId: null, selectedEdgeId: null, modelView: 'graph', view: 'model' });
+  });
+
+  it('records a move with each deliberate graph action, in the same write', () => {
+    const s = () => useUiStore.getState();
+    s().selectGraphNode('n1');
+    expect(s().selectedId).toBe('n1');
+    expect(s().graphMove).toMatchObject({ seq: 1, kind: 'select', target: 'n1' });
+    s().selectGraphEdge('e1');
+    expect(s().graphMove).toMatchObject({ seq: 2, kind: 'select', target: 'e1' });
+    s().clearGraphSelection('application');
+    expect(s().selectedEdgeId).toBeNull();
+    // A clear has no target, so it never coalesces with the select it undoes.
+    expect(s().graphMove).toMatchObject({ seq: 3, kind: 'select', target: null });
+    s().focusImpact('x');
+    expect(s().graphMove).toMatchObject({ kind: 'focus', target: 'x' });
+    expect(s().changesetTab).toBe('impact');
+    s().openGroup('b');
+    s().openGroup('a');
+    expect(s().openGroups).toEqual(['a', 'b']);
+    expect(s().graphMove).toMatchObject({ kind: 'expand', target: 'a' });
+    s().selectC4('box');
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: 'box' });
+    s().selectChange(4);
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: 'seq:4' });
+  });
+
+  it('records no move on restores', () => {
+    const s = () => useUiStore.getState();
+    s().selectNode('n1');
+    s().selectEdge('e1');
+    s().restoreOpenGroups(['x']);
+    s().clearC4Selection();
+    s().restoreChangeset({ changesetId: 'cs', tab: 'impact', seq: 2, focus: 'f', open: ['g'] });
+    s().setGraphViewport({ scope: 'k', center: { x: 0, y: 0 }, zoom: 1 });
+    expect(s().graphMove).toBeNull();
+    expect(s()).toMatchObject({ changesetId: 'cs', changesetTab: 'impact', changeSeq: 2, impactFocus: 'f', openGroups: ['g'] });
+  });
+
+  it('records the viewport cause as a dwell, recentre or fit', () => {
+    const s = () => useUiStore.getState();
+    const vp = { scope: 'k', center: { x: 1, y: 2 }, zoom: 1 };
+    s().setGraphViewport(vp, { kind: 'dwell' });
+    expect(s().graphMove).toMatchObject({ kind: 'dwell', target: null });
+    s().setGraphViewport(vp, { kind: 'center-on-select', nodeId: 'n9' });
+    expect(s().graphMove).toMatchObject({ kind: 'recentre', target: 'n9' });
+    s().setGraphViewport(vp, { kind: 'fit', reason: 'toolbar' });
+    expect(s().graphMove).toMatchObject({ kind: 'fit' });
+  });
+
+  it('records every clear with target null', () => {
+    const s = () => useUiStore.getState();
+    s().selectC4('box');
+    s().selectC4(null);
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: null });
+    s().focusImpact('x');
+    s().focusImpact(null);
+    expect(s().graphMove).toMatchObject({ kind: 'focus', target: null });
+    s().selectChange(3);
+    s().selectChange(null);
+    expect(s().graphMove).toMatchObject({ kind: 'select', target: null });
+  });
+
+  it('keeps the move seq rising across a checkout switch', () => {
+    const s = () => useUiStore.getState();
+    s().selectGraphNode('n1');
+    const seq = s().graphMove!.seq;
+    s().clearCheckoutSelection();
+    s().selectGraphNode('n2');
+    expect(s().graphMove!.seq).toBe(seq + 1);
+  });
+
+  it("drops Impact's opened groups when a navigation lands in Model on the same layer id", () => {
+    const s = () => useUiStore.getState();
+    useUiStore.setState({ view: 'changesets', layerId: 'application', openGroups: ['application|applicationservice'] });
+    s().navigateToElement('n1', 'application');
+    expect(s().openGroups).toEqual([]);
+    useUiStore.setState({ view: 'model', openGroups: ['applicationservice'] });
+    s().navigateToElement('n2', 'application');
+    expect(s().openGroups).toEqual(['applicationservice']);
+    useUiStore.setState({ view: 'changesets', openGroups: ['x|y'] });
+    s().navigateToSpecNode('t', 'application');
+    expect(s().openGroups).toEqual([]);
+  });
+
+  it('drops opened groups with the layer, the view or the by-type view', () => {
+    const s = () => useUiStore.getState();
+    s().restoreOpenGroups(['a']);
+    s().selectLayer('application');
+    expect(s().openGroups).toEqual(['a']);
+    s().selectLayer('business');
+    expect(s().openGroups).toEqual([]);
+    s().restoreOpenGroups(['a']);
+    s().setModelView('type-hive');
+    expect(s().openGroups).toEqual([]);
+  });
+});

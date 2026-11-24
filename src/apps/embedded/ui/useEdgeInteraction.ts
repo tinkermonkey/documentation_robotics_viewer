@@ -42,10 +42,11 @@ export interface UseEdgeInteractionResult {
 
 export function useEdgeInteraction(): UseEdgeInteractionResult {
   const selectedEdgeId = useUiStore((s) => s.selectedEdgeId);
-  const selectEdge = useUiStore((s) => s.selectEdge);
+  // A click on an edge is a graph move: the router pushes it (#619).
+  const selectGraphEdge = useUiStore((s) => s.selectGraphEdge);
 
   return {
     selectedEdgeId,
-    edgeSelectionProps: { selectedEdgeId: selectedEdgeId ?? undefined, onEdgeSelect: selectEdge },
+    edgeSelectionProps: { selectedEdgeId: selectedEdgeId ?? undefined, onEdgeSelect: selectGraphEdge },
   };
 }

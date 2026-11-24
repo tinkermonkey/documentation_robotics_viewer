@@ -29,7 +29,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",
-    "@tinkermonkey/heimdall-ui": "0.12.0",
+    "@tinkermonkey/heimdall-ui": "0.14.0",
     "elkjs": "0.12.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

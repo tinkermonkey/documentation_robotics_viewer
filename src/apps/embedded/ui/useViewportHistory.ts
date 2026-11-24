@@ -5,18 +5,22 @@ import type {
   GraphViewportHandle,
   GraphViewportSnapshot,
 } from '@tinkermonkey/heimdall-ui';
-import { useUiStore } from './uiStore';
+import { useUiStore, type ViewportMoveCause } from './uiStore';
 import { roundViewport, sameViewport } from './graphViewport';
 
 /**
- * Connects the Model/Schema GraphCanvas to `uiStore.graphViewport`, which the
- * router mirrors into `?vp=` (see router.tsx). Spread the result onto
- * GraphCanvas.
+ * Connects a graph canvas (the Model/Schema GraphCanvas, the Impact lanes, the
+ * C4 diagram, which reports the same events) to `uiStore.graphViewport`, which
+ * the router mirrors into `?vp=` (see router.tsx). Spread the result onto it.
+ * Each recorded viewport carries its cause, a graph move the router's history
+ * policy reads: a dwell or fit replaces the entry, a recentre coalesces with
+ * the selection it centres on.
  *
  * - Records a viewport when the user stops panning/zooming (`onViewportDwell`)
- *   and when the canvas moves itself (`onViewportNavigate`: centerOnSelect,
- *   toolbar fit, fullscreen fit). The mount fit isn't recorded, so a plain
- *   link stays plain until someone actually moves.
+ *   and when the canvas moves itself (`onViewportNavigate`: the mount fit,
+ *   centerOnSelect, toolbar fit, fullscreen fit). The mount fit is recorded
+ *   too (#619): the router replaces the entry with it, so every entry holds a
+ *   viewport for Back to restore.
  * - Restores the stored viewport at mount (`initialViewport`, for reloads and
  *   deep links) and when it changes from outside, i.e. back/forward, through a
  *   silent `setViewport` so the restore doesn't record a new entry. The silent
@@ -35,19 +39,23 @@ export function useViewportHistory(canvasKey: string) {
   const scoped = graphViewport && graphViewport.scope === canvasKey ? graphViewport : null;
 
   const record = useCallback(
-    (snapshot: GraphViewportSnapshot) => {
+    (snapshot: GraphViewportSnapshot, cause: ViewportMoveCause) => {
       const vp = roundViewport(snapshot);
       shownRef.current = { key: canvasKey, vp };
-      setGraphViewport({ scope: canvasKey, ...vp });
+      setGraphViewport({ scope: canvasKey, ...vp }, cause);
     },
     [canvasKey, setGraphViewport],
   );
 
+  const onViewportDwell = useCallback(
+    (snapshot: GraphViewportSnapshot) => record(snapshot, { kind: 'dwell' }),
+    [record],
+  );
+
+  // Every canvas move is recorded, the mount fit too (#619): it replaces the
+  // entry, so each entry carries the view it was left at and Back can put it back.
   const onViewportNavigate = useCallback(
-    (snapshot: GraphViewportSnapshot, cause: GraphViewportCause) => {
-      if (cause.kind === 'fit' && cause.reason === 'mount') return;
-      record(snapshot);
-    },
+    (snapshot: GraphViewportSnapshot, cause: GraphViewportCause) => record(snapshot, cause),
     [record],
   );
 
@@ -65,7 +73,7 @@ export function useViewportHistory(canvasKey: string) {
   return {
     viewportRef,
     initialViewport: scoped ? { center: scoped.center, zoom: scoped.zoom } : undefined,
-    onViewportDwell: record,
+    onViewportDwell,
     onViewportNavigate,
   };
 }
