@@ -3,9 +3,10 @@
  * bundle and the repo's committed model: the Container diagram's content, the
  * drill-down into components, and `?level=` / `?scope=` / `?node=` /
  * `?changeset=` (and `?built=`, a plan compared with what was built) in the
- * URL (router.tsx's AppShellRoute).
+ * URL (router.tsx's AppShellRoute), and the Export menu's downloads.
  */
 
+import { readFileSync } from 'node:fs';
 import { test, expect, type Page } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 import { gotoView, ROUTES } from './helpers';
@@ -282,6 +283,63 @@ test.describe('Architecture view — C4 diagrams', () => {
         await expect
           .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
           .toBe(tone === 'dark');
+        await page.waitForTimeout(300); // style recalc after the tone flip (see a11y.spec.ts)
+        const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
+        const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+        expect(serious.map((v) => `${v.id} × ${v.nodes.length}: ${v.nodes[0]?.target.join(' ')}`)).toEqual([]);
+      });
+    }
+  });
+
+  test.describe('export', () => {
+    const SLICE1_PLAN = 'changeset-1795189106448-lycsp34uv';
+    const FORMATS = [
+      ['svg', /^<svg /, '.svg'],
+      ['png', null, '.png'],
+      ['structurizr', /^workspace /m, '.dsl'],
+      ['plantuml', /^@startuml/, '.puml'],
+    ] as const;
+
+    async function exportAs(page: Page, id: string) {
+      await page.getByTestId('c4-export-menu').getByTestId('row-menu-trigger').click();
+      const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId(`row-menu-action-${id}`).click()]);
+      return download;
+    }
+
+    for (const overlaid of [false, true]) {
+      test(`downloads each format named after the diagram${overlaid ? ', with the overlay marks' : ''}`, async ({ page }) => {
+        await gotoView(page, `${ROUTES.architecture}?level=container${overlaid ? `&changeset=${SLICE1_PLAN}` : ''}`);
+        await diagramAt(page, 'container');
+        if (overlaid) await expect(page.getByTestId('c4-card-rollup').first()).toBeVisible();
+        for (const [id, head, ext] of FORMATS) {
+          const download = await exportAs(page, id);
+          expect(download.suggestedFilename()).toBe(`container-software-system${ext}`);
+          const path = await download.path();
+          const bytes = readFileSync(path!);
+          if (head) expect(bytes.toString('utf8')).toMatch(head);
+          else expect(bytes.subarray(1, 4).toString('latin1')).toBe('PNG');
+          const text = bytes.toString('utf8');
+          if (id === 'svg') {
+            const cards = await page.getByTestId('c4-card').count();
+            expect(text.match(/data-c4="card"/g)).toHaveLength(cards);
+            if (overlaid) expect(text).toMatch(/data-c4="card"[^>]*data-status=/);
+          }
+          if (id === 'plantuml' && overlaid) expect(text).toContain('SHOW_LEGEND()');
+          await expect(page.getByTestId('c4-export-status')).toHaveText(`Downloaded container-software-system${ext}`);
+        }
+      });
+    }
+
+    for (const tone of ['light', 'dark'] as const) {
+      test(`the open Export menu passes axe (WCAG 2.1 AA) on the ${tone} canvas`, async ({ page }) => {
+        await gotoView(page, `${ROUTES.architecture}?level=container`);
+        await diagramAt(page, 'container');
+        await page.getByRole('radio', { name: tone, exact: true }).click();
+        await expect
+          .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
+          .toBe(tone === 'dark');
+        await page.getByTestId('c4-export-menu').getByTestId('row-menu-trigger').click();
+        await expect(page.getByRole('menu')).toBeVisible();
         await page.waitForTimeout(300); // style recalc after the tone flip (see a11y.spec.ts)
         const results = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze();
         const serious = results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');

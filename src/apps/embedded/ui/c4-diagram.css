@@ -598,3 +598,34 @@
 .c4-diagram__edge--v-unverifiable polyline {
   opacity: 0.75;
 }
+
+/* ---- export menu ------------------------------------------------------------ */
+
+.c4-export .row-menu__trigger {
+  width: auto;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid rgb(var(--canvas-border));
+  border-radius: 6px;
+  background: rgb(var(--canvas-surface));
+  color: rgb(var(--canvas-fg-1));
+}
+
+.c4-export .row-menu__trigger:hover {
+  background: rgb(var(--canvas-card));
+  border-color: rgb(var(--canvas-fg-4));
+}
+
+.c4-export .row-menu__trigger:focus-visible {
+  outline: 2px solid rgb(var(--accent-primary));
+  outline-offset: 1px;
+}
+
+.c4-export__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 12.5px;
+  font-weight: 500;
+}
