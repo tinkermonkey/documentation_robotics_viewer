@@ -665,12 +665,15 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   `error` (no data, failed) / `ready` (data in hand, even mid-refetch or after a failed refetch, so a
   `model.updated` or focus refetch never flashes back); `combineLoadStates` merges several (error wins, then
   loading). `ui/LoadStatus.tsx` is the one line that replaces an empty hint (`role="status"`, text set after
-  mount so it's announced; `role="alert"` on error) and `busyProps(state)` puts `aria-busy` on the region.
-  Used by NavTree (no Changesets / Architecture / layer counts until their read is ready, Loading… in place
-  of "no changesets" / "no components" and under an open layer), Canvas (graph: its view's read; page: model +
-  spec; header meta `…`), LeftRail (`SPEC …`, `…` for the counts, "—" for a failed read) and StatusBar
-  (`loading model…`, `cli …` until `/health` answers: `useCliVersion` returns `{ version, state }`). "—" still
-  means "the server sent none". A new region that shows counts or an empty hint should go through these.
+  mount so it's announced; `role="alert"` on error, or plain text with `alertOnError={false}`: one failed read
+  raises ONE alert, the canvas's). `busyProps(state)` puts `aria-busy` on a region, only one with no
+  `LoadStatus` inside (a busy subtree may hold back its status line until it's gone): the rail footer and the
+  status bar. Used by NavTree (no section / layer / Containers counts until their read is ready; Model and
+  Schema count the spec's layers; ONE Loading… per open section, never per open layer, in place of "no
+  changesets" / "no components"; errors plain text), Canvas (graph: its view's read; page: model + spec;
+  header meta `…`), LeftRail (`SPEC …`, `…` for the counts, "—" for a failed read) and StatusBar (`loading
+  model…`, `cli …` until `/health` answers: `useCliVersion` returns `{ version, state }`). "—" still means
+  "the server sent none". A new region that shows counts or an empty hint should go through these.
 - **Nav tree type groups** (#592) — a Model layer opens onto its node types (`data/navTreeGroups.ts`: the
   type label's short plural, its count in NavItem's badge like the layer rows, A–Z, a single-element type still grouped; the
   accessible name says "Components, 37 elements"), each holding its elements (A–Z); Schema leaves are the full

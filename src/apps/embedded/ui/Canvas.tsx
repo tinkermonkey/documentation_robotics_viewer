@@ -19,7 +19,9 @@
  * First load (#636): until the read a view draws from has answered (the model
  * for Model, the spec for Schema, both for a page), the header shows no count
  * and the body says "Loading…" (`LoadStatus`) instead of "no elements in this
- * layer"; a failed first read says so. A refetch keeps what is drawn.
+ * layer"; a failed first read says so, as the shell's one alert for it. The
+ * area isn't `aria-busy`: the status line inside it must be spoken. A refetch
+ * keeps what is drawn.
  *
  * The `GraphCanvas` is keyed by
  * `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`
@@ -129,7 +131,7 @@ import { HIVE_MIN_TYPES, TypeHiveView } from './TypeHiveView';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { combineLoadStates, loadStateOf } from '../data/loadState';
-import { LoadStatus, busyProps } from './LoadStatus';
+import { LoadStatus } from './LoadStatus';
 import {
   buildModelIndex,
   nodesWithCardData,
@@ -920,7 +922,6 @@ export function Canvas() {
       <div
         ref={canvasAreaRef}
         style={{ flex: 1, position: 'relative', minHeight: 0 }}
-        {...(layerId ? busyProps(isPage ? pageState : graphState) : {})}
       >
         {isPage ? (
           !layerId ? (
