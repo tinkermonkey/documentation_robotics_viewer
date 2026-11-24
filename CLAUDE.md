@@ -105,7 +105,7 @@ src/
 
 ## Design System: Heimdall
 
-Package `@tinkermonkey/heimdall-ui`, published to npm and pinned to an exact version (no `^`/`~` range —
+Package `@tinkermonkey/heimdall-ui`, published to npm and pinned to an exact version (0.14.0 today; no `^`/`~` range —
 `npm view @tinkermonkey/heimdall-ui versions` before bumping, and confirm `package-lock.json` actually
 resolves it via `https://registry.npmjs.org/...` rather than reusing a stale git-resolved lockfile entry;
 `npm install` alone won't force that switch if the currently-locked version number already satisfies the

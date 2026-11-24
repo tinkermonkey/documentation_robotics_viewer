@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   chip. SVG and PNG exports draw the same chips and labels.
 
 ### Changed
+- **heimdall-ui 0.12.0 → 0.14.0.** Edge labels on the graphs no longer print over each other or over cards (a
+  label with no clear spot shows when its edge or an end is hovered or selected), and large orthogonal graphs route
+  edges between nodes. The package is now one module per source file, so the bundle keeps only what the viewer
+  imports. No viewer code needed changing.
 - **Changesets in the nav rail, grouped** (#625): the left rail's Changesets section lists staged changesets under
   **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
   that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an
