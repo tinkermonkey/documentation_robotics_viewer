@@ -9,7 +9,9 @@
  * top for the 3rd level and the disclosure chevron. The 12 layers come from
  * `domain.ts`; counts come from the live model (`useModel`) and spec
  * (`useSpec`); leaves are element names (Model) or node-type names (Schema).
- * Changesets lists changesets, or a subtle empty hint when the model has none.
+ * Changesets groups its changesets under Open (staged, expanded by default)
+ * and Closed (applied / discarded, collapsed by default), each with its count
+ * (#625); an empty group is hidden, and with none at all a subtle hint shows.
  * Architecture lists the C4 diagrams: Context, Containers, then every container
  * and component that has parts, nested as the C4 model nests them
  * (`data/c4/c4Views.ts`'s `c4NavRows`); a row opens that diagram.
@@ -19,6 +21,8 @@
  * history. The group holding the selected element opens whenever the
  * selection changes, wherever it came from (a nav click, the graph, a deep
  * link, a cross-layer navigate), so the reveal effect can scroll to its row.
+ * The changeset groups work the same way, the selected changeset's group
+ * opening on every selection change.
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -29,7 +33,13 @@ import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
 import { useChangesets } from '../data/useChangesets';
 import { purposeLabel } from '../data/changesetPurpose';
-import { groupByType, typeGroupKey } from '../data/navTreeGroups';
+import {
+  changesetGroupKey,
+  groupByType,
+  groupChangesetsByState,
+  typeGroupKey,
+  type ChangesetGroupKey,
+} from '../data/navTreeGroups';
 import { specTypeLabel } from '../data/typeLabel';
 import { useC4Model } from '../data/c4/useC4Model';
 import { c4NavRows, defaultComponentScope, resolveScope } from '../data/c4/c4Views';
@@ -237,12 +247,23 @@ function LayerRow({
   );
 }
 
-/** Changeset leaf rows (or a subtle empty hint when there are none). */
-function ChangesetRows() {
+/** The changeset rows' Open / Closed groups and how to toggle one (local tree state, #625). */
+interface ChangesetGroupState {
+  openGroups: ReadonlySet<ChangesetGroupKey>;
+  toggleGroup: (key: ChangesetGroupKey) => void;
+}
+
+/**
+ * The Changesets section's rows: Open (staged) then Closed (applied, discarded)
+ * groups, each with its count, holding the changeset rows (#625). An empty
+ * group is hidden; with no changesets at all, a subtle empty hint.
+ */
+function ChangesetRows({ groups: groupState }: { groups: ChangesetGroupState }) {
   const view = useUiStore((s) => s.view);
   const changesetId = useUiStore((s) => s.changesetId);
   const selectChangeset = useUiStore((s) => s.selectChangeset);
   const { derived } = useChangesets();
+  const groups = useMemo(() => groupChangesetsByState(derived.list), [derived.list]);
 
   if (derived.list.length === 0) {
     return (
@@ -261,23 +282,49 @@ function ChangesetRows() {
 
   return (
     <>
-      {derived.list.map((cs) => {
-        const active = view === 'changesets' && changesetId === cs.id;
-        // The purpose (a dr CLI with purposes) rides in the row's name and tooltip: NavItem has no slot for it.
-        const purpose = purposeLabel(cs.purpose);
-        const label = purpose ? `${cs.name} · ${purpose}` : cs.name;
+      {groups.map((group) => {
+        const n = group.changesets.length;
+        if (n === 0) return null;
+        const groupOpen = groupState.openGroups.has(group.key);
+        const name = `${group.label}, ${n} ${n === 1 ? 'changeset' : 'changesets'}`;
         return (
-          <div key={cs.id} style={{ position: 'relative' }}>
-            <NavItem
-              label={cs.name}
-              count={cs.changesCount}
-              active={active}
-              depth={1}
-              onClick={() => selectChangeset(cs.id)}
-              title={label}
-              aria-label={label}
-              data-purpose={cs.purpose}
-            />
+          <div key={group.key}>
+            <div style={{ position: 'relative' }}>
+              <NavItem
+                label={group.label}
+                count={n}
+                depth={1}
+                className="drv-nav-group"
+                aria-expanded={groupOpen}
+                aria-label={name}
+                title={name}
+                data-testid={`nav-changeset-group-${group.key}`}
+                onClick={() => groupState.toggleGroup(group.key)}
+              />
+              <Chevron open={groupOpen} />
+            </div>
+            {groupOpen &&
+              group.changesets.map((cs) => {
+                const active = view === 'changesets' && changesetId === cs.id;
+                // The purpose (a dr CLI with purposes) rides in the row's name and tooltip: NavItem has no slot for it.
+                const purpose = purposeLabel(cs.purpose);
+                const label = purpose ? `${cs.name} · ${purpose}` : cs.name;
+                return (
+                  <div key={cs.id} style={{ position: 'relative' }}>
+                    <NavItem
+                      label={cs.name}
+                      count={cs.changesCount}
+                      active={active}
+                      depth={1}
+                      className="drv-nav-l2"
+                      onClick={() => selectChangeset(cs.id)}
+                      title={label}
+                      aria-label={label}
+                      data-purpose={cs.purpose}
+                    />
+                  </div>
+                );
+              })}
           </div>
         );
       })}
@@ -366,7 +413,8 @@ export function NavTree() {
   // data arrives) reveals the selected leaf once they load, not just its layer.
   const { derived: model } = useModel();
   const modelNodes = model.nodes.length;
-  const changesetCount = useChangesets().derived.list.length;
+  const changesetList = useChangesets().derived.list;
+  const changesetCount = changesetList.length;
 
   // Model type groups (#592): collapsed until opened. Local state on purpose —
   // not in uiStore or the URL — so opening a group pushes no history.
@@ -396,6 +444,39 @@ export function NavTree() {
   }, [selectedGroup, selectedId]);
   const selectedGroupOpen = selectedGroup !== null && openGroups.has(selectedGroup);
 
+  // Changeset groups (#625): Open starts expanded, Closed collapsed. Local
+  // state for the same reason as the type groups: a toggle pushes no history.
+  const [openChangesetGroups, setOpenChangesetGroups] = useState<ReadonlySet<ChangesetGroupKey>>(
+    () => new Set<ChangesetGroupKey>(['open']),
+  );
+  const toggleChangesetGroup = useCallback((key: ChangesetGroupKey) => {
+    setOpenChangesetGroups((prev) => {
+      const next = new Set(prev);
+      if (!next.delete(key)) next.add(key);
+      return next;
+    });
+  }, []);
+  const changesetGroups = useMemo<ChangesetGroupState>(
+    () => ({ openGroups: openChangesetGroups, toggleGroup: toggleChangesetGroup }),
+    [openChangesetGroups, toggleChangesetGroup],
+  );
+
+  // The group holding the selected changeset, once the list has it: opened on
+  // every selection change, so a deep link to an applied changeset shows its row.
+  const selectedChangesetGroup = useMemo(() => {
+    if (view !== 'changesets' || !changesetId) return null;
+    const cs = changesetList.find((c) => c.id === changesetId);
+    return cs ? changesetGroupKey(cs.status) : null;
+  }, [view, changesetId, changesetList]);
+  useEffect(() => {
+    if (!selectedChangesetGroup) return;
+    setOpenChangesetGroups((prev) =>
+      prev.has(selectedChangesetGroup) ? prev : new Set(prev).add(selectedChangesetGroup),
+    );
+  }, [selectedChangesetGroup, changesetId]);
+  const selectedChangesetGroupOpen =
+    selectedChangesetGroup !== null && openChangesetGroups.has(selectedChangesetGroup);
+
   // Reveal the selection (#560): after any navigation — a nav click, a
   // cross-layer link, a deep link, back/forward — scroll the deepest active
   // row into view. `nearest` leaves it alone when it's already visible.
@@ -403,7 +484,7 @@ export function NavTree() {
     const active = treeRef.current?.querySelectorAll<HTMLElement>('.nav-item--active');
     const deepest = active?.[active.length - 1];
     deepest?.scrollIntoView?.({ block: 'nearest' });
-  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount, selectedGroupOpen, c4Level, c4Scope]);
+  }, [view, layerId, selectedId, changesetId, expandedSections, modelNodes, changesetCount, selectedGroupOpen, selectedChangesetGroupOpen, c4Level, c4Scope]);
 
   return (
     <div
@@ -417,7 +498,7 @@ export function NavTree() {
         return (
           <div key={section.id}>
             <SectionRow section={section} />
-            {open && section.id === 'changesets' && <ChangesetRows />}
+            {open && section.id === 'changesets' && <ChangesetRows groups={changesetGroups} />}
             {open && section.id === 'architecture' && <ArchitectureRows />}
             {open &&
               (section.id === 'model' || section.id === 'spec') &&

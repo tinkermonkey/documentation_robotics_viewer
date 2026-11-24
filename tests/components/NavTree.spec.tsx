@@ -16,6 +16,8 @@ import { NavTree } from '@/apps/embedded/ui/NavTree';
 import { useUiStore } from '@/apps/embedded/ui/uiStore';
 import { LAYER_ORDER } from '@/apps/embedded/ui/domain';
 import { renderWithProviders } from '../helpers/renderWithProviders';
+import { mswServer } from '../helpers/mswServer';
+import { http, HttpResponse } from 'msw';
 
 import model from '../fixtures/model.json';
 import changesets from '../fixtures/changesets.json';
@@ -231,7 +233,9 @@ describe('NavTree — clicks drive the uiStore', () => {
     // Expand the Changesets section.
     await user.click(await screen.findByText('Changesets'));
 
-    // The fixture's newest changeset name renders as a leaf and is clickable.
+    // The fixture's changesets are all applied, so they sit in the collapsed
+    // Closed group (#625); open it, then the newest one is a clickable leaf.
+    await user.click(await screen.findByTestId('nav-changeset-group-closed'));
     const csName = 'pr-497-data-pipeline-updates';
     const leaf = await screen.findByText(csName);
     await user.click(leaf);
@@ -447,5 +451,133 @@ describe('NavTree — Architecture section', () => {
       const count = Number(row.querySelector('.nav-item__count, [class*="count"]')?.textContent);
       expect(count).toBeGreaterThan(2);
     });
+  });
+});
+
+describe('NavTree changeset groups', () => {
+  /** Serve a changeset list: `[name, status]` pairs, newest first. */
+  function serveChangesets(entries: [string, string][]) {
+    const map: Record<string, unknown> = {};
+    entries.forEach(([name, status], i) => {
+      map[`cs-${name}`] = {
+        name,
+        status,
+        created: `2026-11-${String(20 - i).padStart(2, '0')}T00:00:00.000Z`,
+        changes_count: i + 1,
+      };
+    });
+    mswServer.use(
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
+        HttpResponse.json({ version: '1.0.0', changesets: map }),
+      ),
+    );
+  }
+
+  async function openChangesets(user: ReturnType<typeof userEvent.setup>) {
+    await user.click(await screen.findByText('Changesets'));
+  }
+
+  it('Open starts expanded and Closed collapsed, each with its count', async () => {
+    serveChangesets([
+      ['plan-a', 'staged'],
+      ['applied-b', 'committed'],
+      ['plan-c', 'staged'],
+      ['gone-d', 'discarded'],
+      ['applied-e', 'committed'],
+    ]);
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    await openChangesets(user);
+
+    const open = await screen.findByTestId('nav-changeset-group-open');
+    const closed = screen.getByTestId('nav-changeset-group-closed');
+    expect(open).toHaveAttribute('aria-expanded', 'true');
+    expect(closed).toHaveAttribute('aria-expanded', 'false');
+    expect(open).toHaveAccessibleName('Open, 2 changesets');
+    expect(closed).toHaveAccessibleName('Closed, 3 changesets');
+    expect(within(open).getByText('2')).toBeInTheDocument();
+    expect(within(closed).getByText('3')).toBeInTheDocument();
+    // Open's rows show in the list's order; Closed's don't until opened.
+    const rows = () =>
+      [...screen.getByTestId('nav-tree').querySelectorAll('.drv-nav-l2 .nav-item__label')].map((l) => l.textContent);
+    expect(rows()).toEqual(['plan-a', 'plan-c']);
+
+    // Toggling a group touches neither the navigation state nor the history.
+    const before = { ...useUiStore.getState() };
+    const historyLength = window.history.length;
+    await user.click(closed);
+    expect(closed).toHaveAttribute('aria-expanded', 'true');
+    expect(rows()).toEqual(['plan-a', 'plan-c', 'applied-b', 'gone-d', 'applied-e']);
+    await user.click(open);
+    expect(open).toHaveAttribute('aria-expanded', 'false');
+    expect(rows()).toEqual(['applied-b', 'gone-d', 'applied-e']);
+    const after = useUiStore.getState();
+    expect(after.view).toBe(before.view);
+    expect(after.changesetId).toBe(before.changesetId);
+    expect(after.navSeq).toBe(before.navSeq);
+    expect(window.history.length).toBe(historyLength);
+  });
+
+  it('keeps the purpose in a row\'s accessible name', async () => {
+    mswServer.use(
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
+        HttpResponse.json({
+          version: '1.0.0',
+          changesets: {
+            'cs-p': { name: 'my-plan', status: 'staged', created: '2026-11-20T00:00:00.000Z', changes_count: 3, purpose: 'plan' },
+          },
+        }),
+      ),
+    );
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    await openChangesets(user);
+    const row = (await screen.findByText('my-plan')).closest('button')!;
+    expect(row).toHaveAccessibleName(/^my-plan · /);
+  });
+
+  it('a selected closed changeset opens Closed and reveals its row', async () => {
+    serveChangesets([
+      ['plan-a', 'staged'],
+      ['applied-b', 'committed'],
+    ]);
+    const scrolled: string[] = [];
+    const original = HTMLElement.prototype.scrollIntoView;
+    HTMLElement.prototype.scrollIntoView = function (this: HTMLElement) {
+      scrolled.push(this.textContent ?? '');
+    };
+    try {
+      renderWithProviders(<NavTree />);
+      await screen.findByText('Changesets');
+      // A deep link: the router selects the changeset, not a nav click.
+      act(() => useUiStore.getState().selectChangeset('cs-applied-b'));
+      const closed = await screen.findByTestId('nav-changeset-group-closed');
+      await waitFor(() => expect(closed).toHaveAttribute('aria-expanded', 'true'));
+      const row = screen.getByText('applied-b').closest('button')!;
+      expect(row).toHaveClass('nav-item--active');
+      await waitFor(() => expect(scrolled[scrolled.length - 1] ?? '').toContain('applied-b'));
+    } finally {
+      HTMLElement.prototype.scrollIntoView = original;
+    }
+  });
+
+  it('an empty group is hidden', async () => {
+    serveChangesets([['applied-b', 'committed']]);
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    await openChangesets(user);
+    expect(await screen.findByTestId('nav-changeset-group-closed')).toHaveAccessibleName('Closed, 1 changeset');
+    expect(screen.queryByTestId('nav-changeset-group-open')).not.toBeInTheDocument();
+    expect(screen.queryByText('no changesets')).not.toBeInTheDocument();
+  });
+
+  it('shows the empty hint, and no groups, with no changesets at all', async () => {
+    serveChangesets([]);
+    const user = userEvent.setup();
+    renderWithProviders(<NavTree />);
+    await openChangesets(user);
+    expect(await screen.findByText('no changesets')).toBeInTheDocument();
+    expect(screen.queryByTestId('nav-changeset-group-open')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('nav-changeset-group-closed')).not.toBeInTheDocument();
   });
 });

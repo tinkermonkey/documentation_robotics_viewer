@@ -1,0 +1,72 @@
+id: changeset-1795528893717-1yg9qsu8u
+name: nav-changeset-groups
+description: >-
+  Group the left rail's Changesets rows under **Open** and **Closed** (#625), so
+  staged changesets that still need attention aren't buried among settled ones.
+
+
+  **In scope**
+
+  - `product.feature.nav-tree-changeset-groups`: Open (staged, expanded by
+  default) and Closed (applied / discarded, collapsed by default), each with its
+  count badge; accessible names like "Open, 3 changesets"; empty groups hidden,
+  the "no changesets" hint only when both are empty; purpose stays in each row's
+  title / accessible name.
+
+  - `application.applicationservice.nav-tree-changeset-groups`: pure split of
+  the changeset list by status (staged → Open, everything else → Closed, as the
+  inbox's History), in `data/navTreeGroups.ts`.
+
+  - `application.applicationcomponent.nav-tree`: group open state local to
+  NavTree (never uiStore or the URL, so a toggle pushes no history); the
+  selected changeset's group opens on every selection change, so a deep link to
+  an applied changeset shows its row.
+
+
+  **Done when** unit tests cover the split, NavTree component tests cover the
+  groups, tsc / test:types / tests / build pass and the rail is checked live.
+created: 2026-11-24T14:01:33.727Z
+modified: 2026-11-24T14:01:55.579Z
+status: staged
+baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 17
+  modifications: 1
+  deletions: 0
+lastSequence: 18
+unstaged:
+  - sequence: 0
+    removedAt: 18
+    change:
+      type: add
+      elementId: product.feature.nav-tree-changeset-groups
+      layerName: product
+      after:
+        id: 67887b0c-7e7d-46a8-a687-98754eb53d8f
+        path: product.feature.nav-tree-changeset-groups
+        spec_node_id: product.feature
+        type: feature
+        layer_id: product
+        name: Nav Tree Changeset Groups
+        description: The left rail's Changesets section groups its rows under Open
+          (staged changesets, expanded by default) and Closed (applied and
+          discarded, collapsed by default), each with its count in the badge and
+          an accessible name like "Open, 3 changesets". An empty group is
+          hidden; the "no changesets" hint shows only when both are empty.
+          Opening or closing a group pushes no history. The selected changeset's
+          group opens on every selection, so a deep link to an applied changeset
+          shows its row. Each row keeps its purpose in its title and accessible
+          name.
+        attributes:
+          priority: medium
+          status: planned
+          size: s
+        metadata:
+          created_at: 2026-11-24T14:01:50.616Z
+          updated_at: 2026-11-24T14:01:50.616Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true

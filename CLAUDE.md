@@ -38,7 +38,7 @@ src/
 │   ├── routes/checkoutLinks.ts # pure: the dr CLI's link forms, fragment token, the picker's carried destination
 │   ├── ui/                    # NEW Heimdall-based UX layer (presentation only)
 │   │   ├── AppShell.tsx       # 4-pane flex frame (topbar / nav rail / canvas / chat drawer / statusbar)
-│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model)
+│   │   ├── Topbar.tsx LeftRail.tsx NavTree.tsx StatusBar.tsx   # NavTree: Layer › Node type › Element (Model); Open / Closed changesets
 │   │   ├── CheckoutPicker.tsx # picker page (bare /), topbar CheckoutSwitcher, CheckoutUnavailablePage
 │   │   ├── TopbarSearch.tsx topbar-search.css     # type-ahead over elements + node types (data/search.ts)
 │   │   ├── Canvas.tsx Inspector.tsx               # Model + Schema views (branch on uiStore.view);
@@ -635,6 +635,13 @@ and `dr serve --foreground`; the token is in `$DR_STATE_DIR/servers/<farm-hash>.
   singular ("Application Component"). Groups start collapsed; their open state is LOCAL to `NavTree` (not `uiStore`, not the URL), so
   opening one pushes no history. The selected element's group opens on every selection change (nav, graph,
   deep link, cross-layer), and the reveal effect re-runs when it does. E2E `openLayer` opens the first group.
+- **Nav tree changeset groups** (#625) — the Changesets section groups its rows under **Open** (`status` staged,
+  expanded by default) and **Closed** (every other status: applied / discarded, as the inbox's History; collapsed by
+  default), each in the list's order (newest first) with its count in the badge and an accessible name like "Open, 3
+  changesets" (`navTreeGroups.ts`'s `groupChangesetsByState` / `changesetGroupKey`). An empty group is hidden; "no
+  changesets" shows only when both are. Open state is LOCAL to `NavTree`, as for type groups; the selected
+  changeset's group opens on every selection change (a deep link to an applied changeset shows its row). Each row
+  keeps its purpose in its title / accessible name. E2E `openChangesetGroups` opens both before clicking a row.
 - **Topbar search** (`ui/TopbarSearch.tsx`, `data/search.ts`) — type-ahead over `/api/model` elements and
   `/api/spec` node types; `/` (outside a field) or ⌘K / Ctrl+K focuses it. Tiers: exact > prefix > word start >
   substring > fuzzy (in order, few fragments, offered only when fewer than 5 names match better); the best 50

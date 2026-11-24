@@ -181,3 +181,20 @@ export async function openLayer(
   await expect(group).toHaveAttribute('aria-expanded', 'true');
   return first.locator('.drv-nav-l3').first();
 }
+
+/**
+ * Open the nav tree's changeset groups (#625): Open starts expanded, Closed
+ * collapsed, so a row in a collapsed group isn't rendered until it opens.
+ * Opens each group that's present and closed; an empty group isn't rendered.
+ */
+export async function openChangesetGroups(page: Page): Promise<void> {
+  const nav = page.getByTestId('nav-tree');
+  await expect(nav.locator('[data-testid^="nav-changeset-group-"]').first()).toBeVisible({ timeout: 15_000 });
+  for (const key of ['open', 'closed']) {
+    const group = nav.getByTestId(`nav-changeset-group-${key}`);
+    if ((await group.count()) > 0 && (await group.getAttribute('aria-expanded')) === 'false') {
+      await group.click();
+      await expect(group).toHaveAttribute('aria-expanded', 'true');
+    }
+  }
+}
