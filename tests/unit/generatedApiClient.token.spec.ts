@@ -23,7 +23,7 @@ describe('generated ApiClient — auth token', () => {
 
     const fetchMock = vi.fn(async (_url: string, _init: RequestInit) => new Response('{}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
-    await getApiClient().getapichangesets();
+    await getApiClient().getapiprojectsprojectcheckoutscheckoutchangesets('demo', 'main');
 
     const init = fetchMock.mock.calls[0][1];
     expect((init.headers as Record<string, string>).Authorization).toBe('Bearer dr-new-server-token');
@@ -37,7 +37,7 @@ describe('generated ApiClient — auth token', () => {
 
     const fetchMock = vi.fn(async (_url: string, _init: RequestInit) => new Response('{}', { status: 200 }));
     vi.stubGlobal('fetch', fetchMock);
-    await getApiClient().getapichangesets();
+    await getApiClient().getapiprojectsprojectcheckoutscheckoutchangesets('demo', 'main');
 
     const init = fetchMock.mock.calls[0][1];
     expect((init.headers as Record<string, string>).Authorization).toBe('Bearer dr-explicit');
