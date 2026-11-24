@@ -21,6 +21,7 @@ import { http, HttpResponse } from 'msw';
 
 import model from '../fixtures/model.json';
 import changesets from '../fixtures/changesets.json';
+import spec from '../fixtures/spec.json';
 
 /** Open a Model type group (#592) by its `<layer>.<type>` key. */
 async function openGroup(user: ReturnType<typeof userEvent.setup>, key: string) {
@@ -46,12 +47,17 @@ describe('NavTree — sections', () => {
     expect(screen.getByText('Changesets')).toBeInTheDocument();
   });
 
-  it('shows 12 on the Model section and the live changeset count on Changesets', async () => {
+  it("shows the spec's layer count on the Model section and the live changeset count on Changesets", async () => {
     renderWithProviders(<NavTree />);
 
-    // The Model section row reports 12 layers.
+    // The Model section row reports the spec's layers (#636: not a hardcoded 12).
+    const layerCount = new Set(
+      Object.values(spec.schemas as Record<string, { layer?: { id?: string } }>)
+        .map((schema) => schema.layer?.id)
+        .filter(Boolean),
+    ).size;
     const modelRow = (await screen.findByText('Model')).closest('button')!;
-    expect(within(modelRow).getByText('12')).toBeInTheDocument();
+    await waitFor(() => expect(within(modelRow).getByText(String(layerCount))).toBeInTheDocument());
 
     // The Changesets section reports the live fixture count (3).
     const changesetCount = Object.keys(changesets.changesets).length;

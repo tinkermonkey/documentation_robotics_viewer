@@ -62,6 +62,27 @@ function holdAllReads() {
 
 const modelCount = (layer: string) => model.nodes.filter((n) => n.layer_id === layer).length;
 const changesetCount = Object.keys(changesets.changesets).length;
+/** The layers the spec fixture defines (each schema names its layer). */
+const specLayerCount = new Set(
+  Object.values(spec.schemas as Record<string, { layer?: { id?: string } }>)
+    .map((schema) => schema.layer?.id)
+    .filter(Boolean),
+).size;
+
+/** Swap in held handlers, refetch every query, and wait until a request is held. */
+async function refetchHeld(client: import('@tanstack/react-query').QueryClient) {
+  const g = holdAllReads();
+  await act(async () => {
+    void client.invalidateQueries();
+  });
+  await waitFor(() => expect(g.state.pending).toBeGreaterThan(0));
+  return g;
+}
+
+/** The count badge of a nav row, or null when it shows none. */
+function countOf(row: Element): string | null {
+  return row.querySelector('.nav-item__count')?.textContent ?? null;
+}
 
 afterEach(() => mswServer.resetHandlers());
 
@@ -89,17 +110,25 @@ describe('NavTree — first load', () => {
     });
 
     const tree = screen.getByTestId('nav-tree');
-    expect(tree).toHaveAttribute('aria-busy', 'true');
+    // Not aria-busy: that could hold back the tree's own status lines.
+    expect(tree).not.toHaveAttribute('aria-busy');
     const status = await screen.findByTestId('nav-changesets-status');
     expect(status).toHaveAttribute('role', 'status');
     expect(status).toHaveTextContent('Loading…');
     expect(screen.queryByText('no changesets')).not.toBeInTheDocument();
     // No count on the Changesets section or on any Model layer: no "0" anywhere.
     const changesetsRow = screen.getByText('Changesets').closest('button')!;
-    expect(changesetsRow.querySelector('.nav-item__count')).toBeNull();
+    expect(countOf(changesetsRow)).toBeNull();
+    const modelRow = screen.getByText('Model').closest('button')!;
+    expect(countOf(modelRow)).toBeNull();
+    const schemaRow = screen.getByText('Schema').closest('button')!;
+    expect(countOf(schemaRow)).toBeNull();
+    const architectureRow = screen.getByText('Architecture').closest('button')!;
+    expect(countOf(architectureRow)).toBeNull();
     const motivation = screen.getByText('Motivation').closest('button')!;
-    expect(motivation.querySelector('.nav-item__count')).toBeNull();
+    expect(countOf(motivation)).toBeNull();
     expect(within(tree).queryByText('0')).not.toBeInTheDocument();
+    expect(within(tree).queryByText('12')).not.toBeInTheDocument();
 
     await act(async () => g.open());
 
@@ -108,18 +137,60 @@ describe('NavTree — first load', () => {
       expect(within(motivation).getByText(String(modelCount('motivation')))).toBeInTheDocument(),
     );
     expect(screen.queryByTestId('nav-changesets-status')).not.toBeInTheDocument();
-    expect(tree).not.toHaveAttribute('aria-busy');
+    // Model and Schema count the spec's layers once it answers.
+    expect(countOf(modelRow)).toBe(String(specLayerCount));
+    expect(countOf(schemaRow)).toBe(String(specLayerCount));
   });
 
-  it('says Loading… under an open Model layer until the model answers', async () => {
+  it('shows no Architecture or Containers count until the model and spec answer', async () => {
     const g = holdAllReads();
     renderWithProviders(<NavTree />);
     act(() => {
-      useUiStore.setState({ expandedLayers: new Set(['model:motivation']) });
+      useUiStore.setState({ expandedSections: new Set(['architecture']) });
     });
-    expect(await screen.findByText('Loading…')).toBeInTheDocument();
+
+    const containers = await screen.findByTestId('nav-c4-containers');
+    expect(countOf(containers)).toBeNull();
+    expect(countOf(screen.getByText('Architecture').closest('button')!)).toBeNull();
+    expect(await screen.findByTestId('nav-architecture-status')).toHaveTextContent('Loading…');
+    expect(screen.queryByText('no components')).not.toBeInTheDocument();
+
+    await act(async () => g.open());
+    await waitFor(() => expect(countOf(containers)).not.toBeNull());
+    expect(countOf(screen.getByText('Architecture').closest('button')!)).not.toBeNull();
+    expect(screen.queryByTestId('nav-architecture-status')).not.toBeInTheDocument();
+  });
+
+  it('says Loading… once per section, however many of its layers are open', async () => {
+    const g = holdAllReads();
+    renderWithProviders(<NavTree />);
+    act(() => {
+      useUiStore.setState({
+        expandedSections: new Set(['model']),
+        expandedLayers: new Set(['model:motivation', 'model:business', 'model:application']),
+      });
+    });
+    const status = await screen.findByTestId('nav-model-status');
+    await waitFor(() => expect(status).toHaveTextContent('Loading…'));
+    expect(screen.getAllByRole('status')).toHaveLength(1);
+    expect(screen.getAllByText('Loading…')).toHaveLength(1);
     await act(async () => g.open());
     await waitFor(() => expect(screen.queryByText('Loading…')).not.toBeInTheDocument());
+  });
+
+  it('says a failed model read once per section as plain text, never as an alert', async () => {
+    mswServer.use(http.get(MODEL, () => HttpResponse.json({ error: 'not found' }, { status: 404 })));
+    renderWithProviders(<NavTree />);
+    act(() => {
+      useUiStore.setState({
+        expandedSections: new Set(['model']),
+        expandedLayers: new Set(['model:motivation', 'model:business']),
+      });
+    });
+    const status = await screen.findByTestId('nav-model-status');
+    await waitFor(() => expect(status).toHaveTextContent('could not load the model'));
+    expect(screen.getAllByText('could not load the model')).toHaveLength(1);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 
   it('shows a failed first changesets read as an error, never "no changesets"', async () => {
@@ -131,7 +202,8 @@ describe('NavTree — first load', () => {
 
     const status = await screen.findByTestId('nav-changesets-status');
     await waitFor(() => expect(status).toHaveTextContent('could not load changesets'));
-    expect(status).toHaveAttribute('role', 'alert');
+    // Plain text: the inbox raises the alert, not the nav tree.
+    expect(status).not.toHaveAttribute('role');
     expect(screen.queryByText('no changesets')).not.toBeInTheDocument();
     const changesetsRow = screen.getByText('Changesets').closest('button')!;
     expect(changesetsRow.querySelector('.nav-item__count')).toBeNull();
@@ -145,16 +217,11 @@ describe('NavTree — first load', () => {
     const changesetsRow = screen.getByText('Changesets').closest('button')!;
     await waitFor(() => expect(within(changesetsRow).getByText(String(changesetCount))).toBeInTheDocument());
 
-    const g = holdAllReads();
-    await act(async () => {
-      void client.invalidateQueries();
-    });
-    await waitFor(() => expect(g.state.pending).toBeGreaterThan(0));
+    const g = await refetchHeld(client);
 
     expect(screen.queryByText('Loading…')).not.toBeInTheDocument();
     expect(screen.queryByTestId('nav-changesets-status')).not.toBeInTheDocument();
     expect(within(changesetsRow).getByText(String(changesetCount))).toBeInTheDocument();
-    expect(screen.getByTestId('nav-tree')).not.toHaveAttribute('aria-busy');
     await act(async () => g.open());
   });
 });
@@ -195,6 +262,53 @@ describe('Canvas — first load', () => {
     expect(screen.queryByTestId('page-view')).not.toBeInTheDocument();
     await act(async () => g.open());
     expect(await screen.findByTestId('page-view')).toBeInTheDocument();
+  });
+
+  it('in the Schema view, waits on the spec: Loading… and no node-type count until it answers', async () => {
+    const g = holdAllReads();
+    renderWithProviders(<Canvas />);
+    act(() => {
+      useUiStore.getState().setView('spec');
+      useUiStore.getState().selectLayer('motivation');
+    });
+
+    const status = await screen.findByTestId('canvas-load-status');
+    await waitFor(() => expect(status).toHaveTextContent('Loading…'));
+    expect(screen.queryByText('no node types in this layer')).not.toBeInTheDocument();
+    expect(screen.getByTestId('canvas-meta')).toHaveTextContent('…');
+    expect(screen.getByTestId('canvas-meta')).not.toHaveTextContent('node types');
+
+    await act(async () => g.open());
+    await waitFor(() => expect(screen.getByTestId('canvas-meta')).toHaveTextContent(/\d+ node types/));
+    expect(screen.getByTestId('canvas-meta')).not.toHaveTextContent(/^0 node types/);
+    expect(screen.queryByTestId('canvas-load-status')).not.toBeInTheDocument();
+  });
+
+  it('says the spec could not be loaded when the Schema view\'s first read fails', async () => {
+    mswServer.use(http.get(SPEC, () => HttpResponse.json({ error: 'boom' }, { status: 500 })));
+    renderWithProviders(<Canvas />);
+    act(() => {
+      useUiStore.getState().setView('spec');
+      useUiStore.getState().selectLayer('motivation');
+    });
+    const status = await screen.findByTestId('canvas-load-status');
+    await waitFor(() => expect(status).toHaveTextContent('The spec could not be loaded.'));
+    expect(status).toHaveAttribute('role', 'alert');
+  });
+
+  it('keeps its graph and count through a background refetch (no flash back to Loading…)', async () => {
+    const { client } = renderWithProviders(<Canvas />);
+    act(() => {
+      useUiStore.getState().setView('model');
+      useUiStore.getState().selectLayer('motivation');
+    });
+    const meta = `${modelCount('motivation')} elements`;
+    await waitFor(() => expect(screen.getByTestId('canvas-meta')).toHaveTextContent(meta));
+
+    const g = await refetchHeld(client);
+    expect(screen.queryByTestId('canvas-load-status')).not.toBeInTheDocument();
+    expect(screen.getByTestId('canvas-meta')).toHaveTextContent(meta);
+    await act(async () => g.open());
   });
 
   it('says the model could not be loaded when its first read fails', async () => {
@@ -239,6 +353,49 @@ describe('LeftRail and StatusBar — first load', () => {
     expect(screen.getByTestId('rail-footer')).not.toHaveAttribute('aria-busy');
     await waitFor(() => expect(screen.getByTestId('status-cli-version')).toHaveTextContent('cli 9.9.9'));
     expect(screen.getByTestId('status-elements')).toHaveTextContent(`${model.nodes.length} elements`);
+  });
+
+  it('show "—" and "model unavailable" when their first reads fail, never 0', async () => {
+    mswServer.use(
+      http.get(SPEC, () => HttpResponse.json({ error: 'boom' }, { status: 500 })),
+      http.get(MODEL, () => HttpResponse.json({ error: 'not found' }, { status: 404 })),
+      http.get(HEALTH, () => HttpResponse.json({ error: 'boom' }, { status: 500 })),
+    );
+    renderWithProviders(
+      <>
+        <LeftRail />
+        <StatusBar />
+      </>,
+    );
+
+    await waitFor(() => expect(screen.getByTestId('rail-spec-version')).toHaveTextContent('SPEC —'));
+    await waitFor(() => expect(screen.getByTestId('rail-counts')).toHaveTextContent('—'));
+    expect(screen.getByTestId('rail-counts')).not.toHaveTextContent(/\d/);
+    expect(screen.getByTestId('rail-footer')).not.toHaveAttribute('aria-busy');
+    await waitFor(() => expect(screen.getByTestId('status-elements')).toHaveTextContent('model unavailable'));
+    await waitFor(() => expect(screen.getByTestId('status-cli-version')).toHaveTextContent('cli — · refs ok'));
+  });
+
+  it('keep their versions and counts through a background refetch (no flash back to …)', async () => {
+    mswServer.use(http.get(HEALTH, () => HttpResponse.json({ status: 'ok', version: '0.1.0', cliVersion: '9.9.9' })));
+    const { client } = renderWithProviders(
+      <>
+        <LeftRail />
+        <StatusBar />
+      </>,
+    );
+    const rels = `layers · ${model.links.length} rels`;
+    await waitFor(() => expect(screen.getByTestId('rail-counts')).toHaveTextContent(rels));
+    await waitFor(() => expect(screen.getByTestId('status-cli-version')).toHaveTextContent('cli 9.9.9'));
+    const specText = screen.getByTestId('rail-spec-version').textContent;
+
+    const g = await refetchHeld(client);
+    expect(screen.getByTestId('rail-counts')).toHaveTextContent(rels);
+    expect(screen.getByTestId('rail-spec-version')).toHaveTextContent(specText!);
+    expect(screen.getByTestId('rail-footer')).not.toHaveAttribute('aria-busy');
+    expect(screen.getByTestId('status-cli-version')).toHaveTextContent('cli 9.9.9');
+    expect(screen.getByTestId('status-elements')).toHaveTextContent(`${model.nodes.length} elements`);
+    await act(async () => g.open());
   });
 
   it('keeps "—" for a /health that sends no cliVersion once it has answered', async () => {

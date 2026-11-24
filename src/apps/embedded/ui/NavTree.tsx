@@ -17,9 +17,11 @@
  * (`data/c4/c4Views.ts`'s `c4NavRows`); a row opens that diagram.
  *
  * First load (#636): until a read has answered, the rows it counts show no
- * count and an open section or layer says "Loading…" (`LoadStatus`) where it
- * would otherwise say it is empty; a failed first read says so instead. The
- * tree is `aria-busy` meanwhile. A refetch keeps the counts it has.
+ * count and each open section says "Loading…" once (`LoadStatus`, a polite
+ * status) where it would otherwise list or say it is empty. A failed first
+ * read is plain text here: the canvas raises the one alert. The tree is not
+ * `aria-busy` (that could hold back its own status lines). A refetch keeps the
+ * counts it has.
  *
  * Type groups (`data/navTreeGroups.ts`) start collapsed. Their open state is
  * local to the tree, not in `uiStore` or the URL, so opening one pushes no
@@ -50,7 +52,7 @@ import { useC4Model } from '../data/c4/useC4Model';
 import { c4NavRows, defaultComponentScope, resolveScope } from '../data/c4/c4Views';
 import { C4_SYSTEM_ID } from '../data/c4/c4Model';
 import { combineLoadStates, loadStateOf, type LoadState } from '../data/loadState';
-import { LoadStatus, busyProps } from './LoadStatus';
+import { LoadStatus } from './LoadStatus';
 
 type SectionId = Extract<ViewKind, 'model' | 'spec' | 'changesets' | 'architecture'>;
 /** The sections that list the spec's layers. */
@@ -104,6 +106,10 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
   const changesetsQuery = useChangesets();
   const changesetsState = loadStateOf(changesetsQuery);
   const architectureState = useArchitectureLoadState();
+  const specQuery = useSpec();
+  const specState = loadStateOf(specQuery);
+  // Model and Schema list the spec's layers.
+  const layerCount = Object.keys(specQuery.derived.byLayer).length || LAYER_ORDER.length;
   const { model: c4 } = useC4Model();
   const open = expandedSections.has(section.id);
   // Architecture counts its diagrams: Context, Containers, and one per element with parts.
@@ -118,7 +124,9 @@ function SectionRow({ section }: { section: (typeof SECTIONS)[number] }) {
         ? architectureState === 'ready'
           ? diagrams
           : undefined
-        : 12;
+        : specState === 'ready'
+          ? layerCount
+          : undefined;
 
   return (
     <div style={{ position: 'relative' }}>
@@ -229,13 +237,6 @@ function LayerRow({
         />
         <Chevron open={open} />
       </div>
-      {open && (
-        <LoadStatus
-          state={state}
-          error={sectionId === 'spec' ? 'could not load the spec' : 'could not load the model'}
-          style={hintStyle}
-        />
-      )}
       {/* Schema leaves: node-type names (`typeLabel`'s full singular: the
           Schema view names a type in full). The leaf id is the spec_node_id
           (`<slug>.<shortname>`) so selecting it matches the graph node id the
@@ -316,6 +317,7 @@ function ChangesetRows({ groups: groupState }: { groups: ChangesetGroupState }) 
       <LoadStatus
         state={state}
         error="could not load changesets"
+        alertOnError={false}
         style={hintStyle}
         data-testid="nav-changesets-status"
       />
@@ -430,7 +432,13 @@ function ArchitectureRows() {
           </div>
         );
       })}
-      <LoadStatus state={state} error="could not load the model" style={hintStyle} />
+      <LoadStatus
+        state={state}
+        error="could not load the model"
+        alertOnError={false}
+        style={hintStyle}
+        data-testid="nav-architecture-status"
+      />
       {state === 'ready' && rows.length === 0 && defaultComponentScope(c4) === null && (
         <div style={hintStyle}>no components</div>
       )}
@@ -455,11 +463,11 @@ export function NavTree() {
   const model = modelQuery.derived;
   const modelNodes = model.nodes.length;
   const changesetList = changesetsQuery.derived.list;
-  const treeState = combineLoadStates(
-    loadStateOf(modelQuery),
-    loadStateOf(specQuery),
-    loadStateOf(changesetsQuery),
-  );
+  // One status line per open Model / Schema section, never one per open layer.
+  const layerSectionState: Record<LayerSectionId, LoadState> = {
+    model: loadStateOf(modelQuery),
+    spec: loadStateOf(specQuery),
+  };
   const changesetCount = changesetList.length;
 
   // Model type groups (#592): collapsed until opened. Local state on purpose —
@@ -538,7 +546,6 @@ export function NavTree() {
       className="drv-scroll drv-noscroll"
       style={{ flex: 1, overflowY: 'auto', padding: '8px' }}
       data-testid="nav-tree"
-      {...busyProps(treeState)}
     >
       {SECTIONS.map((section) => {
         const open = expandedSections.has(section.id);
@@ -547,6 +554,15 @@ export function NavTree() {
             <SectionRow section={section} />
             {open && section.id === 'changesets' && <ChangesetRows groups={changesetGroups} />}
             {open && section.id === 'architecture' && <ArchitectureRows />}
+            {open && (section.id === 'model' || section.id === 'spec') && (
+              <LoadStatus
+                state={layerSectionState[section.id]}
+                error={section.id === 'spec' ? 'could not load the spec' : 'could not load the model'}
+                alertOnError={false}
+                style={hintStyle}
+                data-testid={`nav-${section.id}-status`}
+              />
+            )}
             {open &&
               (section.id === 'model' || section.id === 'spec') &&
               LAYER_ORDER.map((slug) => (
