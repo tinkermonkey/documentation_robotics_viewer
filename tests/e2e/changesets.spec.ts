@@ -2,13 +2,14 @@
  * changesets.spec.ts — the Changesets view.
  *
  * Asserts: the view opens on the inbox; opening a changeset from the nav tree
+ * (its Open / Closed group opened first, #625)
  * shows its review rows and StatTiles matching the live API stats; switching
  * changesets updates the content. Resilient to the repo model's changeset set:
  * it reads the API for the authoritative names + per-changeset stats.
  */
 
 import { test, expect, type APIRequestContext } from '@playwright/test';
-import { gotoView, ROUTES, BASE_URL } from './helpers';
+import { gotoView, openChangesetGroups, ROUTES, BASE_URL } from './helpers';
 
 interface ApiChangeset {
   id: string;
@@ -47,6 +48,7 @@ test.describe('changesets', () => {
     const all = newestFirst(await fetchChangesets(request));
     test.skip(all.length === 0, 'needs a changeset');
     const selected = all[0];
+    await openChangesetGroups(page);
     await page
       .getByTestId('nav-tree')
       .getByRole('button', { name: new RegExp(`^${escapeRegExp(selected.name)}`) })
@@ -92,6 +94,7 @@ test.describe('changesets', () => {
 
     await gotoView(page, ROUTES.changesets);
     const nav = page.getByTestId('nav-tree');
+    await openChangesetGroups(page);
     await nav.getByRole('button', { name: new RegExp(`^${escapeRegExp(all[0].name)}`) }).first().click();
 
     const title = page.getByTestId('page-header-title');
