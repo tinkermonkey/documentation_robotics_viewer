@@ -16,6 +16,11 @@
  * by the active `PageData` (layer / spec node / model node), matching the
  * design's `pg ? override : default` header logic.
  *
+ * First load (#636): until the read a view draws from has answered (the model
+ * for Model, the spec for Schema, both for a page), the header shows no count
+ * and the body says "Loading…" (`LoadStatus`) instead of "no elements in this
+ * layer"; a failed first read says so. A refetch keeps what is drawn.
+ *
  * The `GraphCanvas` is keyed by
  * `${view}:${layerId}:${graphLayout}:${nodeMarginPreset}:${nodeDisplay}`
  * so switching layer/view/layout/margin/display remounts it — Heimdall auto-centers
@@ -123,6 +128,8 @@ import { TypeLanesView } from './TypeLanesView';
 import { HIVE_MIN_TYPES, TypeHiveView } from './TypeHiveView';
 import { useModel } from '../data/useModel';
 import { useSpec } from '../data/useSpec';
+import { combineLoadStates, loadStateOf } from '../data/loadState';
+import { LoadStatus, busyProps } from './LoadStatus';
 import {
   buildModelIndex,
   nodesWithCardData,
@@ -501,20 +508,20 @@ function GraphControl({
   );
 }
 
+const canvasMessageStyle: React.CSSProperties = {
+  flex: 1,
+  height: '100%',
+  display: 'grid',
+  placeItems: 'center',
+  color: 'rgb(var(--canvas-fg-3))',
+  fontFamily: "'JetBrains Mono',monospace",
+  fontSize: 12,
+};
+
 /** Empty state shown when no layer is selected. */
 function CanvasEmptyState({ message }: { message: string }) {
   return (
-    <div
-      style={{
-        flex: 1,
-        display: 'grid',
-        placeItems: 'center',
-        color: 'rgb(var(--canvas-fg-3))',
-        fontFamily: "'JetBrains Mono',monospace",
-        fontSize: 12,
-      }}
-      data-testid="canvas-empty"
-    >
+    <div style={canvasMessageStyle} data-testid="canvas-empty">
       {message}
     </div>
   );
@@ -576,9 +583,16 @@ export function Canvas() {
     [selectGraphNode],
   );
 
-  const { derived: model } = useModel();
-  const { derived: spec, raw: specRaw } = useSpec();
+  const modelQuery = useModel();
+  const specQuery = useSpec();
+  const model = modelQuery.derived;
+  const { derived: spec, raw: specRaw } = specQuery;
   const isSpec = view === 'spec';
+  // What each mode draws from (#636): the graph, its view's own read; a page, both.
+  const modelState = loadStateOf(modelQuery);
+  const specState = loadStateOf(specQuery);
+  const graphState = isSpec ? specState : modelState;
+  const pageState = combineLoadStates(modelState, specState);
 
   const index = useMemo(() => buildModelIndex(model), [model]);
 
@@ -817,6 +831,8 @@ export function Canvas() {
 
   const metaText = useMemo(() => {
     if (!layerId) return '';
+    // No count until it's real: an ellipsis while loading, nothing if the read failed.
+    if (graphState !== 'ready') return graphState === 'loading' ? '…' : '';
     if (isSpec) {
       const typeCount = spec.byLayer[slug]?.typeCount ?? 0;
       const relCount = intraRelCount(specRaw, slug);
@@ -825,7 +841,7 @@ export function Canvas() {
       return `${typeCount} node types · ${relCount} within-layer relationships`;
     }
     return `${model.countsByLayer[slug] ?? 0} elements`;
-  }, [isSpec, layerId, slug, spec, specRaw, model]);
+  }, [isSpec, layerId, slug, spec, specRaw, model, graphState]);
 
   const emptyMessage = isSpec
     ? 'select a layer to view its schema'
@@ -836,11 +852,13 @@ export function Canvas() {
 
   // Page mode overrides the header with the active record's own eyebrow /
   // title / id chip / meta / swatch color (design's `pg ? override : default`).
-  const headerColor = isPage && pg ? pg.color : layerColor(slug);
-  const headerEyebrow = isPage && pg ? pg.eyebrow : eyebrowText;
-  const headerTitle = isPage && pg ? pg.title : title;
-  const headerIdChip = isPage && pg ? pg.idChip : (layerId ?? view);
-  const headerMeta = isPage && pg ? pg.meta : metaText;
+  // A page built before its reads answered would count nothing as a fact.
+  const shownPg = isPage && pageState === 'ready' ? pg : null;
+  const headerColor = shownPg ? shownPg.color : layerColor(slug);
+  const headerEyebrow = shownPg ? shownPg.eyebrow : eyebrowText;
+  const headerTitle = shownPg ? shownPg.title : title;
+  const headerIdChip = shownPg ? shownPg.idChip : (layerId ?? view);
+  const headerMeta = shownPg ? shownPg.meta : metaText;
 
   return (
     <div
@@ -884,6 +902,7 @@ export function Canvas() {
                 color: 'rgb(var(--canvas-fg-3))',
                 marginRight: 8,
               }}
+              data-testid="canvas-meta"
             >
               {headerMeta}
             </span>
@@ -901,10 +920,18 @@ export function Canvas() {
       <div
         ref={canvasAreaRef}
         style={{ flex: 1, position: 'relative', minHeight: 0 }}
+        {...(layerId ? busyProps(isPage ? pageState : graphState) : {})}
       >
         {isPage ? (
           !layerId ? (
             <CanvasEmptyState message={emptyMessage} />
+          ) : pageState !== 'ready' ? (
+            <LoadStatus
+              state={pageState}
+              error={modelState === 'error' ? 'The model could not be loaded.' : 'The spec could not be loaded.'}
+              style={canvasMessageStyle}
+              data-testid="canvas-load-status"
+            />
           ) : !pg ? (
             <CanvasEmptyState message="select a node to view its page" />
           ) : (
@@ -914,6 +941,13 @@ export function Canvas() {
           <>
             {!layerId ? (
               <CanvasEmptyState message={emptyMessage} />
+            ) : graphState !== 'ready' ? (
+              <LoadStatus
+                state={graphState}
+                error={isSpec ? 'The spec could not be loaded.' : 'The model could not be loaded.'}
+                style={canvasMessageStyle}
+                data-testid="canvas-load-status"
+              />
             ) : nodes.length === 0 ? (
               <CanvasEmptyState message={noContentMessage} />
             ) : (
