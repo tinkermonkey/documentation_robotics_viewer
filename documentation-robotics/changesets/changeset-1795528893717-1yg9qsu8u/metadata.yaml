@@ -26,17 +26,17 @@ description: >-
   **Done when** unit tests cover the split, NavTree component tests cover the
   groups, tsc / test:types / tests / build pass and the rail is checked live.
 created: 2026-11-24T14:01:33.727Z
-modified: 2026-11-24T14:01:55.579Z
+modified: 2026-11-24T14:07:47.118Z
 status: staged
 baseSnapshot: v2:sha256:d2962d999fc4482f7f699f41c471229244fd50e62c5d4f34cee62850366ee074
 origin:
   kind: plan
 purpose: plan
 stats:
-  additions: 17
+  additions: 16
   modifications: 1
   deletions: 0
-lastSequence: 18
+lastSequence: 24
 unstaged:
   - sequence: 0
     removedAt: 18
@@ -70,3 +70,145 @@ unstaged:
           version: 1
       timestamp: 2026-11-24T14:01:50.646Z
     rewritten: true
+  - sequence: 2
+    removedAt: 19
+    change:
+      type: add
+      elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+      layerName: testing
+      after:
+        id: ace3ec19-7655-44f2-8358-e3b37d1db7e7
+        path: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: changeset groups > puts staged changesets in Open and every other status
+          in Closed
+        description: "A list mixing staged, committed, discarded and unknown statuses:
+          staged ones go to Open, the rest to Closed, each in the list's order;
+          an empty list gives two empty groups."
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-24T14:01:50.632Z
+          updated_at: 2026-11-24T14:01:50.632Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true
+  - sequence: 4
+    removedAt: 20
+    change:
+      type: add
+      elementId: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+      layerName: testing
+      after:
+        id: 8674b57e-ec6d-4065-b003-ee7b752c7a4b
+        path: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: NavTree changeset groups > a selected closed changeset opens Closed and
+          reveals its row
+        description: Selecting an applied changeset from elsewhere (a deep link) opens
+          the Closed group and marks its row active.
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-24T14:01:50.635Z
+          updated_at: 2026-11-24T14:01:50.635Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true
+  - sequence: 5
+    removedAt: 21
+    change:
+      type: add
+      elementId: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+      layerName: testing
+      after:
+        id: e83794b4-79d7-4eef-a79d-9d342ccc2813
+        path: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: NavTree changeset groups > an empty group is hidden
+        description: "Only committed changesets: no Open group, Closed is shown; no
+          changesets at all: the no-changesets hint and no groups."
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-24T14:01:50.635Z
+          updated_at: 2026-11-24T14:01:50.635Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true
+  - sequence: 3
+    removedAt: 22
+    change:
+      type: add
+      elementId: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+      layerName: testing
+      after:
+        id: 0a783c91-0717-45d2-a188-d8ca9ef03bcd
+        path: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
+        spec_node_id: testing.testcasesketch
+        type: testcasesketch
+        layer_id: testing
+        name: NavTree changeset groups > Open starts expanded and Closed collapsed, each
+          with its count
+        description: With staged and applied changesets, the Changesets section shows
+          Open (aria-expanded true, its rows shown) and Closed (aria-expanded
+          false, rows hidden), each with its count badge and an accessible name
+          like "Open, 1 changeset"; toggling Closed touches no navigation state
+          or history.
+        attributes:
+          status: draft
+          implementationFormat: automated
+        metadata:
+          created_at: 2026-11-24T14:01:50.635Z
+          updated_at: 2026-11-24T14:01:50.635Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true
+  - sequence: 1
+    removedAt: 23
+    change:
+      type: add
+      elementId: application.applicationservice.nav-tree-changeset-groups
+      layerName: application
+      after:
+        id: 355e176e-368d-4154-a960-62fe2f0f9e45
+        path: application.applicationservice.nav-tree-changeset-groups
+        spec_node_id: application.applicationservice
+        type: applicationservice
+        layer_id: application
+        name: Nav Tree Changeset Groups
+        description: "Pure transform for the nav tree: the changeset list split into
+          Open (status staged) and Closed (every other status: applied,
+          discarded or unknown, as the inbox's History reads it), each keeping
+          the list's order (newest first), plus the group key holding a given
+          changeset, so the tree can open it."
+        attributes:
+          serviceType: synchronous
+        metadata:
+          created_at: 2026-11-24T14:01:50.630Z
+          updated_at: 2026-11-24T14:01:50.630Z
+          version: 1
+      timestamp: 2026-11-24T14:01:50.646Z
+    rewritten: true
+  - sequence: 11
+    removedAt: 24
+    change:
+      type: relationship-add
+      elementId: application.applicationservice.nav-tree-changeset-groups::depends-on::application.applicationservice.use-changesets
+      layerName: application
+      after:
+        source: application.applicationservice.nav-tree-changeset-groups
+        target: application.applicationservice.use-changesets
+        predicate: depends-on
+        layer: application
+        category: structural
+      timestamp: 2026-11-24T14:01:50.646Z

@@ -57,7 +57,12 @@
       created_at: 2026-11-24T14:01:50.630Z
       updated_at: 2026-11-24T14:01:50.630Z
       version: 1
-  timestamp: 2026-11-24T14:01:50.646Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/navTreeGroups.ts
+          symbol: groupChangesetsByState
+  timestamp: 2026-11-24T14:07:38.150Z
   sequenceNumber: 1
 - type: add
   elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed
@@ -80,7 +85,13 @@
       created_at: 2026-11-24T14:01:50.632Z
       updated_at: 2026-11-24T14:01:50.632Z
       version: 1
-  timestamp: 2026-11-24T14:01:50.646Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/unit/navTreeGroups.spec.ts
+          symbol: changeset groups > puts staged changesets in Open and every other status
+            in Closed
+  timestamp: 2026-11-24T14:07:38.133Z
   sequenceNumber: 2
 - type: add
   elementId: testing.testcasesketch.nav-tree-changeset-groups-open-starts-expanded-and-closed-collapsed-each-with-its-count
@@ -104,7 +115,13 @@
       created_at: 2026-11-24T14:01:50.635Z
       updated_at: 2026-11-24T14:01:50.635Z
       version: 1
-  timestamp: 2026-11-24T14:01:50.646Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > Open starts expanded and Closed collapsed,
+            each with its count
+  timestamp: 2026-11-24T14:07:38.133Z
   sequenceNumber: 3
 - type: add
   elementId: testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row
@@ -126,7 +143,13 @@
       created_at: 2026-11-24T14:01:50.635Z
       updated_at: 2026-11-24T14:01:50.635Z
       version: 1
-  timestamp: 2026-11-24T14:01:50.646Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > a selected closed changeset opens Closed and
+            reveals its row
+  timestamp: 2026-11-24T14:07:38.133Z
   sequenceNumber: 4
 - type: add
   elementId: testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden
@@ -147,7 +170,12 @@
       created_at: 2026-11-24T14:01:50.635Z
       updated_at: 2026-11-24T14:01:50.635Z
       version: 1
-  timestamp: 2026-11-24T14:01:50.646Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: tests/components/NavTree.spec.tsx
+          symbol: NavTree changeset groups > an empty group is hidden
+  timestamp: 2026-11-24T14:07:38.133Z
   sequenceNumber: 5
 - type: relationship-add
   elementId: product.feature.nav-tree-changeset-groups::realizes::product.softwarecapability.changeset-review
@@ -205,17 +233,6 @@
     category: structural
   timestamp: 2026-11-24T14:01:50.646Z
   sequenceNumber: 10
-- type: relationship-add
-  elementId: application.applicationservice.nav-tree-changeset-groups::depends-on::application.applicationservice.use-changesets
-  layerName: application
-  after:
-    source: application.applicationservice.nav-tree-changeset-groups
-    target: application.applicationservice.use-changesets
-    predicate: depends-on
-    layer: application
-    category: structural
-  timestamp: 2026-11-24T14:01:50.646Z
-  sequenceNumber: 11
 - type: relationship-add
   elementId: testing.testcasesketch.changeset-groups-puts-staged-changesets-in-open-and-every-other-status-in-closed::tests::application.applicationservice.nav-tree-changeset-groups
   layerName: testing
