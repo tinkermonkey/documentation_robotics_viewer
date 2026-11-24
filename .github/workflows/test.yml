@@ -35,8 +35,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        # --legacy-peer-deps: React 19 vs deps that still declare React 18 peers.
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       - name: Type check (src)
         run: npx tsc --noEmit
@@ -86,7 +85,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
 
       # The viewer is served by the `dr` CLI; the E2E webServer runs
       # `dr visualize`. Adjust the package name/registry to your distribution.

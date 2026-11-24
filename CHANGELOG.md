@@ -27,6 +27,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
   that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an
   applied changeset opens Closed to show its row. An empty group is hidden.
+- README and CLAUDE.md describe the actual stack, test suites and CI workflows; the `-build` and `-api-sync`
+  project skills are rewritten for the current build. `js-yaml` (used by the API-client scripts) is declared, and
+  the router imports `createHashHistory` from `@tanstack/react-router` rather than an undeclared package.
+- `package.json` says MIT, as `LICENSE` does (it said ISC); the workflows run `npm ci` without `--legacy-peer-deps`,
+  which the dependencies no longer need.
+- DR model: the Exception Classifier says what it does (no "Storybook story error filtering"), and the Tailwind and
+  Docker agent-image elements are deleted (changeset `remove-pre-heimdall-leftovers`, staged for the PR).
+
+### Removed
+- **Leftovers of the pre-Heimdall stack** (#616). Tailwind is gone (`tailwindcss`, `@tailwindcss/postcss`,
+  `autoprefixer`, `postcss.config.js`): the viewer used none of its utilities, and the part of its preflight
+  reset the viewer relied on now lives in `src/index.css`, in a cascade layer as before. Every view looks the same in
+  light and dark. Also removed: the old `vite.config.ts`, `temp_violations.json`, `results/` (now ignored),
+  `Dockerfile.agent` and `.dockerignore`, the unused `scripts/` (`check-port.cjs`, `ci-check.sh`,
+  `pre-commit-check.sh`, `setup-hooks.sh`, `generate-api-client.sh`), the Storybook ignore entries, the
+  `__STORYBOOK_MOCK_WEBSOCKET__` switch, `tslib`, the dead husky v4 config in `package.json`, and the project
+  agents and skills written for React Flow, Flowbite and Storybook.
 
 ## [0.16.0] - 2026-11-24
 

@@ -1,0 +1,218 @@
+- type: update
+  elementId: application.applicationservice.exception-classifier
+  layerName: application
+  before:
+    id: 41f01291-171d-47a9-9d25-ab0a60b1938f
+    path: application.applicationservice.exception-classifier
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Exception Classifier
+    description: Classifies runtime exceptions into categories for structured error
+      reporting and Storybook story error filtering
+    attributes: &a1
+      serviceType: synchronous
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/exceptionClassifier.ts
+          symbol: exceptionClassifier
+    metadata: &a2
+      created_at: 2026-03-20T12:56:00.213Z
+      updated_at: 2026-03-20T12:56:00.213Z
+      version: 1
+  after:
+    id: 41f01291-171d-47a9-9d25-ab0a60b1938f
+    path: application.applicationservice.exception-classifier
+    spec_node_id: application.applicationservice
+    type: applicationservice
+    layer_id: application
+    name: Exception Classifier
+    description: Classifies a runtime error by its message and type into a category,
+      severity, expected-failure-or-bug flag, transience and recovery strategy
+      (retry or not), for the error tracker's structured error log
+    attributes: *a1
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/core/services/exceptionClassifier.ts
+          symbol: classifyException
+    metadata: *a2
+  timestamp: 2026-11-24T14:02:16.283Z
+  sequenceNumber: 0
+- type: delete
+  elementId: technology.systemsoftware.tailwind-css-v4
+  layerName: technology
+  before:
+    id: b26ad8f3-48c2-4707-84bf-163868337b58
+    path: technology.systemsoftware.tailwind-css-v4
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Tailwind CSS v4
+    description: Utility-first CSS framework v4 with PostCSS pipeline; all styling
+      via utility classes, dark mode variants required on all components
+    attributes:
+      softwareType: middleware
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: package.json
+          symbol: dependencies.tailwindcss
+    metadata:
+      created_at: 2026-03-20T12:37:23.765Z
+      updated_at: 2026-03-24T09:10:00.000Z
+      version: 2
+  timestamp: 2026-11-24T14:02:25.540Z
+  sequenceNumber: 1
+- type: relationship-delete
+  elementId: technology.systemsoftware.tailwind-css-v4::serves::application.applicationcomponent.app-shell
+  layerName: technology
+  before:
+    source: technology.systemsoftware.tailwind-css-v4
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: technology
+    targetLayer: application
+  timestamp: 2026-11-24T14:02:25.547Z
+  sequenceNumber: 2
+- type: delete
+  elementId: technology.node.docker-agent-container
+  layerName: technology
+  before:
+    id: e53754a2-6877-4e65-a238-568ea7ab7f92
+    path: technology.node.docker-agent-container
+    spec_node_id: technology.node
+    type: node
+    layer_id: technology
+    name: Docker Agent Container
+    description: Container runtime node for the Claude Code agent process; defined
+      by Dockerfile.agent, provides isolated execution environment for DR CLI
+      beta test runs
+    attributes:
+      nodeType: container
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: Dockerfile.agent
+    metadata:
+      created_at: 2026-03-20T12:37:51.109Z
+      updated_at: 2026-03-20T12:37:51.109Z
+      version: 1
+  timestamp: 2026-11-24T14:02:25.787Z
+  sequenceNumber: 3
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.systemsoftware.playwright
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.systemsoftware.playwright
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:02:25.790Z
+  sequenceNumber: 4
+- type: relationship-delete
+  elementId: technology.path.app-to-dr-cli-web-socket-path::connects::technology.node.docker-agent-container
+  layerName: technology
+  before:
+    source: technology.path.app-to-dr-cli-web-socket-path
+    target: technology.node.docker-agent-container
+    predicate: connects
+    layer: technology
+  timestamp: 2026-11-24T14:02:25.792Z
+  sequenceNumber: 5
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.technologyinterface.rest-https-interface
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.technologyinterface.rest-https-interface
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:02:25.795Z
+  sequenceNumber: 6
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.technologyinterface.web-socket-interface
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.technologyinterface.web-socket-interface
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:02:25.797Z
+  sequenceNumber: 7
+- type: relationship-delete
+  elementId: technology.path.app-to-dr-cli-https-path::connects::technology.node.docker-agent-container
+  layerName: technology
+  before:
+    source: technology.path.app-to-dr-cli-https-path
+    target: technology.node.docker-agent-container
+    predicate: connects
+    layer: technology
+  timestamp: 2026-11-24T14:02:25.800Z
+  sequenceNumber: 8
+- type: delete
+  elementId: technology.artifact.docker-agent-image
+  layerName: technology
+  before:
+    id: 1106f7d7-c262-427e-9e36-86d9b0d5e0a4
+    path: technology.artifact.docker-agent-image
+    spec_node_id: technology.artifact
+    type: artifact
+    layer_id: technology
+    name: Docker Agent Image
+    description: Docker container image for the Claude Code agent runtime, defined
+      in Dockerfile.agent; used for isolated DR CLI beta testing
+    attributes:
+      artifactType: container-image
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: Dockerfile.agent
+    metadata:
+      created_at: 2026-03-20T12:37:45.751Z
+      updated_at: 2026-03-20T12:37:45.752Z
+      version: 1
+  timestamp: 2026-11-24T14:02:26.018Z
+  sequenceNumber: 9
+- type: relationship-delete
+  elementId: technology.artifact.docker-agent-image::realizes::technology.systemsoftware.nodejs
+  layerName: technology
+  before:
+    source: technology.artifact.docker-agent-image
+    target: technology.systemsoftware.nodejs
+    predicate: realizes
+    layer: technology
+    properties:
+      source_provenance: inferred
+      confidence: medium
+  timestamp: 2026-11-24T14:02:26.022Z
+  sequenceNumber: 10
+- type: relationship-delete
+  elementId: technology.artifact.docker-agent-image::depends-on::technology.artifact.switchyard-orchestrator
+  layerName: technology
+  before:
+    source: technology.artifact.docker-agent-image
+    target: technology.artifact.switchyard-orchestrator
+    predicate: depends-on
+    layer: technology
+  timestamp: 2026-11-24T14:02:26.024Z
+  sequenceNumber: 11
+- type: delete
+  elementId: technology.artifact.switchyard-orchestrator
+  layerName: technology
+  before:
+    id: 881143db-c7c0-49d8-8a86-0f8585af607f
+    path: technology.artifact.switchyard-orchestrator
+    spec_node_id: technology.artifact
+    type: artifact
+    layer_id: technology
+    name: switchyard-orchestrator
+    attributes:
+      artifactType: container-image
+    metadata:
+      created_at: 2026-11-18T16:22:43.196Z
+      updated_at: 2026-11-18T16:22:43.196Z
+      version: 1
+  timestamp: 2026-11-24T14:02:33.707Z
+  sequenceNumber: 12
