@@ -21,11 +21,12 @@
     "verify": "bash scripts/verify-setup.sh",
     "sync:api-spec": "bash scripts/sync-api-spec.sh",
     "client:generate": "openapi-typescript docs/api-spec.yaml -o src/core/types/api-client.ts && node scripts/generate-api-client.js",
-    "client:check-version": "node scripts/check-api-version.js"
+    "client:check-version": "node scripts/check-api-version.js",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "@tanstack/react-query": "^5.51.0",
     "@tanstack/react-router": "^1.139.12",

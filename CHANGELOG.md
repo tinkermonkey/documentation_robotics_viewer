@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - README and CLAUDE.md describe the actual stack, test suites and CI workflows; the `-build` and `-api-sync`
   project skills are rewritten for the current build. `js-yaml` (used by the API-client scripts) is declared, and
   the router imports `createHashHistory` from `@tanstack/react-router` rather than an undeclared package.
+- `package.json` says MIT, as `LICENSE` does (it said ISC); `npm install` now sets up the pre-commit hook (`prepare:
+  husky`); the workflows run `npm ci` without `--legacy-peer-deps`, which the dependencies no longer need.
 - DR model: the Exception Classifier says what it does (no "Storybook story error filtering"), and the Tailwind and
   Docker agent-image elements are deleted (changeset `remove-pre-heimdall-leftovers`, staged for the PR).
 
