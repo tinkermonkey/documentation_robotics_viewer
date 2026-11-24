@@ -47,7 +47,12 @@
       created_at: 2026-11-24T14:08:44.682Z
       updated_at: 2026-11-24T14:08:44.682Z
       version: 1
-  timestamp: 2026-11-24T14:08:44.691Z
+    source_reference:
+      provenance: manual
+      locations:
+        - file: src/apps/embedded/data/commitProgress.ts
+          symbol: src.apps.embedded.data.commitProgress
+  timestamp: 2026-11-24T14:25:42.525Z
   sequenceNumber: 1
 - type: add
   elementId: application.applicationcomponent.commit-progress-bar
@@ -73,7 +78,12 @@
       created_at: 2026-11-24T14:08:44.683Z
       updated_at: 2026-11-24T14:08:44.683Z
       version: 1
-  timestamp: 2026-11-24T14:08:44.691Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/ui/CommitProgressBar.tsx
+          symbol: CommitProgressBar
+  timestamp: 2026-11-24T14:25:42.481Z
   sequenceNumber: 2
 - type: relationship-add
   elementId: motivation.requirement.apply-shows-commit-progress::realizes::motivation.goal.visualize-multi-layer-architecture-models
@@ -177,7 +187,12 @@
       created_at: 2026-11-24T14:08:49.603Z
       updated_at: 2026-11-24T14:08:49.603Z
       version: 1
-  timestamp: 2026-11-24T14:08:49.611Z
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: src/apps/embedded/data/commitProgress.ts
+          symbol: CommitProgress
+  timestamp: 2026-11-24T14:25:42.481Z
   sequenceNumber: 10
 - type: relationship-add
   elementId: application.applicationservice.commit-progress::accesses::data-model.objectschema.commit-progress
