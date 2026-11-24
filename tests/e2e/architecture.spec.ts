@@ -7,7 +7,8 @@
  */
 
 import { readFileSync } from 'node:fs';
-import { test, expect, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
+import { test, expect } from './fixtures';
 import AxeBuilder from '@axe-core/playwright';
 import { gotoView, ROUTES } from './helpers';
 
@@ -106,7 +107,7 @@ test.describe('Architecture view — C4 diagrams', () => {
     expect(await page.evaluate(() => history.length)).toBe(before + 1);
 
     await page.getByTestId('c4-source-link').first().click();
-    await expect(page).toHaveURL(/#\/model\//);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/model\//);
     await expect(page).toHaveURL(/[?&]layer=data-store(&|$)/);
   });
 
@@ -114,7 +115,7 @@ test.describe('Architecture view — C4 diagrams', () => {
     await gotoView(page, ROUTES.model);
     const nav = page.getByTestId('nav-tree');
     await nav.getByRole('button', { name: /^Architecture/ }).first().click();
-    await expect(page).toHaveURL(/#\/architecture\/diagram/);
+    await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/architecture\/diagram/);
     await diagramAt(page, 'context');
     await page.getByTestId('nav-c4-containers').click();
     await diagramAt(page, 'container');
@@ -129,7 +130,7 @@ test.describe('Architecture view — C4 diagrams', () => {
     await expect.poll(() => hashSearchParams(page.url()).get('level')).toBe('context');
 
     await page.goBack();
-    await expect.poll(() => page.url()).toContain('#/model/');
+    await expect.poll(() => page.url()).toContain('#/p/viewer/c/main/model/');
   });
 
   test.describe('changeset overlay: ?changeset=', () => {
@@ -140,7 +141,7 @@ test.describe('Architecture view — C4 diagrams', () => {
       await gotoView(page, `${ROUTES.changesets}?changeset=${SLICE1_PLAN}`);
       await page.getByTestId('changeset-open-architecture').click();
       await diagramAt(page, 'context');
-      await expect(page).toHaveURL(/#\/architecture\/diagram/);
+      await expect(page).toHaveURL(/#\/p\/viewer\/c\/main\/architecture\/diagram/);
       const params = hashSearchParams(page.url());
       expect(params.get('level')).toBe('context');
       expect(params.get('changeset')).toBe(SLICE1_PLAN);
@@ -151,7 +152,7 @@ test.describe('Architecture view — C4 diagrams', () => {
       await expect(bar).toContainText('applied, shown reverted');
 
       await page.goBack();
-      await expect.poll(() => page.url()).toContain('#/changesets/list');
+      await expect.poll(() => page.url()).toContain('#/p/viewer/c/main/changesets/list');
       expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
       await expect(page.getByTestId('page-header-title')).toContainText('c4-architecture-views-poc');
     });
@@ -205,7 +206,7 @@ test.describe('Architecture view — C4 diagrams', () => {
       const changes = page.getByTestId('c4-details-changes');
       await expect(changes.getByTestId('c4-details-change').first()).toBeVisible();
       await changes.getByTestId('c4-details-change-link').first().click();
-      await expect.poll(() => page.url()).toContain('#/changesets/');
+      await expect.poll(() => page.url()).toContain('#/p/viewer/c/main/changesets/');
       expect(hashSearchParams(page.url()).get('changeset')).toBe(SLICE1_PLAN);
       await expect(page.getByTestId('page-header-title')).toContainText('c4-architecture-views-poc');
     });

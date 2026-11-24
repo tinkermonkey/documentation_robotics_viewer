@@ -8,7 +8,8 @@
  * move and Forward redoes it; panning alone adds no entry.
  */
 
-import { test, expect, type Locator, type Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, openChangesetGroups, openLayer, ROUTES } from './helpers';
 
 function hashSearchParams(url: string): URLSearchParams {

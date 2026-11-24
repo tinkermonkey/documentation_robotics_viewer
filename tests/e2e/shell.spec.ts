@@ -8,8 +8,8 @@
  * `body.dark-canvas` and flips a canvas color), and the connection dot.
  */
 
-import { test, expect } from '@playwright/test';
-import { gotoView, ROUTES, layerCounts } from './helpers';
+import { test, expect } from './fixtures';
+import { gotoView, ROUTES, layerCounts, api, BASE_URL } from './helpers';
 
 test.describe('shell', () => {
   test('topbar, nav rail and statusbar are present and sized (54 / 244 / 28)', async ({
@@ -95,16 +95,16 @@ test.describe('shell', () => {
   test('statusbar shows the rel count and the CLI version; the rail the spec version', async ({ page, request }) => {
     await gotoView(page, ROUTES.model);
 
-    const model = await (await request.get('http://localhost:8099/api/model')).json();
+    const model = await (await request.get(api('/model'))).json();
     const relCount: number = model.links.length;
-    const spec = await (await request.get('http://localhost:8099/api/spec')).json();
+    const spec = await (await request.get(`${BASE_URL}/api/spec`)).json();
 
     const statusbar = page.getByTestId('status-bar');
     // "{rels} refs indexed · 0 unresolved"
     await expect(statusbar).toContainText(`${relCount} refs indexed`);
     await expect(statusbar).toContainText('0 unresolved');
     // "cli {version} · refs ok": /health's cliVersion, or "—" — never the API's own version (#573).
-    const health = await (await request.get('http://localhost:8099/health')).json();
+    const health = await (await request.get(`${BASE_URL}/health`)).json();
     await expect(statusbar).toContainText(`cli ${health.cliVersion ?? '—'} · refs ok`);
     // "SPEC {version}": the spec manifest's specVersion, not the payload's version.
     const specVersion = spec.schemas['manifest.json']?.specVersion;

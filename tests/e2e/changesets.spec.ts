@@ -8,8 +8,9 @@
  * it reads the API for the authoritative names + per-changeset stats.
  */
 
-import { test, expect, type APIRequestContext } from '@playwright/test';
-import { gotoView, openChangesetGroups, ROUTES, BASE_URL } from './helpers';
+import { type APIRequestContext } from '@playwright/test';
+import { test, expect } from './fixtures';
+import { gotoView, openChangesetGroups, ROUTES, api } from './helpers';
 
 interface ApiChangeset {
   id: string;
@@ -19,7 +20,7 @@ interface ApiChangeset {
 }
 
 async function fetchChangesets(request: APIRequestContext): Promise<ApiChangeset[]> {
-  const list = await (await request.get(`${BASE_URL}/api/changesets`)).json();
+  const list = await (await request.get(api('/changesets'))).json();
   return Object.entries(list.changesets ?? {}).map(([id, c]: [string, any]) => ({
     id,
     name: c.name,
@@ -59,7 +60,7 @@ test.describe('changesets', () => {
     await expect(title).toContainText(selected.name, { timeout: 15_000 });
     await expect(page).toHaveURL(new RegExp(`[?&]changeset=${selected.id}`));
 
-    const detail = await (await request.get(`${BASE_URL}/api/changesets/${selected.id}`)).json();
+    const detail = await (await request.get(api(`/changesets/${selected.id}`))).json();
     const stats = detail.stats as { additions: number; modifications: number; deletions: number };
 
     // The header shows the changeset's change count.

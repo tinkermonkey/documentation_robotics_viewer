@@ -6,8 +6,8 @@ import {
   Outlet,
   useParams,
   useSearch,
+  createHashHistory,
 } from '@tanstack/react-router';
-import { createHashHistory } from '@tanstack/history';
 import { AppShell } from './ui/AppShell';
 import {
   CHECKOUT_SHELL_PATH,

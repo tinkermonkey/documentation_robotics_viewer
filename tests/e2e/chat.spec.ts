@@ -10,7 +10,7 @@
  * not twice, so chat text is not duplicated).
  */
 
-import { test, expect } from '@playwright/test';
+import { test, expect } from './fixtures';
 import { gotoView, ROUTES, chatSdkAvailable } from './helpers';
 
 test.describe('chat', () => {

@@ -1,0 +1,288 @@
+- type: relationship-add
+  elementId: application.applicationcomponent.page-view::composes::application.applicationcomponent.node-type-badge
+  layerName: application
+  after:
+    source: application.applicationcomponent.page-view
+    target: application.applicationcomponent.node-type-badge
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 0
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationcomponent.page-view::composes::application.applicationcomponent.predicate-tooltip
+  layerName: application
+  after:
+    source: application.applicationcomponent.page-view
+    target: application.applicationcomponent.predicate-tooltip
+    predicate: composes
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 1
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationfunction.checkout-feed-subscription::depends-on::application.applicationfunction.checkout-store
+  layerName: application
+  after:
+    source: application.applicationfunction.checkout-feed-subscription
+    target: application.applicationfunction.checkout-store
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 2
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.use-model::depends-on::application.applicationservice.web-socket-client
+  layerName: application
+  after:
+    source: application.applicationservice.use-model
+    target: application.applicationservice.web-socket-client
+    predicate: depends-on
+    layer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 3
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: application.applicationservice.web-socket-client::accesses::data-model.objectschema.web-socket-event-map
+  layerName: application
+  after:
+    source: application.applicationservice.web-socket-client
+    target: data-model.objectschema.web-socket-event-map
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 4
+  origin:
+    by: tier0
+    rule: edge:USAGE
+- type: relationship-add
+  elementId: application.applicationservice.web-socket-client::accesses::data-model.objectschema.web-socket-message
+  layerName: application
+  after:
+    source: application.applicationservice.web-socket-client
+    target: data-model.objectschema.web-socket-message
+    predicate: accesses
+    layer: application
+    targetLayer: data-model
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 5
+  origin:
+    by: tier0
+    rule: edge:USAGE
+- type: relationship-add
+  elementId: navigation.route.checkout-shell-route::flows-to::navigation.navigationtransition.layer-deep-link-transition
+  layerName: navigation
+  after:
+    source: navigation.route.checkout-shell-route
+    target: navigation.navigationtransition.layer-deep-link-transition
+    predicate: flows-to
+    layer: navigation
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 6
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: testing.testcasesketch.use-live-changeset-updates-refetches-the-changesets-when-the-server-announces-a-changeset-change::tests::application.applicationservice.web-socket-client
+  layerName: testing
+  after:
+    source: testing.testcasesketch.use-live-changeset-updates-refetches-the-changesets-when-the-server-announces-a-changeset-change
+    target: application.applicationservice.web-socket-client
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 7
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: relationship-add
+  elementId: testing.testcasesketch.use-live-model-updates-refetches-the-model-and-changesets-when-the-server-announces-a-model-change::tests::application.applicationservice.web-socket-client
+  layerName: testing
+  after:
+    source: testing.testcasesketch.use-live-model-updates-refetches-the-model-and-changesets-when-the-server-announces-a-model-change
+    target: application.applicationservice.web-socket-client
+    predicate: tests
+    layer: testing
+    targetLayer: application
+    category: structural
+  timestamp: 2026-11-24T14:18:12.235Z
+  sequenceNumber: 8
+  origin:
+    by: tier0
+    rule: edge:CALLS
+- type: delete
+  elementId: technology.systemsoftware.tailwind-css-v4
+  layerName: technology
+  before:
+    id: b26ad8f3-48c2-4707-84bf-163868337b58
+    path: technology.systemsoftware.tailwind-css-v4
+    spec_node_id: technology.systemsoftware
+    type: systemsoftware
+    layer_id: technology
+    name: Tailwind CSS v4
+    description: Utility-first CSS framework v4 with PostCSS pipeline; all styling
+      via utility classes, dark mode variants required on all components
+    attributes:
+      softwareType: middleware
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: package.json
+          symbol: dependencies.tailwindcss
+    metadata:
+      created_at: 2026-03-20T12:37:23.765Z
+      updated_at: 2026-03-24T09:10:00.000Z
+      version: 2
+  timestamp: 2026-11-24T14:18:30.863Z
+  sequenceNumber: 9
+- type: relationship-delete
+  elementId: technology.systemsoftware.tailwind-css-v4::serves::application.applicationcomponent.app-shell
+  layerName: technology
+  before:
+    source: technology.systemsoftware.tailwind-css-v4
+    target: application.applicationcomponent.app-shell
+    predicate: serves
+    layer: technology
+    targetLayer: application
+  timestamp: 2026-11-24T14:18:30.879Z
+  sequenceNumber: 10
+- type: delete
+  elementId: technology.node.docker-agent-container
+  layerName: technology
+  before:
+    id: e53754a2-6877-4e65-a238-568ea7ab7f92
+    path: technology.node.docker-agent-container
+    spec_node_id: technology.node
+    type: node
+    layer_id: technology
+    name: Docker Agent Container
+    description: Container runtime node for the Claude Code agent process; defined
+      by Dockerfile.agent, provides isolated execution environment for DR CLI
+      beta test runs
+    attributes:
+      nodeType: container
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: Dockerfile.agent
+    metadata:
+      created_at: 2026-03-20T12:37:51.109Z
+      updated_at: 2026-03-20T12:37:51.109Z
+      version: 1
+  timestamp: 2026-11-24T14:18:32.919Z
+  sequenceNumber: 11
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.systemsoftware.playwright
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.systemsoftware.playwright
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:18:32.935Z
+  sequenceNumber: 12
+- type: relationship-delete
+  elementId: technology.path.app-to-dr-cli-web-socket-path::connects::technology.node.docker-agent-container
+  layerName: technology
+  before:
+    source: technology.path.app-to-dr-cli-web-socket-path
+    target: technology.node.docker-agent-container
+    predicate: connects
+    layer: technology
+  timestamp: 2026-11-24T14:18:33.012Z
+  sequenceNumber: 13
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.technologyinterface.rest-https-interface
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.technologyinterface.rest-https-interface
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:18:33.028Z
+  sequenceNumber: 14
+- type: relationship-delete
+  elementId: technology.node.docker-agent-container::composes::technology.technologyinterface.web-socket-interface
+  layerName: technology
+  before:
+    source: technology.node.docker-agent-container
+    target: technology.technologyinterface.web-socket-interface
+    predicate: composes
+    layer: technology
+  timestamp: 2026-11-24T14:18:33.040Z
+  sequenceNumber: 15
+- type: relationship-delete
+  elementId: technology.path.app-to-dr-cli-https-path::connects::technology.node.docker-agent-container
+  layerName: technology
+  before:
+    source: technology.path.app-to-dr-cli-https-path
+    target: technology.node.docker-agent-container
+    predicate: connects
+    layer: technology
+  timestamp: 2026-11-24T14:18:33.055Z
+  sequenceNumber: 16
+- type: delete
+  elementId: technology.artifact.docker-agent-image
+  layerName: technology
+  before:
+    id: 1106f7d7-c262-427e-9e36-86d9b0d5e0a4
+    path: technology.artifact.docker-agent-image
+    spec_node_id: technology.artifact
+    type: artifact
+    layer_id: technology
+    name: Docker Agent Image
+    description: Docker container image for the Claude Code agent runtime, defined
+      in Dockerfile.agent; used for isolated DR CLI beta testing
+    attributes:
+      artifactType: container-image
+    source_reference:
+      provenance: extracted
+      locations:
+        - file: Dockerfile.agent
+    metadata:
+      created_at: 2026-03-20T12:37:45.751Z
+      updated_at: 2026-03-20T12:37:45.752Z
+      version: 1
+  timestamp: 2026-11-24T14:18:35.132Z
+  sequenceNumber: 17
+- type: relationship-delete
+  elementId: technology.artifact.docker-agent-image::realizes::technology.systemsoftware.nodejs
+  layerName: technology
+  before:
+    source: technology.artifact.docker-agent-image
+    target: technology.systemsoftware.nodejs
+    predicate: realizes
+    layer: technology
+    properties:
+      source_provenance: inferred
+      confidence: medium
+  timestamp: 2026-11-24T14:18:35.153Z
+  sequenceNumber: 18
+- type: relationship-delete
+  elementId: technology.artifact.docker-agent-image::depends-on::technology.artifact.switchyard-orchestrator
+  layerName: technology
+  before:
+    source: technology.artifact.docker-agent-image
+    target: technology.artifact.switchyard-orchestrator
+    predicate: depends-on
+    layer: technology
+  timestamp: 2026-11-24T14:18:35.168Z
+  sequenceNumber: 19

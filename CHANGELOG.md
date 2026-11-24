@@ -16,6 +16,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   copied link reopens it: `?focus=` (Impact focus), `?open=` (opened lanes and groups), `?seq=` (the change open in
   a review), `?tab=impact`, and `?vp=` for the Impact lanes and the C4 diagrams too. A fresh graph writes its
   first view into the URL as well, so every step has one to go back to.
+- **Progress while Apply commits** (#628): the changeset's summary card shows how far the commit has got,
+  "Applying 340 of 1,200 changes · saving", from the dr CLI's `changeset.commit.progress` notification
+  (documentation_robotics#1361), with Apply shut until it answers. A dr CLI that sends no progress gets a
+  working bar, "Applying 1,200 changes…". A refusal shows where the commit stopped, above the reason as before.
+  The bar is a `progressbar` with its value, and a polite status line announces it now and then, not on every
+  update. A commit started from the CLI's MCP server or by DrBot shows in the status bar.
 - **Change counts on the C4 changeset overlay** (#629): a box's status chip says how many of the changeset's
   changes are behind it ("~ changed · 12 changes", "+ added · 8 changes"; no count when there is one), and so does
   a marked arrow's label ("+ uses · 4 changes"), its tooltip and its row in the list of arrows for assistive
@@ -33,6 +39,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   **Open** (expanded) and applied or discarded ones under **Closed** (collapsed), each with its count, so the ones
   that still need you aren't buried in history. Opening or closing a group adds no history entry; a link to an
   applied changeset opens Closed to show its row. An empty group is hidden.
+- README and CLAUDE.md describe the actual stack, test suites and CI workflows; the `-build` and `-api-sync`
+  project skills are rewritten for the current build. `js-yaml` (used by the API-client scripts) is declared, and
+  the router imports `createHashHistory` from `@tanstack/react-router` rather than an undeclared package.
+- `package.json` says MIT, as `LICENSE` does (it said ISC); the workflows run `npm ci` without `--legacy-peer-deps`,
+  which the dependencies no longer need.
+- DR model: the Exception Classifier says what it does (no "Storybook story error filtering"), and the Tailwind and
+  Docker agent-image elements are deleted (changeset `remove-pre-heimdall-leftovers`, staged for the PR).
+
+### Removed
+- **Leftovers of the pre-Heimdall stack** (#616). Tailwind is gone (`tailwindcss`, `@tailwindcss/postcss`,
+  `autoprefixer`, `postcss.config.js`): the viewer used none of its utilities, and the part of its preflight
+  reset the viewer relied on now lives in `src/index.css`, in a cascade layer as before. Every view looks the same in
+  light and dark. Also removed: the old `vite.config.ts`, `temp_violations.json`, `results/` (now ignored),
+  `Dockerfile.agent` and `.dockerignore`, the unused `scripts/` (`check-port.cjs`, `ci-check.sh`,
+  `pre-commit-check.sh`, `setup-hooks.sh`, `generate-api-client.sh`), the Storybook ignore entries, the
+  `__STORYBOOK_MOCK_WEBSOCKET__` switch, `tslib`, the dead husky v4 config in `package.json`, and the project
+  agents and skills written for React Flow, Flowbite and Storybook.
+
+### Fixed
+- **The E2E suite runs again** against the dr CLI's central process. Since #623 it booted `dr visualize --no-auth`,
+  which can't serve the checkout routes, so every test stopped at the checkout picker. `scripts/e2e-server.sh` now
+  starts `dr serve` in a scratch farm (one project, `viewer`, a clone of the repo's committed model, checkout
+  `main`) and writes its token for the specs (`tests/e2e/fixtures.ts`); routes and API calls are checkout-scoped.
+  It needs a dr CLI with `dr serve` (`DR_CLI` points it at one built from source); until one is published the CI
+  job skips with a warning that also goes in the job summary. When the suite ends, the script removes the scratch
+  farm and its token. Three assertions stale since #605 and the viewport-restore checks (now within a few pixels,
+  as `?vp=` keeps 4 decimals) are fixed too. 85 of 85 pass locally.
 
 ## [0.16.0] - 2026-11-24
 

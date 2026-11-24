@@ -28,10 +28,7 @@ jobs:
         cache: 'npm'
 
     - name: Install dependencies
-      # --legacy-peer-deps: Required for React 19 compatibility with dependencies that declare
-      # React 18 as peer dependency. These dependencies work fine with React 19 but haven't
-      # updated their peer dependency declarations yet.
-      run: npm ci --legacy-peer-deps
+      run: npm ci
 
     - name: Type check
       run: npx tsc --noEmit
