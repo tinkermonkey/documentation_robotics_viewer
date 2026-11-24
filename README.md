@@ -51,8 +51,9 @@ scripts/                  # build, packaging and API-spec helpers
 ### Prerequisites
 
 - Node.js 20 or later
-- The `dr` CLI (`npm i -g @documentation-robotics/cli`), recent enough to run `dr serve`: this viewer reads
-  project data through the CLI's per-checkout routes
+- The `dr` CLI, recent enough to run `dr serve`: this viewer reads project data through the CLI's per-checkout
+  routes. The published `@documentation-robotics/cli` (0.7.1) predates `dr serve`; until a release ships it, build
+  the CLI from [documentation_robotics](https://github.com/tinkermonkey/documentation_robotics) main
 
 ### Install
 
@@ -104,6 +105,10 @@ npm run test:e2e       # Playwright E2E + axe WCAG 2.1 AA, light and dark
 repository's own model, then drives every view. See
 [documentation/TESTING_STRATEGY.md](documentation/TESTING_STRATEGY.md).
 
+> **E2E is currently broken.** Since the checkout routes (#623) the viewer needs `dr serve`'s `/api/projects/...`,
+> which `dr visualize --no-auth` (the suite's server) doesn't serve, so every test stops at the checkout picker.
+> It works again once the suite boots `dr serve` (#637) and a dr CLI with `dr serve` is installed.
+
 ## API spec
 
 `docs/api-spec.yaml` is the dr CLI's OpenAPI spec. `npm run sync:api-spec` fetches it from upstream and
@@ -115,7 +120,7 @@ repository's own model, then drives every view. See
 GitHub Actions, in [.github/workflows](.github/workflows):
 
 - `test.yml`: the required gate (type checks, Vitest, build), plus a non-blocking Playwright E2E + axe job that
-  installs the dr CLI and runs `npm run test:e2e`.
+  installs the dr CLI and runs `npm run test:e2e` (currently broken: see Tests).
 - `ci.yml`: checks the API spec is in sync, runs the tests and builds; on a `v*` tag it publishes a GitHub Release
   with the bundle as a zip.
 - `sync-api-spec.yml`: daily, opens a PR when the upstream API spec changed.
