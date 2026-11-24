@@ -41,6 +41,8 @@ afterEach(() => {
 
 const ELEMENT = 'application.applicationcomponent.viewer';
 const ANNOTATION = 'ann-1';
+const REF = { project: 'test-project', checkout: 'main' };
+const LISTS = ['annotations', 'test-project', 'main'];
 const T = '2026-11-11T00:00:00Z';
 
 function setup() {
@@ -61,13 +63,13 @@ describe('useLiveAnnotationUpdates', () => {
       elementId: ELEMENT,
       timestamp: T,
     });
-    expect(invalidatedKeys()).toEqual([annotationsKey(ELEMENT)]);
+    expect(invalidatedKeys()).toEqual([annotationsKey(REF, ELEMENT)]);
   });
 
   it('refetches every element list when a comment is updated (no elementId)', () => {
     const { invalidatedKeys } = setup();
     socket.simulateMessage({ type: 'annotation.updated', annotationId: ANNOTATION, timestamp: T });
-    expect(invalidatedKeys()).toEqual([['annotations']]);
+    expect(invalidatedKeys()).toEqual([LISTS]);
   });
 
   it('refetches the replies when a reply is added', () => {
@@ -78,18 +80,18 @@ describe('useLiveAnnotationUpdates', () => {
       replyId: 'reply-1',
       timestamp: T,
     });
-    expect(invalidatedKeys()).toEqual([repliesKey(ANNOTATION)]);
+    expect(invalidatedKeys()).toEqual([repliesKey(REF, ANNOTATION)]);
   });
 
   it('refetches every list, then drops the unobserved replies, when a comment is deleted', async () => {
     const { invalidatedKeys, remove } = setup();
     socket.simulateMessage({ type: 'annotation.deleted', annotationId: ANNOTATION, timestamp: T });
-    expect(invalidatedKeys()).toEqual([['annotations']]);
+    expect(invalidatedKeys()).toEqual([LISTS]);
     // Only after the lists have refetched, and only if no thread still shows them.
     expect(remove).not.toHaveBeenCalled();
     await vi.waitFor(() =>
       expect(remove.mock.calls.map(([f]) => f)).toEqual([
-        { queryKey: repliesKey(ANNOTATION), type: 'inactive' },
+        { queryKey: repliesKey(REF, ANNOTATION), type: 'inactive' },
       ]),
     );
   });
@@ -97,10 +99,10 @@ describe('useLiveAnnotationUpdates', () => {
   it('keeps a deleted comment\'s replies while a thread still observes them (no 404 refetch)', async () => {
     const { client } = setup();
     const fetchReplies = vi.fn(async () => []);
-    client.setQueryData(repliesKey(ANNOTATION), []);
+    client.setQueryData(repliesKey(REF, ANNOTATION), []);
     // An active observer: the inspector's open thread, not yet unmounted.
     const thread = new QueryObserver(client, {
-      queryKey: repliesKey(ANNOTATION),
+      queryKey: repliesKey(REF, ANNOTATION),
       queryFn: fetchReplies,
       staleTime: Infinity,
     });
@@ -108,21 +110,38 @@ describe('useLiveAnnotationUpdates', () => {
 
     socket.simulateMessage({ type: 'annotation.deleted', annotationId: ANNOTATION, timestamp: T });
     await new Promise((r) => setTimeout(r, 20));
-    expect(client.getQueryCache().find({ queryKey: repliesKey(ANNOTATION) })).toBeDefined();
+    expect(client.getQueryCache().find({ queryKey: repliesKey(REF, ANNOTATION) })).toBeDefined();
     expect(fetchReplies).not.toHaveBeenCalled();
     stop();
   });
 
-  it('the ["annotations"] prefix matches element lists but not replies', async () => {
+  it('ignores an annotation event stamped for another checkout', () => {
+    const { invalidate } = setup();
+    socket.simulateMessage({
+      type: 'annotation.added',
+      annotationId: ANNOTATION,
+      elementId: ELEMENT,
+      project: 'test-project',
+      checkout: 'feature-x',
+      timestamp: T,
+    });
+    expect(invalidate).not.toHaveBeenCalled();
+  });
+
+  it("the checkout's ['annotations', project, checkout] prefix matches its element lists but not replies or another checkout", async () => {
     const { client } = setup();
-    client.setQueryData(annotationsKey(ELEMENT), []);
-    client.setQueryData(annotationsKey('other.element'), []);
-    client.setQueryData(repliesKey(ANNOTATION), []);
+    client.setQueryData(annotationsKey(REF, ELEMENT), []);
+    client.setQueryData(annotationsKey(REF, 'other.element'), []);
+    client.setQueryData(repliesKey(REF, ANNOTATION), []);
+    client.setQueryData(annotationsKey({ project: 'test-project', checkout: 'feature-x' }, ELEMENT), []);
     socket.simulateMessage({ type: 'annotation.updated', annotationId: ANNOTATION, timestamp: T });
     const cache = client.getQueryCache();
-    expect(cache.find({ queryKey: annotationsKey(ELEMENT) })?.state.isInvalidated).toBe(true);
-    expect(cache.find({ queryKey: annotationsKey('other.element') })?.state.isInvalidated).toBe(true);
-    expect(cache.find({ queryKey: repliesKey(ANNOTATION) })?.state.isInvalidated).toBe(false);
+    expect(
+      cache.find({ queryKey: annotationsKey({ project: 'test-project', checkout: 'feature-x' }, ELEMENT) })?.state.isInvalidated,
+    ).toBe(false);
+    expect(cache.find({ queryKey: annotationsKey(REF, ELEMENT) })?.state.isInvalidated).toBe(true);
+    expect(cache.find({ queryKey: annotationsKey(REF, 'other.element') })?.state.isInvalidated).toBe(true);
+    expect(cache.find({ queryKey: repliesKey(REF, ANNOTATION) })?.state.isInvalidated).toBe(false);
   });
 
   it('ignores unrelated messages and stops listening on unmount', () => {

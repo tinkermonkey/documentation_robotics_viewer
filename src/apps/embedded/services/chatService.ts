@@ -9,6 +9,7 @@ import { useChatStore } from '../stores/chatStore';
 import { logError, logWarning } from './errorTracker';
 import { ERROR_IDS } from '@/constants/errorIds';
 import { withChatContext } from '../data/chatContext';
+import { currentCheckout, sameCheckout, type CheckoutRef } from '../stores/checkoutStore';
 import {
   ChatSendParams,
   ChatSendResult,
@@ -59,6 +60,9 @@ export class ChatService {
    *  the reply moves on (next tool or text) or ends. */
   private statuslessToolIds = new Set<string>();
   private toolIdCounter = 0;
+  /** The checkout the current conversation belongs to (a conversation id
+   *  belongs to one checkout on the central process). */
+  private conversationCheckout: CheckoutRef | null = null;
 
   constructor() {
     this.setupNotificationHandlers();
@@ -67,13 +71,18 @@ export class ChatService {
   /**
    * Setup handlers for server notifications (called in constructor)
    *
+   * Every handler first drops a frame that isn't the current conversation's
+   * (`isForThisConversation`): another conversation id, or another checkout.
+   *
    * Side Effects:
-   * - Registers 5 notification handlers with `jsonRpcHandler` via `onNotification()`:
+   * - Registers 7 notification handlers with `jsonRpcHandler` via `onNotification()`:
    *   1. 'chat.response.chunk' → calls `handleResponseChunk()`
    *   2. 'chat.tool.invoke' → calls `handleToolInvoke()`
    *   3. 'chat.thinking' → calls `handleThinking()`
    *   4. 'chat.usage' → calls `handleUsage()`
    *   5. 'chat.error' → calls `handleError()`
+   *   6. 'chat.turn.queued' → `chatStore.setTurnQueued()` (the send waits behind the server's cap)
+   *   7. 'chat.turn.started' → clears it
    *
    * These handlers are called asynchronously by the JSON-RPC handler when the server
    * sends notifications during message streaming. Each handler updates the chat store
@@ -85,28 +94,86 @@ export class ChatService {
   private setupNotificationHandlers(): void {
     // Handle text response chunks
     jsonRpcHandler.onNotification('chat.response.chunk', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
       this.handleResponseChunk(params);
     });
 
     // Handle tool invocations
     jsonRpcHandler.onNotification('chat.tool.invoke', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
       this.handleToolInvoke(params);
     });
 
     // Handle thinking content
     jsonRpcHandler.onNotification('chat.thinking', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
       this.handleThinking(params);
     });
 
     // Handle usage information
     jsonRpcHandler.onNotification('chat.usage', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
       this.handleUsage(params);
     });
 
     // Handle errors
     jsonRpcHandler.onNotification('chat.error', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
       this.handleError(params);
     });
+
+    // A send over the server's running-turn cap waits (DR_DRBOT_MAX_TURNS)
+    jsonRpcHandler.onNotification('chat.turn.queued', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
+      useChatStore.getState().setTurnQueued({
+        position: typeof params?.position === 'number' ? params.position : 1,
+        running: typeof params?.running === 'number' ? params.running : 0,
+        maxTurns: typeof params?.max_turns === 'number' ? params.max_turns : 0,
+        message: typeof params?.message === 'string' ? params.message : '',
+      });
+    });
+    jsonRpcHandler.onNotification('chat.turn.started', (params: any) => {
+      if (!this.isForThisConversation(params)) return;
+      useChatStore.getState().setTurnQueued(null);
+    });
+  }
+
+  /**
+   * Whether a chat frame is the current conversation's: a frame naming another
+   * conversation id, or another project or checkout, is not (another tab's
+   * conversation never reaches this socket, but a reply to a conversation this
+   * tab left when it switched checkout still may). A frame naming neither (an
+   * older server) is taken as the current one's.
+   */
+  isForThisConversation(params: unknown): boolean {
+    if (!params || typeof params !== 'object') return true;
+    const p = params as { conversation_id?: unknown; project?: unknown; checkout?: unknown };
+    // With no conversation of its own the tab has no reply to attach a frame to.
+    if (typeof p.conversation_id === 'string' && this.currentConversationId && p.conversation_id !== this.currentConversationId) {
+      return false;
+    }
+    if (typeof p.project === 'string' && typeof p.checkout === 'string') {
+      const mine = this.conversationCheckout ?? currentCheckout();
+      if (mine && !sameCheckout(mine, { project: p.project, checkout: p.checkout })) return false;
+    }
+    return true;
+  }
+
+  /** The project and checkout to send with a request, when a checkout is open. */
+  private checkoutParams(): { project?: string; checkout?: string } {
+    const ref = this.conversationCheckout ?? currentCheckout();
+    return ref ? { project: ref.project, checkout: ref.checkout } : {};
+  }
+
+  /**
+   * The tab now shows `ref`. A conversation belongs to one checkout, so a
+   * conversation in another checkout ends here and the next send starts a new
+   * one (in this checkout).
+   */
+  setCheckout(ref: CheckoutRef | null): void {
+    if (this.conversationCheckout && ref && sameCheckout(this.conversationCheckout, ref)) return;
+    if (this.currentConversationId) this.reset();
+    this.conversationCheckout = null;
   }
 
   /**
@@ -129,7 +196,7 @@ export class ChatService {
     try {
       const result = await jsonRpcHandler.sendRequest<any>(
         'chat.status',
-        {}
+        this.checkoutParams()
       );
 
       // Convert snake_case from DR CLI server API to camelCase for TypeScript
@@ -219,7 +286,10 @@ export class ChatService {
       ],
     };
 
-    // Update conversation ID
+    // Update conversation ID; a new conversation belongs to the checkout shown
+    if (this.currentConversationId !== userMessage.conversationId || !this.conversationCheckout) {
+      this.conversationCheckout = currentCheckout();
+    }
     this.currentConversationId = userMessage.conversationId;
     store.setActiveConversationId(this.currentConversationId);
 
@@ -258,11 +328,13 @@ export class ChatService {
         {
           message: withChatContext(message, context ?? null),
           conversation_id: userMessage.conversationId,
+          ...this.checkoutParams(),
         } satisfies ChatSendParams,
         CHAT_SEND_TIMEOUT_MS
       );
 
       this.completeStatuslessTools();
+      store.setTurnQueued(null);
       // Update assistant message - remove streaming flag
       store.updateMessage(assistantMessageId, { isStreaming: false });
 
@@ -272,6 +344,7 @@ export class ChatService {
       return result;
     } catch (error) {
       this.completeStatuslessTools();
+      store.setTurnQueued(null);
       // Update store with error
       store.setStreaming(false);
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -322,8 +395,8 @@ export class ChatService {
       const result = await jsonRpcHandler.sendRequest<ChatCancelResult>(
         'chat.cancel',
         (this.currentConversationId
-          ? { conversation_id: this.currentConversationId }
-          : {}) satisfies ChatCancelParams,
+          ? { conversation_id: this.currentConversationId, ...this.checkoutParams() }
+          : this.checkoutParams()) satisfies ChatCancelParams,
         5000 // 5 second timeout for cancel
       );
 
@@ -639,6 +712,7 @@ export class ChatService {
   reset(): void {
     this.currentConversationId = null;
     this.currentRequestId = null;
+    this.conversationCheckout = null;
     const store = useChatStore.getState();
     store.reset();
   }

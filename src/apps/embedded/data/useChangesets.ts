@@ -1,6 +1,6 @@
 /**
  * useChangesets — thin wrapper over the kept React Query hook
- * `useGetapichangesets`.
+ * `useGetapiprojectsprojectcheckoutscheckoutchangesets` (scoped to the route's checkout).
  *
  * The `/api/changesets` payload is `{ version, changesets: { [id]: {...} } }`
  * (or an empty `{}` when a model has no changesets). Derives a stable, ordered
@@ -12,9 +12,10 @@ import { useQueries, useQueryClient } from '@tanstack/react-query';
 import {
   ApiError,
   getApiClient,
-  useGetapichangesets,
-  useGetapichangesetschangesetId,
+  useGetapiprojectsprojectcheckoutscheckoutchangesets,
+  useGetapiprojectsprojectcheckoutscheckoutchangesetschangesetId,
 } from '../../../core/services/generatedApiClient';
+import { SCOPED_QUERY, invalidateCheckout, isForCheckout, scopedKey, useCheckoutRef } from './checkoutScope';
 import { toChangeRows, type ChangeRecord, type ChangeRow } from './changesets';
 import { PLAN_VERIFICATION_KEY } from './planVerification';
 import {
@@ -91,7 +92,10 @@ export interface ChangesetsDerived {
 const EMPTY_DERIVED: ChangesetsDerived = { list: [] };
 
 export function useChangesets() {
-  const query = useGetapichangesets();
+  const ref = useCheckoutRef();
+  const query = useGetapiprojectsprojectcheckoutscheckoutchangesets(ref?.project ?? '', ref?.checkout ?? '', {
+    enabled: !!ref,
+  });
   const raw = query.data as ChangesetsPayload | undefined;
 
   const derived = useMemo<ChangesetsDerived>(() => {
@@ -202,9 +206,13 @@ const EMPTY_STATS: ChangesetStats = { additions: 0, modifications: 0, deletions:
  * without a selection issues no request.
  */
 export function useChangeset(id: string | null) {
-  const query = useGetapichangesetschangesetId(id ?? '', {
-    enabled: Boolean(id),
-  });
+  const ref = useCheckoutRef();
+  const query = useGetapiprojectsprojectcheckoutscheckoutchangesetschangesetId(
+    ref?.project ?? '',
+    ref?.checkout ?? '',
+    id ?? '',
+    { enabled: Boolean(id) && !!ref },
+  );
   const raw = query.data as ChangesetDetailPayload | undefined;
 
   const detail = useMemo<ChangesetDetail | null>(() => {
@@ -345,18 +353,23 @@ export function changesetLoadErrorMessage(error: unknown): string {
  */
 export function useLiveChangesetUpdates() {
   const queryClient = useQueryClient();
+  const ref = useCheckoutRef();
   useEffect(() => {
-    const refetch = () => {
-      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
-      queryClient.invalidateQueries({ queryKey: ['getapichangesetschangesetId'] });
-      // An extraction stages a changeset as it spends: Tier 1's month moves with it.
-      queryClient.invalidateQueries({ queryKey: ['getapitier1'] });
+    if (!ref) return;
+    const refetch = (message: unknown) => {
+      if (!isForCheckout(message, ref)) return;
+      invalidateCheckout(queryClient, ref, [
+        SCOPED_QUERY.changesets,
+        SCOPED_QUERY.changeset,
+        // An extraction stages a changeset as it spends: Tier 1's month moves with it.
+        SCOPED_QUERY.tier1,
+      ]);
       // A plan compared with what was built (usePlanVerification) reads both changesets.
-      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY] });
+      queryClient.invalidateQueries({ queryKey: [PLAN_VERIFICATION_KEY, ref.project, ref.checkout] });
     };
     websocketClient.on(CHANGESETS_UPDATED_EVENT, refetch);
     return () => websocketClient.off(CHANGESETS_UPDATED_EVENT, refetch);
-  }, [queryClient]);
+  }, [queryClient, ref]);
 }
 
 /** The server's changeset-change broadcast (see the CLI's `broadcastChangesetsUpdated`). */
@@ -373,10 +386,12 @@ export function useLocalReviewCounts(
   changesetIds: string[],
   localDecisions: Record<string, ChangesetReview['decisions']>,
 ): Record<string, ReviewCounts> {
+  const ref = useCheckoutRef();
   const results = useQueries({
     queries: changesetIds.map((id) => ({
-      queryKey: ['getapichangesetschangesetId', id],
-      queryFn: () => getApiClient().getapichangesetschangesetId(id),
+      queryKey: scopedKey(SCOPED_QUERY.changeset, ref, id),
+      queryFn: () => getApiClient().getapiprojectsprojectcheckoutscheckoutchangesetschangesetId(ref!.project, ref!.checkout, id),
+      enabled: !!ref,
     })),
   });
   // A few staged changesets at most: cheap enough to work out per render.

@@ -52,6 +52,8 @@ export function report(overrides: Record<string, unknown> = {}) {
   };
 }
 
+const REF = { project: 'test-project', checkout: 'main' };
+
 describe('planVerification: reading the report', () => {
   it('gives every planned element and link its verdict, and every unplanned one', () => {
     const v = toPlanVerification(report())!;
@@ -108,26 +110,31 @@ describe('planVerification: fetching', () => {
     ) as unknown as typeof fetch;
 
   it('asks for the plan against the as-built, both ids encoded', async () => {
-    expect(verificationUrl('plan 1', 'built/1')).toBe('/api/changesets/plan%201/verification?against=built%2F1');
+    expect(verificationUrl({ project: 'p 1', checkout: 'wt/a' }, 'plan 1', 'built/1')).toBe(
+      '/api/projects/p%201/checkouts/wt%2Fa/changesets/plan%201/verification?against=built%2F1',
+    );
     const fetcher = respond(200, report());
-    const v = await fetchPlanVerification('plan-1', 'built-1', fetcher);
+    const v = await fetchPlanVerification(REF, 'plan-1', 'built-1', fetcher);
     expect(v.verdict).toBe('diverges');
-    expect(fetcher).toHaveBeenCalledWith('/api/changesets/plan-1/verification?against=built-1', expect.anything());
+    expect(fetcher).toHaveBeenCalledWith(
+      '/api/projects/test-project/checkouts/main/changesets/plan-1/verification?against=built-1',
+      expect.anything(),
+    );
   });
 
   it('reads a route the server does not have as an older dr CLI, not a failure', async () => {
     for (const fetcher of [respond(404, '404 Not Found'), respond(200, '<!doctype html>'), respond(405, ''), respond(501, '')]) {
-      const error = await fetchPlanVerification('plan-1', 'built-1', fetcher).catch((e) => e);
+      const error = await fetchPlanVerification(REF, 'plan-1', 'built-1', fetcher).catch((e) => e);
       expect(error).toBeInstanceOf(VerificationRequestError);
       expect(isVerificationUnavailable(error)).toBe(true);
     }
   });
 
   it("passes the server's own error on: a changeset that is gone, a bad request", async () => {
-    const gone = await fetchPlanVerification('plan-1', 'built-1', respond(404, { error: 'As-built changeset not found: built-1' })).catch((e) => e);
+    const gone = await fetchPlanVerification(REF, 'plan-1', 'built-1', respond(404, { error: 'As-built changeset not found: built-1' })).catch((e) => e);
     expect(isVerificationUnavailable(gone)).toBe(false);
     expect(gone.message).toBe('As-built changeset not found: built-1');
-    const bad = await fetchPlanVerification('plan-1', 'plan-1', respond(400, { error: 'against names the plan itself' })).catch((e) => e);
+    const bad = await fetchPlanVerification(REF, 'plan-1', 'plan-1', respond(400, { error: 'against names the plan itself' })).catch((e) => e);
     expect(bad.status).toBe(400);
   });
 });

@@ -50,11 +50,16 @@ describe('useLiveChangesetUpdates', () => {
       timestamp: '2026-11-09T00:00:00Z',
     });
     expect(invalidate.mock.calls.map(([f]) => f?.queryKey)).toEqual([
-      ['getapichangesets'],
-      ['getapichangesetschangesetId'],
-      ['getapitier1'],
-      ['changeset-verification'],
+      ['getapiprojectsprojectcheckoutscheckoutchangesets', 'test-project', 'main'],
+      ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', 'test-project', 'main'],
+      ['getapiprojectsprojectcheckoutscheckouttier1', 'test-project', 'main'],
+      ['changeset-verification', 'test-project', 'main'],
     ]);
+
+    // Stamped for another checkout: ignored.
+    invalidate.mockClear();
+    socket.simulateMessage({ type: 'changesets.updated', ids: [], active: null, project: 'other-project', checkout: 'main' });
+    expect(invalidate).not.toHaveBeenCalled();
 
     invalidate.mockClear();
     unmount();

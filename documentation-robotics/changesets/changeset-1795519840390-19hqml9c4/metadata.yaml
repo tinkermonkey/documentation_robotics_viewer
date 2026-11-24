@@ -1,0 +1,25 @@
+id: changeset-1795519840390-19hqml9c4
+name: scoped-checkout-routes
+description: "Move the viewer onto the dr CLI's central process (dr serve): hash
+  routes /p/:project/c/:checkout/... (model, changesets, one changeset with
+  ?element=, one element) with the token read from the fragment; every
+  project-data call through /api/projects/{project}/checkouts/{checkout}/...; a
+  project and checkout picker in the shell from GET /api/projects and
+  .../checkouts; the websocket subscribes and unsubscribes per checkout, ignores
+  events for other checkouts and handles checkout.removed and server.stopping;
+  DrBot sends project and checkout, matches replies by conversation and
+  checkout, and shows chat.turn.queued / started; a bare / opens the picker.
+  Done when each CLI link form opens the named checkout and two tabs on two
+  checkouts of one project don't cross events or chat."
+created: 2026-11-24T11:30:40.401Z
+modified: 2026-11-24T11:33:06.499Z
+status: staged
+baseSnapshot: v2:sha256:1cc6259c13daf9554d82b2946ea3c8a73d6b3606110fff8d7542bf5ee7e98339
+origin:
+  kind: plan
+purpose: plan
+stats:
+  additions: 75
+  modifications: 6
+  deletions: 8
+lastSequence: 88

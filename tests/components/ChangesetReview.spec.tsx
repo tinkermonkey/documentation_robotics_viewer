@@ -80,7 +80,7 @@ function serve(opts: ServeOptions = {}): Server {
   const revision = opts.revision ?? 38;
   const server: Server = { puts: [], commits: [], discards: 0, review: () => review };
   mswServer.use(
-    http.get('*/api/changesets/:id', ({ params }) =>
+    http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) =>
       opts.deleteOnDiscard && status === 'discarded'
         ? HttpResponse.json({ error: 'Changeset not found' }, { status: 404 })
         : HttpResponse.json({
@@ -101,7 +101,7 @@ function serve(opts: ServeOptions = {}): Server {
                 : {}),
           }),
     ),
-    http.put('*/api/changesets/:id/review', async ({ request }) => {
+    http.put('*/api/projects/:project/checkouts/:checkout/changesets/:id/review', async ({ request }) => {
       if (opts.legacy || opts.reviewMissing) return new HttpResponse('404 Not Found', { status: 404 });
       const body = (await request.json()) as { decisions: DecisionInput[] };
       server.puts.push(body.decisions);
@@ -113,7 +113,7 @@ function serve(opts: ServeOptions = {}): Server {
       review = { decisions, ...(Object.keys(decisions).length ? { lastReviewedRevision: revision } : {}) };
       return HttpResponse.json(review);
     }),
-    http.post('*/api/changesets/:id/commit', async ({ params, request }) => {
+    http.post('*/api/projects/:project/checkouts/:checkout/changesets/:id/commit', async ({ params, request }) => {
       const text = await request.text();
       server.commits.push(text ? JSON.parse(text) : null);
       if (opts.commitError) return HttpResponse.json(opts.commitError.body as object, { status: opts.commitError.status });
@@ -129,7 +129,7 @@ function serve(opts: ServeOptions = {}): Server {
         ...(text ? { dropped, linksDeleted: 0 } : {}),
       });
     }),
-    http.post('*/api/changesets/:id/discard', ({ params }) => {
+    http.post('*/api/projects/:project/checkouts/:checkout/changesets/:id/discard', ({ params }) => {
       server.discards++;
       status = 'discarded';
       return HttpResponse.json({ id: params.id, name: changesetDetail.name, status });
@@ -330,7 +330,7 @@ describe('review — deciding changes (dr CLI with review)', () => {
   it('rolls the verdict back and says why when the server refuses it', async () => {
     serve();
     mswServer.use(
-      http.put('*/api/changesets/:id/review', () =>
+      http.put('*/api/projects/:project/checkouts/:checkout/changesets/:id/review', () =>
         HttpResponse.json({ error: "Changeset 'x' is not staged" }, { status: 409 }),
       ),
     );
@@ -625,7 +625,7 @@ describe('review — PUT ordering and rollback', () => {
     const gate = new Promise<void>((r) => (release = r));
     let review: ChangesetReview = { decisions: {} };
     mswServer.use(
-      http.put('*/api/changesets/:id/review', async ({ request }) => {
+      http.put('*/api/projects/:project/checkouts/:checkout/changesets/:id/review', async ({ request }) => {
         const body = (await request.json()) as { decisions: DecisionInput[] };
         arrived.push(body.decisions[0].sequence);
         if (body.decisions[0].sequence === 13) await gate;
@@ -637,7 +637,7 @@ describe('review — PUT ordering and rollback', () => {
         }
         return HttpResponse.json(review);
       }),
-      http.get('*/api/changesets/:id', ({ params }) =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', ({ params }) =>
         HttpResponse.json({ ...changesetDetail, id: params.id, status: 'staged', revision: 38, unstaged: [], review }),
       ),
     );
@@ -662,12 +662,12 @@ describe('review — PUT ordering and rollback', () => {
     const refetchGate = new Promise<void>((r) => (releaseRefetch = r));
     let putSettled = false;
     mswServer.use(
-      http.put('*/api/changesets/:id/review', async () => {
+      http.put('*/api/projects/:project/checkouts/:checkout/changesets/:id/review', async () => {
         await gate;
         putSettled = true;
         return HttpResponse.json({ error: 'not staged' }, { status: 409 });
       }),
-      http.get('*/api/changesets/:id', async ({ params }) => {
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets/:id', async ({ params }) => {
         if (putSettled) await refetchGate;
         return HttpResponse.json({
           ...changesetDetail, id: params.id, status: 'staged', revision: 38, unstaged: [], review: { decisions: {} },
@@ -678,7 +678,7 @@ describe('review — PUT ordering and rollback', () => {
     fireEvent.click(await screen.findByTestId('decide-keep'));
     await waitFor(() => expect(screen.getByTestId('review-tally')).toHaveTextContent('1 kept'));
     // A websocket refetch lands while the PUT is in flight: DrBot restaged.
-    const key = ['getapichangesetschangesetId', ID];
+    const key = ['getapiprojectsprojectcheckoutscheckoutchangesetschangesetId', 'test-project', 'main', ID];
     act(() => {
       const current = client.getQueryData<Record<string, unknown>>(key)!;
       client.setQueryData(key, { ...current, revision: 40 });
@@ -708,7 +708,7 @@ describe('review — Ask DrBot', () => {
     });
     let annotationPosts = 0;
     mswServer.use(
-      http.post('*/api/annotations', () => {
+      http.post('*/api/projects/:project/checkouts/:checkout/annotations', () => {
         annotationPosts++;
         return HttpResponse.json({});
       }),
@@ -725,7 +725,7 @@ describe('review — Ask DrBot', () => {
 
   it('posts the note as a comment on a model element, and reports a failed post', async () => {
     serve();
-    mswServer.use(http.post('*/api/annotations', () => HttpResponse.json({ error: 'nope' }, { status: 500 })));
+    mswServer.use(http.post('*/api/projects/:project/checkouts/:checkout/annotations', () => HttpResponse.json({ error: 'nope' }, { status: 500 })));
     const user = userEvent.setup();
     // seq 14 updates Data Loader, which is in the model.
     renderReview(14);
@@ -825,7 +825,7 @@ describe('ChangesetCanvas — purpose', () => {
       scope: { since: 'origin/main', codeCommit: '0123456789abcdef' },
     });
     mswServer.use(
-      http.get('*/api/changesets', () =>
+      http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
         HttpResponse.json({
           version: '1.0.0',
           changesets: {

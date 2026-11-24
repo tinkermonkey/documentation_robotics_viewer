@@ -28,12 +28,12 @@ const STORAGE_KEY = 'dr_auth_token';
 
 /**
  * Extract token from localStorage or cookie
- * Token is placed in localStorage by AuthRoute when extracting from magic link URL
+ * Token is placed in localStorage by main.tsx when it takes it from a magic link (fragment or query)
  */
 function extractTokenFromStorage(): string | null {
   if (typeof window === 'undefined') return null;
 
-  // Check localStorage (populated by AuthRoute or previous sessions)
+  // Check localStorage (populated by main.tsx or previous sessions)
   const storedToken = localStorage.getItem(STORAGE_KEY);
   if (storedToken) {
     console.log('[Auth] Token loaded from localStorage');

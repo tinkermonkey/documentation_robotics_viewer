@@ -8,7 +8,7 @@
  *
  * Only the WebSocket transport is mocked; `chatService`, `jsonRpcHandler`,
  * `websocketClient`, and `chatStore` all run for real. The singleton
- * `chatService` is imported (registering its 5 notification handlers once at
+ * `chatService` is imported (registering its 7 notification handlers once at
  * module load); `chatService.reset()` + the global store reset run between
  * tests.
  */
@@ -18,6 +18,7 @@ import { ChatService, chatService } from '@/apps/embedded/services/chatService';
 import { jsonRpcHandler } from '@/apps/embedded/services/jsonRpcHandler';
 import { useChatStore } from '@/apps/embedded/stores/chatStore';
 import { websocketClient } from '@/apps/embedded/services/websocketClient';
+import { useCheckoutStore } from '@/apps/embedded/stores/checkoutStore';
 import type { ChatMessage } from '@/apps/embedded/types/chat';
 import {
   installMockWebSocket,
@@ -75,7 +76,7 @@ afterEach(() => {
 });
 
 describe('chatService — notification handler registration', () => {
-  it('registers exactly 5 notification handlers, one per chat method', () => {
+  it('registers exactly 7 notification handlers, one per chat method', () => {
     // Capture the unsubscribe functions returned so the fresh service's handlers
     // can be torn down — otherwise they leak onto the singleton jsonRpcHandler
     // and double every subsequent notification.
@@ -97,6 +98,8 @@ describe('chatService — notification handler registration', () => {
       'chat.thinking',
       'chat.usage',
       'chat.error',
+      'chat.turn.queued',
+      'chat.turn.started',
     ]);
     // No method registered twice.
     expect(new Set(methods).size).toBe(methods.length);
@@ -393,7 +396,7 @@ describe('chatService — chat.send timeout', () => {
     await chatService.sendMessage('hello');
     expect(spy).toHaveBeenCalledWith(
       'chat.send',
-      { message: 'hello', conversation_id: expect.any(String) },
+      { message: 'hello', conversation_id: expect.any(String), project: 'test-project', checkout: 'main' },
       expect.any(Number),
     );
     const timeout = spy.mock.calls[0][2] as number;
@@ -412,6 +415,8 @@ describe('chatService — viewer context', () => {
     expect(spy.mock.calls[0][1]).toEqual({
       message: '<viewer-context>\nLayer: APM (apm)\n</viewer-context>\n\nWhat does this do?',
       conversation_id: expect.any(String),
+      project: 'test-project',
+      checkout: 'main',
     });
     const user = useChatStore.getState().messages.find((m) => m.role === 'user')!;
     expect(user.parts).toEqual([expect.objectContaining({ type: 'text', content: 'What does this do?' })]);
@@ -461,7 +466,102 @@ describe('chatService — conversation_id', () => {
     spy.mockResolvedValueOnce({ cancelled: true, conversation_id: conversationId } as never);
     await chatService.cancelMessage();
 
-    expect(spy).toHaveBeenLastCalledWith('chat.cancel', { conversation_id: conversationId }, expect.any(Number));
+    expect(spy).toHaveBeenLastCalledWith(
+      'chat.cancel',
+      { conversation_id: conversationId, project: 'test-project', checkout: 'main' },
+      expect.any(Number),
+    );
     spy.mockRestore();
+  });
+});
+
+describe('chatService — one checkout per conversation (dr serve)', () => {
+  const OTHER = { project: 'test-project', checkout: 'feature-x' };
+
+  async function startConversation(): Promise<string> {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockReturnValue(new Promise(() => {}) as never); // the reply is still streaming
+    void chatService.sendMessage('Hello');
+    const id = (spy.mock.calls[0][1] as { conversation_id: string }).conversation_id;
+    spy.mockRestore();
+    return id;
+  }
+
+  const streamingText = () =>
+    useChatStore
+      .getState()
+      .messages.filter((m) => m.role === 'assistant')
+      .flatMap((m) => m.parts)
+      .filter((p) => p.type === 'text')
+      .map((p) => (p as { content: string }).content)
+      .join('');
+
+  it('sends chat.status with the checkout shown', async () => {
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ sdk_available: true } as never);
+    await chatService.getStatus();
+    expect(spy).toHaveBeenCalledWith('chat.status', { project: 'test-project', checkout: 'main' });
+    spy.mockRestore();
+  });
+
+  it('takes the reply frames of its own conversation and checkout only', async () => {
+    const id = await startConversation();
+    notify('chat.response.chunk', { conversation_id: id, project: 'test-project', checkout: 'main', content: 'mine' });
+    notify('chat.response.chunk', { conversation_id: 'conv-other-tab', project: 'test-project', checkout: 'main', content: 'theirs' });
+    notify('chat.response.chunk', { conversation_id: id, project: 'test-project', checkout: 'feature-x', content: 'crossed' });
+    expect(streamingText()).toBe('mine');
+  });
+
+  it('shows a turn queued behind the server cap until it starts', async () => {
+    const id = await startConversation();
+    notify('chat.turn.queued', {
+      conversation_id: id,
+      project: 'test-project',
+      checkout: 'main',
+      position: 2,
+      running: 3,
+      max_turns: 3,
+      message: 'Waiting for one of 3 running DrBot replies to end.',
+    });
+    expect(useChatStore.getState().turnQueued).toEqual({
+      position: 2,
+      running: 3,
+      maxTurns: 3,
+      message: 'Waiting for one of 3 running DrBot replies to end.',
+    });
+    // Another conversation's start doesn't clear it.
+    notify('chat.turn.started', { conversation_id: 'conv-other-tab', project: 'test-project', checkout: 'main', waited_ms: 5 });
+    expect(useChatStore.getState().turnQueued).not.toBeNull();
+    notify('chat.turn.started', { conversation_id: id, project: 'test-project', checkout: 'main', waited_ms: 1200 });
+    expect(useChatStore.getState().turnQueued).toBeNull();
+  });
+
+  it('ends the conversation when the tab switches checkout, and the next send starts one there', async () => {
+    const first = await startConversation();
+    chatService.setCheckout(OTHER);
+    expect(chatService.getCurrentConversationId()).toBeNull();
+    expect(useChatStore.getState().messages).toHaveLength(0);
+
+    // The old conversation's late frames land nowhere.
+    notify('chat.response.chunk', { conversation_id: first, project: 'test-project', checkout: 'main', content: 'late' });
+    expect(streamingText()).toBe('');
+
+    useCheckoutStore.setState({ ref: OTHER });
+    const spy = vi
+      .spyOn(jsonRpcHandler, 'sendRequest')
+      .mockResolvedValue({ conversation_id: 'conv-y', status: 'complete' } as never);
+    await chatService.sendMessage('Hi there');
+    const params = spy.mock.calls[0][1] as { conversation_id: string; project: string; checkout: string };
+    expect(params.conversation_id).not.toBe(first);
+    expect(params).toMatchObject({ project: 'test-project', checkout: 'feature-x' });
+    spy.mockRestore();
+  });
+
+  it('keeps the conversation when the checkout shown is its own', async () => {
+    const id = await startConversation();
+    chatService.setCheckout({ project: 'test-project', checkout: 'main' });
+    expect(chatService.getCurrentConversationId()).toBe(id);
   });
 });

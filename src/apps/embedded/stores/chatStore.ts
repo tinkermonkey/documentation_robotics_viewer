@@ -23,9 +23,21 @@ import {
   ChatValidationError,
 } from '../services/chatValidation';
 
+/** A DrBot turn waiting behind the server's running-turn cap (`chat.turn.queued`). */
+export interface ChatTurnQueued {
+  /** 1 = next to start. */
+  position: number;
+  running: number;
+  maxTurns: number;
+  /** The server's own sentence about it. */
+  message: string;
+}
+
 export interface ChatStore {
   // State
   messages: ChatMessage[];
+  /** Set from `chat.turn.queued` until `chat.turn.started` or the turn ends. */
+  turnQueued: ChatTurnQueued | null;
   activeConversationId: string | null;
   isStreaming: boolean;
   sdkStatus: SDKStatus | null;
@@ -36,6 +48,7 @@ export interface ChatStore {
   setStreaming: (isStreaming: boolean) => void;
   setSdkStatus: (status: SDKStatus | null) => void;
   setError: (error: string | null) => void;
+  setTurnQueued: (queued: ChatTurnQueued | null) => void;
   reset: () => void;
 
   // Message operations
@@ -60,12 +73,14 @@ export interface ChatStore {
 export const useChatStore = create<ChatStore>((set, get) => ({
   // Initial state
   messages: [],
+  turnQueued: null,
   activeConversationId: null,
   isStreaming: false,
   sdkStatus: null,
   error: null,
 
   // Basic actions
+  setTurnQueued: (turnQueued) => set({ turnQueued }),
   setActiveConversationId: (conversationId) => {
     validateConversationId(conversationId);
     set({ activeConversationId: conversationId });
@@ -96,6 +111,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
   reset: () => set({
     messages: [],
+    turnQueued: null,
     activeConversationId: null,
     isStreaming: false,
     sdkStatus: null,

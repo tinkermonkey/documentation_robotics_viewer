@@ -1,6 +1,6 @@
 /**
  * planVerification — a plan changeset compared with what was built, as the dr
- * CLI's `GET /api/changesets/:id/verification?against=<as-built id>` reports
+ * CLI's `GET /api/projects/{project}/checkouts/{checkout}/changesets/:id/verification?against=<as-built id>` reports
  * it (the `changeset_verify` MCP tool's report, over REST). Pure, no React.
  *
  * The viewer never matches plan and build itself: the CLI's matcher already
@@ -276,8 +276,9 @@ export function isVerificationUnavailable(error: unknown): boolean {
   return false;
 }
 
-export function verificationUrl(planId: string, asBuiltId: string): string {
-  return `/api/changesets/${encodeURIComponent(planId)}/verification?against=${encodeURIComponent(asBuiltId)}`;
+export function verificationUrl(ref: { project: string; checkout: string }, planId: string, asBuiltId: string): string {
+  const e = encodeURIComponent;
+  return `/api/projects/${e(ref.project)}/checkouts/${e(ref.checkout)}/changesets/${e(planId)}/verification?against=${e(asBuiltId)}`;
 }
 
 /**
@@ -286,11 +287,12 @@ export function verificationUrl(planId: string, asBuiltId: string): string {
  * itself is missing) reads as an older dr CLI, status 0.
  */
 export async function fetchPlanVerification(
+  ref: { project: string; checkout: string },
   planId: string,
   asBuiltId: string,
   fetcher: typeof fetch = fetch,
 ): Promise<PlanVerification> {
-  const response = await fetcher(verificationUrl(planId, asBuiltId), { headers: { Accept: 'application/json' } });
+  const response = await fetcher(verificationUrl(ref, planId, asBuiltId), { headers: { Accept: 'application/json' } });
   let body: unknown = null;
   try {
     body = await response.json();

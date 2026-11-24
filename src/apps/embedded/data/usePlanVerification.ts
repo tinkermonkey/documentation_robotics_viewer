@@ -16,6 +16,7 @@ import {
   isVerificationUnavailable,
   type PlanVerification,
 } from './planVerification';
+import { useCheckoutRef } from './checkoutScope';
 
 export type PlanVerificationView =
   | { kind: 'none' }
@@ -25,10 +26,11 @@ export type PlanVerificationView =
   | { kind: 'ready'; verification: PlanVerification };
 
 export function usePlanVerification(planId: string | null, asBuiltId: string | null): PlanVerificationView {
-  const enabled = !!planId && !!asBuiltId;
+  const ref = useCheckoutRef();
+  const enabled = !!planId && !!asBuiltId && !!ref;
   const query = useQuery({
-    queryKey: [PLAN_VERIFICATION_KEY, planId, asBuiltId],
-    queryFn: () => fetchPlanVerification(planId!, asBuiltId!),
+    queryKey: [PLAN_VERIFICATION_KEY, ref?.project, ref?.checkout, planId, asBuiltId],
+    queryFn: () => fetchPlanVerification(ref!, planId!, asBuiltId!),
     enabled,
     staleTime: 5 * 60 * 1000,
     retry: (failures, error) => !isVerificationUnavailable(error) && failures < 1,

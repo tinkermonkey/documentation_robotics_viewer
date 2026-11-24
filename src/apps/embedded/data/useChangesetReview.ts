@@ -28,12 +28,13 @@ import { changesetActionErrorMessage, type ChangesetDetail } from './useChangese
 import { useModel } from './useModel';
 import { dottedId } from './modelGraph';
 import { useTypeName } from './useTypeName';
+import { SCOPED_QUERY, scopedKey, useCheckoutRef, type CheckoutRef } from './checkoutScope';
 
 export type ReviewMode = 'server' | 'local';
 
 /** The mutation key of a changeset's review PUTs (to count the queued ones). */
-export function reviewMutationKey(changesetId: string) {
-  return ['putapichangesetschangesetIdreview', changesetId];
+export function reviewMutationKey(ref: CheckoutRef | null, changesetId: string) {
+  return ['putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview', ref?.project ?? '', ref?.checkout ?? '', changesetId];
 }
 
 type MutateCallbacks = { onSuccess?: (data: unknown) => void; onError?: (error: unknown) => void };
@@ -120,14 +121,19 @@ export function useChangesetReview(detail: ChangesetDetail | null): ChangesetRev
   const [error, setError] = useState<string | null>(null);
   const { derived: modelData } = useModel();
 
-  const detailKey = useMemo(() => ['getapichangesetschangesetId', id], [id]);
-  const mutationKey = useMemo(() => reviewMutationKey(id), [id]);
+  const ref = useCheckoutRef();
+  const detailKey = useMemo(() => scopedKey(SCOPED_QUERY.changeset, ref, id), [ref, id]);
+  const mutationKey = useMemo(() => reviewMutationKey(ref, id), [ref, id]);
   const put = useMutation<ChangesetReview, unknown, DecisionInput[], { previousReview?: ChangesetReview }>({
     mutationKey,
     // One PUT at a time per changeset, in the order they were made.
-    scope: { id: `changeset-review:${id}` },
-    mutationFn: (decisions) =>
-      getApiClient().putapichangesetschangesetIdreview(id, { decisions }) as Promise<ChangesetReview>,
+    scope: { id: `changeset-review:${ref?.project}/${ref?.checkout}:${id}` },
+    mutationFn: (decisions) => {
+      if (!ref) return Promise.reject(new Error('No checkout is open.'));
+      return getApiClient().putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview(ref.project, ref.checkout, id, {
+        decisions,
+      }) as Promise<ChangesetReview>;
+    },
     onMutate: async (decisions) => {
       await queryClient.cancelQueries({ queryKey: detailKey });
       const current = queryClient.getQueryData<Record<string, unknown>>(detailKey);
@@ -168,7 +174,7 @@ export function useChangesetReview(detail: ChangesetDetail | null): ChangesetRev
     onSettled: () => {
       if (queryClient.isMutating({ mutationKey }) > 1) return;
       queryClient.invalidateQueries({ queryKey: detailKey });
-      queryClient.invalidateQueries({ queryKey: ['getapichangesets'] });
+      queryClient.invalidateQueries({ queryKey: scopedKey(SCOPED_QUERY.changesets, ref) });
     },
   });
 

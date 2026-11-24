@@ -211,6 +211,31 @@ function getInvalidationQueries(operationId, pathParams) {
     invalidations.push(`{ queryKey: ['getapichangesetschangesetId', changesetId] }`);
   }
 
+  // The same operations scoped to one checkout of the central process
+  // (/api/projects/{project}/checkouts/{checkout}/...): they invalidate only
+  // that checkout's queries, keyed [operationId, project, checkout, ...].
+  const S = 'getapiprojectsprojectcheckoutscheckout';
+  if (operationId === 'postapiprojectsprojectcheckoutscheckoutchangesetschangesetIdcommit' ||
+      operationId === 'postapiprojectsprojectcheckoutscheckoutchangesetschangesetIddiscard' ||
+      operationId === 'putapiprojectsprojectcheckoutscheckoutchangesetschangesetIdreview') {
+    invalidations.push(`{ queryKey: ['${S}changesets', project, checkout] }`);
+    invalidations.push(`{ queryKey: ['${S}changesetschangesetId', project, checkout, changesetId] }`);
+    if (operationId.endsWith('commit')) {
+      invalidations.push(`{ queryKey: ['${S}model', project, checkout] }`);
+      invalidations.push(`{ queryKey: ['${S}layerslayerName', project, checkout] }`);
+    }
+  }
+  if (operationId === 'postapiprojectsprojectcheckoutscheckoutannotations') {
+    invalidations.push(`{ queryKey: ['${S}annotations', project, checkout] }`);
+  } else if (operationId === 'putapiprojectsprojectcheckoutscheckoutannotationsannotationId' ||
+             operationId === 'patchapiprojectsprojectcheckoutscheckoutannotationsannotationId' ||
+             operationId === 'deleteapiprojectsprojectcheckoutscheckoutannotationsannotationId') {
+    invalidations.push(`{ queryKey: ['${S}annotationsannotationId', project, checkout, annotationId] }`);
+    invalidations.push(`{ queryKey: ['${S}annotations', project, checkout] }`);
+  } else if (operationId === 'postapiprojectsprojectcheckoutscheckoutannotationsannotationIdreplies') {
+    invalidations.push(`{ queryKey: ['${S}annotationsannotationIdreplies', project, checkout, annotationId] }`);
+  }
+
   // If no specific invalidations found, emit a build-time warning
   if (invalidations.length === 0) {
     console.warn(`⚠️  No invalidation mapping found for operation: ${operationId}. Add explicit mapping to getInvalidationQueries().`);

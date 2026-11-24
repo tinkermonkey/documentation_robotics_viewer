@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useLayoutEffect, useRef } from 'react';
 import {
   createRouter,
   createRoute,
@@ -8,8 +8,18 @@ import {
   useSearch,
 } from '@tanstack/react-router';
 import { createHashHistory } from '@tanstack/history';
-import AuthRoute from './routes/AuthRoute';
 import { AppShell } from './ui/AppShell';
+import {
+  CHECKOUT_SHELL_PATH,
+  CheckoutPickerPage,
+  CheckoutUnavailablePage,
+} from './ui/CheckoutPicker';
+import { CHANGESETS_VIEW, formatNext, isShellSection, readCliLink } from './routes/checkoutLinks';
+import { sameCheckout, useCheckoutStore, type CheckoutRef } from './stores/checkoutStore';
+import { chatService } from './services/chatService';
+import { isCheckoutNotFound } from './data/checkoutScope';
+import { useChangeset } from './data/useChangesets';
+import { dottedId } from './data/modelGraph';
 import { useUiStore, type ViewKind } from './ui/uiStore';
 import {
   formatViewportParam,
@@ -25,9 +35,9 @@ import { useModel } from './data/useModel';
 import { parseC4Level, type C4Level } from './data/c4/c4Level';
 
 /**
- * Root component — runs the WebSocket bootstrap effect (ported verbatim from the
- * old EmbeddedLayout): connect, set token, subscribe to model/changesets/
- * annotations channels. Renders the routed outlet.
+ * Root component — runs the WebSocket bootstrap effect (ported from the old
+ * EmbeddedLayout): connect and set the token. The checkout feed subscription
+ * is CheckoutShellRoute's. Renders the routed outlet.
  */
 function RootShell() {
   const token = useAuthStore((state) => state.token);
@@ -38,12 +48,14 @@ function RootShell() {
   const setReconnecting = useConnectionStore((state) => state.setReconnecting);
   const setError = useConnectionStore((state) => state.setError);
 
+  // The central process (dr serve) sends a checkout's events to the sockets
+  // subscribed to that checkout: CheckoutShellRoute subscribes (through
+  // websocketClient.setCheckout), and the client resubscribes on every connect.
   const handleConnect = useCallback(() => {
     console.log('[RootShell] WebSocket connected');
     setConnected();
-    if (websocketClient.transportMode === 'websocket') {
-      websocketClient.subscribe(['model', 'changesets', 'annotations']);
-    }
+    // A process answers again: one that was stopping is back (or replaced).
+    useCheckoutStore.getState().clearUnavailable('stopping');
   }, [setConnected]);
 
   const handleRestMode = useCallback(() => {
@@ -162,6 +174,9 @@ interface AppShellSearch {
   /** Architecture view: the as-built changeset the `changeset` plan is compared
    *  with (`uiStore.c4BuiltId`). Only with `changeset`. */
   built?: string;
+  /** Changesets view: the element whose change to select in `changeset` (the
+   *  dr CLI's `changesets/<id>?element=<id>` link). Dropped once applied. */
+  element?: string;
   /** Graph viewport `centerX,centerY,zoom` (see ui/graphViewport.ts). Model +
    *  Schema only. Kept on page-mode URLs too, so switching back to the graph
    *  returns to the same view. */
@@ -229,7 +244,7 @@ function c4Key(
  * restore it (Canvas applies it silently). It's only written while it belongs
  * to the live canvas (`graphCanvasKey`), so a layer or layout change drops it.
  */
-function AppShellRoute() {
+function AppShellRoute({ checkout }: { checkout: CheckoutRef }) {
   const { section, view: viewParam } = useParams({ strict: false }) as {
     section?: string;
     view?: string;
@@ -501,8 +516,8 @@ function AppShellRoute() {
         (view === 'changesets' && selectionChanged));
 
     router.navigate({
-      to: '/$section/$view',
-      params: { section: targetSection, view: targetView },
+      to: CHECKOUT_SHELL_PATH,
+      params: { project: checkout.project, checkout: checkout.checkout, section: targetSection, view: targetView },
       search: targetSearch,
       replace: !push,
     });
@@ -512,7 +527,234 @@ function AppShellRoute() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [view, mode, layerId, selectedId, selectedEdgeId, changesetId, navSeq, graphViewport, canvasKey, c4Level, c4Scope, c4SelectedId, c4ChangesetId, c4BuiltId]);
 
+  // `?element=` (the dr CLI's changeset link with an element): once the
+  // changeset's detail is here, select its change to that element (the first,
+  // by sequence), then drop the parameter so it isn't applied again.
+  const linkedChangeset = section === 'changesets' && search.element ? (search.changeset ?? null) : null;
+  const { detail: linkedDetail, isError: linkedFailed } = useChangeset(linkedChangeset);
+  useEffect(() => {
+    if (!linkedChangeset || !search.element) return;
+    if (!linkedDetail && !linkedFailed) return;
+    if (linkedDetail && useUiStore.getState().changesetId === linkedChangeset) {
+      const change = [...linkedDetail.changes]
+        .filter((c) => c.elementId === search.element)
+        .sort((a, b) => (a.sequenceNumber ?? 0) - (b.sequenceNumber ?? 0))[0];
+      if (change?.sequenceNumber !== undefined) useUiStore.getState().selectChange(change.sequenceNumber);
+    } else if (linkedDetail) {
+      return; // the URL → store effect hasn't opened the changeset yet
+    }
+    router.navigate({ to: '.', search: (prev: AppShellSearch) => ({ ...prev, element: undefined }), replace: true } as never);
+  }, [linkedChangeset, search.element, linkedDetail, linkedFailed]);
+
   return <AppShell />;
+}
+
+/** The search params a shell route keeps (unknown ones, and `token`, are dropped). */
+function validateShellSearch(search: Record<string, unknown>): AppShellSearch {
+  const str = (key: string) => (typeof search[key] === 'string' ? (search[key] as string) : undefined);
+  return {
+    layer: str('layer'),
+    node: str('node'),
+    edge: str('edge'),
+    changeset: str('changeset'),
+    element: str('element'),
+    level: str('level'),
+    scope: str('scope'),
+    built: str('built'),
+    vp: str('vp'),
+  };
+}
+
+/**
+ * Keeps the checkout the route names in force: the store every data hook
+ * reads, the websocket's feed subscription and the DrBot conversation. Runs
+ * before the shell's own effects, so no query is made for the checkout before.
+ */
+function useCheckoutInForce(checkout: CheckoutRef) {
+  const { project, checkout: name } = checkout;
+  useLayoutEffect(() => {
+    const ref = { project, checkout: name };
+    // Another checkout than the one this tab showed (a switch, a link, Back):
+    // its selection was that checkout's. Compared with the store, not this
+    // component, which remounts when the route changes shape.
+    const previous = useCheckoutStore.getState().ref;
+    if (previous && !sameCheckout(previous, ref)) {
+      useUiStore.getState().clearCheckoutSelection();
+    }
+    useCheckoutStore.getState().setRef(ref);
+    websocketClient.setCheckout(ref);
+    chatService.setCheckout(ref);
+  }, [project, name]);
+
+  // The server says the checkout went away, or that it is stopping.
+  useEffect(() => {
+    const ref = { project, checkout: name };
+    const onRemoved = (message: unknown) => {
+      const m = (message ?? {}) as { message?: unknown };
+      useCheckoutStore.getState().markUnavailable(ref, {
+        reason: 'removed',
+        ...(typeof m.message === 'string' ? { message: m.message } : {}),
+      });
+    };
+    const onStopping = () => useCheckoutStore.getState().markUnavailable(ref, { reason: 'stopping' });
+    websocketClient.on(CHECKOUT_REMOVED_EVENT, onRemoved);
+    websocketClient.on(SERVER_STOPPING_EVENT, onStopping);
+    return () => {
+      websocketClient.off(CHECKOUT_REMOVED_EVENT, onRemoved);
+      websocketClient.off(SERVER_STOPPING_EVENT, onStopping);
+    };
+  }, [project, name]);
+}
+
+/** The central process's notice that a checkout is gone (its subscribers only). */
+export const CHECKOUT_REMOVED_EVENT = 'checkout.removed';
+/** The central process's notice that it is shutting down. */
+export const SERVER_STOPPING_EVENT = 'server.stopping';
+
+/**
+ * `/#/p/:project/c/:checkout/:section/:view` — one checkout's shell. Reads the
+ * dr CLI's link forms first (`changesets/<id>`, `elements/<id>`) and replaces
+ * them with the page they open; shows the unavailable page instead of the
+ * views when the checkout can't be served.
+ */
+function CheckoutShellRoute() {
+  const { project, checkout, section, view } = useParams({ strict: false }) as {
+    project: string;
+    checkout: string;
+    section: string;
+    view: string;
+  };
+  const search = useSearch({ strict: false }) as AppShellSearch;
+  const ref = { project, checkout };
+  useCheckoutInForce(ref);
+  const storeRef = useCheckoutStore((s) => s.ref);
+  const unavailable = useCheckoutStore((s) => s.unavailable);
+  const inForce = storeRef?.project === project && storeRef?.checkout === checkout;
+
+  const link = readCliLink(section, view, search.element);
+  const unknownSection = !link && !isShellSection(section);
+
+  // A changeset link (or an unknown section) is replaced by the page it means.
+  useEffect(() => {
+    if (link?.kind === 'changeset') {
+      router.navigate({
+        to: CHECKOUT_SHELL_PATH,
+        params: { project, checkout, section: 'changesets', view: CHANGESETS_VIEW },
+        search: { changeset: link.changesetId, element: link.element },
+        replace: true,
+      });
+    } else if (unknownSection) {
+      router.navigate({
+        to: CHECKOUT_SHELL_PATH,
+        params: { project, checkout, section: 'model', view: 'graph' },
+        search: {},
+        replace: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project, checkout, section, view]);
+
+  if (!inForce) return null;
+  if (unavailable) return <CheckoutUnavailablePage checkout={ref} unavailable={unavailable} />;
+  if (link?.kind === 'element') return <ElementLink checkout={ref} elementId={link.elementId} />;
+  if (link || unknownSection) return null;
+  return (
+    <>
+      <CheckoutNotFoundWatch checkout={ref} />
+      <AppShellRoute checkout={ref} />
+    </>
+  );
+}
+
+/** Marks the checkout unavailable when its model read answers 404. */
+function CheckoutNotFoundWatch({ checkout }: { checkout: CheckoutRef }) {
+  const { error } = useModel();
+  useEffect(() => {
+    if (!isCheckoutNotFound(error)) return;
+    const message = (error as { serverMessage?: string }).serverMessage;
+    useCheckoutStore.getState().markUnavailable(checkout, { reason: 'not-found', ...(message ? { message } : {}) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error, checkout.project, checkout.checkout]);
+  return null;
+}
+
+/**
+ * `elements/<id>` — the dr CLI's element link. Waits for the model, finds the
+ * element by its dotted id (or UUID) and replaces the link with the Model view
+ * on that element's layer, the element selected.
+ */
+function ElementLink({ checkout, elementId }: { checkout: CheckoutRef; elementId: string }) {
+  const { derived, isSuccess, error } = useModel();
+  const node = isSuccess ? derived.nodes.find((n) => n.id === elementId || dottedId(n) === elementId) : undefined;
+  useEffect(() => {
+    if (!isSuccess || !node) return;
+    router.navigate({
+      to: CHECKOUT_SHELL_PATH,
+      params: { project: checkout.project, checkout: checkout.checkout, section: 'model', view: 'graph' },
+      search: { layer: node.layer_id, node: node.id },
+      replace: true,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccess, node?.id]);
+
+  if (isCheckoutNotFound(error)) return <CheckoutNotFoundWatch checkout={checkout} />;
+  if (!isSuccess || node) {
+    return (
+      <p role="status" style={{ padding: 24, color: 'rgb(var(--shell-fg-2))', background: 'rgb(var(--shell-bg))', minHeight: '100vh', margin: 0 }}>
+        Opening {elementId}…
+      </p>
+    );
+  }
+  return (
+    <main
+      data-testid="element-link-missing"
+      style={{ padding: 24, color: 'rgb(var(--shell-fg-1))', background: 'rgb(var(--shell-bg))', minHeight: '100vh' }}
+    >
+      <p style={{ fontSize: 14 }}>
+        The model of checkout {checkout.checkout} of project {checkout.project} has no element {elementId}.
+      </p>
+      <button
+        type="button"
+        className="drv-linkbtn"
+        onClick={() =>
+          router.navigate({
+            to: CHECKOUT_SHELL_PATH,
+            params: { project: checkout.project, checkout: checkout.checkout, section: 'model', view: 'graph' },
+            search: {},
+            replace: true,
+          })
+        }
+      >
+        Open the model
+      </button>
+    </main>
+  );
+}
+
+/** `/#/p/:project/c/:checkout` (the CLI's checkout link): the checkout's Model view. */
+function CheckoutIndexRoute() {
+  const { project, checkout } = useParams({ strict: false }) as { project: string; checkout: string };
+  useEffect(() => {
+    router.navigate({
+      to: CHECKOUT_SHELL_PATH,
+      params: { project, checkout, section: 'model', view: 'graph' },
+      search: {},
+      replace: true,
+    });
+  }, [project, checkout]);
+  return null;
+}
+
+/** A bare `/#/`: no project named, so the picker. */
+function IndexRoute() {
+  return <CheckoutPickerPage />;
+}
+
+/** An old unscoped `/#/:section/:view` link: the picker, which opens it in the checkout chosen. */
+function LegacyShellRoute() {
+  const { section, view } = useParams({ strict: false }) as { section: string; view: string };
+  const search = useSearch({ strict: false }) as Record<string, unknown>;
+  return <CheckoutPickerPage next={formatNext(section, view, search)} />;
 }
 
 const rootRoute = createRootRoute({
@@ -522,29 +764,30 @@ const rootRoute = createRootRoute({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  validateSearch: (search: Record<string, unknown>): { token?: string } => ({
-    token: typeof search.token === 'string' ? search.token : undefined,
-  }),
-  component: AuthRoute,
+  component: IndexRoute,
 });
 
-const appShellRoute = createRoute({
+const legacyShellRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/$section/$view',
-  validateSearch: (search: Record<string, unknown>): AppShellSearch => ({
-    layer: typeof search.layer === 'string' ? search.layer : undefined,
-    node: typeof search.node === 'string' ? search.node : undefined,
-    edge: typeof search.edge === 'string' ? search.edge : undefined,
-    changeset: typeof search.changeset === 'string' ? search.changeset : undefined,
-    level: typeof search.level === 'string' ? search.level : undefined,
-    scope: typeof search.scope === 'string' ? search.scope : undefined,
-    built: typeof search.built === 'string' ? search.built : undefined,
-    vp: typeof search.vp === 'string' ? search.vp : undefined,
-  }),
-  component: AppShellRoute,
+  validateSearch: validateShellSearch,
+  component: LegacyShellRoute,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, appShellRoute]);
+const checkoutIndexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/p/$project/c/$checkout',
+  component: CheckoutIndexRoute,
+});
+
+const checkoutShellRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: CHECKOUT_SHELL_PATH,
+  validateSearch: validateShellSearch,
+  component: CheckoutShellRoute,
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, legacyShellRoute, checkoutIndexRoute, checkoutShellRoute]);
 
 export const router = createRouter({
   routeTree,

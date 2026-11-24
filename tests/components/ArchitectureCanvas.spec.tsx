@@ -151,7 +151,7 @@ describe('ArchitectureCanvas', () => {
         ...(purpose ? { purpose } : {}),
       });
       mswServer.use(
-        http.get('*/api/changesets', () =>
+        http.get('*/api/projects/:project/checkouts/:checkout/changesets', () =>
           HttpResponse.json({
             version: '1',
             changesets: {
