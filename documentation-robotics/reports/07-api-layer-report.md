@@ -16,11 +16,11 @@ REST APIs, operations, endpoints, and API integrations.
 
 | Metric                    | Count |
 | ------------------------- | ----- |
-| Elements                  | 39    |
-| Intra-Layer Relationships | 37    |
-| Inter-Layer Relationships | 50    |
+| Elements                  | 49    |
+| Intra-Layer Relationships | 42    |
+| Inter-Layer Relationships | 51    |
 | Inbound Relationships     | 1     |
-| Outbound Relationships    | 49    |
+| Outbound Relationships    | 50    |
 
 **Cross-Layer References**:
 
@@ -31,47 +31,57 @@ REST APIs, operations, endpoints, and API integrations.
 
 *This layer has >30 elements. Summary table shown instead of diagram.*
 
-| Element                                                             | Type              | Relationships |
-| ------------------------------------------------------------------- | ----------------- | ------------- |
-| `api.info.dr-cli-visualization-server-api`                          | `info`            | 1             |
-| `api.openapidocument.dr-cli-visualization-server-open-api-document` | `openapidocument` | 3             |
-| `api.operation.commit-changeset`                                    | `operation`       | 2             |
-| `api.operation.create-annotation`                                   | `operation`       | 1             |
-| `api.operation.create-annotation-reply`                             | `operation`       | 2             |
-| `api.operation.delete-annotation`                                   | `operation`       | 1             |
-| `api.operation.discard-changeset`                                   | `operation`       | 2             |
-| `api.operation.get-annotation`                                      | `operation`       | 2             |
-| `api.operation.get-annotations`                                     | `operation`       | 2             |
-| `api.operation.get-api-tier1`                                       | `operation`       | 2             |
-| `api.operation.get-architecture-model`                              | `operation`       | 2             |
-| `api.operation.get-changeset-details`                               | `operation`       | 1             |
-| `api.operation.get-changeset-verification`                          | `operation`       | 2             |
-| `api.operation.get-layer`                                           | `operation`       | 2             |
-| `api.operation.get-schema-specifications`                           | `operation`       | 1             |
-| `api.operation.health-check`                                        | `operation`       | 1             |
-| `api.operation.list-annotation-replies`                             | `operation`       | 2             |
-| `api.operation.list-changesets`                                     | `operation`       | 2             |
-| `api.operation.put-api-changesets-changeset-id-review`              | `operation`       | 2             |
-| `api.operation.replace-annotation`                                  | `operation`       | 2             |
-| `api.operation.update-annotation`                                   | `operation`       | 1             |
-| `api.operation.web-socket-real-time-updates`                        | `operation`       | 2             |
-| `api.pathitem.annotation-detail-path`                               | `pathitem`        | 3             |
-| `api.pathitem.annotation-replies-path`                              | `pathitem`        | 2             |
-| `api.pathitem.annotations-path`                                     | `pathitem`        | 1             |
-| `api.pathitem.changeset-commit-path`                                | `pathitem`        | 1             |
-| `api.pathitem.changeset-detail-path`                                | `pathitem`        | 1             |
-| `api.pathitem.changeset-discard-path`                               | `pathitem`        | 1             |
-| `api.pathitem.changeset-review-path`                                | `pathitem`        | 1             |
-| `api.pathitem.changeset-verification-path`                          | `pathitem`        | 1             |
-| `api.pathitem.changesets-path`                                      | `pathitem`        | 1             |
-| `api.pathitem.health-path`                                          | `pathitem`        | 1             |
-| `api.pathitem.layer-path`                                           | `pathitem`        | 1             |
-| `api.pathitem.model-path`                                           | `pathitem`        | 1             |
-| `api.pathitem.spec-path`                                            | `pathitem`        | 1             |
-| `api.pathitem.tier1-path`                                           | `pathitem`        | 1             |
-| `api.pathitem.web-socket-path`                                      | `pathitem`        | 1             |
-| `api.securityscheme.bearer-auth-scheme`                             | `securityscheme`  | 16            |
-| `api.securityscheme.query-auth-scheme`                              | `securityscheme`  | 2             |
+| Element                                                                                          | Type              | Relationships |
+| ------------------------------------------------------------------------------------------------ | ----------------- | ------------- |
+| `api.info.dr-cli-visualization-server-api`                                                       | `info`            | 1             |
+| `api.openapidocument.dr-cli-visualization-server-open-api-document`                              | `openapidocument` | 3             |
+| `api.operation.delete-api-projects-project-checkouts-checkout-annotations-annotation-id`         | `operation`       | 1             |
+| `api.operation.delete-mcp`                                                                       | `operation`       | 0             |
+| `api.operation.get-api-docs`                                                                     | `operation`       | 0             |
+| `api.operation.get-api-projects`                                                                 | `operation`       | 1             |
+| `api.operation.get-api-projects-project`                                                         | `operation`       | 1             |
+| `api.operation.get-api-projects-project-checkouts`                                               | `operation`       | 1             |
+| `api.operation.get-api-projects-project-checkouts-checkout-annotations`                          | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-changesets`                           | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id`              | `operation`       | 1             |
+| `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `operation`       | 1             |
+| `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                    | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-model`                                | `operation`       | 2             |
+| `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `operation`       | 2             |
+| `api.operation.get-api-spec-yaml`                                                                | `operation`       | 0             |
+| `api.operation.get-changeset-verification`                                                       | `operation`       | 2             |
+| `api.operation.get-mcp`                                                                          | `operation`       | 0             |
+| `api.operation.get-schema-specifications`                                                        | `operation`       | 1             |
+| `api.operation.get-ws`                                                                           | `operation`       | 1             |
+| `api.operation.health-check`                                                                     | `operation`       | 1             |
+| `api.operation.patch-api-projects-project-checkouts-checkout-annotations-annotation-id`          | `operation`       | 1             |
+| `api.operation.post-api-projects-project-checkouts-checkout-annotations`                         | `operation`       | 1             |
+| `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `operation`       | 2             |
+| `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `operation`       | 2             |
+| `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `operation`       | 2             |
+| `api.operation.post-mcp`                                                                         | `operation`       | 0             |
+| `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `operation`       | 2             |
+| `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `operation`       | 2             |
+| `api.operation.web-socket-real-time-updates`                                                     | `operation`       | 2             |
+| `api.pathitem.annotation-detail-path`                                                            | `pathitem`        | 3             |
+| `api.pathitem.annotation-replies-path`                                                           | `pathitem`        | 2             |
+| `api.pathitem.annotations-path`                                                                  | `pathitem`        | 1             |
+| `api.pathitem.changeset-commit-path`                                                             | `pathitem`        | 1             |
+| `api.pathitem.changeset-detail-path`                                                             | `pathitem`        | 1             |
+| `api.pathitem.changeset-discard-path`                                                            | `pathitem`        | 1             |
+| `api.pathitem.changeset-review-path`                                                             | `pathitem`        | 1             |
+| `api.pathitem.changeset-verification-path`                                                       | `pathitem`        | 1             |
+| `api.pathitem.changesets-path`                                                                   | `pathitem`        | 1             |
+| `api.pathitem.health-path`                                                                       | `pathitem`        | 1             |
+| `api.pathitem.layer-path`                                                                        | `pathitem`        | 1             |
+| `api.pathitem.model-path`                                                                        | `pathitem`        | 1             |
+| `api.pathitem.spec-path`                                                                         | `pathitem`        | 1             |
+| `api.pathitem.tier1-path`                                                                        | `pathitem`        | 1             |
+| `api.pathitem.web-socket-path`                                                                   | `pathitem`        | 1             |
+| `api.securityscheme.bearer-auth-scheme`                                                          | `securityscheme`  | 21            |
+| `api.securityscheme.query-auth-scheme`                                                           | `securityscheme`  | 2             |
 
 ## Inter-Layer Dependencies
 
@@ -101,58 +111,59 @@ flowchart TB
 
 ## Inter-Layer Relationships Table
 
-| Relationship ID                                                                        | Source Node                                            | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
-| -------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `8630981b-236c-47ed-b99b-e977c56bdc63`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                       | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.commit-changeset`                       | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                       | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation`                      | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.create-annotation-reply`                | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                      | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.discard-changeset`                      | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                      | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-annotation`                         | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                         | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-annotations`                        | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-mode-and-routing`                            | `product`     | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-spend-panel`                                 | `product`     | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-tier1`                          | `product.feature.tier1-warming-progress`                            | `product`     | `exposes`    | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-tier1`                          | `application.applicationservice.use-tier1`                          | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                          | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-architecture-model`                 | `application.applicationservice.use-model`                          | `application` | `references` | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                                                | `api.operation.get-changeset-verification`             | `product.feature.c4-plan-vs-as-built`                               | `product`     | `exposes`    | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-changeset-verification`             | `application.applicationservice.plan-verification`                  | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-changeset-verification`             | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.satisfies.motivation.requirement`                                       | `api.operation.get-changeset-verification`             | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation`  | `satisfies`  | many-to-many | medium   |
-| `api.operation.serves.application.applicationcomponent`                                | `api.operation.get-changeset-verification`             | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.get-layer`                              | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                              | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.list-annotation-replies`                | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.list-changesets`                        | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                                                | `api.operation.put-api-changesets-changeset-id-review` | `product.feature.per-change-review`                                 | `product`     | `exposes`    | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.put-api-changesets-changeset-id-review` | `application.applicationservice.use-changeset-review`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-changesets-changeset-id-review` | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.operation.references.application.applicationservice`                              | `api.operation.replace-annotation`                     | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                     | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
-| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `realizes`   | many-to-many | medium   |
-| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                 | `security.securitypolicy.bearer-token-policy`                       | `security`    | `realizes`   | many-to-many | medium   |
-| `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                 | `b7775f1a-2418-4c7a-84aa-997efd658a97`                              | `application` | `references` | unknown      | unknown  |
-| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123`  | `b66b613e-27b6-4d90-909f-3aa81570de15`                 | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2`  | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                 | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                 | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                              | `security`    | `requires`   | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123`  | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                 | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
-| `ff16c609-618e-4dd9-b477-12e17c000df8-references-a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8` | `ff16c609-618e-4dd9-b477-12e17c000df8`                 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                              | `application` | `references` | unknown      | unknown  |
-| `technology.technologyservice.serves.api.openapidocument`                              | `technology.technologyservice.dr-cli-rest-server`      | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
+| Relationship ID                                                                        | Source Node                                                                                      | Dest Node                                                           | Dest Layer    | Predicate    | Cardinality  | Strength |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- | ------------- | ------------ | ------------ | -------- |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-annotations`                          | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `product.feature.c4-plan-vs-as-built`                               | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `application.applicationservice.plan-verification`                  | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-changesets`                           | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                    | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                    | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-model`                                | `application.applicationservice.use-model`                          | `application` | `references` | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `product.feature.tier1-mode-and-routing`                            | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `product.feature.tier1-spend-panel`                                 | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `product.feature.tier1-warming-progress`                            | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `application.applicationservice.use-tier1`                          | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects-project-checkouts`                                               | `application.applicationservice.use-projects`                       | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts`                                               | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project`                                                         | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-api-projects`                                                                 | `application.applicationservice.use-projects`                       | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects`                                                                 | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.get-changeset-verification`                                                       | `product.feature.c4-plan-vs-as-built`                               | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-changeset-verification`                                                       | `application.applicationservice.plan-verification`                  | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-changeset-verification`                                                       | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.satisfies.motivation.requirement`                                       | `api.operation.get-changeset-verification`                                                       | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation`  | `satisfies`  | many-to-many | medium   |
+| `api.operation.serves.application.applicationcomponent`                                | `api.operation.get-changeset-verification`                                                       | `application.applicationcomponent.architecture-canvas`              | `application` | `serves`     | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.get-ws`                                                                           | `application.applicationservice.web-socket-client`                  | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-ws`                                                                           | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-annotations`                         | `application.applicationservice.use-annotations`                    | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `application.applicationservice.use-changesets`                     | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `application.applicationservice.generated-api-client`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                                                | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `product.feature.per-change-review`                                 | `product`     | `exposes`    | many-to-many | medium   |
+| `api.operation.references.application.applicationservice`                              | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `application.applicationservice.use-changeset-review`               | `application` | `references` | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `security.securitypolicy.bearer-token-policy`                       | `security`    | `requires`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`                                                          | `security.securitypolicy.bearer-token-policy`                       | `security`    | `realizes`   | many-to-many | medium   |
+| `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                                                           | `security.securitypolicy.bearer-token-policy`                       | `security`    | `realizes`   | many-to-many | medium   |
+| `b66b613e-27b6-4d90-909f-3aa81570de15-references-b7775f1a-2418-4c7a-84aa-997efd658a97` | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                           | `b7775f1a-2418-4c7a-84aa-997efd658a97`                              | `application` | `references` | unknown      | unknown  |
+| `b66b613e-27b6-4d90-909f-3aa81570de15-satisfies-fc86a033-81bd-4933-abb8-b24076577123`  | `b66b613e-27b6-4d90-909f-3aa81570de15`                                                           | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
+| `dc2da0b6-3de0-44d1-840f-5d49cc976cd9-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2`  | `dc2da0b6-3de0-44d1-840f-5d49cc976cd9`                                                           | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation`  | `satisfies`  | unknown      | unknown  |
+| `technology.technologyservice.serves.api.openapidocument`                              | `technology.technologyservice.dr-cli-rest-server`                                                | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `api`         | `serves`     | many-to-many | medium   |
 
 ## Element Reference
 
@@ -202,51 +213,146 @@ Root OpenAPI 3.0 document describing the Documentation Robotics Visualization Se
 | intra-layer | `api.securityscheme.bearer-auth-scheme`           | `requires` | outbound  |
 | intra-layer | `api.securityscheme.query-auth-scheme`            | `requires` | outbound  |
 
-### Commit Changeset {#commit-changeset}
+### DELETE /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} {#delete-api-projects-project-checkouts-checkout-annotations-annotationid}
 
-**ID**: `api.operation.commit-changeset`
+**ID**: `api.operation.delete-api-projects-project-checkouts-checkout-annotations-annotation-id`
 
 **Type**: `operation`
 
-Applies a staged changeset to the base model (the viewer's Apply). 404 unknown, 409 not staged, a verification record (never landed), or base drift (the route takes no force: a drifted changeset lands only through changeset_commit with force), 422 failed validation, body \{ error \}.
-
 #### Attributes
 
-| Name        | Value                                  |
-| ----------- | -------------------------------------- |
-| http_method | POST                                   |
-| http_path   | /api/changesets/\{changesetId\}/commit |
-| operationId | commitChangeset                        |
-| summary     | Apply a staged changeset to the model  |
-| tags        | Changesets                             |
+| Name        | Value                                                                                |
+| ----------- | ------------------------------------------------------------------------------------ |
+| http_method | DELETE                                                                               |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}        |
+| operationId | delete-api-projects-project-checkouts-checkout-annotations-annotation-id             |
+| summary     | DELETE /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} |
+| tags        | api                                                                                  |
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
-| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
-| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
-| intra-layer | `api.pathitem.changeset-commit-path`                  | `composes`   | inbound   |
+| Type        | Related Element                         | Predicate | Direction |
+| ----------- | --------------------------------------- | --------- | --------- |
+| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`    | outbound  |
 
-### Create Annotation {#create-annotation}
+### DELETE /mcp {#delete-mcp}
 
-**ID**: `api.operation.create-annotation`
+**ID**: `api.operation.delete-mcp`
 
 **Type**: `operation`
 
-Creates a new annotation on a model element
+#### Attributes
+
+| Name        | Value       |
+| ----------- | ----------- |
+| http_method | DELETE      |
+| http_path   | /mcp        |
+| operationId | delete-mcp  |
+| summary     | DELETE /mcp |
+| tags        | mcp         |
+
+### GET /api-docs {#get-api-docs}
+
+**ID**: `api.operation.get-api-docs`
+
+**Type**: `operation`
 
 #### Attributes
 
-| Name        | Value                   |
-| ----------- | ----------------------- |
-| http_method | POST                    |
-| http_path   | /api/annotations        |
-| operationId | createAnnotation        |
-| summary     | Create a new annotation |
-| tags        | Annotations             |
+| Name        | Value         |
+| ----------- | ------------- |
+| http_method | GET           |
+| http_path   | /api-docs     |
+| operationId | get-api-docs  |
+| summary     | GET /api-docs |
+| tags        | api-docs      |
+
+### GET /api/projects {#get-api-projects}
+
+**ID**: `api.operation.get-api-projects`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value             |
+| ----------- | ----------------- |
+| http_method | GET               |
+| http_path   | /api/projects     |
+| operationId | get-api-projects  |
+| summary     | GET /api/projects |
+| tags        | api               |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate    | Direction |
+| ----------- | --------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-projects` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy` | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`       | `uses`       | outbound  |
+
+### GET /api/projects/\{project\} {#get-api-projects-project}
+
+**ID**: `api.operation.get-api-projects-project`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                         |
+| ----------- | ----------------------------- |
+| http_method | GET                           |
+| http_path   | /api/projects/\{project\}     |
+| operationId | get-api-projects-project      |
+| summary     | GET /api/projects/\{project\} |
+| tags        | api                           |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate  | Direction |
+| ----------- | --------------------------------------------- | ---------- | --------- |
+| inter-layer | `security.securitypolicy.bearer-token-policy` | `requires` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`       | `uses`     | outbound  |
+
+### GET /api/projects/\{project\}/checkouts {#get-api-projects-project-checkouts}
+
+**ID**: `api.operation.get-api-projects-project-checkouts`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                                   |
+| ----------- | --------------------------------------- |
+| http_method | GET                                     |
+| http_path   | /api/projects/\{project\}/checkouts     |
+| operationId | get-api-projects-project-checkouts      |
+| summary     | GET /api/projects/\{project\}/checkouts |
+| tags        | api                                     |
+
+#### Relationships
+
+| Type        | Related Element                               | Predicate    | Direction |
+| ----------- | --------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-projects` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy` | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`       | `uses`       | outbound  |
+
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations {#get-api-projects-project-checkouts-checkout-annotations}
+
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-annotations`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                                                            |
+| ----------- | ---------------------------------------------------------------- |
+| http_method | GET                                                              |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations     |
+| operationId | get-api-projects-project-checkouts-checkout-annotations          |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations |
+| tags        | api                                                              |
 
 #### Relationships
 
@@ -254,24 +360,48 @@ Creates a new annotation on a model element
 | ----------- | ------------------------------------------------ | ------------ | --------- |
 | inter-layer | `application.applicationservice.use-annotations` | `references` | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`          | `uses`       | outbound  |
+| intra-layer | `api.pathitem.annotations-path`                  | `composes`   | inbound   |
 
-### Create Annotation Reply {#create-annotation-reply}
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} {#get-api-projects-project-checkouts-checkout-annotations-annotationid}
 
-**ID**: `api.operation.create-annotation-reply`
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`
 
 **Type**: `operation`
 
-Adds a reply to an annotation thread.
+#### Attributes
+
+| Name        | Value                                                                             |
+| ----------- | --------------------------------------------------------------------------------- |
+| http_method | GET                                                                               |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}     |
+| operationId | get-api-projects-project-checkouts-checkout-annotations-annotation-id             |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} |
+| tags        | api                                                                               |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate    | Direction |
+| ----------- | ----------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
+| intra-layer | `api.pathitem.annotation-detail-path`                 | `composes`   | inbound   |
+
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies {#get-api-projects-project-checkouts-checkout-annotations-annotationid-replies}
+
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`
+
+**Type**: `operation`
 
 #### Attributes
 
-| Name        | Value                                     |
-| ----------- | ----------------------------------------- |
-| http_method | POST                                      |
-| http_path   | /api/annotations/\{annotationId\}/replies |
-| operationId | createAnnotationReply                     |
-| summary     | Reply to an annotation                    |
-| tags        | Annotations                               |
+| Name        | Value                                                                                     |
+| ----------- | ----------------------------------------------------------------------------------------- |
+| http_method | GET                                                                                       |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies     |
+| operationId | get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies             |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies |
+| tags        | api                                                                                       |
 
 #### Relationships
 
@@ -283,128 +413,141 @@ Adds a reply to an annotation thread.
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.annotation-replies-path`                | `composes`   | inbound   |
 
-### Delete Annotation {#delete-annotation}
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets {#get-api-projects-project-checkouts-checkout-changesets}
 
-**ID**: `api.operation.delete-annotation`
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-changesets`
 
 **Type**: `operation`
 
-Deletes an existing annotation
-
 #### Attributes
 
-| Name        | Value                             |
-| ----------- | --------------------------------- |
-| http_method | DELETE                            |
-| http_path   | /api/annotations/\{annotationId\} |
-| operationId | deleteAnnotation                  |
-| summary     | Delete an annotation              |
-| tags        | Annotations                       |
+| Name        | Value                                                           |
+| ----------- | --------------------------------------------------------------- |
+| http_method | GET                                                             |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets     |
+| operationId | get-api-projects-project-checkouts-checkout-changesets          |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets |
+| tags        | api                                                             |
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate | Direction |
-| ----------- | --------------------------------------- | --------- | --------- |
-| intra-layer | `api.securityscheme.bearer-auth-scheme` | `uses`    | outbound  |
+| Type        | Related Element                                 | Predicate    | Direction |
+| ----------- | ----------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-changesets` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`         | `uses`       | outbound  |
+| intra-layer | `api.pathitem.changesets-path`                  | `composes`   | inbound   |
 
-### Discard Changeset {#discard-changeset}
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\} {#get-api-projects-project-checkouts-checkout-changesets-changesetid}
 
-**ID**: `api.operation.discard-changeset`
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id`
 
 **Type**: `operation`
 
-Discards a staged changeset without touching the model (the viewer's Discard): deletes it with its folder, so it leaves GET /api/changesets and GET /api/changesets/:id answers 404 afterwards.
+#### Attributes
+
+| Name        | Value                                                                           |
+| ----------- | ------------------------------------------------------------------------------- |
+| http_method | GET                                                                             |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}     |
+| operationId | get-api-projects-project-checkouts-checkout-changesets-changeset-id             |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\} |
+| tags        | api                                                                             |
+
+#### Relationships
+
+| Type        | Related Element                      | Predicate  | Direction |
+| ----------- | ------------------------------------ | ---------- | --------- |
+| intra-layer | `api.pathitem.changeset-detail-path` | `composes` | inbound   |
+
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/verification {#get-api-projects-project-checkouts-checkout-changesets-changesetid-verification}
+
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification`
+
+**Type**: `operation`
 
 #### Attributes
 
-| Name        | Value                                   |
-| ----------- | --------------------------------------- |
-| http_method | POST                                    |
-| http_path   | /api/changesets/\{changesetId\}/discard |
-| operationId | discardChangeset                        |
-| summary     | Discard a staged changeset              |
-| tags        | Changesets                              |
+| Name        | Value                                                                                        |
+| ----------- | -------------------------------------------------------------------------------------------- |
+| http_method | GET                                                                                          |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/verification     |
+| operationId | get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification             |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/verification |
+| tags        | api                                                                                          |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate    | Direction |
+| ----------- | -------------------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.c4-plan-vs-as-built`              | `exposes`    | outbound  |
+| inter-layer | `application.applicationservice.plan-verification` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`      | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`            | `uses`       | outbound  |
+
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/layers/\{layerName\} {#get-api-projects-project-checkouts-checkout-layers-layername}
+
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                                                                     |
+| ----------- | ------------------------------------------------------------------------- |
+| http_method | GET                                                                       |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/layers/\{layerName\}     |
+| operationId | get-api-projects-project-checkouts-checkout-layers-layer-name             |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/layers/\{layerName\} |
+| tags        | api                                                                       |
 
 #### Relationships
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
 | inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
-| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
-| intra-layer | `api.pathitem.changeset-discard-path`                 | `composes`   | inbound   |
+| intra-layer | `api.pathitem.layer-path`                             | `composes`   | inbound   |
 
-### Get Annotation {#get-annotation}
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/model {#get-api-projects-project-checkouts-checkout-model}
 
-**ID**: `api.operation.get-annotation`
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-model`
 
 **Type**: `operation`
 
-Returns one annotation by id.
-
 #### Attributes
 
-| Name        | Value                             |
-| ----------- | --------------------------------- |
-| http_method | GET                               |
-| http_path   | /api/annotations/\{annotationId\} |
-| operationId | getAnnotation                     |
-| summary     | Get an annotation by ID           |
-| tags        | Annotations                       |
+| Name        | Value                                                      |
+| ----------- | ---------------------------------------------------------- |
+| http_method | GET                                                        |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/model     |
+| operationId | get-api-projects-project-checkouts-checkout-model          |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/model |
+| tags        | api                                                        |
 
 #### Relationships
 
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
-| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
-| intra-layer | `api.pathitem.annotation-detail-path`                 | `composes`   | inbound   |
+| Type        | Related Element                            | Predicate    | Direction |
+| ----------- | ------------------------------------------ | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-model` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`    | `uses`       | outbound  |
+| intra-layer | `api.pathitem.model-path`                  | `composes`   | inbound   |
 
-### Get Annotations {#get-annotations}
+### GET /api/projects/\{project\}/checkouts/\{checkout\}/tier1 {#get-api-projects-project-checkouts-checkout-tier1}
 
-**ID**: `api.operation.get-annotations`
-
-**Type**: `operation`
-
-Returns annotations optionally filtered by elementId query param
-
-#### Attributes
-
-| Name        | Value                                          |
-| ----------- | ---------------------------------------------- |
-| http_method | GET                                            |
-| http_path   | /api/annotations                               |
-| operationId | getAnnotations                                 |
-| summary     | Get annotations with optional elementId filter |
-| tags        | Annotations                                    |
-
-#### Relationships
-
-| Type        | Related Element                                  | Predicate    | Direction |
-| ----------- | ------------------------------------------------ | ------------ | --------- |
-| inter-layer | `application.applicationservice.use-annotations` | `references` | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`          | `uses`       | outbound  |
-| intra-layer | `api.pathitem.annotations-path`                  | `composes`   | inbound   |
-
-### GET /api/tier1 {#get-api-tier1}
-
-**ID**: `api.operation.get-api-tier1`
+**ID**: `api.operation.get-api-projects-project-checkouts-checkout-tier1`
 
 **Type**: `operation`
 
-Tier 1's state for the served checkout, provider and model, credential sources (never values) and this month's spend against the cap. Read-only; an older dr CLI answers 404.
-
 #### Attributes
 
-| Name        | Value                      |
-| ----------- | -------------------------- |
-| http_method | GET                        |
-| http_path   | /api/tier1                 |
-| operationId | getTier1                   |
-| summary     | Get Tier 1 state and spend |
-| tags        | Extraction                 |
+| Name        | Value                                                      |
+| ----------- | ---------------------------------------------------------- |
+| http_method | GET                                                        |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/tier1     |
+| operationId | get-api-projects-project-checkouts-checkout-tier1          |
+| summary     | GET /api/projects/\{project\}/checkouts/\{checkout\}/tier1 |
+| tags        | api                                                        |
 
 #### Relationships
 
@@ -418,55 +561,21 @@ Tier 1's state for the served checkout, provider and model, credential sources (
 | intra-layer | `api.securityscheme.bearer-auth-scheme`       | `uses`       | outbound  |
 | intra-layer | `api.pathitem.tier1-path`                     | `composes`   | inbound   |
 
-### Get Architecture Model {#get-architecture-model}
+### GET /api-spec.yaml {#get-api-spec-yaml}
 
-**ID**: `api.operation.get-architecture-model`
-
-**Type**: `operation`
-
-Returns full architecture model from documentation-robotics/model/ including all layers, elements, relationships, and cross-layer references
-
-#### Attributes
-
-| Name        | Value                       |
-| ----------- | --------------------------- |
-| http_method | GET                         |
-| http_path   | /api/model                  |
-| operationId | getModel                    |
-| summary     | Get full architecture model |
-| tags        | Model                       |
-
-#### Relationships
-
-| Type        | Related Element                            | Predicate    | Direction |
-| ----------- | ------------------------------------------ | ------------ | --------- |
-| inter-layer | `application.applicationservice.use-model` | `references` | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`    | `uses`       | outbound  |
-| intra-layer | `api.pathitem.model-path`                  | `composes`   | inbound   |
-
-### Get Changeset Details {#get-changeset-details}
-
-**ID**: `api.operation.get-changeset-details`
+**ID**: `api.operation.get-api-spec-yaml`
 
 **Type**: `operation`
 
-Returns detailed changeset including all element changes with before/after states, and its base drift with what changed in the base (overlaps, base changes) when the base's hash changed.
-
 #### Attributes
 
-| Name        | Value                           |
-| ----------- | ------------------------------- |
-| http_method | GET                             |
-| http_path   | /api/changesets/\{changesetId\} |
-| operationId | getChangeset                    |
-| summary     | Get changeset by ID             |
-| tags        | Changesets                      |
-
-#### Relationships
-
-| Type        | Related Element                      | Predicate  | Direction |
-| ----------- | ------------------------------------ | ---------- | --------- |
-| intra-layer | `api.pathitem.changeset-detail-path` | `composes` | inbound   |
+| Name        | Value              |
+| ----------- | ------------------ |
+| http_method | GET                |
+| http_path   | /api-spec.yaml     |
+| operationId | get-api-specyaml   |
+| summary     | GET /api-spec.yaml |
+| tags        | api-spec.yaml      |
 
 ### Get Changeset Verification {#get-changeset-verification}
 
@@ -498,32 +607,21 @@ The per-element result of `changeset_verify` for a plan against an as-built chan
 | intra-layer | `api.securityscheme.bearer-auth-scheme`                     | `uses`       | outbound  |
 | intra-layer | `api.pathitem.changeset-verification-path`                  | `composes`   | inbound   |
 
-### Get Layer {#get-layer}
+### GET /mcp {#get-mcp}
 
-**ID**: `api.operation.get-layer`
+**ID**: `api.operation.get-mcp`
 
 **Type**: `operation`
 
-Returns one layer of the model with its elements.
-
 #### Attributes
 
-| Name        | Value                     |
-| ----------- | ------------------------- |
-| http_method | GET                       |
-| http_path   | /api/layers/\{layerName\} |
-| operationId | getLayer                  |
-| summary     | Get a model layer by name |
-| tags        | Model                     |
-
-#### Relationships
-
-| Type        | Related Element                                       | Predicate    | Direction |
-| ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
-| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
-| intra-layer | `api.pathitem.layer-path`                             | `composes`   | inbound   |
+| Name        | Value    |
+| ----------- | -------- |
+| http_method | GET      |
+| http_path   | /mcp     |
+| operationId | get-mcp  |
+| summary     | GET /mcp |
+| tags        | mcp      |
 
 ### Get Schema Specifications {#get-schema-specifications}
 
@@ -549,6 +647,30 @@ Returns all JSON Schema files from .dr/schemas/ including layer schemas, relatio
 | ----------- | ------------------------ | ---------- | --------- |
 | intra-layer | `api.pathitem.spec-path` | `composes` | inbound   |
 
+### GET /ws {#get-ws}
+
+**ID**: `api.operation.get-ws`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value   |
+| ----------- | ------- |
+| http_method | GET     |
+| http_path   | /ws     |
+| operationId | get-ws  |
+| summary     | GET /ws |
+| tags        | ws      |
+
+#### Relationships
+
+| Type        | Related Element                                    | Predicate    | Direction |
+| ----------- | -------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.web-socket-client` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`      | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`            | `uses`       | outbound  |
+
 ### Health Check {#health-check}
 
 **ID**: `api.operation.health-check`
@@ -573,23 +695,66 @@ No auth required; returns server status and version
 | ----------- | -------------------------- | ---------- | --------- |
 | intra-layer | `api.pathitem.health-path` | `composes` | inbound   |
 
-### List Annotation Replies {#list-annotation-replies}
+### PATCH /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} {#patch-api-projects-project-checkouts-checkout-annotations-annotationid}
 
-**ID**: `api.operation.list-annotation-replies`
+**ID**: `api.operation.patch-api-projects-project-checkouts-checkout-annotations-annotation-id`
 
 **Type**: `operation`
 
-Returns the reply thread of an annotation; the Inspector's annotation thread reads it.
+#### Attributes
+
+| Name        | Value                                                                               |
+| ----------- | ----------------------------------------------------------------------------------- |
+| http_method | PATCH                                                                               |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}       |
+| operationId | patch-api-projects-project-checkouts-checkout-annotations-annotation-id             |
+| summary     | PATCH /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} |
+| tags        | api                                                                                 |
+
+#### Relationships
+
+| Type        | Related Element                       | Predicate  | Direction |
+| ----------- | ------------------------------------- | ---------- | --------- |
+| intra-layer | `api.pathitem.annotation-detail-path` | `composes` | inbound   |
+
+### POST /api/projects/\{project\}/checkouts/\{checkout\}/annotations {#post-api-projects-project-checkouts-checkout-annotations}
+
+**ID**: `api.operation.post-api-projects-project-checkouts-checkout-annotations`
+
+**Type**: `operation`
 
 #### Attributes
 
-| Name        | Value                                     |
-| ----------- | ----------------------------------------- |
-| http_method | GET                                       |
-| http_path   | /api/annotations/\{annotationId\}/replies |
-| operationId | getAnnotationReplies                      |
-| summary     | List replies to an annotation             |
-| tags        | Annotations                               |
+| Name        | Value                                                             |
+| ----------- | ----------------------------------------------------------------- |
+| http_method | POST                                                              |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations      |
+| operationId | post-api-projects-project-checkouts-checkout-annotations          |
+| summary     | POST /api/projects/\{project\}/checkouts/\{checkout\}/annotations |
+| tags        | api                                                               |
+
+#### Relationships
+
+| Type        | Related Element                                  | Predicate    | Direction |
+| ----------- | ------------------------------------------------ | ------------ | --------- |
+| inter-layer | `application.applicationservice.use-annotations` | `references` | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`          | `uses`       | outbound  |
+
+### POST /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies {#post-api-projects-project-checkouts-checkout-annotations-annotationid-replies}
+
+**ID**: `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------ |
+| http_method | POST                                                                                       |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies      |
+| operationId | post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies             |
+| summary     | POST /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}/replies |
+| tags        | api                                                                                        |
 
 #### Relationships
 
@@ -601,77 +766,89 @@ Returns the reply thread of an annotation; the Inspector's annotation thread rea
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.annotation-replies-path`                | `composes`   | inbound   |
 
-### List Changesets {#list-changesets}
+### POST /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/commit {#post-api-projects-project-checkouts-checkout-changesets-changesetid-commit}
 
-**ID**: `api.operation.list-changesets`
-
-**Type**: `operation`
-
-Returns registry of all available changesets with summaries, each with its base drift (state, blocksCommit, message), checked on the read with no commit attempt.
-
-#### Attributes
-
-| Name        | Value               |
-| ----------- | ------------------- |
-| http_method | GET                 |
-| http_path   | /api/changesets     |
-| operationId | listChangesets      |
-| summary     | List all changesets |
-| tags        | Changesets          |
-
-#### Relationships
-
-| Type        | Related Element                                 | Predicate    | Direction |
-| ----------- | ----------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.use-changesets` | `references` | outbound  |
-| intra-layer | `api.securityscheme.bearer-auth-scheme`         | `uses`       | outbound  |
-| intra-layer | `api.pathitem.changesets-path`                  | `composes`   | inbound   |
-
-### PUT /api/changesets/\{changesetId\}/review {#put-api-changesets-changesetid-review}
-
-**ID**: `api.operation.put-api-changesets-changeset-id-review`
+**ID**: `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`
 
 **Type**: `operation`
 
-Set or clear the reviewer's verdict on changes of a staged changeset by sequence; the server stamps atRevision and decidedAt, stores review.yaml and broadcasts changesets.updated.
-
 #### Attributes
 
-| Name        | Value                                  |
-| ----------- | -------------------------------------- |
-| http_method | PUT                                    |
-| http_path   | /api/changesets/\{changesetId\}/review |
-| operationId | putChangesetReview                     |
-| summary     | Record review decisions                |
-| tags        | Changesets                             |
+| Name        | Value                                                                                   |
+| ----------- | --------------------------------------------------------------------------------------- |
+| http_method | POST                                                                                    |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/commit      |
+| operationId | post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit             |
+| summary     | POST /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/commit |
+| tags        | api                                                                                     |
 
 #### Relationships
 
 | Type        | Related Element                                       | Predicate    | Direction |
 | ----------- | ----------------------------------------------------- | ------------ | --------- |
-| inter-layer | `product.feature.per-change-review`                   | `exposes`    | outbound  |
-| inter-layer | `application.applicationservice.use-changeset-review` | `references` | outbound  |
+| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
 | inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
-| intra-layer | `api.pathitem.changeset-review-path`                  | `composes`   | inbound   |
+| intra-layer | `api.pathitem.changeset-commit-path`                  | `composes`   | inbound   |
 
-### Replace Annotation {#replace-annotation}
+### POST /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/discard {#post-api-projects-project-checkouts-checkout-changesets-changesetid-discard}
 
-**ID**: `api.operation.replace-annotation`
+**ID**: `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`
 
 **Type**: `operation`
 
-Replaces an annotation's content and tags (PUT form of Update Annotation).
+#### Attributes
+
+| Name        | Value                                                                                    |
+| ----------- | ---------------------------------------------------------------------------------------- |
+| http_method | POST                                                                                     |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/discard      |
+| operationId | post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard             |
+| summary     | POST /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/discard |
+| tags        | api                                                                                      |
+
+#### Relationships
+
+| Type        | Related Element                                       | Predicate    | Direction |
+| ----------- | ----------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.generated-api-client` | `references` | outbound  |
+| inter-layer | `application.applicationservice.use-changesets`       | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
+| intra-layer | `api.pathitem.changeset-discard-path`                 | `composes`   | inbound   |
+
+### POST /mcp {#post-mcp}
+
+**ID**: `api.operation.post-mcp`
+
+**Type**: `operation`
 
 #### Attributes
 
-| Name        | Value                             |
-| ----------- | --------------------------------- |
-| http_method | PUT                               |
-| http_path   | /api/annotations/\{annotationId\} |
-| operationId | replaceAnnotation                 |
-| summary     | Replace an annotation             |
-| tags        | Annotations                       |
+| Name        | Value     |
+| ----------- | --------- |
+| http_method | POST      |
+| http_path   | /mcp      |
+| operationId | post-mcp  |
+| summary     | POST /mcp |
+| tags        | mcp       |
+
+### PUT /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} {#put-api-projects-project-checkouts-checkout-annotations-annotationid}
+
+**ID**: `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`
+
+**Type**: `operation`
+
+#### Attributes
+
+| Name        | Value                                                                             |
+| ----------- | --------------------------------------------------------------------------------- |
+| http_method | PUT                                                                               |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\}     |
+| operationId | put-api-projects-project-checkouts-checkout-annotations-annotation-id             |
+| summary     | PUT /api/projects/\{project\}/checkouts/\{checkout\}/annotations/\{annotationId\} |
+| tags        | api                                                                               |
 
 #### Relationships
 
@@ -682,29 +859,31 @@ Replaces an annotation's content and tags (PUT form of Update Annotation).
 | intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
 | intra-layer | `api.pathitem.annotation-detail-path`                 | `composes`   | inbound   |
 
-### Update Annotation {#update-annotation}
+### PUT /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/review {#put-api-projects-project-checkouts-checkout-changesets-changesetid-review}
 
-**ID**: `api.operation.update-annotation`
+**ID**: `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`
 
 **Type**: `operation`
 
-Updates content or tags of an existing annotation
-
 #### Attributes
 
-| Name        | Value                             |
-| ----------- | --------------------------------- |
-| http_method | PATCH                             |
-| http_path   | /api/annotations/\{annotationId\} |
-| operationId | updateAnnotation                  |
-| summary     | Update an existing annotation     |
-| tags        | Annotations                       |
+| Name        | Value                                                                                  |
+| ----------- | -------------------------------------------------------------------------------------- |
+| http_method | PUT                                                                                    |
+| http_path   | /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/review     |
+| operationId | put-api-projects-project-checkouts-checkout-changesets-changeset-id-review             |
+| summary     | PUT /api/projects/\{project\}/checkouts/\{checkout\}/changesets/\{changesetId\}/review |
+| tags        | api                                                                                    |
 
 #### Relationships
 
-| Type        | Related Element                       | Predicate  | Direction |
-| ----------- | ------------------------------------- | ---------- | --------- |
-| intra-layer | `api.pathitem.annotation-detail-path` | `composes` | inbound   |
+| Type        | Related Element                                       | Predicate    | Direction |
+| ----------- | ----------------------------------------------------- | ------------ | --------- |
+| inter-layer | `product.feature.per-change-review`                   | `exposes`    | outbound  |
+| inter-layer | `application.applicationservice.use-changeset-review` | `references` | outbound  |
+| inter-layer | `security.securitypolicy.bearer-token-policy`         | `requires`   | outbound  |
+| intra-layer | `api.securityscheme.bearer-auth-scheme`               | `uses`       | outbound  |
+| intra-layer | `api.pathitem.changeset-review-path`                  | `composes`   | inbound   |
 
 ### WebSocket Real-time Updates {#websocket-real-time-updates}
 
@@ -746,11 +925,11 @@ Path /api/annotations/\{annotationId\} — update and delete a specific annotati
 
 #### Relationships
 
-| Type        | Related Element                    | Predicate  | Direction |
-| ----------- | ---------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-annotation`     | `composes` | outbound  |
-| intra-layer | `api.operation.replace-annotation` | `composes` | outbound  |
-| intra-layer | `api.operation.update-annotation`  | `composes` | outbound  |
+| Type        | Related Element                                                                         | Predicate  | Direction |
+| ----------- | --------------------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`   | `composes` | outbound  |
+| intra-layer | `api.operation.patch-api-projects-project-checkouts-checkout-annotations-annotation-id` | `composes` | outbound  |
+| intra-layer | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`   | `composes` | outbound  |
 
 ### Annotation Replies Path {#annotation-replies-path}
 
@@ -769,10 +948,10 @@ Path /api/annotations/\{annotationId\}/replies — list and add replies
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate  | Direction |
-| ----------- | --------------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.create-annotation-reply` | `composes` | outbound  |
-| intra-layer | `api.operation.list-annotation-replies` | `composes` | outbound  |
+| Type        | Related Element                                                                                | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`  | `composes` | outbound  |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies` | `composes` | outbound  |
 
 ### Annotations Path {#annotations-path}
 
@@ -791,9 +970,9 @@ Path /api/annotations — list and create annotations
 
 #### Relationships
 
-| Type        | Related Element                 | Predicate  | Direction |
-| ----------- | ------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-annotations` | `composes` | outbound  |
+| Type        | Related Element                                                         | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations` | `composes` | outbound  |
 
 ### Changeset Commit Path {#changeset-commit-path}
 
@@ -812,9 +991,9 @@ Path /api/changesets/\{changesetId\}/commit — apply a staged changeset
 
 #### Relationships
 
-| Type        | Related Element                  | Predicate  | Direction |
-| ----------- | -------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.commit-changeset` | `composes` | outbound  |
+| Type        | Related Element                                                                             | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit` | `composes` | outbound  |
 
 ### Changeset Detail Path {#changeset-detail-path}
 
@@ -833,9 +1012,9 @@ Path /api/changesets/\{changesetId\} — retrieves a specific changeset by ID
 
 #### Relationships
 
-| Type        | Related Element                       | Predicate  | Direction |
-| ----------- | ------------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-changeset-details` | `composes` | outbound  |
+| Type        | Related Element                                                                     | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id` | `composes` | outbound  |
 
 ### Changeset Discard Path {#changeset-discard-path}
 
@@ -854,9 +1033,9 @@ Path /api/changesets/\{changesetId\}/discard — discard a staged changeset
 
 #### Relationships
 
-| Type        | Related Element                   | Predicate  | Direction |
-| ----------- | --------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.discard-changeset` | `composes` | outbound  |
+| Type        | Related Element                                                                              | Predicate  | Direction |
+| ----------- | -------------------------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard` | `composes` | outbound  |
 
 ### Changeset Review Path {#changeset-review-path}
 
@@ -874,9 +1053,9 @@ A staged changeset's review verdicts.
 
 #### Relationships
 
-| Type        | Related Element                                        | Predicate  | Direction |
-| ----------- | ------------------------------------------------------ | ---------- | --------- |
-| intra-layer | `api.operation.put-api-changesets-changeset-id-review` | `composes` | outbound  |
+| Type        | Related Element                                                                            | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------ | ---------- | --------- |
+| intra-layer | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review` | `composes` | outbound  |
 
 ### Changeset Verification Path {#changeset-verification-path}
 
@@ -909,9 +1088,9 @@ Path /api/changesets — lists all available changesets
 
 #### Relationships
 
-| Type        | Related Element                 | Predicate  | Direction |
-| ----------- | ------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.list-changesets` | `composes` | outbound  |
+| Type        | Related Element                                                        | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets` | `composes` | outbound  |
 
 ### Health Path {#health-path}
 
@@ -951,9 +1130,9 @@ Path /api/layers/\{layerName\} — one model layer
 
 #### Relationships
 
-| Type        | Related Element           | Predicate  | Direction |
-| ----------- | ------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-layer` | `composes` | outbound  |
+| Type        | Related Element                                                               | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name` | `composes` | outbound  |
 
 ### Model Path {#model-path}
 
@@ -972,9 +1151,9 @@ Path /api/model — returns the full architecture model
 
 #### Relationships
 
-| Type        | Related Element                        | Predicate  | Direction |
-| ----------- | -------------------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-architecture-model` | `composes` | outbound  |
+| Type        | Related Element                                                   | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-model` | `composes` | outbound  |
 
 ### Spec Path {#spec-path}
 
@@ -1013,9 +1192,9 @@ Tier 1 state and spend; read-only.
 
 #### Relationships
 
-| Type        | Related Element               | Predicate  | Direction |
-| ----------- | ----------------------------- | ---------- | --------- |
-| intra-layer | `api.operation.get-api-tier1` | `composes` | outbound  |
+| Type        | Related Element                                                   | Predicate  | Direction |
+| ----------- | ----------------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1` | `composes` | outbound  |
 
 ### WebSocket Path {#websocket-path}
 
@@ -1056,25 +1235,30 @@ Token in Authorization header; used for REST API endpoints requiring authenticat
 
 #### Relationships
 
-| Type        | Related Element                                                     | Predicate  | Direction |
-| ----------- | ------------------------------------------------------------------- | ---------- | --------- |
-| inter-layer | `security.securitypolicy.bearer-token-policy`                       | `realizes` | outbound  |
-| intra-layer | `api.openapidocument.dr-cli-visualization-server-open-api-document` | `requires` | inbound   |
-| intra-layer | `api.operation.commit-changeset`                                    | `uses`     | inbound   |
-| intra-layer | `api.operation.create-annotation-reply`                             | `uses`     | inbound   |
-| intra-layer | `api.operation.create-annotation`                                   | `uses`     | inbound   |
-| intra-layer | `api.operation.delete-annotation`                                   | `uses`     | inbound   |
-| intra-layer | `api.operation.discard-changeset`                                   | `uses`     | inbound   |
-| intra-layer | `api.operation.get-annotation`                                      | `uses`     | inbound   |
-| intra-layer | `api.operation.get-annotations`                                     | `uses`     | inbound   |
-| intra-layer | `api.operation.get-api-tier1`                                       | `uses`     | inbound   |
-| intra-layer | `api.operation.get-architecture-model`                              | `uses`     | inbound   |
-| intra-layer | `api.operation.get-changeset-verification`                          | `uses`     | inbound   |
-| intra-layer | `api.operation.get-layer`                                           | `uses`     | inbound   |
-| intra-layer | `api.operation.list-annotation-replies`                             | `uses`     | inbound   |
-| intra-layer | `api.operation.list-changesets`                                     | `uses`     | inbound   |
-| intra-layer | `api.operation.put-api-changesets-changeset-id-review`              | `uses`     | inbound   |
-| intra-layer | `api.operation.replace-annotation`                                  | `uses`     | inbound   |
+| Type        | Related Element                                                                                  | Predicate  | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------ | ---------- | --------- |
+| inter-layer | `security.securitypolicy.bearer-token-policy`                                                    | `realizes` | outbound  |
+| intra-layer | `api.openapidocument.dr-cli-visualization-server-open-api-document`                              | `requires` | inbound   |
+| intra-layer | `api.operation.delete-api-projects-project-checkouts-checkout-annotations-annotation-id`         | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations`                          | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets`                           | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                    | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-model`                                | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project-checkouts`                                               | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects-project`                                                         | `uses`     | inbound   |
+| intra-layer | `api.operation.get-api-projects`                                                                 | `uses`     | inbound   |
+| intra-layer | `api.operation.get-changeset-verification`                                                       | `uses`     | inbound   |
+| intra-layer | `api.operation.get-ws`                                                                           | `uses`     | inbound   |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `uses`     | inbound   |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-annotations`                         | `uses`     | inbound   |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `uses`     | inbound   |
+| intra-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `uses`     | inbound   |
+| intra-layer | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `uses`     | inbound   |
+| intra-layer | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `uses`     | inbound   |
 
 ### Query Auth Scheme {#query-auth-scheme}
 
@@ -1101,4 +1285,4 @@ Token as ?token= query param; used for WebSocket connection authentication where
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0

@@ -18,8 +18,8 @@ User interface components, screens, and user experience elements.
 | ------------------------- | ----- |
 | Elements                  | 25    |
 | Intra-Layer Relationships | 26    |
-| Inter-Layer Relationships | 74    |
-| Inbound Relationships     | 26    |
+| Inter-Layer Relationships | 73    |
+| Inbound Relationships     | 25    |
 | Outbound Relationships    | 48    |
 
 **Cross-Layer References**:
@@ -131,7 +131,6 @@ flowchart TB
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`    | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                   | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                   | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`  | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                  | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                              | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.ux.view`          | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                            | `ux.view.architecture-view`                                     | `ux`         | `tests`      | many-to-many | medium   |
@@ -511,39 +510,38 @@ The model as C4 diagrams (#/architecture): a level control (Context · Container
 
 #### Relationships
 
-| Type        | Related Element                                                                                                                    | Predicate    | Direction |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.c4-view-scoping`                                                                                   | `serves`     | inbound   |
-| inter-layer | `navigation.route.checkout-shell-route`                                                                                            | `maps-to`    | inbound   |
-| inter-layer | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26`   | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                  | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                  | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976` | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`                 | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                             | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                           | `tests`      | inbound   |
-| inter-layer | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                       | `tests`      | inbound   |
-| inter-layer | `technology.systemsoftware.elk`                                                                                                    | `depends-on` | outbound  |
-| inter-layer | `product.feature.c4-architecture-diagrams`                                                                                         | `realizes`   | outbound  |
-| inter-layer | `product.feature.c4-changeset-overlay`                                                                                             | `realizes`   | outbound  |
-| inter-layer | `product.feature.c4-diagram-export`                                                                                                | `realizes`   | outbound  |
-| inter-layer | `product.feature.c4-overlay-change-counts`                                                                                         | `realizes`   | outbound  |
-| inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                              | `realizes`   | outbound  |
-| inter-layer | `business.businessobject.architecture-model`                                                                                       | `references` | outbound  |
-| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                         | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.changesets-read-as-architecture-change`                                                                    | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`                                                                        | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                                                                        | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                     | `satisfies`  | outbound  |
-| inter-layer | `business.businessrole.architecture-reviewer`                                                                                      | `serves`     | outbound  |
-| inter-layer | `business.businessrole.model-author`                                                                                               | `serves`     | outbound  |
-| inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                                                        | `supports`   | outbound  |
-| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                                                          | `aggregates` | inbound   |
-| intra-layer | `ux.subview.c4-changeset-bar`                                                                                                      | `composes`   | outbound  |
-| intra-layer | `ux.subview.c4-diagram`                                                                                                            | `composes`   | outbound  |
-| intra-layer | `ux.subview.c4-export-menu`                                                                                                        | `composes`   | outbound  |
-| intra-layer | `ux.subview.c4-plan-comparison-bar`                                                                                                | `composes`   | outbound  |
-| intra-layer | `ux.subview.checkout-switcher`                                                                                                     | `composes`   | outbound  |
+| Type        | Related Element                                                                                                                  | Predicate    | Direction |
+| ----------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.c4-view-scoping`                                                                                 | `serves`     | inbound   |
+| inter-layer | `navigation.route.checkout-shell-route`                                                                                          | `maps-to`    | inbound   |
+| inter-layer | `testing.testcasesketch.accessibility-axe-wcag-2-1-aa-view-name-view-tone-canvas-no-serious-critical-violations-except-f5cdbb26` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-canvas-drills-from-a-container-into-its-components-and-back`                                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-the-architecture-section-of-the-nav-tree-opens-the-diagrams`               | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                           | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                         | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4diagram-keyboard-moves-between-cards-with-the-arrow-keys-and-drills-in-with-enter`                     | `tests`      | inbound   |
+| inter-layer | `technology.systemsoftware.elk`                                                                                                  | `depends-on` | outbound  |
+| inter-layer | `product.feature.c4-architecture-diagrams`                                                                                       | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-changeset-overlay`                                                                                           | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-diagram-export`                                                                                              | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-overlay-change-counts`                                                                                       | `realizes`   | outbound  |
+| inter-layer | `product.feature.c4-plan-vs-as-built`                                                                                            | `realizes`   | outbound  |
+| inter-layer | `business.businessobject.architecture-model`                                                                                     | `references` | outbound  |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                                                       | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.changesets-read-as-architecture-change`                                                                  | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.diagrams-travel-outside-the-viewer`                                                                      | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                                                                      | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                   | `satisfies`  | outbound  |
+| inter-layer | `business.businessrole.architecture-reviewer`                                                                                    | `serves`     | outbound  |
+| inter-layer | `business.businessrole.model-author`                                                                                             | `serves`     | outbound  |
+| inter-layer | `motivation.goal.visualize-multi-layer-architecture-models`                                                                      | `supports`   | outbound  |
+| intra-layer | `ux.uxspec.architecture-exploration-spec`                                                                                        | `aggregates` | inbound   |
+| intra-layer | `ux.subview.c4-changeset-bar`                                                                                                    | `composes`   | outbound  |
+| intra-layer | `ux.subview.c4-diagram`                                                                                                          | `composes`   | outbound  |
+| intra-layer | `ux.subview.c4-export-menu`                                                                                                      | `composes`   | outbound  |
+| intra-layer | `ux.subview.c4-plan-comparison-bar`                                                                                              | `composes`   | outbound  |
+| intra-layer | `ux.subview.checkout-switcher`                                                                                                   | `composes`   | outbound  |
 
 ### Changesets View {#changesets-view}
 
@@ -750,4 +748,4 @@ The search box in the topbar and its results popup, an overlay below it listing 
 
 ---
 
-Generated: 2026-11-24T18:48:38.495Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0

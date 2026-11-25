@@ -122,6 +122,7 @@ flowchart TB
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.layer-domain-palette`                                                                               | `motivation.requirement.viewer-covers-every-spec-layer`             | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.plan-verification`                                                                                  | `motivation.requirement.plan-outcome-reads-as-architecture`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.search-index`                                                                                       | `motivation.requirement.find-anything-by-name`                      | `motivation` | `satisfies`  | many-to-many | medium   |
+| `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.shell-params`                                                                                       | `motivation.requirement.back-and-forward-replay-graph-moves`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-changeset-review`                                                                               | `motivation.requirement.each-review-change-reads-on-its-own`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.use-viewport-history`                                                                               | `motivation.requirement.back-and-forward-replay-graph-moves`        | `motivation` | `satisfies`  | many-to-many | medium   |
 | `application.applicationservice.satisfies.motivation.requirement`                     | `application.applicationservice.web-socket-client`                                                                                  | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -139,7 +140,6 @@ flowchart TB
 | `de956804-eabb-4548-8389-73cb6c63ef2f-satisfies-e748118c-b989-43fe-b0d2-9121e931fcd2` | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                              | `e748118c-b989-43fe-b0d2-9121e931fcd2`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-462e2931-4c7c-4051-a9ac-8817c270d650`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                              | `462e2931-4c7c-4051-a9ac-8817c270d650`                              | `motivation` | `supports`   | unknown      | unknown  |
 | `de956804-eabb-4548-8389-73cb6c63ef2f-supports-ef84b64d-883c-4471-9b56-a58574bac2b9`  | `de956804-eabb-4548-8389-73cb6c63ef2f`                                                                                              | `ef84b64d-883c-4471-9b56-a58574bac2b9`                              | `motivation` | `supports`   | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-satisfies-fc86a033-81bd-4933-abb8-b24076577123` | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                                                              | `fc86a033-81bd-4933-abb8-b24076577123`                              | `motivation` | `satisfies`  | unknown      | unknown  |
 | `e642ad79-62ea-47a4-ae04-d512d0ef7881-realizes-731285cc-dc15-4c64-a342-a933ce00bd61`  | `e642ad79-62ea-47a4-ae04-d512d0ef7881`                                                                                              | `731285cc-dc15-4c64-a342-a933ce00bd61`                              | `motivation` | `realizes`   | unknown      | unknown  |
 | `navigation.route.satisfies.motivation.requirement`                                   | `navigation.route.checkout-index-route`                                                                                             | `motivation.requirement.open-the-checkout-a-link-names`             | `motivation` | `satisfies`  | many-to-many | medium   |
 | `navigation.route.satisfies.motivation.requirement`                                   | `navigation.route.checkout-shell-route`                                                                                             | `motivation.requirement.keep-checkouts-apart-in-one-browser`        | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -556,6 +556,7 @@ In the Model, Schema, Impact, by-type lanes and Architecture views, Back undoes 
 | Type        | Related Element                                                      | Predicate   | Direction |
 | ----------- | -------------------------------------------------------------------- | ----------- | --------- |
 | inter-layer | `application.applicationservice.history-policy`                      | `satisfies` | inbound   |
+| inter-layer | `application.applicationservice.shell-params`                        | `satisfies` | inbound   |
 | inter-layer | `application.applicationservice.use-viewport-history`                | `satisfies` | inbound   |
 | inter-layer | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view` | `satisfies` | inbound   |
 
@@ -985,4 +986,4 @@ System dependency: DR CLI server that must be running to serve model data to the
 
 ---
 
-Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0

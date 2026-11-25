@@ -5,10 +5,7 @@ application.applicationservice.generated-api-client:
   type: applicationservice
   layer_id: application
   name: Generated API Client
-  description: Auto-generated TypeScript HTTP client from the OpenAPI spec;
-    provides typed methods for all DR CLI REST endpoints. Project data is called
-    only through its /api/projects/{project}/checkouts/{checkout}/...
-    operations, with the current checkout from Checkout Scope.
+  description: Auto-generated TypeScript HTTP client from the OpenAPI spec; provides typed methods for all DR CLI REST endpoints. Project data is called only through its /api/projects/{project}/checkouts/{checkout}/... operations, with the current checkout from Checkout Scope.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -27,9 +24,7 @@ application.applicationservice.exception-classifier:
   type: applicationservice
   layer_id: application
   name: Exception Classifier
-  description: Classifies a runtime error by its message and type into a category,
-    severity, expected-failure-or-bug flag, transience and recovery strategy
-    (retry or not), for the error tracker's structured error log
+  description: Classifies a runtime error by its message and type into a category, severity, expected-failure-or-bug flag, transience and recovery strategy (retry or not), for the error tracker's structured error log
   attributes:
     serviceType: synchronous
   source_reference:
@@ -48,11 +43,7 @@ application.applicationservice.chat-service:
   type: applicationservice
   layer_id: application
   name: Chat Service
-  description: "DrBot chat over the central process's websocket: sends chat.send /
-    chat.cancel / chat.status with the current project and checkout, streams the
-    reply (text, tool calls, thinking, usage), matches every frame by
-    conversation id and checkout, and shows a turn queued behind the process's
-    cap (chat.turn.queued / chat.turn.started)"
+  description: "DrBot chat over the central process's websocket: sends chat.send / chat.cancel / chat.status with the current project and checkout, streams the reply (text, tool calls, thinking, usage), matches every frame by conversation id and checkout, and shows a turn queued behind the process's cap (chat.turn.queued / chat.turn.started)"
   attributes:
     serviceType: asynchronous
   source_reference:
@@ -71,10 +62,7 @@ application.applicationservice.web-socket-client:
   type: applicationservice
   layer_id: application
   name: WebSocket Client
-  description: Manages the persistent WebSocket connection to the DR CLI's central
-    process (/ws); handles reconnection, the per-checkout feed subscription
-    (subscribe / unsubscribe frames, resent after a reconnect), filtering of
-    events stamped for another checkout, and JSON-RPC message dispatch
+  description: Manages the persistent WebSocket connection to the DR CLI's central process (/ws); handles reconnection, the per-checkout feed subscription (subscribe / unsubscribe frames, resent after a reconnect), filtering of events stamped for another checkout, and JSON-RPC message dispatch
   attributes:
     serviceType: event-driven
   source_reference:
@@ -95,9 +83,7 @@ application.applicationservice.json-rpc-handler:
   type: applicationservice
   layer_id: application
   name: JSON-RPC Handler
-  description: Processes incoming JSON-RPC 2.0 messages from the WebSocket
-    connection; routes model/changeset/annotation update events to the
-    appropriate stores
+  description: Processes incoming JSON-RPC 2.0 messages from the WebSocket connection; routes model/changeset/annotation update events to the appropriate stores
   attributes:
     serviceType: event-driven
   source_reference:
@@ -116,8 +102,7 @@ application.applicationservice.error-tracker:
   type: applicationservice
   layer_id: application
   name: Error Tracker
-  description: Captures and categorizes runtime errors with context for display in
-    the UI and structured logging
+  description: Captures and categorizes runtime errors with context for display in the UI and structured logging
   attributes:
     serviceType: synchronous
   source_reference:
@@ -136,8 +121,7 @@ application.applicationservice.chat-validation:
   type: applicationservice
   layer_id: application
   name: Chat Validation
-  description: Validates chat message content and enforces conversation
-    constraints before submission
+  description: Validates chat message content and enforces conversation constraints before submission
   attributes:
     serviceType: synchronous
   source_reference:
@@ -156,16 +140,7 @@ application.applicationservice.model-graph-transform:
   type: applicationservice
   layer_id: application
   name: Model Graph Transform
-  description: Pure transforms of the /api/model payload into per-layer Heimdall
-    GraphCanvas view models (nodes + edges); builds the dual-index (UUID +
-    derived dotted id) used to resolve every link endpoint, since links
-    reference nodes by either form. /api/model doesn't send the dotted id, so it
-    is derived from the element's name with a verbatim port of the dr CLI's
-    toKebabCase (punctuation dropped, dotted chains joined as the CLI does); any
-    other rule leaves links unresolved. Replaced the old
-    dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts
-    client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON
-    from the DR CLI REST API via React Query.
+  description: Pure transforms of the /api/model payload into per-layer Heimdall GraphCanvas view models (nodes + edges); builds the dual-index (UUID + derived dotted id) used to resolve every link endpoint, since links reference nodes by either form. /api/model doesn't send the dotted id, so it is derived from the element's name with a verbatim port of the dr CLI's toKebabCase (punctuation dropped, dotted chains joined as the CLI does); any other rule leaves links unresolved. Replaced the old dataLoader.ts/crossLayerReferenceExtractor.ts/nodeTransformer.ts/yamlParser.ts client-side YAML-parsing pipeline — the app now consumes pre-parsed JSON from the DR CLI REST API via React Query.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -184,10 +159,7 @@ application.applicationservice.relationship-derivation:
   type: applicationservice
   layer_id: application
   name: Relationship Derivation
-  description: Derives a selected element's inbound/outbound relationship links
-    (including cross-layer links, with targetDomain set to the other endpoint's
-    layer for swatch coloring and cross-layer navigation) from the /api/model
-    payload for the GraphInspector/Inspector click-to-navigate feature.
+  description: Derives a selected element's inbound/outbound relationship links (including cross-layer links, with targetDomain set to the other endpoint's layer for swatch coloring and cross-layer navigation) from the /api/model payload for the GraphInspector/Inspector click-to-navigate feature.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -206,10 +178,7 @@ application.applicationservice.spec-graph-transform:
   type: applicationservice
   layer_id: application
   name: Spec Graph Transform
-  description: Turns /api/spec into per-layer node-type graphs, attribute rows and
-    relationship-schema counts for the Schema view; node types are named with
-    the node type label's full singular ("Application Component"), never the raw
-    title.
+  description: Turns /api/spec into per-layer node-type graphs, attribute rows and relationship-schema counts for the Schema view; node types are named with the node type label's full singular ("Application Component"), never the raw title.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -228,11 +197,7 @@ application.applicationservice.page-data-builder:
   type: applicationservice
   layer_id: application
   name: Page Data Builder
-  description: Builds the page view's records (header, breadcrumb, summary,
-    markdown description, stats, facts, tables) for a layer, spec node type or
-    model element; the description is its own field, never a fact. A node type
-    is named with the node type label's full singular in headers and tables; the
-    spec's raw title stays a fact.
+  description: Builds the page view's records (header, breadcrumb, summary, markdown description, stats, facts, tables) for a layer, spec node type or model element; the description is its own field, never a fact. A node type is named with the node type label's full singular in headers and tables; the spec's raw title stays a fact.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -251,8 +216,7 @@ application.applicationservice.layered-reach:
   type: applicationservice
   layer_id: application
   name: Layered Reach
-  description: Whole-model heimdall-ui layered index and the inspector's
-    followed-across-layers reach (computeReach at the chosen follow depth).
+  description: Whole-model heimdall-ui layered index and the inspector's followed-across-layers reach (computeReach at the chosen follow depth).
   attributes:
     serviceType: synchronous
   source_reference:
@@ -271,13 +235,7 @@ application.applicationservice.changeset-impact-analysis:
   type: applicationservice
   layer_id: application
   name: Changeset Impact Analysis
-  description: Lays a changeset over the model (staged additions included), nets
-    its ops in order, runs multi-origin computeReach from every changed element
-    and returns the reached subgraph and per-layer blast radius; narrows it to a
-    filter (change, layer, type, link category), a name search, or one focused
-    element's reach, with per-facet counts, and groups a large lane's elements
-    by type into group nodes named with the node type label's full plural and
-    count ("Application Components · 12").
+  description: Lays a changeset over the model (staged additions included), nets its ops in order, runs multi-origin computeReach from every changed element and returns the reached subgraph and per-layer blast radius; narrows it to a filter (change, layer, type, link category), a name search, or one focused element's reach, with per-facet counts, and groups a large lane's elements by type into group nodes named with the node type label's full plural and count ("Application Components · 12").
   attributes:
     serviceType: synchronous
   source_reference:
@@ -296,10 +254,7 @@ application.applicationservice.chat-context-builder:
   type: applicationservice
   layer_id: application
   name: Chat Context Builder
-  description: Builds the <viewer-context> block (view, layer, selected element or
-    changeset) sent ahead of each DrBot message. In the Architecture view it
-    names the C4 level, the scope and the selected box with the dotted ids of
-    the model elements behind it.
+  description: Builds the <viewer-context> block (view, layer, selected element or changeset) sent ahead of each DrBot message. In the Architecture view it names the C4 level, the scope and the selected box with the dotted ids of the model elements behind it.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -318,9 +273,7 @@ application.applicationservice.neighborhood-graph:
   type: applicationservice
   layer_id: application
   name: Neighborhood Graph
-  description: The one-hop neighborhood graph of a model element or spec node type
-    shown on its page; node types are named with the node type label's full
-    singular.
+  description: The one-hop neighborhood graph of a model element or spec node type shown on its page; node types are named with the node type label's full singular.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -339,19 +292,7 @@ application.applicationservice.changeset-review-model:
   type: applicationservice
   layer_id: application
   name: Changeset Review Model
-  description: "Pure review model over a changeset: review items, groups,
-    cancel-out pairs, effective decisions, drop cascade, conflicts,
-    since-your-review diff and the apply plan. A link item carries each end's
-    name, type, the type's display name, layer and whether this changeset adds
-    it (replacing the 'new source' / 'new target' / 'both ends new' chips); an
-    element item counts its new links out and in. Types read by their display
-    name (#605): the caller passes typeNameOf (the spec's title), else the type
-    id is split into words. Apply needs a decision only where one is required
-    (#573): canApply holds while a blocked delete is undecided, a change waits
-    on DrBot or a drop conflicts, and otherwise undecided changes land as kept
-    (apply.undecided lists them); ready still means every change has a verdict.
-    The commit body is unchanged: drop names only dropped changes,
-    deleteBlockedLinks only kept blocked deletes."
+  description: "Pure review model over a changeset: review items, groups, cancel-out pairs, effective decisions, drop cascade, conflicts, since-your-review diff and the apply plan. A link item carries each end's name, type, the type's display name, layer and whether this changeset adds it (replacing the 'new source' / 'new target' / 'both ends new' chips); an element item counts its new links out and in. Types read by their display name (#605): the caller passes typeNameOf (the spec's title), else the type id is split into words. Apply needs a decision only where one is required (#573): canApply holds while a blocked delete is undecided, a change waits on DrBot or a drop conflicts, and otherwise undecided changes land as kept (apply.undecided lists them); ready still means every change has a verdict. The commit body is unchanged: drop names only dropped changes, deleteBlockedLinks only kept blocked deletes."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -370,9 +311,7 @@ application.applicationservice.layer-domain-palette:
   type: applicationservice
   layer_id: application
   name: Layer Domain Palette
-  description: The layer slug → colour, label and order map every view draws
-    layers with, covering all 13 spec layers (Product, layer 3, gets its own
-    colour); the left rail's layer count comes from the spec, not a constant.
+  description: The layer slug → colour, label and order map every view draws layers with, covering all 13 spec layers (Product, layer 3, gets its own colour); the left rail's layer count comes from the spec, not a constant.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -390,9 +329,7 @@ application.applicationservice.use-model:
   type: applicationservice
   layer_id: application
   name: useModel
-  description: React Query hook over GET /api/model, deriving the model graph
-    index; useLiveModelUpdates refetches model and changesets on the server's
-    model.updated broadcast.
+  description: React Query hook over GET /api/model, deriving the model graph index; useLiveModelUpdates refetches model and changesets on the server's model.updated broadcast.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -411,11 +348,7 @@ application.applicationservice.use-spec:
   type: applicationservice
   layer_id: application
   name: useSpec
-  description: "React Query hook over GET /api/spec: per-layer node schemas and
-    relationship schemas, with the layer order derived from them. Its version is
-    the spec version from the manifest schema's specVersion (a layer schema's as
-    fallback), not the response's own version field (the API's 0.1.0); empty
-    when the server sends none."
+  description: "React Query hook over GET /api/spec: per-layer node schemas and relationship schemas, with the layer order derived from them. Its version is the spec version from the manifest schema's specVersion (a layer schema's as fallback), not the response's own version field (the API's 0.1.0); empty when the server sends none."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -434,13 +367,7 @@ application.applicationservice.use-changesets:
   type: applicationservice
   layer_id: application
   name: useChangesets
-  description: React Query hooks over GET /api/changesets and /api/changesets/:id
-    (with each changeset's purpose, allowed actions and base drift, validated;
-    the plan a verification record verifies and, in the detail, what its
-    extraction read), Apply (commit) and Discard with their refusal messages,
-    including the 409 for a verification record; useLiveChangesetUpdates
-    refetches on changesets.updated, which the server also sends after a model
-    reload, so drift stays current.
+  description: React Query hooks over GET /api/changesets and /api/changesets/:id (with each changeset's purpose, allowed actions and base drift, validated; the plan a verification record verifies and, in the detail, what its extraction read), Apply (commit) and Discard with their refusal messages, including the 409 for a verification record; useLiveChangesetUpdates refetches on changesets.updated, which the server also sends after a model reload, so drift stays current.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -459,9 +386,7 @@ application.applicationservice.use-annotations:
   type: applicationservice
   layer_id: application
   name: useAnnotations
-  description: React Query hooks for annotation CRUD and replies;
-    useLiveAnnotationUpdates invalidates on the server's annotation broadcasts
-    so comments written elsewhere appear without a reload.
+  description: React Query hooks for annotation CRUD and replies; useLiveAnnotationUpdates invalidates on the server's annotation broadcasts so comments written elsewhere appear without a reload.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -480,9 +405,7 @@ application.applicationservice.use-changeset-review:
   type: applicationservice
   layer_id: application
   name: useChangesetReview
-  description: Per-change verdicts (keep, drop, ask) through PUT
-    /api/changesets/:id/review, optimistic and queued per changeset; falls back
-    to the local review store on an older dr CLI.
+  description: Per-change verdicts (keep, drop, ask) through PUT /api/changesets/:id/review, optimistic and queued per changeset; falls back to the local review store on an older dr CLI.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -501,10 +424,7 @@ application.applicationservice.use-tier1:
   type: applicationservice
   layer_id: application
   name: useTier1
-  description: React Query hook over GET /api/tier1; treats 404/405/501 or a
-    non-Tier1Status body as unavailable and asks again on inbox mount,
-    changesets.updated and window focus, and every few seconds while Tier 1 is
-    warming so the fill's progress moves without a reload.
+  description: React Query hook over GET /api/tier1; treats 404/405/501 or a non-Tier1Status body as unavailable and asks again on inbox mount, changesets.updated and window focus, and every few seconds while Tier 1 is warming so the fill's progress moves without a reload.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -523,9 +443,7 @@ application.applicationservice.change-origin-helpers:
   type: applicationservice
   layer_id: application
   name: Change Origin Helpers
-  description: Tier 1 wire types aliased from the generated client, and the checks
-    that keep a change's origin and the Tier 1 status renderable (originOf,
-    toTier1Status), with decider labels and spend formatting.
+  description: Tier 1 wire types aliased from the generated client, and the checks that keep a change's origin and the Tier 1 status renderable (originOf, toTier1Status), with decider labels and spend formatting.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -544,8 +462,7 @@ application.applicationservice.changeset-op-rows:
   type: applicationservice
   layer_id: application
   name: Changeset Op Rows
-  description: Folds a changeset's change records into op rows (add, update,
-    delete) with their changed fields, detail line and JSON diff lines.
+  description: Folds a changeset's change records into op rows (add, update, delete) with their changed fields, detail line and JSON diff lines.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -564,9 +481,7 @@ application.applicationservice.structural-predicate-classifier:
   type: applicationservice
   layer_id: application
   name: Structural Predicate Classifier
-  description: Hardcoded DR predicate category classification (isStructuralEdge)
-    behind the Relations control's structural-only filter; not exposed by
-    /api/model or /api/spec.
+  description: Hardcoded DR predicate category classification (isStructuralEdge) behind the Relations control's structural-only filter; not exposed by /api/model or /api/spec.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -585,8 +500,7 @@ application.applicationservice.predicate-definitions:
   type: applicationservice
   layer_id: application
   name: Predicate Definitions
-  description: Plain-language definitions of DR relationship predicates, shown by
-    the predicate tooltip.
+  description: Plain-language definitions of DR relationship predicates, shown by the predicate tooltip.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -605,8 +519,7 @@ application.applicationservice.chat-adapter:
   type: applicationservice
   layer_id: application
   name: Chat Adapter
-  description: Maps the chat store's message parts onto Heimdall's chat message,
-    tool and thinking blocks.
+  description: Maps the chat store's message parts onto Heimdall's chat message, tool and thinking blocks.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -625,8 +538,7 @@ application.applicationservice.use-viewport-history:
   type: applicationservice
   layer_id: application
   name: useViewportHistory
-  description: Records the graph viewport on dwell and navigate, and restores it
-    from ?vp= (reload, deep link) or silently on back/forward.
+  description: Records the graph viewport on dwell and navigate, and restores it from ?vp= (reload, deep link) or silently on back/forward.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -645,10 +557,7 @@ application.applicationservice.graph-viewport-key:
   type: applicationservice
   layer_id: application
   name: Graph Viewport Key
-  description: "The GraphCanvas key and its scope tag, the ?vp= format and
-    parsing, and liveCanvasKey: the key of whichever canvas the view shows
-    (Model/Schema graph, the Impact lanes, the C4 diagram), so ?vp= applies only
-    to the canvas it was recorded on."
+  description: "The GraphCanvas key and its scope tag, the ?vp= format and parsing, and liveCanvasKey: the key of whichever canvas the view shows (Model/Schema graph, the Impact lanes, the C4 diagram), so ?vp= applies only to the canvas it was recorded on."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -667,8 +576,7 @@ application.applicationservice.use-edge-interaction:
   type: applicationservice
   layer_id: application
   name: useEdgeInteraction
-  description: Edge hover and selection state local to the canvas, kept out of the
-    store and the edges memo so hovering never re-runs the layout.
+  description: Edge hover and selection state local to the canvas, kept out of the store and the edges memo so hovering never re-runs the layout.
   attributes:
     serviceType: synchronous
   source_reference:
@@ -706,12 +614,7 @@ application.applicationservice.use-cli-version:
   type: applicationservice
   layer_id: application
   name: useCliVersion
-  description: "React Query hook over GET /health: `{ version, state }`, the dr
-    CLI version serving the viewer when /health sends one as cliVersion (else
-    undefined, so the status bar shows —) and the read's load state, so the
-    status bar says `cli …` until /health answers (#636). Never /health's
-    version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec
-    manifest) and cliVersionOf live beside it in data/serverVersions.ts."
+  description: "React Query hook over GET /health: `{ version, state }`, the dr CLI version serving the viewer when /health sends one as cliVersion (else undefined, so the status bar shows —) and the read's load state, so the status bar says `cli …` until /health answers (#636). Never /health's version, which is the API's own (0.1.0). Pure helpers specVersionOf (spec manifest) and cliVersionOf live beside it in data/serverVersions.ts."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -730,15 +633,7 @@ application.applicationservice.changeset-drift:
   type: applicationservice
   layer_id: application
   name: Changeset Drift
-  description: "Reads a changeset's base drift from the dr CLI's changeset
-    endpoints (drift on GET /api/changesets and /api/changesets/:id): state
-    (none, content-free, drifted, not-applicable, unknown), blocksCommit and the
-    server's message, and on the detail the overlaps and what changed in the
-    base (counts, per-layer, cut lists with truncated). Validated from the wire
-    like tier1.ts: malformed values are dropped, an older dr CLI's missing drift
-    reads as none known. driftTone says whether drift is a problem to warn about
-    (blocks a commit), a quiet note (content-free), unchecked (unknown) or
-    nothing to show."
+  description: "Reads a changeset's base drift from the dr CLI's changeset endpoints (drift on GET /api/changesets and /api/changesets/:id): state (none, content-free, drifted, not-applicable, unknown), blocksCommit and the server's message, and on the detail the overlaps and what changed in the base (counts, per-layer, cut lists with truncated). Validated from the wire like tier1.ts: malformed values are dropped, an older dr CLI's missing drift reads as none known. driftTone says whether drift is a problem to warn about (blocks a commit), a quiet note (content-free), unchecked (unknown) or nothing to show."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -757,14 +652,7 @@ application.applicationservice.changeset-purpose:
   type: applicationservice
   layer_id: application
   name: Changeset Purpose
-  description: "Reads a changeset's purpose (plan, chat, bootstrap, reconcile,
-    verification) and allowed actions (commit, discard) from the dr CLI's
-    /api/changesets and /api/changesets/:id, keeping only known values; answers
-    whether Apply or Discard is offered (from actions, or a staged status on an
-    older dr CLI that sends none); names each purpose and its lifecycle; and
-    sorts the inbox by what each changeset needs: plans and chat to review,
-    bootstrap/reconcile to land as built, verification records paired with the
-    plan they verify, then history."
+  description: "Reads a changeset's purpose (plan, chat, bootstrap, reconcile, verification) and allowed actions (commit, discard) from the dr CLI's /api/changesets and /api/changesets/:id, keeping only known values; answers whether Apply or Discard is offered (from actions, or a staged status on an older dr CLI that sends none); names each purpose and its lifecycle; and sorts the inbox by what each changeset needs: plans and chat to review, bootstrap/reconcile to land as built, verification records paired with the plan they verify, then history."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -783,11 +671,7 @@ application.applicationservice.nav-tree-groups:
   type: applicationservice
   layer_id: application
   name: Nav Tree Groups
-  description: "Pure transform for the nav tree: a layer's model elements grouped
-    by node type, each group with its type key, label (the node type label's
-    short plural, e.g. \"Components\" in Application, the same name the by-type
-    lanes use) and count, groups sorted A–Z by that label and elements A–Z; plus
-    the group key holding a given element, so the tree can open it."
+  description: 'Pure transform for the nav tree: a layer''s model elements grouped by node type, each group with its type key, label (the node type label''s short plural, e.g. "Components" in Application, the same name the by-type lanes use) and count, groups sorted A–Z by that label and elements A–Z; plus the group key holding a given element, so the tree can open it.'
   attributes:
     serviceType: synchronous
   source_reference:
@@ -806,14 +690,7 @@ application.applicationservice.search-index:
   type: applicationservice
   layer_id: application
   name: Search Index
-  description: "Pure, React-free search over the loaded /api/model elements and
-    /api/spec node types (data/search.ts): builds a lower-cased index once per
-    payload (node types named with the node type label's full singular, matched
-    by that name or the spec title), ranks exact > prefix > word-prefix >
-    substring > in-order fuzzy (subsequence) matches, caps the results, groups
-    them by layer in LAYER_ORDER and returns the matched character ranges for
-    highlighting. Stays fast on a large model: one pass over the index per
-    keystroke, no allocation for a candidate that fails."
+  description: "Pure, React-free search over the loaded /api/model elements and /api/spec node types (data/search.ts): builds a lower-cased index once per payload (node types named with the node type label's full singular, matched by that name or the spec title), ranks exact > prefix > word-prefix > substring > in-order fuzzy (subsequence) matches, caps the results, groups them by layer in LAYER_ORDER and returns the matched character ranges for highlighting. Stays fast on a large model: one pass over the index per keystroke, no allocation for a candidate that fails."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -832,12 +709,7 @@ application.applicationservice.type-bands:
   type: applicationservice
   layer_id: application
   name: Type Bands
-  description: "data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy
-    'kind') for one DR layer's elements; band order with the least lane-skipping
-    between linked types; each band named with the node type label's short
-    plural (\"Components · 37\"); the row cap for large lanes. Where it meets
-    Heimdall, Heimdall's 'layer' is our node type; layerId only ever means a DR
-    layer."
+  description: 'data/typeBands.ts: TYPE_BANDS (BuildLayeredIndexOptions, layerBy ''kind'') for one DR layer''s elements; band order with the least lane-skipping between linked types; each band named with the node type label''s short plural ("Components · 37"); the row cap for large lanes. Where it meets Heimdall, Heimdall''s ''layer'' is our node type; layerId only ever means a DR layer.'
   attributes:
     serviceType: synchronous
   source_reference:
@@ -849,16 +721,14 @@ application.applicationservice.type-bands:
     - direction: incoming
       predicate: depends-on
       other_spec_node_id: application.applicationservice
-      reason: Only the two by-type view components call it; no other data service
-        builds on the type bands.
+      reason: Only the two by-type view components call it; no other data service builds on the type bands.
       decided_by: agent
       decided_at: 2026-11-19T18:02:22.848Z
       changeset: changeset-1795111279160-shbw81238
     - direction: incoming
       predicate: covers
       other_spec_node_id: testing.testcoveragetarget
-      reason: Covered by its own unit test case sketches (ordering, naming); the
-        viewer models no coverage target per data service.
+      reason: Covered by its own unit test case sketches (ordering, naming); the viewer models no coverage target per data service.
       decided_by: agent
       decided_at: 2026-11-19T18:02:23.063Z
       changeset: changeset-1795111279160-shbw81238
@@ -873,17 +743,7 @@ application.applicationservice.node-type-label:
   type: applicationservice
   layer_id: application
   name: Node Type Label
-  description: "data/typeLabel.ts: one display name for a node type, from the
-    spec's title (else the type id) and its layer: singular and plural, split
-    into words (\"Application Component\"), and a short plural that drops the
-    layer's own leading word (\"Components\"). The short form is only used where
-    the view is scoped to one layer (by-type lanes and hive, and the nav tree
-    type groups, whose count stays in the NavItem badge); views that mix layers
-    use the full form. withCount gives \"Components · 37\" for lane and hive
-    titles. data/useTypeName.ts gives the full singular from the live spec for
-    one element's type beside its layer (\"application · Application Service\"):
-    review rows, link ends, the change inspector and its neighbourhood, the
-    Impact matches and focus line. Type ids stay ids wherever they are ids."
+  description: 'data/typeLabel.ts: one display name for a node type, from the spec''s title (else the type id) and its layer: singular and plural, split into words ("Application Component"), and a short plural that drops the layer''s own leading word ("Components"). The short form is only used where the view is scoped to one layer (by-type lanes and hive, and the nav tree type groups, whose count stays in the NavItem badge); views that mix layers use the full form. withCount gives "Components · 37" for lane and hive titles. data/useTypeName.ts gives the full singular from the live spec for one element''s type beside its layer ("application · Application Service"): review rows, link ends, the change inspector and its neighbourhood, the Impact matches and focus line. Type ids stay ids wherever they are ids.'
   attributes:
     serviceType: synchronous
   source_reference:
@@ -902,14 +762,7 @@ application.applicationservice.chat-panel-layout:
   type: applicationservice
   layer_id: application
   name: Chat Panel Layout
-  description: "ui/chatPanelLayout.ts: the pure placement rule for the floating
-    DrBot panel. Given the anchor area, whether the Inspector drawer is open and
-    its width, and the panel size, it places the panel beside the drawer
-    (top-right, left of it), over the drawer (when panel + drawer + 240px of
-    graph don't fit, setting chatCoversDrawer) or filling the area (under
-    720px). Also clamps the persisted panel size (340-820px wide, at least 360px
-    tall) and dock width (320-760px), and maps resize keys (arrows, Shift,
-    Home/End) to a new width."
+  description: "ui/chatPanelLayout.ts: the pure placement rule for the floating DrBot panel. Given the anchor area, whether the Inspector drawer is open and its width, and the panel size, it places the panel beside the drawer (top-right, left of it), over the drawer (when panel + drawer + 240px of graph don't fit, setting chatCoversDrawer) or filling the area (under 720px). Also clamps the persisted panel size (340-820px wide, at least 360px tall) and dock width (320-760px), and maps resize keys (arrows, Shift, Home/End) to a new width."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -928,11 +781,7 @@ application.applicationservice.chat-anchor:
   type: applicationservice
   layer_id: application
   name: Chat Anchor
-  description: "ui/chatAnchor.ts: useChatAnchor(ref) lets a view register the area
-    the DrBot panel anchors to (Canvas's graph area, ChangesetCanvas's body) in
-    a small Zustand store; the chat drawer reads it and places the panel from
-    the anchor's rect through a ResizeObserver. Also names the topbar launcher's
-    test id so Escape can return focus to it."
+  description: "ui/chatAnchor.ts: useChatAnchor(ref) lets a view register the area the DrBot panel anchors to (Canvas's graph area, ChangesetCanvas's body) in a small Zustand store; the chat drawer reads it and places the panel from the anchor's rect through a ResizeObserver. Also names the topbar launcher's test id so Escape can return focus to it."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -951,12 +800,7 @@ application.applicationservice.markdown-excerpt:
   type: applicationservice
   layer_id: application
   name: Markdown Excerpt
-  description: "ui/markdownExcerpt.ts: descriptionExcerpt takes the first
-    paragraph of a markdown description and drops list and heading markup (plain
-    text unchanged, single newlines folded); inlineTokens splits that line into
-    text, code-span and emphasis tokens, links as plain text. Used by
-    MarkdownExcerpt for the one-paragraph inline description on a changeset
-    inbox card, with no raw HTML."
+  description: "ui/markdownExcerpt.ts: descriptionExcerpt takes the first paragraph of a markdown description and drops list and heading markup (plain text unchanged, single newlines folded); inlineTokens splits that line into text, code-span and emphasis tokens, links as plain text. Used by MarkdownExcerpt for the one-paragraph inline description on a changeset inbox card, with no raw HTML."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -975,12 +819,7 @@ application.applicationservice.use-type-name:
   type: applicationservice
   layer_id: application
   name: useTypeName
-  description: "data/useTypeName.ts: a node type's full singular display name from
-    the live spec (\"Application Service\"), for views that name one element's
-    type beside its layer: review rows and link ends (through the review model's
-    typeNameOf), the change inspector's band, related rows and neighbourhood,
-    and the Impact matches and focus line. Before the spec loads, the type id
-    split into words stands in."
+  description: 'data/useTypeName.ts: a node type''s full singular display name from the live spec ("Application Service"), for views that name one element''s type beside its layer: review rows and link ends (through the review model''s typeNameOf), the change inspector''s band, related rows and neighbourhood, and the Impact matches and focus line. Before the spec loads, the type id split into words stands in.'
   attributes:
     serviceType: synchronous
   source_reference:
@@ -999,19 +838,7 @@ application.applicationservice.c4-model-transform:
   type: applicationservice
   layer_id: application
   name: C4 Model Transform
-  description: "data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model
-    (nodes and resolved links) to a C4 model. Rules are data keyed on spec type
-    ids: element rules (type plus an attribute guard to a C4 kind: person,
-    external system, container, component), identity merges (a persona and the
-    business role it references are one person; same-named actors and
-    stakeholders one external system), containment (composes between components,
-    a service under the component that realizes it, unowned components in the
-    app container), folds (tests, features, schemas and API operations attach to
-    the C4 element they cover) and relationship rules (keep, flip serves, skip
-    structure, plus path-derived ones such as person uses what realizes a
-    feature that serves them). Every C4 element and relationship keeps the
-    dotted ids of its sources. Rules that name a type or relationship the loaded
-    spec doesn't define are reported, not applied."
+  description: "data/c4/c4Rules.ts + c4Model.ts: a pure transform from the model (nodes and resolved links) to a C4 model. Rules are data keyed on spec type ids: element rules (type plus an attribute guard to a C4 kind: person, external system, container, component), identity merges (a persona and the business role it references are one person; same-named actors and stakeholders one external system), containment (composes between components, a service under the component that realizes it, unowned components in the app container), folds (tests, features, schemas and API operations attach to the C4 element they cover) and relationship rules (keep, flip serves, skip structure, plus path-derived ones such as person uses what realizes a feature that serves them). Every C4 element and relationship keeps the dotted ids of its sources. Rules that name a type or relationship the loaded spec doesn't define are reported, not applied."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1030,14 +857,7 @@ application.applicationservice.c4-view-scoping:
   type: applicationservice
   layer_id: application
   name: C4 View Scoping
-  description: "data/c4/c4Views.ts: a pure function from the C4 model, a level
-    (context, container, component) and a scope element to one diagram: the
-    scope's children, the outside elements they are linked to (each lifted to
-    its nearest ancestor that isn't an ancestor of the scope), and the
-    relationships between them aggregated per pair with a count, their
-    predicates and their source link ids. Technology elements stay out of
-    Context, Container and Component views. Also the scope's ancestor chain for
-    the breadcrumb, and which elements can be drilled into."
+  description: "data/c4/c4Views.ts: a pure function from the C4 model, a level (context, container, component) and a scope element to one diagram: the scope's children, the outside elements they are linked to (each lifted to its nearest ancestor that isn't an ancestor of the scope), and the relationships between them aggregated per pair with a count, their predicates and their source link ids. Technology elements stay out of Context, Container and Component views. Also the scope's ancestor chain for the breadcrumb, and which elements can be drilled into."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1056,13 +876,7 @@ application.applicationservice.c4-diagram-layout:
   type: applicationservice
   layer_id: application
   name: C4 Diagram Layout
-  description: "data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top
-    to bottom, nested boundary, right-angle edge routes, edge label boxes) and
-    returns absolute boxes for elements and the boundary plus a polyline and
-    label position per relationship. elkjs is imported lazily, so it loads only
-    when the Architecture view opens; the result is cached per view key. Proof
-    of concept for a native nested layout in Heimdall: nothing outside this
-    module knows ELK's types."
+  description: "data/c4/c4Layout.ts: lays out one C4 view with ELK (layered, top to bottom, nested boundary, right-angle edge routes, edge label boxes) and returns absolute boxes for elements and the boundary plus a polyline and label position per relationship. elkjs is imported lazily, so it loads only when the Architecture view opens; the result is cached per view key. Proof of concept for a native nested layout in Heimdall: nothing outside this module knows ELK's types."
   attributes:
     serviceType: asynchronous
   source_reference:
@@ -1081,13 +895,7 @@ application.applicationservice.use-c4model:
   type: applicationservice
   layer_id: application
   name: useC4Model
-  description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once
-    per /api/model payload and spec catalog and shared by the Architecture
-    canvas, the nav tree and DrBot's context; useC4Overlay, a changeset's C4
-    Diff (the model with the changeset applied or reverted, rebuilt as a C4
-    model and diffed against the base), cached per payload and changeset
-    revision; and useC4Layout, one view laid out through a React Query keyed on
-    the view's content and overlay."
+  description: "data/c4/useC4Model.ts: the loaded model as a C4 model, built once per /api/model payload and spec catalog and shared by the Architecture canvas, the nav tree and DrBot's context; useC4Overlay, a changeset's C4 Diff (the model with the changeset applied or reverted, rebuilt as a C4 model and diffed against the base), cached per payload and changeset revision; and useC4Layout, one view laid out through a React Query keyed on the view's content and overlay."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1099,16 +907,14 @@ application.applicationservice.use-c4model:
     - direction: incoming
       predicate: covers
       other_spec_node_id: testing.testcoveragetarget
-      reason: It has no unit test of its own; the Architecture canvas component tests
-        exercise it.
+      reason: It has no unit test of its own; the Architecture canvas component tests exercise it.
       decided_by: agent
       decided_at: 2026-11-20T17:19:07.849Z
       changeset: changeset-1795193070668-0q1lrgyd5
     - direction: incoming
       predicate: depends-on
       other_spec_node_id: application.applicationservice
-      reason: Only components call the hook (the Architecture canvas, the nav tree and
-        the chat panel); no data service builds on it.
+      reason: Only components call the hook (the Architecture canvas, the nav tree and the chat panel); no data service builds on it.
       decided_by: agent
       decided_at: 2026-11-20T17:19:11.007Z
       changeset: changeset-1795193070668-0q1lrgyd5
@@ -1123,10 +929,7 @@ application.applicationservice.changeset-model-overlay:
   type: applicationservice
   layer_id: application
   name: Changeset Model Overlay
-  description: "`data/modelOverlay.ts`: the model with a changeset applied
-    (staged) or reversed (applied), netted in change order, as a `ModelDerived`.
-    Extracted from `changesetImpact.ts`, which then uses it too; changes that
-    don't resolve against the model are counted, not dropped."
+  description: "`data/modelOverlay.ts`: the model with a changeset applied (staged) or reversed (applied), netted in change order, as a `ModelDerived`. Extracted from `changesetImpact.ts`, which then uses it too; changes that don't resolve against the model are counted, not dropped."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1145,15 +948,7 @@ application.applicationservice.c4-changeset-diff:
   type: applicationservice
   layer_id: application
   name: C4 Changeset Diff
-  description: "`data/c4/c4Diff.ts`: `diffC4(base, after, trace)` matches C4
-    elements across the two models by the model elements behind them (UUID, then
-    dotted id), so a rename reads as changed; it gives each box a status (added,
-    removed, moved, changed, parts changed) and each arrow one (added, removed,
-    relabelled, or relinked: same label, different model links), with the change
-    sequences behind each, roll-ups of changes below a box, and the changes no
-    diagram shows (counted, never dropped). Ids are union ids (the after id,
-    else a removed element's base id). `unionC4View` is the diagram drawn: the
-    after view plus removed boxes and arrows as ghosts."
+  description: "`data/c4/c4Diff.ts`: `diffC4(base, after, trace)` matches C4 elements across the two models by the model elements behind them (UUID, then dotted id), so a rename reads as changed; it gives each box a status (added, removed, moved, changed, parts changed) and each arrow one (added, removed, relabelled, or relinked: same label, different model links), with the change sequences behind each, roll-ups of changes below a box, and the changes no diagram shows (counted, never dropped). Ids are union ids (the after id, else a removed element's base id). `unionC4View` is the diagram drawn: the after view plus removed boxes and arrows as ghosts."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1172,13 +967,7 @@ application.applicationservice.plan-verification:
   type: applicationservice
   layer_id: application
   name: Plan Verification
-  description: "`data/planVerification.ts` + `usePlanVerification(planId,
-    asBuiltId)`: fetches Get Changeset Verification through React Query,
-    validates it into a Plan Verification (malformed items dropped and counted),
-    and pairs a plan with its verification records first, then any other
-    as-built changeset (`asBuiltChoices`). A 405/501 or a non-JSON 404 reads as
-    \"this dr CLI can't compare\", not an error; refetched on
-    `changesets.updated` and `model.updated`."
+  description: '`data/planVerification.ts` + `usePlanVerification(planId, asBuiltId)`: fetches Get Changeset Verification through React Query, validates it into a Plan Verification (malformed items dropped and counted), and pairs a plan with its verification records first, then any other as-built changeset (`asBuiltChoices`). A 405/501 or a non-JSON 404 reads as "this dr CLI can''t compare", not an error; refetched on `changesets.updated` and `model.updated`.'
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1190,9 +979,7 @@ application.applicationservice.plan-verification:
     - direction: incoming
       predicate: covers
       other_spec_node_id: testing.testcoveragetarget
-      reason: Covered by its planned unit test sketches and the repo-wide Vitest
-        coverage include (src/apps/embedded/{ui,data}); the slice adds no
-        coverage target of its own.
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest coverage include (src/apps/embedded/{ui,data}); the slice adds no coverage target of its own.
       decided_by: agent
       decided_at: 2026-11-23T16:35:02.761Z
       changeset: changeset-1795451597047-v7kr9sz5s
@@ -1207,16 +994,7 @@ application.applicationservice.c4-plan-comparison:
   type: applicationservice
   layer_id: application
   name: C4 Plan Comparison
-  description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(model, c4,
-    verification)` lifts the plan verification's verdicts onto the C4 model the
-    comparison is drawn on (built by `useC4PlanComparison`: the plan applied,
-    the as-built laid over it with `overlayModel`). An element goes to the C4
-    element it is or the ones it is folded onto (`elementOf` / `anchorsOf`); a
-    relationship to every arrow carrying its model link (`viewArrowVerdicts` per
-    drawn view). Each box shows the worst verdict behind it (planned but not
-    built > built differently > probable > can't be checked > built as planned;
-    built but not planned only alone), rolled up to its ancestors; what reaches
-    no box is counted."
+  description: "`data/c4/c4PlanCompare.ts`: `compareC4Plan(model, c4, verification)` lifts the plan verification's verdicts onto the C4 model the comparison is drawn on (built by `useC4PlanComparison`: the plan applied, the as-built laid over it with `overlayModel`). An element goes to the C4 element it is or the ones it is folded onto (`elementOf` / `anchorsOf`); a relationship to every arrow carrying its model link (`viewArrowVerdicts` per drawn view). Each box shows the worst verdict behind it (planned but not built > built differently > probable > can't be checked > built as planned; built but not planned only alone), rolled up to its ancestors; what reaches no box is counted."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1228,9 +1006,7 @@ application.applicationservice.c4-plan-comparison:
     - direction: incoming
       predicate: covers
       other_spec_node_id: testing.testcoveragetarget
-      reason: Covered by its planned unit test sketches and the repo-wide Vitest
-        coverage include (src/apps/embedded/{ui,data}); the slice adds no
-        coverage target of its own.
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest coverage include (src/apps/embedded/{ui,data}); the slice adds no coverage target of its own.
       decided_by: agent
       decided_at: 2026-11-23T16:35:04.041Z
       changeset: changeset-1795451597047-v7kr9sz5s
@@ -1245,17 +1021,7 @@ application.applicationservice.c4-diagram-export:
   type: applicationservice
   layer_id: application
   name: C4 Diagram Export
-  description: "`data/c4/c4Export.ts` (pure): `toSvg(view, layout, marks,
-    palette)` draws a self-contained SVG from the laid-out view (no DOM capture:
-    boundary, cards, right-angle arrows and labels, colours and fonts inlined);
-    `toPlantUml(view, marks)` writes C4-PlantUML (the C4 stdlib include, Person
-    / System / System_Ext / Container / ContainerDb / Component, System_Boundary
-    / Container_Boundary, Rel with the arrow's labels, marks as $tags with a
-    legend); `toStructurizr(view, marks)` writes a Structurizr DSL workspace
-    holding this diagram's elements and one view of its kind (systemContext /
-    container / component) including exactly the drawn elements, marks as tags.
-    Identifiers are made valid per format and text is escaped. `toPng`
-    rasterises the SVG through a canvas at 2x."
+  description: "`data/c4/c4Export.ts` (pure): `toSvg(view, layout, marks, palette)` draws a self-contained SVG from the laid-out view (no DOM capture: boundary, cards, right-angle arrows and labels, colours and fonts inlined); `toPlantUml(view, marks)` writes C4-PlantUML (the C4 stdlib include, Person / System / System_Ext / Container / ContainerDb / Component, System_Boundary / Container_Boundary, Rel with the arrow's labels, marks as $tags with a legend); `toStructurizr(view, marks)` writes a Structurizr DSL workspace holding this diagram's elements and one view of its kind (systemContext / container / component) including exactly the drawn elements, marks as tags. Identifiers are made valid per format and text is escaped. `toPng` rasterises the SVG through a canvas at 2x."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1267,17 +1033,14 @@ application.applicationservice.c4-diagram-export:
     - direction: incoming
       predicate: depends-on
       other_spec_node_id: application.applicationservice
-      reason: "A leaf: only the Architecture canvas calls the export writers; no other
-        service builds on them."
+      reason: "A leaf: only the Architecture canvas calls the export writers; no other service builds on them."
       decided_by: agent
       decided_at: 2026-11-23T23:18:36.318Z
       changeset: changeset-1795475865021-rebuu0x5f
     - direction: incoming
       predicate: covers
       other_spec_node_id: testing.testcoveragetarget
-      reason: Covered by its planned unit test sketches and the repo-wide Vitest
-        coverage include (src/apps/embedded/{ui,data}); the slice adds no
-        coverage target of its own.
+      reason: Covered by its planned unit test sketches and the repo-wide Vitest coverage include (src/apps/embedded/{ui,data}); the slice adds no coverage target of its own.
       decided_by: agent
       decided_at: 2026-11-23T23:18:36.598Z
       changeset: changeset-1795475865021-rebuu0x5f
@@ -1292,15 +1055,7 @@ application.applicationservice.checkout-scope:
   type: applicationservice
   layer_id: application
   name: Checkout Scope
-  description: "data/checkoutScope.ts: the current CheckoutRef ({project,
-    checkout}) from checkoutStore as a hook (useCheckoutRef), the scoped query
-    keys the data hooks share (the generated client's scoped operation ids, then
-    project and checkout), invalidation for one checkout, and whether an API
-    error means the checkout is unavailable (404 on a scoped route). Every
-    project-data hook (model, layers, tier1, changesets with
-    commit/discard/review/verification, annotations) calls the generated
-    client's /api/projects/{project}/checkouts/{checkout}/... operations through
-    it."
+  description: "data/checkoutScope.ts: the current CheckoutRef ({project, checkout}) from checkoutStore as a hook (useCheckoutRef), the scoped query keys the data hooks share (the generated client's scoped operation ids, then project and checkout), invalidation for one checkout, and whether an API error means the checkout is unavailable (404 on a scoped route). Every project-data hook (model, layers, tier1, changesets with commit/discard/review/verification, annotations) calls the generated client's /api/projects/{project}/checkouts/{checkout}/... operations through it."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1319,9 +1074,7 @@ application.applicationservice.use-projects:
   type: applicationservice
   layer_id: application
   name: Use Projects
-  description: "data/useProjects.ts: React Query hooks over GET /api/projects and
-    GET /api/projects/{project}/checkouts (validated, unknown fields dropped)
-    for the checkout picker and switcher."
+  description: "data/useProjects.ts: React Query hooks over GET /api/projects and GET /api/projects/{project}/checkouts (validated, unknown fields dropped) for the checkout picker and switcher."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1340,11 +1093,7 @@ application.applicationservice.nav-tree-changeset-groups:
   type: applicationservice
   layer_id: application
   name: Nav Tree Changeset Groups
-  description: "Pure transform for the nav tree: the changeset list split into
-    Open (status staged) and Closed (every other status: applied, discarded or
-    unknown, as the inbox's History reads it), each keeping the list's order
-    (newest first), plus the group key holding a given changeset, so the tree
-    can open it."
+  description: "Pure transform for the nav tree: the changeset list split into Open (status staged) and Closed (every other status: applied, discarded or unknown, as the inbox's History reads it), each keeping the list's order (newest first), plus the group key holding a given changeset, so the tree can open it."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1363,14 +1112,7 @@ application.applicationservice.commit-progress:
   type: applicationservice
   layer_id: application
   name: Commit Progress
-  description: "data/commitProgress.ts: toCommitProgress validates a
-    changeset.commit.progress frame; commitProgressReducer keeps the latest
-    progress per changeset (never moving applied backwards within a phase);
-    useCommitProgress(changesetId) listens on the websocket for the route's
-    checkout and returns that changeset's progress, or null when none has
-    arrived (an older dr CLI); useAnyCommitProgress returns the progress of any
-    commit in the checkout for the status bar. progressAnnouncement picks when
-    the polite live region speaks (start, each quarter, phase change, finish)."
+  description: "data/commitProgress.ts: toCommitProgress validates a changeset.commit.progress frame; commitProgressReducer keeps the latest progress per changeset (never moving applied backwards within a phase); useCommitProgress(changesetId) listens on the websocket for the route's checkout and returns that changeset's progress, or null when none has arrived (an older dr CLI); useAnyCommitProgress returns the progress of any commit in the checkout for the status bar. progressAnnouncement picks when the polite live region speaks (start, each quarter, phase change, finish)."
   attributes:
     serviceType: event-driven
   source_reference:
@@ -1389,13 +1131,7 @@ application.applicationservice.history-policy:
   type: applicationservice
   layer_id: application
   name: History Policy
-  description: "routes/historyPolicy.ts: pure decideHistoryStep({ destination,
-    move, entrySelection, lastPush }) → push | replace | coalesce. Destination
-    changes and deliberate graph moves (select, focus, expand, a recentre onto
-    something the entry doesn't select) push; dwells and fits replace; a
-    recentre onto the entry's own selection, or a repeat of the last pushed move
-    on the same target within COALESCE_MS (a double-click), coalesces into the
-    current entry."
+  description: "routes/historyPolicy.ts: pure decideHistoryStep({ destination, move, entrySelection, lastPush }) → push | replace | coalesce. Destination changes and deliberate graph moves (select, focus, expand, a recentre onto something the entry doesn't select) push; dwells and fits replace; a recentre onto the entry's own selection, or a repeat of the last pushed move on the same target within COALESCE_MS (a double-click), coalesces into the current entry."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1407,8 +1143,7 @@ application.applicationservice.history-policy:
     - direction: outgoing
       predicate: serves
       other_spec_node_id: application.applicationcomponent
-      reason: A pure function only the router (navigation.route.checkout-shell-route
-        uses it) calls; no component consumes it.
+      reason: A pure function only the router (navigation.route.checkout-shell-route uses it) calls; no component consumes it.
       decided_by: agent
       decided_at: 2026-11-24T15:10:00.119Z
       changeset: changeset-1795532959167-dqn0l9q3r
@@ -1423,12 +1158,7 @@ application.applicationservice.load-state:
   type: applicationservice
   layer_id: application
   name: Load State
-  description: "`data/loadState.ts`: one read's first-load state as loading /
-    error / ready, from a React Query result (`loadStateOf`), and several reads
-    combined (`combineLoadStates`: error wins, then loading). Data in hand
-    always reads as ready, so a background refetch (model.updated, window focus)
-    or a failed refetch never takes a view back to Loading or to an error over
-    data it still shows."
+  description: "`data/loadState.ts`: one read's first-load state as loading / error / ready, from a React Query result (`loadStateOf`), and several reads combined (`combineLoadStates`: error wins, then loading). Data in hand always reads as ready, so a background refetch (model.updated, window focus) or a failed refetch never takes a view back to Loading or to an error over data it still shows."
   attributes:
     serviceType: synchronous
   source_reference:
@@ -1439,4 +1169,61 @@ application.applicationservice.load-state:
   metadata:
     created_at: 2026-11-24T16:03:11.559Z
     updated_at: 2026-11-24T16:03:11.559Z
+    version: 1
+application.applicationservice.shell-params:
+  id: cf99178a-9228-40bf-b7d5-5a91f1c13948
+  path: application.applicationservice.shell-params
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Shell Params
+  description: "routes/shellParams.ts: pure parsing of the shell route's ?open= (the opened lanes and groups, sorted, comma-separated) and ?seq= (a changeset change sequence), and openGroups' normal form, each read only in its own view."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/routes/shellParams.ts
+        symbol: src.apps.embedded.routes.shellParams
+  metadata:
+    created_at: 2026-11-25T14:11:10.983Z
+    updated_at: 2026-11-25T14:11:10.983Z
+    version: 1
+application.applicationservice.c4-diagram-marks:
+  id: e1cf170d-37b7-4bc9-857d-329041aace53
+  path: application.applicationservice.c4-diagram-marks
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: C4 Diagram Marks
+  description: "ui/c4DiagramMarks.ts: one mark resolution for a C4 box or arrow (cardMark / edgeMark / isGhost) from a changeset overlay or a plan comparison, shared by C4Diagram on screen and by the export (toExportMarks resolves each token to a colour)."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/c4DiagramMarks.ts
+        symbol: src.apps.embedded.ui.c4DiagramMarks
+  metadata:
+    created_at: 2026-11-25T14:11:10.984Z
+    updated_at: 2026-11-25T14:11:10.984Z
+    version: 1
+application.applicationservice.verdict-styles:
+  id: 220bfe87-1a60-47e9-a215-51470296107f
+  path: application.applicationservice.verdict-styles
+  spec_node_id: application.applicationservice
+  type: applicationservice
+  layer_id: application
+  name: Verdict Styles
+  description: "ui/verdictStyles.ts: the plan-vs-as-built verdict marks (glyph, colour token, outline and arrow dash per verdict: built, probable, divergent, missing, unverifiable, unplanned)."
+  attributes:
+    serviceType: synchronous
+  source_reference:
+    provenance: extracted
+    locations:
+      - file: src/apps/embedded/ui/verdictStyles.ts
+        symbol: src.apps.embedded.ui.verdictStyles
+  metadata:
+    created_at: 2026-11-25T14:11:10.984Z
+    updated_at: 2026-11-25T14:11:10.984Z
     version: 1
