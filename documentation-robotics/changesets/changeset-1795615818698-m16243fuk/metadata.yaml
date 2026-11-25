@@ -1,0 +1,15 @@
+id: changeset-1795615818698-m16243fuk
+name: reconcile-0.15-0.17
+description: "Reconcile the viewer's model with the code built since 59209a4 (C4 overlay follow-ups, plan vs as built, export, checkout-scoped routes, graph history, commit progress, Loading…, old-stack removal: viewer 0.15.0 to 0.17.0)."
+created: 2026-11-25T14:10:18.708Z
+modified: 2026-11-25T14:14:16.814Z
+status: staged
+baseSnapshot: v2:sha256:3915f27d5fa2b09d348fd280ec7f8a74305ff6a0b9bbc2a3d6f642b55ab20d5a
+origin:
+  kind: extract
+purpose: reconcile
+stats:
+  additions: 641
+  modifications: 0
+  deletions: 98
+lastSequence: 738
