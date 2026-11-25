@@ -1,9 +1,9 @@
 version: 0.1.0
 schema: documentation-robotics-v1
-cli_version: 0.7.1
-spec_version: 0.14.0
+cli_version: 0.8.0
+spec_version: 0.15.0
 created: 2026-03-19T22:01:43.778Z
-updated: 2026-11-24T18:48:38.491Z
+updated: 2026-11-25T14:21:11.197Z
 project:
   name: Documentation Robotics Viewer
   description: ""
@@ -69,7 +69,7 @@ layers:
       applicationevent: 4
       applicationfunction: 8
       applicationinterface: 2
-      applicationservice: 58
+      applicationservice: 61
       message: 1
   technology:
     order: 6
@@ -92,7 +92,7 @@ layers:
     elements:
       info: 1
       openapidocument: 1
-      operation: 20
+      operation: 30
       pathitem: 15
       securityscheme: 2
   data-model:
@@ -156,7 +156,7 @@ layers:
       contextvariation: 1
       coveragerequirement: 1
       coveragesummary: 1
-      testcasesketch: 1028
+      testcasesketch: 1194
       testcoveragemodel: 1
       testcoveragetarget: 2
 changeset_history:
@@ -256,8 +256,11 @@ changeset_history:
   - name: first-load-loading-states
     committed_at: 2026-11-24T18:48:38.491Z
     action: committed
+  - name: reconcile-0.15-0.17
+    committed_at: 2026-11-25T14:21:11.195Z
+    action: committed
 reconciled:
-  changeset: extract-02ab31d..59209a4
-  changeset_id: changeset-1795279161409-k7knehp8r
-  landed_at: 2026-11-21T16:42:09.848Z
-  code_commit: 59209a4f6c51cb4abc88d420fd47ff0af990373e
+  changeset: reconcile-0.15-0.17
+  changeset_id: changeset-1795615818698-m16243fuk
+  landed_at: 2026-11-25T14:21:11.195Z
+  code_commit: ab91c34c88f5f757871099755a17cf5f0aecdd00

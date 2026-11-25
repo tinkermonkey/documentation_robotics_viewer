@@ -18,8 +18,8 @@ Product features, capabilities, personas, and milestones.
 | ------------------------- | ----- |
 | Elements                  | 34    |
 | Intra-Layer Relationships | 68    |
-| Inter-Layer Relationships | 103   |
-| Inbound Relationships     | 72    |
+| Inter-Layer Relationships | 113   |
+| Inbound Relationships     | 82    |
 | Outbound Relationships    | 31    |
 
 **Cross-Layer References**:
@@ -99,15 +99,18 @@ flowchart TB
 
 | Relationship ID                                                      | Source Node                                                                                                                           | Dest Node                                                          | Dest Layer   | Predicate    | Cardinality  | Strength |
 | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ------------ | ------------ | ------------ | -------- |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-mode-and-routing`                           | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-spend-panel`                                | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.get-api-tier1`                                                                                                         | `product.feature.tier1-warming-progress`                           | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification`                                      | `product.feature.c4-plan-vs-as-built`                              | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                                                     | `product.feature.tier1-mode-and-routing`                           | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                                                     | `product.feature.tier1-spend-panel`                                | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                                                     | `product.feature.tier1-warming-progress`                           | `product`    | `exposes`    | many-to-many | medium   |
 | `api.operation.exposes.product.feature`                              | `api.operation.get-changeset-verification`                                                                                            | `product.feature.c4-plan-vs-as-built`                              | `product`    | `exposes`    | many-to-many | medium   |
-| `api.operation.exposes.product.feature`                              | `api.operation.put-api-changesets-changeset-id-review`                                                                                | `product.feature.per-change-review`                                | `product`    | `exposes`    | many-to-many | medium   |
+| `api.operation.exposes.product.feature`                              | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`                                            | `product.feature.per-change-review`                                | `product`    | `exposes`    | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-changeset-diff`                                                                                    | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-export`                                                                                    | `product.feature.c4-diagram-export`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-export`                                                                                    | `product.feature.c4-overlay-change-counts`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-layout`                                                                                    | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-marks`                                                                                     | `product.feature.c4-changeset-overlay`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-diagram-marks`                                                                                     | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-model-transform`                                                                                   | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-plan-comparison`                                                                                   | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.c4-view-scoping`                                                                                      | `product.feature.c4-architecture-diagrams`                         | `product`    | `realizes`   | many-to-many | medium   |
@@ -129,6 +132,8 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.page-data-builder`                                                                                    | `product.feature.page-view`                                        | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.plan-verification`                                                                                    | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.search-index`                                                                                         | `product.feature.topbar-search`                                    | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.shell-params`                                                                                         | `product.feature.changeset-impact-tab`                             | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.shell-params`                                                                                         | `product.feature.model-graph-view`                                 | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.spec-graph-transform`                                                                                 | `product.softwarecapability.schema-exploration`                    | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.type-bands`                                                                                           | `product.feature.model-view-by-type`                               | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.softwarecapability` | `application.applicationservice.use-annotations`                                                                                      | `product.softwarecapability.model-annotation`                      | `product`    | `realizes`   | many-to-many | medium   |
@@ -137,6 +142,7 @@ flowchart TB
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                            | `product.feature.tier1-mode-and-routing`                           | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                            | `product.feature.tier1-spend-panel`                                | `product`    | `realizes`   | many-to-many | medium   |
 | `application.applicationservice.realizes.product.feature`            | `application.applicationservice.use-tier1`                                                                                            | `product.feature.tier1-warming-progress`                           | `product`    | `realizes`   | many-to-many | medium   |
+| `application.applicationservice.realizes.product.feature`            | `application.applicationservice.verdict-styles`                                                                                       | `product.feature.c4-plan-vs-as-built`                              | `product`    | `realizes`   | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-architecture-diagrams`                                                                                            | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-architecture-diagrams`                                                                                            | `motivation.requirement.wcag-21-aa-compliance`                     | `motivation` | `satisfies`  | many-to-many | medium   |
 | `product.feature.satisfies.motivation.requirement`                   | `product.feature.c4-changeset-overlay`                                                                                                | `motivation.requirement.architecture-reads-as-c4-diagrams`         | `motivation` | `satisfies`  | many-to-many | medium   |
@@ -173,6 +179,10 @@ flowchart TB
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-c4-diagrams-the-container-diagram-shows-the-people-the-viewer-app-its-storage-and-2589fb8a` | `product.feature.c4-architecture-diagrams`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-exports-each-format-and-the-menu-passes-axe`                                                | `product.feature.c4-diagram-export`                                | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`                                              | `product.feature.c4-plan-vs-as-built`                              | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.c4-marks-change-counts-counts-an-arrows-changes-past-one`                                                     | `product.feature.c4-overlay-change-counts`                         | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.c4-marks-change-counts-counts-past-one-and-says-nothing-at-one-or-none`                                       | `product.feature.c4-overlay-change-counts`                         | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.c4-marks-change-counts-puts-the-count-in-the-words-for-accessible-names-after-a-comma-before-the-6a161b66`    | `product.feature.c4-overlay-change-counts`                         | `product`    | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.c4-marks-change-counts-states-a-scopes-total-as-its-chip-did-one-level-up`                                    | `product.feature.c4-overlay-change-counts`                         | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.model-view-control-switches-between-graph-lanes-and-hive-and-persists`                                        | `product.feature.model-view-by-type`                               | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-changeset-groups-a-selected-closed-changeset-opens-closed-and-reveals-its-row`                       | `product.feature.nav-tree-changeset-groups`                        | `product`    | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.product.feature`                       | `testing.testcasesketch.nav-tree-changeset-groups-an-empty-group-is-hidden`                                                           | `product.feature.nav-tree-changeset-groups`                        | `product`    | `tests`      | many-to-many | medium   |
@@ -262,6 +272,7 @@ A changeset laid over the Architecture view's C4 diagrams: op marks on cards and
 | Type        | Related Element                                                 | Predicate    | Direction |
 | ----------- | --------------------------------------------------------------- | ------------ | --------- |
 | inter-layer | `application.applicationservice.c4-changeset-diff`              | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-marks`               | `realizes`   | inbound   |
 | inter-layer | `application.applicationservice.changeset-model-overlay`        | `realizes`   | inbound   |
 | inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`      | `satisfies`  | outbound  |
 | inter-layer | `motivation.requirement.changesets-read-as-architecture-change` | `satisfies`  | outbound  |
@@ -319,15 +330,19 @@ With a changeset overlaid on the C4 diagrams, each marked box and arrow says how
 
 #### Relationships
 
-| Type        | Related Element                                                 | Predicate    | Direction |
-| ----------- | --------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `application.applicationservice.c4-diagram-export`              | `realizes`   | inbound   |
-| inter-layer | `motivation.requirement.changesets-read-as-architecture-change` | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                  | `satisfies`  | outbound  |
-| inter-layer | `ux.view.architecture-view`                                     | `realizes`   | inbound   |
-| intra-layer | `product.feature.c4-changeset-overlay`                          | `depends-on` | outbound  |
-| intra-layer | `product.softwarecapability.model-visualization`                | `realizes`   | outbound  |
-| intra-layer | `product.persona.architecture-reviewer`                         | `serves`     | outbound  |
+| Type        | Related Element                                                                                                                    | Predicate    | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `application.applicationservice.c4-diagram-export`                                                                                 | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.changesets-read-as-architecture-change`                                                                    | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                                                     | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.c4-marks-change-counts-counts-an-arrows-changes-past-one`                                                  | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-marks-change-counts-counts-past-one-and-says-nothing-at-one-or-none`                                    | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-marks-change-counts-puts-the-count-in-the-words-for-accessible-names-after-a-comma-before-the-6a161b66` | `tests`      | inbound   |
+| inter-layer | `testing.testcasesketch.c4-marks-change-counts-states-a-scopes-total-as-its-chip-did-one-level-up`                                 | `tests`      | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                                                                        | `realizes`   | inbound   |
+| intra-layer | `product.feature.c4-changeset-overlay`                                                                                             | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.model-visualization`                                                                                   | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                                                            | `serves`     | outbound  |
 
 ### C4 Plan vs As-Built {#c4-plan-vs-as-built}
 
@@ -347,19 +362,22 @@ A plan changeset compared with what was built, on the Architecture view's C4 dia
 
 #### Relationships
 
-| Type        | Related Element                                                                          | Predicate    | Direction |
-| ----------- | ---------------------------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `api.operation.get-changeset-verification`                                               | `exposes`    | inbound   |
-| inter-layer | `application.applicationservice.c4-plan-comparison`                                      | `realizes`   | inbound   |
-| inter-layer | `application.applicationservice.plan-verification`                                       | `realizes`   | inbound   |
-| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                               | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                              | `satisfies`  | outbound  |
-| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                           | `satisfies`  | outbound  |
-| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark` | `tests`      | inbound   |
-| inter-layer | `ux.view.architecture-view`                                                              | `realizes`   | inbound   |
-| intra-layer | `product.feature.c4-changeset-overlay`                                                   | `depends-on` | outbound  |
-| intra-layer | `product.softwarecapability.model-visualization`                                         | `realizes`   | outbound  |
-| intra-layer | `product.persona.architecture-reviewer`                                                  | `serves`     | outbound  |
+| Type        | Related Element                                                                                  | Predicate    | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------ | ------------ | --------- |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `exposes`    | inbound   |
+| inter-layer | `api.operation.get-changeset-verification`                                                       | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.c4-diagram-marks`                                                | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.c4-plan-comparison`                                              | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.plan-verification`                                               | `realizes`   | inbound   |
+| inter-layer | `application.applicationservice.verdict-styles`                                                  | `realizes`   | inbound   |
+| inter-layer | `motivation.requirement.architecture-reads-as-c4-diagrams`                                       | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.plan-outcome-reads-as-architecture`                                      | `satisfies`  | outbound  |
+| inter-layer | `motivation.requirement.wcag-21-aa-compliance`                                                   | `satisfies`  | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-plan-vs-as-built-passes-axe-in-light-and-dark`         | `tests`      | inbound   |
+| inter-layer | `ux.view.architecture-view`                                                                      | `realizes`   | inbound   |
+| intra-layer | `product.feature.c4-changeset-overlay`                                                           | `depends-on` | outbound  |
+| intra-layer | `product.softwarecapability.model-visualization`                                                 | `realizes`   | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                          | `serves`     | outbound  |
 
 ### Change Origin Badges {#change-origin-badges}
 
@@ -405,6 +423,7 @@ What a changeset reaches outside itself, as layer lanes, before Apply.
 | ----------- | ---------------------------------------------------------- | ---------- | --------- |
 | inter-layer | `application.applicationservice.changeset-impact-analysis` | `realizes` | inbound   |
 | inter-layer | `application.applicationservice.history-policy`            | `realizes` | inbound   |
+| inter-layer | `application.applicationservice.shell-params`              | `realizes` | inbound   |
 | intra-layer | `product.softwarecapability.changeset-review`              | `realizes` | outbound  |
 | intra-layer | `product.persona.architecture-reviewer`                    | `serves`   | outbound  |
 | intra-layer | `product.workflowstep.check-the-reach`                     | `uses`     | inbound   |
@@ -525,6 +544,7 @@ Per-layer instance graph with Clustered, Organic and Orthogonal layouts, card or
 | Type        | Related Element                                         | Predicate   | Direction |
 | ----------- | ------------------------------------------------------- | ----------- | --------- |
 | inter-layer | `application.applicationservice.history-policy`         | `realizes`  | inbound   |
+| inter-layer | `application.applicationservice.shell-params`           | `realizes`  | inbound   |
 | inter-layer | `motivation.requirement.viewer-covers-every-spec-layer` | `satisfies` | outbound  |
 | inter-layer | `ux.view.model-view`                                    | `realizes`  | inbound   |
 | intra-layer | `product.softwarecapability.model-visualization`        | `realizes`  | outbound  |
@@ -656,18 +676,18 @@ Keep, Drop or Ask DrBot on each change, grouped by review weight, with the chang
 
 #### Relationships
 
-| Type        | Related Element                                              | Predicate   | Direction |
-| ----------- | ------------------------------------------------------------ | ----------- | --------- |
-| inter-layer | `api.operation.put-api-changesets-changeset-id-review`       | `exposes`   | inbound   |
-| inter-layer | `application.applicationservice.commit-progress`             | `realizes`  | inbound   |
-| inter-layer | `application.applicationservice.use-changeset-review`        | `realizes`  | inbound   |
-| inter-layer | `motivation.requirement.apply-shows-commit-progress`         | `satisfies` | outbound  |
-| inter-layer | `motivation.requirement.each-review-change-reads-on-its-own` | `satisfies` | outbound  |
-| inter-layer | `ux.view.changesets-view`                                    | `realizes`  | inbound   |
-| intra-layer | `product.softwarecapability.changeset-review`                | `realizes`  | outbound  |
-| intra-layer | `product.persona.architecture-reviewer`                      | `serves`    | outbound  |
-| intra-layer | `product.workflowstep.apply-the-kept-changes`                | `uses`      | inbound   |
-| intra-layer | `product.workflowstep.decide-each-change`                    | `uses`      | inbound   |
+| Type        | Related Element                                                                            | Predicate   | Direction |
+| ----------- | ------------------------------------------------------------------------------------------ | ----------- | --------- |
+| inter-layer | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review` | `exposes`   | inbound   |
+| inter-layer | `application.applicationservice.commit-progress`                                           | `realizes`  | inbound   |
+| inter-layer | `application.applicationservice.use-changeset-review`                                      | `realizes`  | inbound   |
+| inter-layer | `motivation.requirement.apply-shows-commit-progress`                                       | `satisfies` | outbound  |
+| inter-layer | `motivation.requirement.each-review-change-reads-on-its-own`                               | `satisfies` | outbound  |
+| inter-layer | `ux.view.changesets-view`                                                                  | `realizes`  | inbound   |
+| intra-layer | `product.softwarecapability.changeset-review`                                              | `realizes`  | outbound  |
+| intra-layer | `product.persona.architecture-reviewer`                                                    | `serves`    | outbound  |
+| intra-layer | `product.workflowstep.apply-the-kept-changes`                                              | `uses`      | inbound   |
+| intra-layer | `product.workflowstep.decide-each-change`                                                  | `uses`      | inbound   |
 
 ### Schema Graph View {#schema-graph-view}
 
@@ -712,7 +732,7 @@ The Tier 1 panel says whether Tier 1 stages changes without the agent or only su
 
 | Type        | Related Element                                                                                                               | Predicate    | Direction |
 | ----------- | ----------------------------------------------------------------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `api.operation.get-api-tier1`                                                                                                 | `exposes`    | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                                             | `exposes`    | inbound   |
 | inter-layer | `application.applicationservice.use-tier1`                                                                                    | `realizes`   | inbound   |
 | inter-layer | `testing.testcasesketch.tier1panel-mode-and-routing-lists-open-routers-allowed-upstreams-no-fallbacks-and-no-data-collection` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.tier1panel-mode-and-routing-says-whether-tier-1-stages-without-the-agent-and-why`                     | `tests`      | inbound   |
@@ -738,14 +758,14 @@ Tier 1's state and this month's spend against the cap, in the changeset inbox. T
 
 #### Relationships
 
-| Type        | Related Element                               | Predicate    | Direction |
-| ----------- | --------------------------------------------- | ------------ | --------- |
-| inter-layer | `api.operation.get-api-tier1`                 | `exposes`    | inbound   |
-| inter-layer | `application.applicationservice.use-tier1`    | `realizes`   | inbound   |
-| intra-layer | `product.feature.tier1-mode-and-routing`      | `depends-on` | inbound   |
-| intra-layer | `product.softwarecapability.changeset-review` | `realizes`   | outbound  |
-| intra-layer | `product.persona.model-author`                | `serves`     | outbound  |
-| intra-layer | `product.feature.tier1-warming-progress`      | `depends-on` | inbound   |
+| Type        | Related Element                                                   | Predicate    | Direction |
+| ----------- | ----------------------------------------------------------------- | ------------ | --------- |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1` | `exposes`    | inbound   |
+| inter-layer | `application.applicationservice.use-tier1`                        | `realizes`   | inbound   |
+| intra-layer | `product.feature.tier1-mode-and-routing`                          | `depends-on` | inbound   |
+| intra-layer | `product.softwarecapability.changeset-review`                     | `realizes`   | outbound  |
+| intra-layer | `product.persona.model-author`                                    | `serves`     | outbound  |
+| intra-layer | `product.feature.tier1-warming-progress`                          | `depends-on` | inbound   |
 
 ### Tier1 Warming Progress {#tier1-warming-progress}
 
@@ -767,7 +787,7 @@ While Tier 1 warms up (a codebase_index job filling the answer cache), the Tier 
 
 | Type        | Related Element                                                                                      | Predicate    | Direction |
 | ----------- | ---------------------------------------------------------------------------------------------------- | ------------ | --------- |
-| inter-layer | `api.operation.get-api-tier1`                                                                        | `exposes`    | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                    | `exposes`    | inbound   |
 | inter-layer | `application.applicationservice.use-tier1`                                                           | `realizes`   | inbound   |
 | inter-layer | `testing.testcasesketch.tier1panel-warming-says-the-cards-are-still-being-built-while-cards-is-null` | `tests`      | inbound   |
 | inter-layer | `testing.testcasesketch.tier1panel-warming-shows-the-fills-progress-time-left-and-cost-so-far`       | `tests`      | inbound   |
@@ -1131,4 +1151,4 @@ The reviewer sees which staged changesets wait on them and opens one.
 
 ---
 
-Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0

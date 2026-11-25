@@ -17,9 +17,9 @@ Application routing, navigation flows, and page structures.
 | Metric                    | Count |
 | ------------------------- | ----- |
 | Elements                  | 12    |
-| Intra-Layer Relationships | 15    |
-| Inter-Layer Relationships | 38    |
-| Inbound Relationships     | 22    |
+| Intra-Layer Relationships | 17    |
+| Inter-Layer Relationships | 39    |
+| Inbound Relationships     | 23    |
 | Outbound Relationships    | 16    |
 
 **Cross-Layer References**:
@@ -45,6 +45,7 @@ flowchart LR
     navigation_route_checkout_shell_route["Checkout Shell Route"]
     navigation_route_index_route["Index Route"]
     navigation_flowstep_post_auth_model_entry_step -->|navigates-to| navigation_route_checkout_shell_route
+    navigation_flowstep_token_extraction_step -->|triggers| navigation_navigationtransition_cli_deep_link_transition
     navigation_navigationflow_authentication_to_model_flow -->|composes| navigation_flowstep_token_extraction_step
     navigation_navigationgraph_embedded_app_navigation_graph -->|composes| navigation_route_app_shell_sectionview_route
     navigation_navigationgraph_embedded_app_navigation_graph -->|composes| navigation_route_checkout_index_route
@@ -57,6 +58,7 @@ flowchart LR
     navigation_route_app_shell_sectionview_route -->|navigates-to| navigation_route_checkout_shell_route
     navigation_route_checkout_index_route -->|navigates-to| navigation_route_checkout_shell_route
     navigation_route_checkout_shell_route -->|flows-to| navigation_navigationtransition_cli_deep_link_transition
+    navigation_route_checkout_shell_route -->|flows-to| navigation_navigationtransition_layer_deep_link_transition
     navigation_route_index_route -->|navigates-to| navigation_route_app_shell_sectionview_route
     navigation_route_index_route -->|navigates-to| navigation_route_checkout_shell_route
   end
@@ -110,9 +112,11 @@ flowchart TB
 | `navigation.route.uses.ux.errorconfig`                         | `navigation.route.checkout-shell-route`                                                                                               | `ux.errorconfig.checkout-unavailable-error`                  | `ux`          | `uses`       | many-to-many | medium   |
 | `navigation.route.maps-to.ux.view`                             | `navigation.route.index-route`                                                                                                        | `ux.view.checkout-picker-view`                               | `ux`          | `maps-to`    | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                     | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976`    | `navigation.route.app-shell-sectionview-route`               | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.route`                | `testing.testcasesketch.back-steps-through-graph-moves-in-each-view`                                                                  | `navigation.route.checkout-shell-route`                      | `navigation`  | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.checkout-links-carries-an-old-unscoped-link-through-the-picker-without-its-token`                             | `navigation.navigationtransition.cli-deep-link-transition`   | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.checkout-links-encodes-each-name-of-the-checkout-route`                                                       | `navigation.navigationtransition.cli-deep-link-transition`   | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.checkout-links-reads-the-changeset-and-element-link-forms-and-nothing-else`                                   | `navigation.navigationtransition.cli-deep-link-transition`   | `navigation`  | `tests`      | many-to-many | medium   |
+| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.checkout-links-takes-the-token-out-of-the-fragment-and-keeps-the-other-parameters`                            | `navigation.navigationtransition.cli-deep-link-transition`   | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-browser-history-for-navigation-graph-page-mode-is-in-the-url-and-in-history`                      | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
@@ -121,7 +125,6 @@ flowchart TB
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-graph-viewport-history-back-after-a-same-layer-navigation-restores-the-earlier-viewport-b6941f6f` | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-a-previous-layer-restores-the-viewport-it-was-left-at`             | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-an-entry-recorded-under-another-layout-drops-its-vp-d41cbb9f`      | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
-| `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-drops-vp-the-coordinates-belong-to-the-old-68d1d4ed`   | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-graph-viewport-history-clicking-a-node-in-the-graph-selects-it-without-re-centering-the-197e4f4e` | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layeredge-url-restores-that-edge-selection`         | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
 | `testing.testcasesketch.tests.navigation.navigationtransition` | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layernode-url-restores-that-selection`              | `navigation.navigationtransition.layer-deep-link-transition` | `navigation`  | `tests`      | many-to-many | medium   |
@@ -172,9 +175,10 @@ First step of the auth flow: before the router starts (and on popstate / hashcha
 
 #### Relationships
 
-| Type        | Related Element                                          | Predicate  | Direction |
-| ----------- | -------------------------------------------------------- | ---------- | --------- |
-| intra-layer | `navigation.navigationflow.authentication-to-model-flow` | `composes` | inbound   |
+| Type        | Related Element                                            | Predicate  | Direction |
+| ----------- | ---------------------------------------------------------- | ---------- | --------- |
+| intra-layer | `navigation.navigationtransition.cli-deep-link-transition` | `triggers` | outbound  |
+| intra-layer | `navigation.navigationflow.authentication-to-model-flow`   | `composes` | inbound   |
 
 ### Authentication to Model Flow {#authentication-to-model-flow}
 
@@ -256,10 +260,15 @@ Reads a dr CLI viewer link: changesets/&lt;id&gt; opens the Changesets view on t
 
 #### Relationships
 
-| Type        | Related Element                         | Predicate      | Direction |
-| ----------- | --------------------------------------- | -------------- | --------- |
-| intra-layer | `navigation.route.checkout-shell-route` | `navigates-to` | outbound  |
-| intra-layer | `navigation.route.checkout-shell-route` | `flows-to`     | inbound   |
+| Type        | Related Element                                                                                            | Predicate      | Direction |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `testing.testcasesketch.checkout-links-carries-an-old-unscoped-link-through-the-picker-without-its-token`  | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.checkout-links-encodes-each-name-of-the-checkout-route`                            | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.checkout-links-reads-the-changeset-and-element-link-forms-and-nothing-else`        | `tests`        | inbound   |
+| inter-layer | `testing.testcasesketch.checkout-links-takes-the-token-out-of-the-fragment-and-keeps-the-other-parameters` | `tests`        | inbound   |
+| intra-layer | `navigation.flowstep.token-extraction-step`                                                                | `triggers`     | inbound   |
+| intra-layer | `navigation.route.checkout-shell-route`                                                                    | `navigates-to` | outbound  |
+| intra-layer | `navigation.route.checkout-shell-route`                                                                    | `flows-to`     | inbound   |
 
 ### Layer Deep-Link Transition {#layer-deep-link-transition}
 
@@ -281,7 +290,6 @@ Deep links into a layer, element, changeset or C4 diagram: the router two-way sy
 
 | Type        | Related Element                                                                                                                       | Predicate      | Direction |
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- |
-| inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-a-plain-graph-node-click-replaces-the-entry-instead-of-09bb9a19`   | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-back-to-a-layer-entry-with-no-selection-clears-the-a28b7f79`       | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-clicking-a-neighbor-on-a-node-page-pushes-history-back-e3e75f11`   | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-browser-history-for-navigation-graph-page-mode-is-in-the-url-and-in-history`                      | `tests`        | inbound   |
@@ -290,7 +298,6 @@ Deep links into a layer, element, changeset or C4 diagram: the router two-way sy
 | inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-after-a-same-layer-navigation-restores-the-earlier-viewport-b6941f6f` | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-a-previous-layer-restores-the-viewport-it-was-left-at`             | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-back-to-an-entry-recorded-under-another-layout-drops-its-vp-d41cbb9f`      | `tests`        | inbound   |
-| inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-changing-the-layout-drops-vp-the-coordinates-belong-to-the-old-68d1d4ed`   | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-graph-viewport-history-clicking-a-node-in-the-graph-selects-it-without-re-centering-the-197e4f4e` | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layeredge-url-restores-that-edge-selection`         | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-reloading-a-deep-linked-layernode-url-restores-that-selection`              | `tests`        | inbound   |
@@ -301,6 +308,7 @@ Deep links into a layer, element, changeset or C4 diagram: the router two-way sy
 | inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-selecting-an-edge-on-the-model-graph-updates-the-url-with-edge-16ac9848`    | `tests`        | inbound   |
 | inter-layer | `testing.testcasesketch.url-routing-left-panel-selections-switching-views-pushes-history-selecting-within-a-view-replaces-it`         | `tests`        | inbound   |
 | intra-layer | `navigation.route.checkout-shell-route`                                                                                               | `navigates-to` | outbound  |
+| intra-layer | `navigation.route.checkout-shell-route`                                                                                               | `flows-to`     | inbound   |
 
 ### Tab Navigation Transition {#tab-navigation-transition}
 
@@ -340,14 +348,13 @@ The old unscoped route /#/:section/:view (section = model \| spec \| changesets 
 
 #### Relationships
 
-| Type        | Related Element                                                                                                                    | Predicate      | Direction |
-| ----------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- | --------- |
-| inter-layer | `ux.view.checkout-picker-view`                                                                                                     | `maps-to`      | outbound  |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box`                  | `tests`        | inbound   |
-| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-selecting-a-box-replaces-the-history-entry-a-source-link-opens-the-1f685976` | `tests`        | inbound   |
-| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`                                                                         | `composes`     | inbound   |
-| intra-layer | `navigation.route.checkout-shell-route`                                                                                            | `navigates-to` | outbound  |
-| intra-layer | `navigation.route.index-route`                                                                                                     | `navigates-to` | inbound   |
+| Type        | Related Element                                                                                                   | Predicate      | Direction |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- | -------------- | --------- |
+| inter-layer | `ux.view.checkout-picker-view`                                                                                    | `maps-to`      | outbound  |
+| inter-layer | `testing.testcasesketch.architecture-view-c4-diagrams-restores-level-and-scope-from-the-url-and-the-selected-box` | `tests`        | inbound   |
+| intra-layer | `navigation.navigationgraph.embedded-app-navigation-graph`                                                        | `composes`     | inbound   |
+| intra-layer | `navigation.route.checkout-shell-route`                                                                           | `navigates-to` | outbound  |
+| intra-layer | `navigation.route.index-route`                                                                                    | `navigates-to` | inbound   |
 
 ### Checkout Index Route {#checkout-index-route}
 
@@ -409,6 +416,7 @@ The old unscoped route /#/:section/:view (section = model \| spec \| changesets 
 | intra-layer | `navigation.route.app-shell-sectionview-route`                       | `navigates-to` | inbound   |
 | intra-layer | `navigation.route.checkout-index-route`                              | `navigates-to` | inbound   |
 | intra-layer | `navigation.navigationtransition.cli-deep-link-transition`           | `flows-to`     | outbound  |
+| intra-layer | `navigation.navigationtransition.layer-deep-link-transition`         | `flows-to`     | outbound  |
 | intra-layer | `navigation.route.index-route`                                       | `navigates-to` | inbound   |
 
 ### Index Route {#index-route}
@@ -436,4 +444,4 @@ Landing route at /#/ (bare, no project): the dr CLI's central process serves man
 
 ---
 
-Generated: 2026-11-24T18:45:44.562Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0

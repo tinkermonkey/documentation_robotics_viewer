@@ -18,8 +18,8 @@ Authentication, authorization, security threats, and controls.
 | ------------------------- | ----- |
 | Elements                  | 12    |
 | Intra-Layer Relationships | 16    |
-| Inter-Layer Relationships | 25    |
-| Inbound Relationships     | 23    |
+| Inter-Layer Relationships | 26    |
+| Inbound Relationships     | 24    |
 | Outbound Relationships    | 2     |
 
 **Cross-Layer References**:
@@ -94,25 +94,26 @@ flowchart TB
 
 | Relationship ID                                                                        | Source Node                                                                                                                     | Dest Node                                             | Dest Layer | Predicate    | Cardinality  | Strength |
 | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------- | ------------ | ------------ | -------- |
-| `3dee662b-7dc2-4fcc-8677-15a2ba06136e-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `3dee662b-7dc2-4fcc-8677-15a2ba06136e`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
-| `406200e9-ef8b-46c9-a1fe-1ff06d6d5602-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `406200e9-ef8b-46c9-a1fe-1ff06d6d5602`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
 | `801c2caa-ec19-4175-bec8-970067823754-references-0fa2ddb9-02df-426f-9c9c-89b857b9dc78` | `801c2caa-ec19-4175-bec8-970067823754`                                                                                          | `0fa2ddb9-02df-426f-9c9c-89b857b9dc78`                | `security` | `references` | unknown      | unknown  |
-| `8630981b-236c-47ed-b99b-e977c56bdc63-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `8630981b-236c-47ed-b99b-e977c56bdc63`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
 | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8-requires-a47870bf-898b-425f-9f73-92663193355a`   | `a77489e0-4e1f-42b1-b3e1-b1b534e6e7f8`                                                                                          | `a47870bf-898b-425f-9f73-92663193355a`                | `security` | `requires`   | unknown      | unknown  |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.commit-changeset`                                                                                                | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.create-annotation-reply`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.discard-changeset`                                                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-annotation`                                                                                                  | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-tier1`                                                                                                   | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`                                   | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`                                           | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification`                                | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                                                   | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project-checkouts`                                                                              | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects-project`                                                                                        | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-api-projects`                                                                                                | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-changeset-verification`                                                                                      | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-layer`                                                                                                       | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.list-annotation-replies`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-changesets-changeset-id-review`                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
-| `api.operation.requires.security.securitypolicy`                                       | `api.operation.replace-annotation`                                                                                              | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.get-ws`                                                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`                                  | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`                                     | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`                                    | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`                                           | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
+| `api.operation.requires.security.securitypolicy`                                       | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`                                      | `security.securitypolicy.bearer-token-policy`         | `security` | `requires`   | many-to-many | medium   |
 | `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.bearer-auth-scheme`                                                                                         | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
 | `api.securityscheme.realizes.security.securitypolicy`                                  | `api.securityscheme.query-auth-scheme`                                                                                          | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
 | `b7775f1a-2418-4c7a-84aa-997efd658a97-requires-a47870bf-898b-425f-9f73-92663193355a`   | `b7775f1a-2418-4c7a-84aa-997efd658a97`                                                                                          | `a47870bf-898b-425f-9f73-92663193355a`                | `security` | `requires`   | unknown      | unknown  |
-| `dfc6509e-98f5-479a-bfe9-14bfddbb838a-requires-f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`   | `dfc6509e-98f5-479a-bfe9-14bfddbb838a`                                                                                          | `f502d58f-1a96-44d5-8fb8-c7e5e67f3f0d`                | `security` | `requires`   | unknown      | unknown  |
 | `navigation.navigationguard.realizes.security.securitypolicy`                          | `navigation.navigationguard.authentication-guard`                                                                               | `security.securitypolicy.bearer-token-policy`         | `security` | `realizes`   | many-to-many | medium   |
 | `navigation.navigationguard.requires.security.role`                                    | `navigation.navigationguard.authentication-guard`                                                                               | `security.role.authenticated-viewer`                  | `security` | `requires`   | many-to-many | medium   |
 | `security.secureresource.references.business.businessobject`                           | `security.secureresource.model-rest-api`                                                                                        | `business.businessobject.architecture-model`          | `business` | `references` | many-to-many | medium   |
@@ -364,25 +365,30 @@ All REST requests inject Authorization: Bearer via the global fetch interceptor;
 
 #### Relationships
 
-| Type        | Related Element                                                       | Predicate        | Direction |
-| ----------- | --------------------------------------------------------------------- | ---------------- | --------- |
-| inter-layer | `api.operation.commit-changeset`                                      | `requires`       | inbound   |
-| inter-layer | `api.operation.create-annotation-reply`                               | `requires`       | inbound   |
-| inter-layer | `api.operation.discard-changeset`                                     | `requires`       | inbound   |
-| inter-layer | `api.operation.get-annotation`                                        | `requires`       | inbound   |
-| inter-layer | `api.operation.get-api-tier1`                                         | `requires`       | inbound   |
-| inter-layer | `api.operation.get-changeset-verification`                            | `requires`       | inbound   |
-| inter-layer | `api.operation.get-layer`                                             | `requires`       | inbound   |
-| inter-layer | `api.operation.list-annotation-replies`                               | `requires`       | inbound   |
-| inter-layer | `api.operation.put-api-changesets-changeset-id-review`                | `requires`       | inbound   |
-| inter-layer | `api.operation.replace-annotation`                                    | `requires`       | inbound   |
-| inter-layer | `api.securityscheme.bearer-auth-scheme`                               | `realizes`       | inbound   |
-| inter-layer | `api.securityscheme.query-auth-scheme`                                | `realizes`       | inbound   |
-| inter-layer | `navigation.navigationguard.authentication-guard`                     | `realizes`       | inbound   |
-| intra-layer | `security.authenticationconfig.bearer-token-authentication`           | `constrained-by` | inbound   |
-| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model` | `composes`       | inbound   |
-| intra-layer | `security.secureresource.model-rest-api`                              | `governs`        | outbound  |
-| intra-layer | `security.threat.unauthenticated-model-access`                        | `influence`      | inbound   |
+| Type        | Related Element                                                                                  | Predicate        | Direction |
+| ----------- | ------------------------------------------------------------------------------------------------ | ---------------- | --------- |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`    | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-changesets-changeset-id-verification` | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-layers-layer-name`                    | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts-checkout-tier1`                                | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project-checkouts`                                               | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects-project`                                                         | `requires`       | inbound   |
+| inter-layer | `api.operation.get-api-projects`                                                                 | `requires`       | inbound   |
+| inter-layer | `api.operation.get-changeset-verification`                                                       | `requires`       | inbound   |
+| inter-layer | `api.operation.get-ws`                                                                           | `requires`       | inbound   |
+| inter-layer | `api.operation.post-api-projects-project-checkouts-checkout-annotations-annotation-id-replies`   | `requires`       | inbound   |
+| inter-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-commit`      | `requires`       | inbound   |
+| inter-layer | `api.operation.post-api-projects-project-checkouts-checkout-changesets-changeset-id-discard`     | `requires`       | inbound   |
+| inter-layer | `api.operation.put-api-projects-project-checkouts-checkout-annotations-annotation-id`            | `requires`       | inbound   |
+| inter-layer | `api.operation.put-api-projects-project-checkouts-checkout-changesets-changeset-id-review`       | `requires`       | inbound   |
+| inter-layer | `api.securityscheme.bearer-auth-scheme`                                                          | `realizes`       | inbound   |
+| inter-layer | `api.securityscheme.query-auth-scheme`                                                           | `realizes`       | inbound   |
+| inter-layer | `navigation.navigationguard.authentication-guard`                                                | `realizes`       | inbound   |
+| intra-layer | `security.authenticationconfig.bearer-token-authentication`                                      | `constrained-by` | inbound   |
+| intra-layer | `security.securitymodel.documentation-robotics-viewer-security-model`                            | `composes`       | inbound   |
+| intra-layer | `security.secureresource.model-rest-api`                                                         | `governs`        | outbound  |
+| intra-layer | `security.threat.unauthenticated-model-access`                                                   | `influence`      | inbound   |
 
 ### Unauthenticated Model Access {#unauthenticated-model-access}
 
@@ -409,4 +415,4 @@ Risk that an unauthenticated user accesses model data if bearer token is absent 
 
 ---
 
-Generated: 2026-11-23T20:18:09.920Z | Model Version: 0.1.0
+Generated: 2026-11-25T14:21:11.200Z | Model Version: 0.1.0
