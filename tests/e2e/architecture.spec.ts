@@ -250,15 +250,18 @@ test.describe('Architecture view — C4 diagrams', () => {
       await expect(bar).toBeVisible();
       const tally = bar.getByTestId('c4-compare-tally');
       const unavailable = bar.getByTestId('c4-compare-unavailable');
-      // The server runs changeset_verify on the read: a second or more, longer with the suite's workers at it.
+      // The server runs changeset_verify on the read: a second or more locally, over 10 s on a CI runner.
+      // The diagram waits for it, so call this before diagramAt.
       await expect(tally.or(unavailable)).toBeVisible({ timeout: 30_000 });
       return (await tally.isVisible()) ? 'verdicts' : 'unavailable';
     }
 
     test('draws the plan with each box marked by its verdict; Show the plan only goes back to the overlay, and Back to the comparison', async ({ page }) => {
       await gotoView(page, URL);
+      // The comparison first: the diagram draws only once the verification read answers.
+      const result = await compared(page);
       await diagramAt(page, 'component');
-      if ((await compared(page)) === 'verdicts') {
+      if (result === 'verdicts') {
         await expect(page.getByTestId('c4-compare-tally')).toContainText('built as planned');
         await expect(page.locator('[data-testid="c4-card"][data-status^="v-"]').first()).toBeVisible();
         await expect(page.getByTestId('c4-card-status').first()).toBeVisible();
@@ -278,8 +281,8 @@ test.describe('Architecture view — C4 diagrams', () => {
     for (const tone of ['light', 'dark'] as const) {
       test(`the compared Component diagram passes axe (WCAG 2.1 AA) on the ${tone} canvas`, async ({ page }) => {
         await gotoView(page, URL);
-        await diagramAt(page, 'component');
         await compared(page);
+        await diagramAt(page, 'component');
         await page.getByRole('radio', { name: tone, exact: true }).click();
         await expect
           .poll(() => page.evaluate(() => document.body.classList.contains('dark-canvas')))
