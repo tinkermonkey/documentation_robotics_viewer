@@ -377,6 +377,13 @@ export interface paths {
                                 model: string;
                                 /** @description origin's URL, when it has one */
                                 remote?: string;
+                                /**
+                                 * @description Set when the repository folder is gone: the project stays in the farm until it is removed
+                                 * @enum {boolean}
+                                 */
+                                missing?: true;
+                                /** @description With missing: the call that drops the project from the farm */
+                                remove?: string;
                                 checkouts: {
                                     /** @description `main`, or the linked worktree's name */
                                     key: string;
@@ -448,6 +455,13 @@ export interface paths {
                             model: string;
                             /** @description origin's URL, when it has one */
                             remote?: string;
+                            /**
+                             * @description Set when the repository folder is gone: the project stays in the farm until it is removed
+                             * @enum {boolean}
+                             */
+                            missing?: true;
+                            /** @description With missing: the call that drops the project from the farm */
+                            remove?: string;
                             checkouts: {
                                 /** @description `main`, or the linked worktree's name */
                                 key: string;
@@ -1242,9 +1256,10 @@ export interface paths {
                             changesets: {
                                 [key: string]: {
                                     name: string;
+                                    /** @description The change's intent, as written, in markdown (CommonMark, GitHub flavoured: lists, code spans, emphasis, links, short headings; no raw HTML). Plain text is valid markdown. Line breaks are kept, so render it rather than showing it on one line */
                                     description?: string;
                                     /** @enum {string} */
-                                    status: "staged" | "committed" | "discarded";
+                                    status: "staged" | "committed" | "discarded" | "recorded";
                                     created: string;
                                     changes_count: number;
                                     /** @description Where the changeset came from; absent on changesets made before it was recorded */
@@ -1263,7 +1278,7 @@ export interface paths {
                                     purpose: "plan" | "bootstrap" | "reconcile" | "verification" | "chat" | "upgrade-record";
                                     /** @description For a verification record: the id of the plan changeset it verifies */
                                     verifies?: string;
-                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
+                                    /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, and for a recorded one (its plan landed); none once committed or discarded */
                                     actions: ("commit" | "discard")[];
                                     drift: components["schemas"]["ChangesetDriftSummary"];
                                     /** @description The changeset's nextSequenceNumber */
@@ -1343,9 +1358,10 @@ export interface paths {
                         "application/json": {
                             id: string;
                             name: string;
+                            /** @description The change's intent, as written, in markdown (CommonMark, GitHub flavoured: lists, code spans, emphasis, links, short headings; no raw HTML). Plain text is valid markdown. Line breaks are kept, so render it rather than showing it on one line */
                             description?: string;
                             /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
+                            status: "staged" | "committed" | "discarded" | "recorded";
                             created: string;
                             modified: string;
                             baseSnapshot?: string;
@@ -1379,9 +1395,11 @@ export interface paths {
                                 /** @description The commit extraction read the code at */
                                 codeCommit?: string;
                             };
-                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, none once committed or discarded */
+                            /** @description The moves its purpose and status allow now: commit and discard while staged, discard only for a verification record or an upgrade record, and for a recorded one (its plan landed); none once committed or discarded */
                             actions: ("commit" | "discard")[];
                             drift: components["schemas"]["ChangesetDrift"];
+                            /** @description Staged changesets only: evidence that something is still writing into it (its lock held by a write, or another process staged into it in the last 30 s). Show it before Apply: a write that arrives while it lands is refused. */
+                            stillWriting?: string;
                             /** @description Unstaged and rewritten changes (tombstones), oldest first */
                             unstaged: {
                                 /** @description The sequence number the change had */
@@ -1936,7 +1954,7 @@ export interface paths {
                             id: string;
                             name: string;
                             /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
+                            status: "staged" | "committed" | "discarded" | "recorded";
                             /** @description Changes applied to the model (commit only) */
                             committed?: number;
                             /** @description Changes skipped as already present (commit only) */
@@ -2102,7 +2120,7 @@ export interface paths {
                             id: string;
                             name: string;
                             /** @enum {string} */
-                            status: "staged" | "committed" | "discarded";
+                            status: "staged" | "committed" | "discarded" | "recorded";
                             /** @description Changes applied to the model (commit only) */
                             committed?: number;
                             /** @description Changes skipped as already present (commit only) */
