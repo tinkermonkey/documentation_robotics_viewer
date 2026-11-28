@@ -32,4 +32,4 @@ functions and React Query hooks (named from the path, e.g. `useGetapiprojectspro
 
 - `.husky/pre-commit` runs `npm run sync:api-spec` on each commit (`HUSKY_OFFLINE=1` skips it) and says when the
   spec changed but isn't staged.
-- `.github/workflows/sync-api-spec.yml` checks upstream daily and opens a PR when the spec moved.
+- No scheduled workflow syncs the spec: `ci.yml` checks it is in sync on each PR; run `npm run sync:api-spec` by hand to update it.

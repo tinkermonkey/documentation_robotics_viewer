@@ -126,7 +126,6 @@ GitHub Actions, in [.github/workflows](.github/workflows):
   CLI has no `dr serve`.
 - `ci.yml`: checks the API spec is in sync, runs the tests and builds; on a `v*` tag it publishes a GitHub Release
   with the bundle as a zip.
-- `sync-api-spec.yml`: daily, opens a PR when the upstream API spec changed.
 
 ## License
 
