@@ -5,10 +5,10 @@ application.applicationinterface.dr-cli-rest-interface:
   type: applicationinterface
   layer_id: application
   name: DR CLI REST Interface
-  description: The HTTP REST interface through which the embedded app communicates
-    with the DR CLI visualization server
+  description: The HTTP REST interface through which the embedded app communicates with the DR CLI visualization server
   attributes:
-    protocol: REST
+    protocol: HTTP
+    interfaceType: api
   source_reference:
     provenance: extracted
     locations:
@@ -24,10 +24,10 @@ application.applicationinterface.dr-cli-web-socket-interface:
   type: applicationinterface
   layer_id: application
   name: DR CLI WebSocket Interface
-  description: The WebSocket interface for subscribing to real-time
-    model/changeset/annotation update events
+  description: The WebSocket interface for subscribing to real-time model/changeset/annotation update events
   attributes:
     protocol: WebSocket
+    interfaceType: api
   source_reference:
     provenance: extracted
     locations:
